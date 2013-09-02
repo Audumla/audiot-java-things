@@ -9,7 +9,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 
-@Plugin(name = "LCDLogger", type = "Core", elementType = "appender", printObject = true)
+@Plugin(name = "LCDLogger", category = "Core", elementType = "appender", printObject = true)
 public class LCDAppender extends AbstractAppender<String> {
 
 	protected LCDCommandQueue lcd;
