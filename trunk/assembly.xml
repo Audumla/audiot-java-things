@@ -1,0 +1,18 @@
+<assembly>
+    <id>bundle</id>
+    <formats>
+        <format>dir</format>
+    </formats>
+    <includeBaseDirectory>false</includeBaseDirectory>
+    <dependencySets>
+        <dependencySet>
+            <outputDirectory>/bundles</outputDirectory>
+        </dependencySet>
+    </dependencySets>
+    <fileSets>
+        <fileSet>
+            <directory>resources</directory>
+            <outputDirectory>/resources</outputDirectory>
+        </fileSet>
+    </fileSets>
+</assembly>
