@@ -21,7 +21,7 @@ public class LCDAppender extends AppenderSkeleton {
     @Override
     public void close() {
             lcd.append(new LCDShutdownCommand());
-            lcd.append(new LCDPauseCommand());
+            lcd.append(new  LCDPauseCommand());
         }
 
     @Override
