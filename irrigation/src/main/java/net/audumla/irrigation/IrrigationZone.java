@@ -8,8 +8,8 @@ package net.audumla.irrigation;
 import net.audumla.climate.ClimateObserver;
 import net.audumla.climate.ClimateObserverCollection;
 import org.apache.commons.lang.time.DateUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.Date;

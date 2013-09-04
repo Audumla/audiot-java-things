@@ -6,8 +6,8 @@ import net.audumla.climate.*;
 import net.audumla.util.SafeParse;
 import net.audumla.util.Time;
 import org.apache.commons.lang.time.DateUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import java.util.Calendar;
 import java.util.Date;

@@ -5,8 +5,8 @@ import net.audumla.bean.SupportedFunction;
 import net.audumla.climate.*;
 import net.audumla.util.Time;
 import org.apache.commons.net.ftp.FTPFile;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
