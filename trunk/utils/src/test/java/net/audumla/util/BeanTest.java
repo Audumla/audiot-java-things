@@ -5,8 +5,8 @@ package net.audumla.util;
  * Time: 11:15 PM
  */
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.apache.log4j.LogManager;
 import org.junit.Test;
 
 public class BeanTest {

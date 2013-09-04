@@ -7,8 +7,8 @@ package net.audumla.scheduler.quartz;
 
 import net.audumla.irrigation.IrrigationEvent;
 import net.audumla.irrigation.IrrigationEventFactory;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.apache.log4j.LogManager;
 import org.quartz.*;
 import org.quartz.listeners.JobListenerSupport;
 import org.quartz.listeners.TriggerListenerSupport;

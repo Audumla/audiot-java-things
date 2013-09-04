@@ -1,46 +1,31 @@
 package net.audumla.devices.raspberrypi.lcd;
 
-import org.apache.logging.log4j.core.Filter;
-import org.apache.logging.log4j.core.Layout;
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.appender.AbstractAppender;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttr;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.log4j.AppenderSkeleton;
+import org.apache.log4j.spi.LoggingEvent;
 
-@Plugin(name = "LCDLogger", category = "Core", elementType = "appender", printObject = true)
-public class LCDAppender extends AbstractAppender<String> {
+public class LCDAppender extends AppenderSkeleton {
 
 	protected LCDCommandQueue lcd;
 
-	protected LCDAppender(LCDCommandQueue lcd, String name, Filter filter, Layout<String> layout) {
-		this(lcd, name, filter, layout, true);
-	}
 
-	protected LCDAppender(LCDCommandQueue lcd, String name, Filter filter, Layout<String> layout, boolean handleException) {
-		super(name, filter, layout, handleException);
+	protected LCDAppender(LCDCommandQueue lcd) {
 		this.lcd = lcd;
 	}
 
-	public void append(LogEvent logevent) {
+	public void append(LoggingEvent logevent) {
 		lcd.append(new LCDClearCommand());
-		lcd.append(new LCDWriteCommand(logevent.getMessage().getFormattedMessage()));
+		lcd.append(new LCDWriteCommand(logevent.getRenderedMessage()));
 		lcd.append(new LCDPauseCommand());
 	}
 
-	@PluginFactory
-	public static LCDAppender createAppender(@PluginAttr("name") String name, @PluginAttr("suppressExceptions") String suppress,
-			@PluginElement("layout") Layout<String> layout, @PluginElement("filters") Filter filter) {
+    @Override
+    public void close() {
+            lcd.append(new LCDShutdownCommand());
+            lcd.append(new LCDPauseCommand());
+        }
 
-		boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
-		return new LCDAppender(LCDCommandQueue.instance(), name, filter, layout, handleExceptions);
-	}
-
-	@Override
-	public void stop() {
-		super.stop();
-		lcd.append(new LCDShutdownCommand());
-		lcd.append(new LCDPauseCommand());
-	}
+    @Override
+    public boolean requiresLayout() {
+        return false;
+    }
 }

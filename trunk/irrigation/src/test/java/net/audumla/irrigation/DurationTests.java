@@ -5,8 +5,8 @@ package net.audumla.irrigation;
  * Time: 10:54 AM
  */
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.apache.log4j.LogManager;
 import org.junit.Test;
 
 public class DurationTests {

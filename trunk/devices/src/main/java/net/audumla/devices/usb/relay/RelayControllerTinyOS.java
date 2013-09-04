@@ -2,8 +2,8 @@ package net.audumla.devices.usb.relay;
 
 import java.util.Date;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import com.ftdichip.ftd2xx.Device;
 import com.ftdichip.ftd2xx.Service;
