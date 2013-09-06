@@ -24,7 +24,7 @@ public class ZoneTest {
 
     @Test
     public void testZoneCalculations() {
-        ClimateDataSource source = ClimateDataSourceFactory.newInstance();
+        ClimateDataSource source = new ClimateDataSourceFactory().newInstance();
         source.setLatitude(-37.84);
         source.setLongitude(144.98);
         ClimateObserver observer = ClimateObserverCatalogue.getInstance().getClimateObserver(source);

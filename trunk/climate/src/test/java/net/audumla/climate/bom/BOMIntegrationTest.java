@@ -12,7 +12,7 @@ import java.net.InetAddress;
 public class BOMIntegrationTest {
     @Test
     public void Validate_BOM_Catalogue() {
-        ClimateDataSource source = ClimateDataSourceFactory.newInstance();
+        ClimateDataSource source = ClimateDataSourceFactory.getInstance().newInstance();
         source.setLatitude(-37.84);
         source.setLongitude(144.98);
         try {

@@ -13,7 +13,7 @@ import java.util.GregorianCalendar;
 public class CalculationTest {
     @Test
     public void testEToHourly1() {
-        ClimateDataSource source = ClimateDataSourceFactory.newInstance();
+        ClimateDataSource source = ClimateDataSourceFactory.getInstance().newInstance();
         ClimateDataFactory sw = new BOMSimpleHistoricalClimateObserver(source);
         ClimateCalculations cc = new ClimateCalculations();
         Calendar c = GregorianCalendar.getInstance();
@@ -68,7 +68,7 @@ public class CalculationTest {
 
 
     public void testEToHourly2() {
-        ClimateDataSource source = ClimateDataSourceFactory.newInstance();
+        ClimateDataSource source = ClimateDataSourceFactory.getInstance().newInstance();
         ClimateDataFactory sw = new BOMHistoricalClimateObserver(source);
         ClimateCalculations cc = new ClimateCalculations();
         Calendar c = GregorianCalendar.getInstance();
@@ -127,7 +127,7 @@ public class CalculationTest {
 
     @Test
     public void testETo1() {
-        ClimateDataSource source = ClimateDataSourceFactory.newInstance();
+        ClimateDataSource source = ClimateDataSourceFactory.getInstance().newInstance();
         ClimateDataFactory sw = new BOMHistoricalClimateObserver(source);
         ClimateCalculations cc = new ClimateCalculations();
         Calendar c = GregorianCalendar.getInstance();
@@ -199,7 +199,7 @@ public class CalculationTest {
         c.set(Calendar.DAY_OF_YEAR, 100);
         c.set(Calendar.YEAR, 2012);
         Date now = c.getTime();
-        ClimateDataSource source = ClimateDataSourceFactory.newInstance();
+        ClimateDataSource source = ClimateDataSourceFactory.getInstance().newInstance();
         source.setLatitude(-37.72);
         source.setLongitude(144.05);
         ClimateObserver station = ClimateObserverCatalogue.getInstance().getClimateObserver(source);
@@ -215,7 +215,7 @@ public class CalculationTest {
         c.set(Calendar.MONTH, Calendar.FEBRUARY);
         c.set(Calendar.YEAR, 2013);
         Date now = c.getTime();
-        ClimateDataSource source = ClimateDataSourceFactory.newInstance();
+        ClimateDataSource source = ClimateDataSourceFactory.getInstance().newInstance();
         source.setLatitude(-37.84);
         source.setLongitude(144.98);
         ClimateObserver station = ClimateObserverCatalogue.getInstance().getClimateObserver(source);
@@ -229,7 +229,7 @@ public class CalculationTest {
     public void testEvapotransprationByHour() {
         Calendar c = GregorianCalendar.getInstance();
         c.add(Calendar.DAY_OF_YEAR, -1);
-        ClimateDataSource source = ClimateDataSourceFactory.newInstance();
+        ClimateDataSource source = ClimateDataSourceFactory.getInstance().newInstance();
         source.setId("086068");
 //		source.setLatitude(39.4);
 //		source.setLongitude(146.98);
@@ -254,7 +254,7 @@ public class CalculationTest {
         Calendar c = GregorianCalendar.getInstance();
         c.add(Calendar.DAY_OF_YEAR, 1);
         Date now = c.getTime();
-        ClimateDataSource source = ClimateDataSourceFactory.newInstance();
+        ClimateDataSource source = ClimateDataSourceFactory.getInstance().newInstance();
         source.setLatitude(-37.84);
         source.setLongitude(144.98);
         ClimateObserver station = ClimateObserverCatalogue.getInstance().getClimateObserver(source);
@@ -269,7 +269,7 @@ public class CalculationTest {
         Calendar c = GregorianCalendar.getInstance();
         c.set(Calendar.DAY_OF_YEAR, 300);
         c.set(Calendar.YEAR, 2012);
-        ClimateDataSource source = ClimateDataSourceFactory.newInstance();
+        ClimateDataSource source = ClimateDataSourceFactory.getInstance().newInstance();
         source.setLatitude(-37.70);
         source.setLongitude(145.11);
         ClimateObserver station = ClimateObserverCatalogue.getInstance().getClimateObserver(source);
@@ -297,7 +297,7 @@ public class CalculationTest {
         Calendar c = GregorianCalendar.getInstance();
         c.set(Calendar.DAY_OF_YEAR, 300);
         c.set(Calendar.YEAR, 2012);
-        ClimateDataSource source = ClimateDataSourceFactory.newInstance();
+        ClimateDataSource source = ClimateDataSourceFactory.getInstance().newInstance();
         source.setId("086068");
         ClimateObserver station = ClimateObserverCatalogue.getInstance().getClimateObserver(source);
         ClimateCalculations cc = new ClimateCalculations();
@@ -321,7 +321,7 @@ public class CalculationTest {
 
     @Test
     public void testEvapotranspration4() {
-        ClimateDataSource source = ClimateDataSourceFactory.newInstance();
+        ClimateDataSource source = ClimateDataSourceFactory.getInstance().newInstance();
         // source.setId("086351");
         // source.setId("086038");
         // source.setLatitude(37.84);
@@ -360,7 +360,7 @@ public class CalculationTest {
         c.set(Calendar.DAY_OF_YEAR, 246);
         c.set(Calendar.YEAR, 2012);
         Date now = c.getTime();
-        ClimateDataSource source = ClimateDataSourceFactory.newInstance();
+        ClimateDataSource source = ClimateDataSourceFactory.getInstance().newInstance();
         source.setLatitude(-20.0);
         source.setLongitude(145.05);
         ClimateCalculations cc = new ClimateCalculations();
@@ -376,7 +376,7 @@ public class CalculationTest {
         c.set(Calendar.DAY_OF_YEAR, 135);
         c.set(Calendar.YEAR, 2012);
         Date now = c.getTime();
-        ClimateDataSource source = ClimateDataSourceFactory.newInstance();
+        ClimateDataSource source = ClimateDataSourceFactory.getInstance().newInstance();
         source.setLatitude(-22.9);
         source.setLongitude(145.05);
         ClimateCalculations cc = new ClimateCalculations();
@@ -394,7 +394,7 @@ public class CalculationTest {
     public void testRnl() {
         Calendar c = GregorianCalendar.getInstance();
         ClimateCalculations cc = new ClimateCalculations();
-        ClimateDataSource source = ClimateDataSourceFactory.newInstance();
+        ClimateDataSource source = ClimateDataSourceFactory.getInstance().newInstance();
         ClimateDataFactory sw = new BOMHistoricalClimateObserver(source);
         WritableClimateData data = (WritableClimateData) ClimateDataFactory.newWritableClimateData(sw,source);
         c.set(Calendar.DAY_OF_YEAR, 135);
@@ -428,7 +428,7 @@ public class CalculationTest {
     public void testRn() {
         Calendar c = GregorianCalendar.getInstance();
         ClimateCalculations cc = new ClimateCalculations();
-        ClimateDataSource source = ClimateDataSourceFactory.newInstance();
+        ClimateDataSource source = ClimateDataSourceFactory.getInstance().newInstance();
         ClimateDataFactory sw = new BOMHistoricalClimateObserver(source);
         WritableClimateData data = (WritableClimateData) ClimateDataFactory.newWritableClimateData(sw,source);
         c.set(Calendar.DAY_OF_YEAR, 135);
@@ -453,7 +453,7 @@ public class CalculationTest {
     @Test
     public void testeaHumidity() {
         ClimateCalculations cc = new ClimateCalculations();
-        ClimateDataSource source = ClimateDataSourceFactory.newInstance();
+        ClimateDataSource source = ClimateDataSourceFactory.getInstance().newInstance();
         ClimateDataFactory sw = new BOMHistoricalClimateObserver(source);
         WritableClimateData data = (WritableClimateData) ClimateDataFactory.newWritableClimateData(sw,source);
         Calendar c = GregorianCalendar.getInstance();
@@ -474,7 +474,7 @@ public class CalculationTest {
     @Test
     public void testu2() {
         ClimateCalculations cc = new ClimateCalculations();
-        ClimateDataSource source = ClimateDataSourceFactory.newInstance();
+        ClimateDataSource source = ClimateDataSourceFactory.getInstance().newInstance();
         ClimateDataFactory sw = new BOMHistoricalClimateObserver(source);
         WritableClimateData data = (WritableClimateData) ClimateDataFactory.newWritableClimateData(sw,source);
 
@@ -490,7 +490,7 @@ public class CalculationTest {
         Calendar c = GregorianCalendar.getInstance();
         c.set(Calendar.DAY_OF_YEAR, 100);
         c.set(Calendar.YEAR, 2012);
-        ClimateDataSource source = ClimateDataSourceFactory.newInstance();
+        ClimateDataSource source = ClimateDataSourceFactory.getInstance().newInstance();
         source.setId("086038");
         source.setLatitude(-37.84);
         source.setLongitude(144.98);
@@ -553,7 +553,7 @@ public class CalculationTest {
     */
     @Test
     public void dewPointTest() {
-        ClimateDataSource source = ClimateDataSourceFactory.newInstance();
+        ClimateDataSource source = ClimateDataSourceFactory.getInstance().newInstance();
         source.setId("086068");
         ClimateObserver station = ClimateObserverCatalogue.getInstance().getClimateObserver(source);
         ClimateCalculations cc = new ClimateCalculations();

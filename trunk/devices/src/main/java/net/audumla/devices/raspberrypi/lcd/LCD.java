@@ -73,13 +73,13 @@ public class LCD {
 
 	public static LCD instance() {
 		if (instance == null) {
-			instance = new LCD();
+			instance = new LCD(MCP23008_ADDRESS);
 		}
 		return instance;
 	}
 
-	private LCD() {
-		ext = new PortExtender();
+	private LCD(int address) {
+		ext = new PortExtender(address);
 		backlightStatus = LCD_BACKLIGHT;
 	}
 
@@ -284,13 +284,14 @@ public class LCD {
 
 		public static final String DESCRIPTION = "MCP23008 GPIO Provider";
 		private I2CDevice device;
+        private int address;
 
-		public PortExtender() {
+		public PortExtender(int address) {
 
 			// create I2C communications bus instance
 			for (int i = 0; i < 5; ++i) {
 				try {
-					device = I2CFactory.getInstance(i).getDevice(MCP23008_ADDRESS);
+					device = I2CFactory.getInstance(i).getDevice(address);
 					logger.trace("Found I2C device on bus " + i);
 					break;
 				} catch (IOException ex) {

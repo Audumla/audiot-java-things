@@ -24,7 +24,7 @@ public class DerivedObserverTest {
         c.set(Calendar.DAY_OF_YEAR, 1);
         c.set(Calendar.YEAR, 2013);
         Date now = c.getTime();
-        ClimateDataSource source = ClimateDataSourceFactory.newInstance();
+        ClimateDataSource source = ClimateDataSourceFactory.getInstance().newInstance();
         source.setId("086068");
         ClimateObserver forcaster = ClimateObserverCatalogue.getInstance().getClimateObserver(source);
         data = forcaster.getClimateData(now);

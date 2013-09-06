@@ -21,7 +21,7 @@ public class HistoricalDataTest {
         c.set(Calendar.DAY_OF_YEAR, 200);
         c.set(Calendar.YEAR, 2012);
         Date now = c.getTime();
-        ClimateDataSource source = ClimateDataSourceFactory.newInstance();
+        ClimateDataSource source = ClimateDataSourceFactory.getInstance().newInstance();
         source.setId("086351");
         ClimateObserver station = ClimateObserverCatalogue.getInstance().getClimateObserver(source);
         ClimateData data = station.getClimateData(now);
@@ -56,7 +56,7 @@ public class HistoricalDataTest {
         c.set(Calendar.DAY_OF_YEAR, 200);
         c.set(Calendar.YEAR, 2012);
         Date now = c.getTime();
-        ClimateDataSource source = ClimateDataSourceFactory.newInstance();
+        ClimateDataSource source = ClimateDataSourceFactory.getInstance().newInstance();
         source.setId("086068");
         ClimateObserver station = ClimateObserverCatalogue.getInstance().getClimateObserver(source);
         ClimateData data = station.getClimateData(now);
@@ -84,7 +84,7 @@ public class HistoricalDataTest {
         Date now = c.getTime();
         c.set(Calendar.HOUR, 10);
         Date time1 = c.getTime();
-        ClimateDataSource source = ClimateDataSourceFactory.newInstance();
+        ClimateDataSource source = ClimateDataSourceFactory.getInstance().newInstance();
         source.setId("086351");
         ClimateObserver station = ClimateObserverCatalogue.getInstance().getClimateObserver(source);
         ClimateData data = station.getClimateData(now);

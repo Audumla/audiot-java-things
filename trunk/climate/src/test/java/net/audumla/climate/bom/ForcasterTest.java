@@ -20,7 +20,7 @@ public class ForcasterTest {
         c.set(Calendar.MINUTE, 0);
         c.set(Calendar.DAY_OF_YEAR, c.get(Calendar.DAY_OF_YEAR) + 1);
         Date now = c.getTime();
-        ClimateDataSource source = ClimateDataSourceFactory.newInstance();
+        ClimateDataSource source = ClimateDataSourceFactory.getInstance().newInstance();
         source.setId("086351");
         ClimateObserver forcaster = ClimateObserverCatalogue.getInstance().getClimateObserver(source);
         ClimateData data = forcaster.getClimateData(now);

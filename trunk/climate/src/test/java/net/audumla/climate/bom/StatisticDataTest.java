@@ -20,7 +20,7 @@ public class StatisticDataTest {
         c.set(Calendar.DAY_OF_YEAR, 100);
         c.set(Calendar.YEAR, 2012);
         Date now = c.getTime();
-        ClimateDataSource source = ClimateDataSourceFactory.newInstance();
+        ClimateDataSource source = ClimateDataSourceFactory.getInstance().newInstance();
         source.setId("086351");
         ClimateObserver station = new BOMStatisticalClimateDataObserver(source);
         ClimateData data = station.getClimateData(now);
@@ -39,7 +39,7 @@ public class StatisticDataTest {
         c.set(Calendar.DAY_OF_YEAR, 100);
         c.set(Calendar.YEAR, 2012);
         Date now = c.getTime();
-        ClimateDataSource source = ClimateDataSourceFactory.newInstance();
+        ClimateDataSource source = ClimateDataSourceFactory.getInstance().newInstance();
         source.setId("086351");
         ClimateObserver station = new BOMStatisticalClimateDataObserver(source);
         ClimateData data = station.getClimateData(now);
@@ -58,7 +58,7 @@ public class StatisticDataTest {
 
     @Test
     public void testStatisticalDataSupported() {
-        ClimateDataSource source = ClimateDataSourceFactory.newInstance();
+        ClimateDataSource source = ClimateDataSourceFactory.getInstance().newInstance();
         WritableClimateData data = ClimateDataFactory.newWritableClimateData(new BOMStatisticalClimateDataObserver(source),source);
         data.setSunrise(new Date());
         try {
@@ -79,7 +79,7 @@ public class StatisticDataTest {
         c.set(Calendar.DAY_OF_YEAR, 100);
         c.set(Calendar.YEAR, 2012);
         Date now = c.getTime();
-        ClimateDataSource source = ClimateDataSourceFactory.newInstance();
+        ClimateDataSource source = ClimateDataSourceFactory.getInstance().newInstance();
         source.setId("086351");
         ClimateObserver station = new BOMStatisticalClimateDataObserver(source);
         ClimateData data = station.getClimateData(now);

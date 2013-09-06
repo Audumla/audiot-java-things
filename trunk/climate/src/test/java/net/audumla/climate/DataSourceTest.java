@@ -17,7 +17,7 @@ public class DataSourceTest {
     private static final Logger logger = LogManager.getLogger(DataSourceTest.class);
 
     protected ClimateData getData(Date now) {
-        ClimateDataSource source = ClimateDataSourceFactory.newInstance();
+        ClimateDataSource source = ClimateDataSourceFactory.getInstance().newInstance();
         source.setId("086068");
         ClimateObserver obs = ClimateObserverCatalogue.getInstance().getClimateObserver(source);
         return obs.getClimateData(now);
