@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="climate.ObserverCatalogue" class="net.audumla.climate.ClimateObserverCatalogue"
+          factory-method="getInstance"/>
+
+    <bean id="job.IrrigationJobFactory" class="net.audumla.scheduler.quartz.IrrigationJob" />
+
+    <bean id="climate.ClimateDataSourceFactory" class="net.audumla.climate.ClimateDataSourceFactory"/>
+
+    <bean id="climate.ClimateObserverCatalogue" class="net.audumla.climate.ClimateObserverCatalogue"
+          factory-method="getInstance"/>
+
+    <bean id="irrigation.Location" class="net.audumla.climate.ClimateDataSource"
+          factory-bean="climate.ClimateDataSourceFactory" factory-method="newInstance">
+        <property name="latitude" value="-37.84"/>
+        <property name="longitude" value="144.98"/>
+    </bean>
+
+    <bean id="climate.Observer" class="net.audumla.climate.ClimateObserver"
+          factory-bean="climate.ClimateObserverCatalogue" factory-method="getClimateObserver">
+        <constructor-arg ref="irrigation.Location"/>
+    </bean>
+
+    <bean id="irrigation.Zone1" class="net.audumla.irrigation.IrrigationZone">
+        <constructor-arg ref="climate.Observer"/>
+        <property name="surfaceArea" value="10"/>
+        <property name="flowRate" value="10"/>
+        <property name="enclosureRating" value="1"/>
+        <property name="coverRating" value="1"/>
+        <property name="shadeRating" value="1"/>
+    </bean>
+
+    <bean id="irrigation.Zone1.EToCalculator" class="net.audumla.irrigation.EToCalculator">
+        <constructor-arg ref="irrigation.Zone1"/>
+    </bean>
+
+    <bean id="irrigation.Zone1.EToDurationFactory" class="net.audumla.irrigation.EToIrrigationDurationFactory">
+        <constructor-arg index="0" ref="irrigation.Zone1"/>
+        <constructor-arg index="1" ref="irrigation.Zone1.EToCalculator"/>
+    </bean>
+
+    <bean id="irrigation.Zone1.EToIrrigationEventFactory" class="net.audumla.irrigation.EToIrrigationEventFactory">
+        <constructor-arg index="0" ref="irrigation.Zone1"/>
+        <constructor-arg index="1" ref="irrigation.Zone1.EToCalculator"/>
+        <constructor-arg index="2" ref="irrigation.Zone1.EToDurationFactory"/>
+    </bean>
+
+    <bean id="irrigation.ZoneGroup1" class="net.audumla.scheduler.quartz.SequentialTriggerListener">
+        <property name="group" value="ZoneGroup1"/>
+    </bean>
+
+    <bean id="job.Zone1Trigger" class="CronTrigger">
+        <!-- run every morning at 6 AM -->
+        <property name="cronExpression" value="0 0 6 * * ?"/>
+        <property name="group" value="ZoneGroup1"/>
+    </bean>
+
+    <bean id="job.Zone1JobDetail" class="org.quartz.JobDetail" factory-bean="job.IrrigationJobFactory" factory-method="buildJobDetail">
+        <constructor-arg index="0" value="job.Zone1"/>
+        <constructor-arg index="1" value="ZoneGroup1"/>
+        <constructor-arg index="2" ref="irrigation.Zone1"/>
+        <constructor-arg index="3" ref="irrigation.Zone1.EToIrrigationEventFactory"/>
+        <constructor-arg index="4" ref="job.Zone1Trigger"/>
+    </bean>
+
+
+</beans>

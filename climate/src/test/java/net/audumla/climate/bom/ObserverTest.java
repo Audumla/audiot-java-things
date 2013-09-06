@@ -69,7 +69,7 @@ public class ObserverTest {
                 if (line.length > 2) {
                     ++count;
                     String id = line[0].replace("\"", "");
-                    ClimateDataSource source = ClimateDataSourceFactory.newInstance();
+                    ClimateDataSource source = ClimateDataSourceFactory.getInstance().newInstance();
                     source.setId(id);
                     ClimateObserver station = ClimateObserverCatalogue.getInstance().getClimateObserver(source);
                     double v2 = station.getClimateData(now).getEvapotranspiration();
@@ -93,7 +93,7 @@ public class ObserverTest {
         Calendar c = GregorianCalendar.getInstance();
         c.add(Calendar.DAY_OF_YEAR, -3);
         Date now = c.getTime();
-        ClimateDataSource source = ClimateDataSourceFactory.newInstance();
+        ClimateDataSource source = ClimateDataSourceFactory.getInstance().newInstance();
         source.setId("003102");
         ClimateObserver station = ClimateObserverCatalogue.getInstance().getClimateObserver(source);
         try {
@@ -110,7 +110,7 @@ public class ObserverTest {
     @Test
     public void testSequentialObservations() throws IOException {
         Date now = DateUtils.addDays(new Date(),-2);
-        ClimateDataSource source = ClimateDataSourceFactory.newInstance();
+        ClimateDataSource source = ClimateDataSourceFactory.getInstance().newInstance();
         source.setId("086068");
         ClimateObserver station = ClimateObserverCatalogue.getInstance().getClimateObserver(source);
         ClimateData cd = station.getClimateData(now);

@@ -14,7 +14,11 @@ import java.io.Reader;
  */
 public class ClimateDataSourceFactory {
 
-    public static ClimateDataSource newInstance() {
+    static public ClimateDataSourceFactory getInstance() {
+        return new ClimateDataSourceFactory();
+    }
+
+    public ClimateDataSource newInstance() {
         ClimateDataSource source = BeanUtils.buildBean(ClimateDataSource.class);
         return BeanUtils.buildBeanDecorator(new ClimateDataSourceDecorator(source), source);
     }

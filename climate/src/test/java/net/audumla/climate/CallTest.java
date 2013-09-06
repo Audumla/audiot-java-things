@@ -18,7 +18,7 @@ public class CallTest {
 
     @Test
     public void testDataSourceCoodinates() {
-        ClimateDataSource source = ClimateDataSourceFactory.newInstance();
+        ClimateDataSource source = ClimateDataSourceFactory.getInstance().newInstance();
         source.setLatitude(-37.84);
         source.setLongitude(144.98);
         ClimateObserver observer = ClimateObserverCatalogue.getInstance().getClimateObserver(source);
@@ -31,7 +31,7 @@ public class CallTest {
     public void recursiveTest() {
 
 
-        final ClimateDataSource source = ClimateDataSourceFactory.newInstance();
+        final ClimateDataSource source = ClimateDataSourceFactory.getInstance().newInstance();
         source.setLatitude(-37.84);
         source.setLongitude(144.98);
 

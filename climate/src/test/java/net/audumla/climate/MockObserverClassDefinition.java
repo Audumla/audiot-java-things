@@ -132,7 +132,7 @@ public class MockObserverClassDefinition implements ClimateObserver, ClimateData
         now = DateUtils.setHours(now, 0);
         now = DateUtils.setMinutes(now, 0);
 
-        source = ClimateDataSourceFactory.newInstance();
+        source = ClimateDataSourceFactory.getInstance().newInstance();
         source.setName("Mock");
         source.setElevation(20d);
         source.setLatitude(-37.84);

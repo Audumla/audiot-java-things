@@ -147,7 +147,7 @@ public class BOMClimateObserverCatalogue implements ClimateObserverFactory {
     }
 
     protected static ClimateObserver getClimateObserverById(Class<?> clazz, ClimateDataSource source) throws Exception {
-        ClimateDataSource name = ClimateDataSourceFactory.newInstance();
+        ClimateDataSource name = ClimateDataSourceFactory.getInstance().newInstance();
         name.setId(source.getId() + ":" + clazz.getName());
         ClimateObserver station = ClimateObserverCatalogue.getInstance().getRegisteredClimateObserver(name);
         if (station == null) {
@@ -186,6 +186,8 @@ public class BOMClimateObserverCatalogue implements ClimateObserverFactory {
             }
         } catch (IOException e) {
             LOG.error("Station Catalogue error", e);
+        }
+        catch (UnsupportedOperationException ignored) {
         }
         return null;
     }
