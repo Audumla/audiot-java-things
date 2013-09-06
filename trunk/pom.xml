@@ -11,19 +11,6 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-    <repositories>
-        <repository>
-            <id>audumla-repository</id>
-            <url>https://myfiles.messagingengine.com/audumla.net/mvn</url>
-        </repository>
-    </repositories>
-    <distributionManagement>
-        <repository>
-            <id>audumla-repository</id>
-            <uniqueVersion>false</uniqueVersion>
-        </repository>
-    </distributionManagement>
-
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
