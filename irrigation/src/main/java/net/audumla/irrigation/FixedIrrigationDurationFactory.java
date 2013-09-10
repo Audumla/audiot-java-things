@@ -10,16 +10,22 @@ package net.audumla.irrigation;
  * Time: 7:10 PM
  */
 
-import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import java.util.Date;
 
 public class FixedIrrigationDurationFactory implements IrrigationDurationFactory {
-    private static final Logger logger = LogManager.getLogger(FixedIrrigationDurationFactory.class);
-    private final long seconds;
+    private static final Logger logger = Logger.getLogger(FixedIrrigationDurationFactory.class);
+    private long seconds;
 
     public FixedIrrigationDurationFactory(long seconds) {
+        this.seconds = seconds;
+    }
+
+    public FixedIrrigationDurationFactory() {
+    }
+
+    public void setSeconds(long seconds) {
         this.seconds = seconds;
     }
 

@@ -1,14 +1,13 @@
 package net.audumla.scheduler.quartz;
 
-import java.util.Calendar;
-import java.util.Date;
-
 import net.audumla.bean.BeanUtils;
 import net.audumla.util.Geolocation;
 import net.audumla.util.Time;
-
 import org.quartz.ScheduleBuilder;
 import org.quartz.spi.MutableTrigger;
+
+import java.util.Calendar;
+import java.util.Date;
 
 public class AstrologicalScheduleBuilder extends ScheduleBuilder<AstrologicalTrigger> {
 
@@ -19,6 +18,7 @@ public class AstrologicalScheduleBuilder extends ScheduleBuilder<AstrologicalTri
 		public ReferenceTime startTime = new SunriseReferenceTime(null,location);
 		public ReferenceTime endTime = new SunsetReferenceTime(null,location);
 		public int interval = 60*30; // 30 minutes
+        public int repeat = Integer.MIN_VALUE;
 	}
 	
 	public static abstract class ReferenceTime {
@@ -108,6 +108,11 @@ public class AstrologicalScheduleBuilder extends ScheduleBuilder<AstrologicalTri
 		schedule.interval = seconds;
 		return this;
 	}
+
+    public AstrologicalScheduleBuilder withRepeatCount(int count) {
+        schedule.repeat = count;
+        return this;
+    }
 
     public static AstrologicalScheduleBuilder astrologicalSchedule() {
         return new AstrologicalScheduleBuilder();

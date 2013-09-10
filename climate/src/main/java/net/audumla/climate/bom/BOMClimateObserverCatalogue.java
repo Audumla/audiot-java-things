@@ -4,7 +4,6 @@ import au.com.bytecode.opencsv.CSVReader;
 import net.audumla.climate.*;
 import net.audumla.util.SafeParse;
 import org.apache.commons.lang.reflect.ConstructorUtils;
-import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
@@ -18,7 +17,7 @@ import java.util.regex.Pattern;
 
 public class BOMClimateObserverCatalogue implements ClimateObserverFactory {
 
-    protected static final Logger LOG = LogManager.getLogger(BOMClimateObserverCatalogue.class);
+    protected static final Logger LOG = Logger.getLogger(BOMClimateObserverCatalogue.class);
     protected static String BOMLatLongLookup = "http://www.bom.gov.au/jsp/ncc/cdio/weatherData/av?";
     protected static Pattern stationLookupPattern = Pattern.compile("(?:(\\d{4})_)?([^ ]*)\\s*((?:\\w*\\s)*)(\\w*\\s).([\\d.]*)");
     // .compile("(\\d{4})_(\\d{5})\\s*((?:\\w*\\s)*)(\\w*\\s).([\\d.]*)");

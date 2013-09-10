@@ -8,8 +8,8 @@ package net.audumla.irrigation;
 import java.util.Date;
 
 public interface IrrigationEvent {
-    Date getEventTime();
 
+    Date getEventTime();
     long getEventDuration();
 
 }

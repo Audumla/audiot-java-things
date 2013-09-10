@@ -1,14 +1,13 @@
 package net.audumla.devices.raspberrypi.lcd;
 
+import org.apache.log4j.Logger;
+
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-
 public class LCDCommandQueue {
 
-	private static final Logger logger = LogManager.getLogger(LCD.class);
+	private static final Logger logger = Logger.getLogger(LCD.class);
 	private static final int DEFAULT_QUEUE_SIZE = 128;
 	private static LCDCommandQueue instance;
 

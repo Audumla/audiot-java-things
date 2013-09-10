@@ -1,7 +1,5 @@
 package net.audumla.irrigation;
 
-import java.util.List;
-
 public interface Plant {
 /*    double Temperature;
     int Duration;

@@ -8,15 +8,16 @@ package net.audumla.scheduler.quartz;
 import net.audumla.irrigation.IrrigationEvent;
 import net.audumla.irrigation.IrrigationEventFactory;
 import org.apache.log4j.Logger;
-import org.apache.log4j.LogManager;
-import org.quartz.*;
-import org.quartz.listeners.JobListenerSupport;
+import org.quartz.JobExecutionContext;
+import org.quartz.SchedulerException;
+import org.quartz.Trigger;
+import org.quartz.TriggerBuilder;
 import org.quartz.listeners.TriggerListenerSupport;
 
 import java.util.Date;
 
 public class IrrigationListener extends TriggerListenerSupport {
-    private static final Logger logger = LogManager.getLogger(IrrigationListener.class);
+    private static final Logger logger = Logger.getLogger(IrrigationListener.class);
 
     @Override
     public String getName() {

@@ -8,7 +8,6 @@ package net.audumla.scheduler.quartz;
 import net.audumla.irrigation.IrrigationEvent;
 import net.audumla.irrigation.IrrigationEventFactory;
 import net.audumla.irrigation.Zone;
-import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.Job;
@@ -23,7 +22,7 @@ import org.quartz.JobExecutionException;
 
 @DisallowConcurrentExecution
 public class IrrigationJob implements Job {
-    private static final Logger logger = LogManager.getLogger(IrrigationJob.class);
+    private static final Logger logger = Logger.getLogger(IrrigationJob.class);
 
     public static final String ZONE_PROPERTY = "zone";
     public static final String EVENT_PROPERTY = "event";

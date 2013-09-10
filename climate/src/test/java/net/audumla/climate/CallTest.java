@@ -6,7 +6,6 @@ package net.audumla.climate;
  */
 
 import net.audumla.bean.SupportedFunction;
-import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
@@ -14,7 +13,7 @@ import org.junit.Test;
 import java.util.Date;
 
 public class CallTest {
-    private static final Logger logger = LogManager.getLogger(CallTest.class);
+    private static final Logger logger = Logger.getLogger(CallTest.class);
 
     @Test
     public void testDataSourceCoodinates() {

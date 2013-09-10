@@ -8,7 +8,6 @@ package net.audumla.irrigation;
 import net.audumla.climate.ClimateObserver;
 import net.audumla.climate.ClimateObserverCollection;
 import org.apache.commons.lang.time.DateUtils;
-import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
@@ -17,7 +16,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class IrrigationZone implements Zone {
-    private Logger logger = LogManager.getLogger(IrrigationZone.class);
+    private Logger logger = Logger.getLogger(IrrigationZone.class);
     private double shadeRating;
     private double enclosureRating;
     private double coverRating;
@@ -25,6 +24,7 @@ public class IrrigationZone implements Zone {
     private double flowRate;
     private List<IrrigationEvent> irrigationEvents = new ArrayList<IrrigationEvent>();
     private ClimateObserver observer;
+
 
     public IrrigationZone(ClimateObserver observer) {
         if (observer instanceof ClimateObserverCollection) {
@@ -39,6 +39,7 @@ public class IrrigationZone implements Zone {
     public ClimateObserver getClimateObserver() {
         return observer;
     }
+
 
     public double getShadeRating() {
         return shadeRating;

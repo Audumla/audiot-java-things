@@ -1,27 +1,15 @@
 package net.audumla.scheduler.quartz;
 
-import net.audumla.climate.*;
 import net.audumla.util.Time;
-import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.junit.Test;
-import org.quartz.Job;
-import org.quartz.JobBuilder;
-import org.quartz.JobDetail;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
-import org.quartz.Scheduler;
-import org.quartz.SchedulerException;
-import org.quartz.SimpleScheduleBuilder;
-import org.quartz.Trigger;
-import org.quartz.TriggerBuilder;
+import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
-import org.quartz.impl.matchers.GroupMatcher;
 
 import java.util.Date;
 
 public class AstrologicalTest {
-	private static Logger logger = LogManager.getLogger("Test");
+	private static Logger logger = Logger.getLogger("Test");
 
 	public static class TestJob implements Job {
 

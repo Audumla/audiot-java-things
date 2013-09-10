@@ -7,7 +7,6 @@ import net.audumla.util.SafeParse;
 import net.audumla.util.Time;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.time.DateUtils;
-import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import java.io.BufferedReader;
@@ -19,7 +18,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class BOMSimpleHistoricalClimateObserver implements ClimateDataFactory, ClimateObserver {
-    private static final Logger LOG = LogManager.getLogger(BOMSimpleHistoricalClimateObserver.class);
+    private static final Logger LOG = Logger.getLogger(BOMSimpleHistoricalClimateObserver.class);
     private final int MAX_ENTRIES = 100;
     private SimpleDateFormat historyFormatter = new SimpleDateFormat("yyyyMM");
     private SimpleDateFormat historyDateFormatter = new SimpleDateFormat("yyyy-MM-dd");

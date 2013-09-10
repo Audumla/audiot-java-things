@@ -10,13 +10,12 @@ package net.audumla.irrigation;
  * Time: 10:20 AM
  */
 
-import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import java.util.Date;
 
 public class IrrigationEventImpl implements IrrigationEvent {
-    private static final Logger logger = LogManager.getLogger(IrrigationEventImpl.class);
+    private static final Logger logger = Logger.getLogger(IrrigationEventImpl.class);
 
     private Date time;
     private long duration;

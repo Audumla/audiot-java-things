@@ -1,6 +1,5 @@
 package net.audumla.devices.raspberrypi.lcd;
 
-import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.junit.runner.Description;
 import org.junit.runner.Result;
@@ -9,7 +8,7 @@ import org.junit.runner.notification.RunListener;
 
 public class LCDJUnitListener extends RunListener {
 
-	Logger logger = LogManager.getLogger(LCDJUnitListener.class);
+	Logger logger = Logger.getLogger(LCDJUnitListener.class);
 	LCDCommandQueue lcd = LCDCommandQueue.instance();
 
 	public LCDJUnitListener() {

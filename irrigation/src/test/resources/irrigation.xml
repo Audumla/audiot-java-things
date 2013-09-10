@@ -6,8 +6,6 @@
     <bean id="climate.ObserverCatalogue" class="net.audumla.climate.ClimateObserverCatalogue"
           factory-method="getInstance"/>
 
-    <bean id="job.IrrigationJobFactory" class="net.audumla.scheduler.quartz.IrrigationJob" />
-
     <bean id="climate.ClimateDataSourceFactory" class="net.audumla.climate.ClimateDataSourceFactory"/>
 
     <bean id="climate.ClimateObserverCatalogue" class="net.audumla.climate.ClimateObserverCatalogue"

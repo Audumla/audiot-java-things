@@ -12,9 +12,9 @@ package net.audumla.irrigation;
 
 import net.audumla.climate.ClimateData;
 import net.audumla.climate.ClimateDataSource;
+import net.audumla.climate.ClimateObserver;
 import net.audumla.util.Time;
 import org.apache.commons.lang.time.DateUtils;
-import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import java.util.Calendar;
@@ -22,16 +22,20 @@ import java.util.Date;
 import java.util.List;
 
 public class EToCalculator {
-    private static final Logger logger = LogManager.getLogger(EToCalculator.class);
+    private static final Logger logger = Logger.getLogger(EToCalculator.class);
     private static final long calculationDurationInDays = 5;
     private static final long minuteTimeout = 15;
-    private final Zone zone;
+    private Zone zone;
     private Date lastCalculated = new Date(0);
     private double currentETo;
 
-    public EToCalculator(Zone zone) {
+    public EToCalculator() {
+    }
+
+    public void setZone(Zone zone) {
         this.zone = zone;
     }
+
 
     public double calculateETo(Date now) {
         // refresh if we are in a different day or an elapse time has passed

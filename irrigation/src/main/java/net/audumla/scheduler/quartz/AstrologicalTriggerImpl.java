@@ -21,6 +21,7 @@ public class AstrologicalTriggerImpl extends AbstractTrigger<AstrologicalTrigger
     protected Date endTime;
     protected Date nextFireTime;
     protected Date previousFireTime;
+    protected int count = 0;
 
     public AstrologicalTriggerImpl(AstrologicalScheduleBuilder.AstrologicalSchedule schedule) {
         this.schedule = schedule;
@@ -52,20 +53,25 @@ public class AstrologicalTriggerImpl extends AbstractTrigger<AstrologicalTrigger
 
     @Override
     public Date getFireTimeAfter(Date now) {
-        Date nextFire = Time.offset(now, 0, 0, schedule.interval);
-        Date end = schedule.endTime.getOffsetTime(now);
-        if (DateUtils.toCalendar(end).after(DateUtils.toCalendar(nextFire))) {
-            Date start = schedule.startTime.getOffsetTime(now);
-            if (DateUtils.toCalendar(start).after(DateUtils.toCalendar(nextFire))) {
-                //return the start getEventTime if the start getEventTime is after the calculated interval getEventTime
-                return start;
+        if (schedule.repeat == Integer.MIN_VALUE || count < schedule.repeat) {
+            Date nextFire = Time.offset(now, 0, 0, schedule.interval);
+            Date end = schedule.endTime.getOffsetTime(now);
+            if (DateUtils.toCalendar(end).after(DateUtils.toCalendar(nextFire))) {
+                Date start = schedule.startTime.getOffsetTime(now);
+                if (DateUtils.toCalendar(start).after(DateUtils.toCalendar(nextFire))) {
+                    //return the start getEventTime if the start getEventTime is after the calculated interval getEventTime
+                    return start;
+                } else {
+                    // return the calculated interval if it lies between the start and end times
+                    return nextFire;
+                }
             } else {
-                // return the calculated interval if it lies between the start and end times
-                return nextFire;
+                // return tomorrows start getEventTime if the interval getEventTime is after the end getEventTime.
+                return schedule.startTime.getOffsetTime(DateUtils.addDays(now, 1));
             }
-        } else {
-            // return tomorrows start getEventTime if the interval getEventTime is after the end getEventTime.
-            return schedule.startTime.getOffsetTime(DateUtils.addDays(now, 1));
+        }
+        else {
+            return null;
         }
 
     }
@@ -107,6 +113,7 @@ public class AstrologicalTriggerImpl extends AbstractTrigger<AstrologicalTrigger
 
     @Override
     public void triggered(Calendar arg0) {
+        ++count;
         setPreviousFireTime(getNextFireTime());
         setNextFireTime(getFireTimeAfter(getNextFireTime()));
 

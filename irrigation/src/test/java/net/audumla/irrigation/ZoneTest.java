@@ -12,7 +12,6 @@ package net.audumla.irrigation;
 
 
 import net.audumla.climate.*;
-import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
@@ -20,7 +19,7 @@ import org.junit.Test;
 import java.util.Date;
 
 public class ZoneTest {
-    private static final Logger logger = LogManager.getLogger(ZoneTest.class);
+    private static final Logger logger = Logger.getLogger(ZoneTest.class);
 
     @Test
     public void testZoneCalculations() {

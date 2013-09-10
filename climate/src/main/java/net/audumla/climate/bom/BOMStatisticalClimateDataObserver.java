@@ -6,7 +6,6 @@ import net.audumla.climate.*;
 import net.audumla.util.SafeParse;
 import net.audumla.util.Time;
 import org.apache.commons.lang.time.DateUtils;
-import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import java.util.Calendar;
@@ -17,7 +16,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class BOMStatisticalClimateDataObserver implements ClimateDataFactory, ClimateObserver {
-    private static final Logger logger = LogManager.getLogger(BOMStatisticalClimateDataObserver.class);
+    private static final Logger logger = Logger.getLogger(BOMStatisticalClimateDataObserver.class);
     private static final Pattern numberPattern = Pattern.compile("(\\d+\\.?\\d*)");
     private static final Pattern wordPattern = Pattern.compile("\\w*\\s*:\\s*(\\w*)");
     private static final String BOMStatisticsURL = "clim_data/cdio/tables/text/";

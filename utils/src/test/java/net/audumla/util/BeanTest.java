@@ -6,11 +6,10 @@ package net.audumla.util;
  */
 
 import org.apache.log4j.Logger;
-import org.apache.log4j.LogManager;
 import org.junit.Test;
 
 public class BeanTest {
-    private static final Logger logger = LogManager.getLogger(BeanTest.class);
+    private static final Logger logger = Logger.getLogger(BeanTest.class);
 
     @Test
     public void testToString() {

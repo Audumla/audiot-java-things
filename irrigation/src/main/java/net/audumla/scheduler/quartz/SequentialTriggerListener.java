@@ -1,19 +1,11 @@
 package net.audumla.scheduler.quartz;
 
+import org.quartz.*;
+import org.quartz.Trigger.CompletedExecutionInstruction;
+import org.quartz.listeners.TriggerListenerSupport;
+
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
-
-import org.quartz.JobBuilder;
-import org.quartz.JobDetail;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobKey;
-import org.quartz.Scheduler;
-import org.quartz.SchedulerException;
-import org.quartz.SimpleScheduleBuilder;
-import org.quartz.Trigger;
-import org.quartz.Trigger.CompletedExecutionInstruction;
-import org.quartz.TriggerBuilder;
-import org.quartz.listeners.TriggerListenerSupport;
 
 public class SequentialTriggerListener extends TriggerListenerSupport {
 

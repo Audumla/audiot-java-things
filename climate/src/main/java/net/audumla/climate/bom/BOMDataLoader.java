@@ -7,7 +7,6 @@ import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPClientConfig;
 import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPReply;
-import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import java.io.*;
@@ -18,7 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class BOMDataLoader {
-    private static final Logger LOG = LogManager.getLogger(BOMDataLoader.class);
+    private static final Logger LOG = Logger.getLogger(BOMDataLoader.class);
     public static String BOMHTTP = "www.bom.gov.au";
     public static String HTTP = "http://";
     public static String FTP = "ftp://";

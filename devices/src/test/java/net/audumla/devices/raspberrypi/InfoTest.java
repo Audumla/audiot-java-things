@@ -1,12 +1,11 @@
 package net.audumla.devices.raspberrypi;
 
-import java.io.IOException;
-import java.text.ParseException;
-
+import com.pi4j.system.SystemInfo;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.pi4j.system.SystemInfo;
+import java.io.IOException;
+import java.text.ParseException;
 
 public class InfoTest {
 

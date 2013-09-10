@@ -12,18 +12,24 @@ package net.audumla.irrigation;
 
 import net.audumla.climate.ClimateData;
 import net.audumla.climate.ClimateObservation;
-import org.apache.log4j.LogManager;
+import net.audumla.climate.ClimateObserver;
 import org.apache.log4j.Logger;
 
 import java.util.Date;
 
 public class ForecastIrrigationDurationFactory implements IrrigationDurationFactory {
-    private static final Logger logger = LogManager.getLogger(ForecastIrrigationDurationFactory.class);
-    private final IrrigationDurationFactory factory;
-    private final Zone zone;
+    private static final Logger logger = Logger.getLogger(ForecastIrrigationDurationFactory.class);
+    private IrrigationDurationFactory factory;
+    private Zone zone;
 
-    public ForecastIrrigationDurationFactory(IrrigationDurationFactory factory, Zone zone) {
+    public ForecastIrrigationDurationFactory() {
+    }
+
+    public void setFactory(IrrigationDurationFactory factory) {
         this.factory = factory;
+    }
+
+    public void setZone(Zone zone) {
         this.zone = zone;
     }
 

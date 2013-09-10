@@ -6,7 +6,6 @@ import net.audumla.util.SafeParse;
 import net.audumla.util.Time;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.time.DateUtils;
-import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -18,7 +17,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class BOMPeriodicClimateObserver implements ClimateDataFactory, ClimateObserver {
-    private static final Logger logger = LogManager.getLogger(BOMPeriodicClimateObserver.class);
+    private static final Logger logger = Logger.getLogger(BOMPeriodicClimateObserver.class);
     private static final int MAX_ENTRIES = 20;
     private static final SimpleDateFormat longLocalTime = new SimpleDateFormat("yyyyMMddHHmmss");// 20130130180000
     private String[] BOMSampleProductIDs = {"IDV60901", "IDV60801"};

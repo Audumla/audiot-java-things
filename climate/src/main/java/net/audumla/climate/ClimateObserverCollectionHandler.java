@@ -2,7 +2,6 @@ package net.audumla.climate;
 
 import net.audumla.bean.BeanUtils;
 import net.audumla.bean.BeanUtils.BeanProxy;
-import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import java.lang.reflect.InvocationHandler;
@@ -12,7 +11,7 @@ import java.lang.reflect.Proxy;
 import java.util.*;
 
 public class ClimateObserverCollectionHandler implements InvocationHandler, ClimateObserver, ClimateObserverCollection {
-    private static final Logger logger = LogManager.getLogger(ClimateObserverCollectionHandler.class);
+    private static final Logger logger = Logger.getLogger(ClimateObserverCollectionHandler.class);
     private final ClimateDataSource source;
     private Deque<ClimateObserver> baseClimateObserverList = new ArrayDeque<ClimateObserver>();
 
