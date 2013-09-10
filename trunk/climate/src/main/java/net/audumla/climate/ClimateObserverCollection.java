@@ -7,6 +7,8 @@ package net.audumla.climate;
  */
 public interface ClimateObserverCollection {
     void addClimateObserverTail(ClimateObserver station);
+
     void addClimateObserverTop(ClimateObserver station);
+
     public ClimateObserver buildClimateObserver();
 }

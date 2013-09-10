@@ -160,7 +160,7 @@ public class ClimateObserverCollectionHandler implements InvocationHandler, Clim
 
                     } catch (InvocationTargetException e) {
                         if (!(e.getCause() instanceof UnsupportedOperationException)) {
-                             throw e.getCause();
+                            throw e.getCause();
                         }
                     }
                 }

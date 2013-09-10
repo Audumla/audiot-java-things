@@ -248,7 +248,7 @@ public class ClimateCalculations {
                         + getSaturationVapourPressure(data.getMaximumTemperature()) * (data.getMinimumHumidity() / 100);
                 int count = 2;
                 /*
-				 * ClimateObservation obs = data.getObservation(ClimateUtils.getDayAndYear(data.getTime())); while (obs != null) { total +=
+                 * ClimateObservation obs = data.getObservation(ClimateUtils.getDayAndYear(data.getTime())); while (obs != null) { total +=
 				 * obs.getVapourPressure(); obs = obs.getNextObservation(); ++count; }
 				 */
                 eaHumidity = total / count;

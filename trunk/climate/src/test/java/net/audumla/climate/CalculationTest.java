@@ -17,8 +17,8 @@ public class CalculationTest {
         ClimateDataFactory sw = new BOMSimpleHistoricalClimateObserver(source);
         ClimateCalculations cc = new ClimateCalculations();
         Calendar c = GregorianCalendar.getInstance();
-        WritableClimateData data = (WritableClimateData) ClimateDataFactory.newWritableClimateData(sw,source);
-        WritableClimateObservation obs = (WritableClimateObservation) ClimateDataFactory.newWritableClimateObservation(sw,source);
+        WritableClimateData data = (WritableClimateData) ClimateDataFactory.newWritableClimateData(sw, source);
+        WritableClimateObservation obs = (WritableClimateObservation) ClimateDataFactory.newWritableClimateObservation(sw, source);
 
         c.set(Calendar.DAY_OF_YEAR, 274);
         c.set(Calendar.MINUTE, 0);
@@ -72,9 +72,9 @@ public class CalculationTest {
         ClimateDataFactory sw = new BOMHistoricalClimateObserver(source);
         ClimateCalculations cc = new ClimateCalculations();
         Calendar c = GregorianCalendar.getInstance();
-        WritableClimateData data = (WritableClimateData) ClimateDataFactory.newWritableClimateData(sw,source);
-        WritableClimateObservation obs1 = (WritableClimateObservation) ClimateDataFactory.newWritableClimateObservation(sw,source);
-        WritableClimateObservation obs2 = (WritableClimateObservation) ClimateDataFactory.newWritableClimateObservation(sw,source);
+        WritableClimateData data = (WritableClimateData) ClimateDataFactory.newWritableClimateData(sw, source);
+        WritableClimateObservation obs1 = (WritableClimateObservation) ClimateDataFactory.newWritableClimateObservation(sw, source);
+        WritableClimateObservation obs2 = (WritableClimateObservation) ClimateDataFactory.newWritableClimateObservation(sw, source);
 
         c.set(Calendar.DAY_OF_MONTH, 1);
         c.set(Calendar.MONTH, Calendar.OCTOBER);
@@ -131,7 +131,7 @@ public class CalculationTest {
         ClimateDataFactory sw = new BOMHistoricalClimateObserver(source);
         ClimateCalculations cc = new ClimateCalculations();
         Calendar c = GregorianCalendar.getInstance();
-        WritableClimateData data = (WritableClimateData) ClimateDataFactory.newWritableClimateData(sw,source);
+        WritableClimateData data = (WritableClimateData) ClimateDataFactory.newWritableClimateData(sw, source);
 
         c.set(Calendar.DAY_OF_MONTH, 6);
         c.set(Calendar.MONTH, Calendar.JULY);
@@ -365,7 +365,7 @@ public class CalculationTest {
         source.setLongitude(145.05);
         ClimateCalculations cc = new ClimateCalculations();
         ClimateDataFactory sw = new BOMHistoricalClimateObserver(source);
-        ClimateData data = ClimateDataFactory.newWritableClimateData(sw,source);
+        ClimateData data = ClimateDataFactory.newWritableClimateData(sw, source);
         double value = cc.Ra(data, now, 24);
         Assert.assertEquals(32.2, value, 0.1);
     }
@@ -381,7 +381,7 @@ public class CalculationTest {
         source.setLongitude(145.05);
         ClimateCalculations cc = new ClimateCalculations();
         ClimateDataFactory sw = new BOMHistoricalClimateObserver(source);
-        WritableClimateData data = (WritableClimateData) ClimateDataFactory.newWritableClimateData(sw,source);
+        WritableClimateData data = (WritableClimateData) ClimateDataFactory.newWritableClimateData(sw, source);
         double Ra = cc.Ra(data, now, 24);
         Assert.assertEquals(25.1, Ra, 0.1);
         data.setSunshineHours(7.1);
@@ -396,7 +396,7 @@ public class CalculationTest {
         ClimateCalculations cc = new ClimateCalculations();
         ClimateDataSource source = ClimateDataSourceFactory.getInstance().newInstance();
         ClimateDataFactory sw = new BOMHistoricalClimateObserver(source);
-        WritableClimateData data = (WritableClimateData) ClimateDataFactory.newWritableClimateData(sw,source);
+        WritableClimateData data = (WritableClimateData) ClimateDataFactory.newWritableClimateData(sw, source);
         c.set(Calendar.DAY_OF_YEAR, 135);
         c.set(Calendar.YEAR, 2012);
         Date now = c.getTime();
@@ -430,7 +430,7 @@ public class CalculationTest {
         ClimateCalculations cc = new ClimateCalculations();
         ClimateDataSource source = ClimateDataSourceFactory.getInstance().newInstance();
         ClimateDataFactory sw = new BOMHistoricalClimateObserver(source);
-        WritableClimateData data = (WritableClimateData) ClimateDataFactory.newWritableClimateData(sw,source);
+        WritableClimateData data = (WritableClimateData) ClimateDataFactory.newWritableClimateData(sw, source);
         c.set(Calendar.DAY_OF_YEAR, 135);
         c.set(Calendar.YEAR, 2012);
         Date now = c.getTime();
@@ -455,7 +455,7 @@ public class CalculationTest {
         ClimateCalculations cc = new ClimateCalculations();
         ClimateDataSource source = ClimateDataSourceFactory.getInstance().newInstance();
         ClimateDataFactory sw = new BOMHistoricalClimateObserver(source);
-        WritableClimateData data = (WritableClimateData) ClimateDataFactory.newWritableClimateData(sw,source);
+        WritableClimateData data = (WritableClimateData) ClimateDataFactory.newWritableClimateData(sw, source);
         Calendar c = GregorianCalendar.getInstance();
 
         c.set(Calendar.DAY_OF_YEAR, 135);
@@ -476,7 +476,7 @@ public class CalculationTest {
         ClimateCalculations cc = new ClimateCalculations();
         ClimateDataSource source = ClimateDataSourceFactory.getInstance().newInstance();
         ClimateDataFactory sw = new BOMHistoricalClimateObserver(source);
-        WritableClimateData data = (WritableClimateData) ClimateDataFactory.newWritableClimateData(sw,source);
+        WritableClimateData data = (WritableClimateData) ClimateDataFactory.newWritableClimateData(sw, source);
 
         data.setWindSpeedHeight(10d);
         data.setAverageWindSpeed(3.2);

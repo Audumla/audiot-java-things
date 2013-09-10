@@ -100,7 +100,7 @@ public class ZonedClimateObserver implements ClimateDataFactory, ClimateObserver
 
         @SupportedFunction(supported = true)
         public ClimateObservation getObservation(Date time, ObservationMatch match) {
-            return new ZonedClimateObservation(getProxy().getObservation(time,match));
+            return new ZonedClimateObservation(getProxy().getObservation(time, match));
         }
 
     }

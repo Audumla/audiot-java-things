@@ -12,7 +12,6 @@ package net.audumla.irrigation;
 
 import net.audumla.climate.ClimateData;
 import net.audumla.climate.ClimateDataSource;
-import net.audumla.climate.ClimateObserver;
 import net.audumla.util.Time;
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.log4j.Logger;
@@ -60,8 +59,7 @@ public class EToCalculator {
                         // that is the rainfall since 9am.
                         if (!data.getDataSource().getType().equals(ClimateDataSource.ClimateDataSourceType.DAILY_FORECAST)) {
                             debt -= rain;
-                        }
-                        else {
+                        } else {
                             debt -= data.getObservation(now, ClimateData.ObservationMatch.CLOSEST).getRainfall();
                         }
                     } catch (UnsupportedOperationException ex) {

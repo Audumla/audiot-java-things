@@ -9,5 +9,6 @@ import net.audumla.climate.ClimateDataSource;
  */
 public interface BOMClimateDataSource extends ClimateDataSource {
     String getBOMSampleID();
+
     void setBOMSampleID(String id);
 }

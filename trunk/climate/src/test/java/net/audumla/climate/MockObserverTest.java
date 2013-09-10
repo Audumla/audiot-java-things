@@ -19,7 +19,7 @@ public class MockObserverTest {
     @Test
     public void testMock() {
         Date now = new Date();
-        now = DateUtils.setMonths(now,9);
+        now = DateUtils.setMonths(now, 9);
         now = DateUtils.setDays(now, 1);
 
         ClimateObserver observer = new MockObserverClassDefinition();

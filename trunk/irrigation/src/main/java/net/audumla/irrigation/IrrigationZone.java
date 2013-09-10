@@ -24,6 +24,7 @@ public class IrrigationZone implements Zone {
     private double flowRate;
     private List<IrrigationEvent> irrigationEvents = new ArrayList<IrrigationEvent>();
     private ClimateObserver observer;
+    private IrrigationEventHandler eventHandler;
 
 
     public IrrigationZone(ClimateObserver observer) {
@@ -34,6 +35,10 @@ public class IrrigationZone implements Zone {
             logger.error("Cannot zone observer");
         }
         this.observer = observer;
+    }
+
+    public void setEventHandler(IrrigationEventHandler eventHandler) {
+        this.eventHandler = eventHandler;
     }
 
     public ClimateObserver getClimateObserver() {
@@ -77,6 +82,7 @@ public class IrrigationZone implements Zone {
     @Override
     public void addIrrigationEvent(IrrigationEvent event) {
         irrigationEvents.add(event);
+        eventHandler.handleEvent( event);
     }
 
     public double getSurfaceArea() {

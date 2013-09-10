@@ -59,7 +59,7 @@ public class StatisticDataTest {
     @Test
     public void testStatisticalDataSupported() {
         ClimateDataSource source = ClimateDataSourceFactory.getInstance().newInstance();
-        WritableClimateData data = ClimateDataFactory.newWritableClimateData(new BOMStatisticalClimateDataObserver(source),source);
+        WritableClimateData data = ClimateDataFactory.newWritableClimateData(new BOMStatisticalClimateDataObserver(source), source);
         data.setSunrise(new Date());
         try {
             data.getSunset();

@@ -69,8 +69,7 @@ public class AstrologicalTriggerImpl extends AbstractTrigger<AstrologicalTrigger
                 // return tomorrows start getEventTime if the interval getEventTime is after the end getEventTime.
                 return schedule.startTime.getOffsetTime(DateUtils.addDays(now, 1));
             }
-        }
-        else {
+        } else {
             return null;
         }
 

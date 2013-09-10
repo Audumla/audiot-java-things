@@ -185,8 +185,7 @@ public class BOMClimateObserverCatalogue implements ClimateObserverFactory {
             }
         } catch (IOException e) {
             LOG.error("Station Catalogue error", e);
-        }
-        catch (UnsupportedOperationException ignored) {
+        } catch (UnsupportedOperationException ignored) {
         }
         return null;
     }

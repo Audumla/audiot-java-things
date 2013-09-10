@@ -19,6 +19,7 @@ public class IrrigationEventImpl implements IrrigationEvent {
 
     private Date time;
     private long duration;
+    private EventStatus status;
 
     public IrrigationEventImpl(Date time, long duration, double depth) {
         this.time = time;
@@ -33,6 +34,16 @@ public class IrrigationEventImpl implements IrrigationEvent {
     @Override
     public long getEventDuration() {
         return duration;
+    }
+
+    @Override
+    public EventStatus getStatus() {
+        return status;
+    }
+
+    @Override
+    public void setStatus(EventStatus status) {
+        this.status = status;
     }
 
 }

@@ -112,7 +112,7 @@ public class SimpleIrrigationTest {
         ClimateData data2 = obs2.getClimateData(now);
 
         if (data2.getAverageWindSpeed() != 0) {
-             Assert.assertNotEquals(data1.getAverageWindSpeed(), data2.getAverageWindSpeed());
+            Assert.assertNotEquals(data1.getAverageWindSpeed(), data2.getAverageWindSpeed());
         }
         if (data2.getSolarRadiation() != 0) {
             Assert.assertNotEquals(data1.getSolarRadiation(), data2.getSolarRadiation());

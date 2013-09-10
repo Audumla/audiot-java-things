@@ -138,7 +138,7 @@ public class MockObserverClassDefinition implements ClimateObserver, ClimateData
         source.setLongitude(144.98);
 
         for (int i = 0; i < 28; ++i) {
-            WritableClimateData data = ClimateDataFactory.newWritableClimateData(this,getSource());
+            WritableClimateData data = ClimateDataFactory.newWritableClimateData(this, getSource());
             dataList.put(DateUtils.getFragmentInDays(now, Calendar.MONTH), data);
             data.setTime(now);
 
@@ -153,10 +153,9 @@ public class MockObserverClassDefinition implements ClimateObserver, ClimateData
                 data.setRainfall(i / 10d);
                 data.setRainfallProbability(data.getRainfall() > 0 ? 100d : 0d);
                 data.setSunshineHours(6d + (i / 15d));
-               // data.setSolarRadiation(5 + (i / 5d));
+                // data.setSolarRadiation(5 + (i / 5d));
                 data.setWindSpeedHeight(10.0);
-            }
-            else {
+            } else {
                 data.setDataSource(ClimateDataSourceFactory.decorateInstance(source));
                 data.getDataSource().setType(ClimateDataSource.ClimateDataSourceType.DAILY_FORECAST);
                 data.setAverageWindSpeed(10.0 + (i / 10d));
@@ -174,20 +173,19 @@ public class MockObserverClassDefinition implements ClimateObserver, ClimateData
                 now = DateUtils.setHours(now, 0);
                 now = DateUtils.setMinutes(now, 0);
                 for (int n = 1; n < 48; ++n) {
-                    WritableClimateObservation obs = ClimateDataFactory.newWritableClimateObservation(this,getSource());
+                    WritableClimateObservation obs = ClimateDataFactory.newWritableClimateObservation(this, getSource());
                     obs.setDataSource(ClimateDataSourceFactory.decorateInstance(source));
                     obs.getDataSource().setType(ClimateDataSource.ClimateDataSourceType.PERIODIC_OBSERVATION);
                     obs.setTime(now);
                     obs.setWindSpeedHeight(10.0);
-                    obs.setWindSpeed(data.getAverageWindSpeed()/48d);
+                    obs.setWindSpeed(data.getAverageWindSpeed() / 48d);
                     if (n > 10 && n < 21) {
-                        obs.setRainfall(data.getRainfall() * (n/20d));
-                    }
-                    else {
+                        obs.setRainfall(data.getRainfall() * (n / 20d));
+                    } else {
                         obs.setRainfall(0d);
                     }
-                    obs.setTemperature(data.getMinimumTemperature() + (((data.getMinimumTemperature() - data.getMaximumTemperature())/48d)*n));
-                    obs.setHumidity(data.getMinimumHumidity() + (((data.getMinimumHumidity() - data.getMaximumHumidity())/48d)*n));
+                    obs.setTemperature(data.getMinimumTemperature() + (((data.getMinimumTemperature() - data.getMaximumTemperature()) / 48d) * n));
+                    obs.setHumidity(data.getMinimumHumidity() + (((data.getMinimumHumidity() - data.getMaximumHumidity()) / 48d) * n));
                     obs.setRainfallProbablity(obs.getRainfall() > 0 ? 100d : 0d);
                     data.addObservation(obs);
                     now = DateUtils.addMinutes(now, 30);

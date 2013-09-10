@@ -108,7 +108,7 @@ public class ObserverTest {
 
     @Test
     public void testSequentialObservations() throws IOException {
-        Date now = DateUtils.addDays(new Date(),-2);
+        Date now = DateUtils.addDays(new Date(), -2);
         ClimateDataSource source = ClimateDataSourceFactory.getInstance().newInstance();
         source.setId("086068");
         ClimateObserver station = ClimateObserverCatalogue.getInstance().getClimateObserver(source);
@@ -117,7 +117,7 @@ public class ObserverTest {
         Date lastDate = null;
         while (obs != null && obs.getDataSource().getType() == ClimateDataSource.ClimateDataSourceType.PERIODIC_OBSERVATION) {
             lastDate = obs.getTime();
-            logger.debug(lastDate + " - " +obs.getDataSource().getType());
+            logger.debug(lastDate + " - " + obs.getDataSource().getType());
             obs = obs.getNextObservation();
 
         }

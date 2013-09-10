@@ -8,8 +8,14 @@ package net.audumla.irrigation;
 import java.util.Date;
 
 public interface IrrigationEvent {
+    public enum EventStatus {PENDING, EXECUTING, COMPLETE, FAILED}
 
     Date getEventTime();
+
     long getEventDuration();
+
+    EventStatus getStatus();
+
+    void setStatus(EventStatus status);
 
 }

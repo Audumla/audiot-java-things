@@ -60,8 +60,7 @@ public class BOMSimpleHistoricalClimateObserver implements ClimateDataFactory, C
                 }
                 return data;
             } catch (ParseException ignored) {
-            }
-            catch (UnsupportedOperationException ex) {
+            } catch (UnsupportedOperationException ex) {
                 invalidMonths.add(Time.getMonthAndYear(date));
             }
         }
@@ -87,13 +86,13 @@ public class BOMSimpleHistoricalClimateObserver implements ClimateDataFactory, C
                         Date dateM1 = DateUtils.addDays(date, -1);
                         WritableClimateData cdNow = ClimateDataFactory.convertToWritableClimateData(historicalData.get(date));
                         if (cdNow == null) {
-                            cdNow = ClimateDataFactory.newWritableClimateData(this,getSource()); // now
+                            cdNow = ClimateDataFactory.newWritableClimateData(this, getSource()); // now
                             cdNow.setTime(date);
                             historicalData.put(date, ClimateDataFactory.convertToReadOnlyClimateData(cdNow));
                         }
                         WritableClimateData cdNowM1 = ClimateDataFactory.convertToWritableClimateData(historicalData.get(dateM1));
                         if (cdNowM1 == null) {
-                            cdNowM1 = ClimateDataFactory.newWritableClimateData(this,getSource()); // now
+                            cdNowM1 = ClimateDataFactory.newWritableClimateData(this, getSource()); // now
                             cdNowM1.setTime(dateM1);
                             historicalData.put(dateM1, ClimateDataFactory.convertToReadOnlyClimateData(cdNowM1));
                         }
@@ -128,8 +127,8 @@ public class BOMSimpleHistoricalClimateObserver implements ClimateDataFactory, C
                         } catch (Exception e) {
                             LOG.debug("Error setting historical field", e);
                         }
-                        WritableClimateObservation obs9 = ClimateDataFactory.newWritableClimateObservation(this,getSource());
-                        WritableClimateObservation obs15 = ClimateDataFactory.newWritableClimateObservation(this,getSource());
+                        WritableClimateObservation obs9 = ClimateDataFactory.newWritableClimateObservation(this, getSource());
+                        WritableClimateObservation obs15 = ClimateDataFactory.newWritableClimateObservation(this, getSource());
                         obs9.setTime(DateUtils.setHours(date, 9));
                         obs15.setTime(DateUtils.setHours(date, 15));
                         int count = 0;
@@ -228,7 +227,7 @@ public class BOMSimpleHistoricalClimateObserver implements ClimateDataFactory, C
     }
 
     public boolean supportsDate(Date date) {
-        return !invalidMonths.contains(Time.getMonthAndYear(date)) && (date.before(Time.getToday()) || DateUtils.isSameDay(date,Time.getToday()));
+        return !invalidMonths.contains(Time.getMonthAndYear(date)) && (date.before(Time.getToday()) || DateUtils.isSameDay(date, Time.getToday()));
     }
 
     private static interface BOMClimateHistoryObservation extends ClimateObservation {

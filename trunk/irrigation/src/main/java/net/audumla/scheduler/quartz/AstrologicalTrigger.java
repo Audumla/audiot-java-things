@@ -6,5 +6,5 @@ import java.io.Serializable;
 
 public interface AstrologicalTrigger extends Cloneable, Comparable<Trigger>, Serializable, Trigger {
 
-		
+
 }
