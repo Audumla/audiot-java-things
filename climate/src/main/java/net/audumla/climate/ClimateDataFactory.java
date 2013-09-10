@@ -18,6 +18,7 @@ public interface ClimateDataFactory {
 
 
     Class<? extends ClimateData> getClimateDataClass();
+
     Class<? extends ClimateObservation> getClimateObservationClass();
 
     /**
@@ -101,7 +102,7 @@ public interface ClimateDataFactory {
      * @param dws the dws
      * @return the climate observation
      */
-    public static WritableClimateObservation newWritableClimateObservation(ClimateDataFactory dws,ClimateDataSource source) {
+    public static WritableClimateObservation newWritableClimateObservation(ClimateDataFactory dws, ClimateDataSource source) {
         WritableClimateObservation bean = BeanUtils.buildBean(WritableClimateObservation.class, dws.getClimateObservationClass());
         WritableClimateObservation obs = BeanUtils.buildBeanDecorator(new ClimateObservationDecorator(bean), bean);
         obs.setDataSource(source);

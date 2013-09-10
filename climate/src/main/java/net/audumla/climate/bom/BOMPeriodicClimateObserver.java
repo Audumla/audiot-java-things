@@ -68,7 +68,7 @@ public class BOMPeriodicClimateObserver implements ClimateDataFactory, ClimateOb
             for (int i = 0; i < data.length(); i++) {
                 JSONObject dobj = data.getJSONObject(i);
                 try {
-                    bomdata = ClimateDataFactory.newWritableClimateObservation(this,getSource());
+                    bomdata = ClimateDataFactory.newWritableClimateObservation(this, getSource());
                     bomdata.setRainfall(SafeParse.parseDouble(dobj.get("rain_trace")));
                     Double rt = SafeParse.parseDouble(dobj.get("rain_trace"));
                     if (rt != null) {
@@ -98,7 +98,7 @@ public class BOMPeriodicClimateObserver implements ClimateDataFactory, ClimateOb
                     Date day = Time.getDayAndYear(bomdata.getTime());
                     WritableClimateData convertedData = tempObservations.get(day);
                     if (convertedData == null) {
-                        convertedData = ClimateDataFactory.newWritableClimateData(this,getSource());
+                        convertedData = ClimateDataFactory.newWritableClimateData(this, getSource());
                         convertedData.setTime(day);
                         tempObservations.put(day, convertedData);
                     }

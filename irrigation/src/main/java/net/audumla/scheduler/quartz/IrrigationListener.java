@@ -35,17 +35,16 @@ public class IrrigationListener extends TriggerListenerSupport {
 
                 Trigger newTrigger = TriggerBuilder.newTrigger().withIdentity(trigger.getJobKey().getName() + ":" + now, trigger.getJobKey().getGroup()).startAt(eventTime).build();
                 try {
-                    context.getScheduler().scheduleJob(context.getJobDetail(),newTrigger);
+                    context.getScheduler().scheduleJob(context.getJobDetail(), newTrigger);
                 } catch (SchedulerException e) {
                     logger.error(e);
                 }
                 return true;
             }
-        }
-        else {
+        } else {
             return true;
         }
-        context.getMergedJobDataMap().put(IrrigationJob.EVENT_PROPERTY,event);
+        context.getMergedJobDataMap().put(IrrigationJob.EVENT_PROPERTY, event);
         return false;
     }
 }

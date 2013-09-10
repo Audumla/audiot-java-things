@@ -9,10 +9,10 @@ import java.text.ParseException;
 
 public class InfoTest {
 
-	@Test
-	public void testInfo() throws InterruptedException, IOException,
-			ParseException {
-		Assert.assertNotNull(SystemInfo.getProcessor());
+    @Test
+    public void testInfo() throws InterruptedException, IOException,
+            ParseException {
+        Assert.assertNotNull(SystemInfo.getProcessor());
 
-	}
+    }
 }

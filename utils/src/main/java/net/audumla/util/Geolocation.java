@@ -1,15 +1,15 @@
 package net.audumla.util;
 
 public interface Geolocation {
-	double getLatitude();
+    double getLatitude();
 
-	void setLatitude(Double latitude);
+    void setLatitude(Double latitude);
 
-	double getLongitude();
+    double getLongitude();
 
-	void setLongitude(Double longitude);
+    void setLongitude(Double longitude);
 
-	double getElevation();
+    double getElevation();
 
-	void setElevation(Double elevation);
+    void setElevation(Double elevation);
 }

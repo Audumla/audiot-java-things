@@ -35,13 +35,13 @@ import java.text.ParseException;
 /**
  * This example code demonstrates how to access a few of the system information properties and
  * network information from the Raspberry Pi.
- * 
+ *
  * @author Robert Savage
  */
 public class RaspberryInfo {
-    
+
     public void getInfo() throws InterruptedException, IOException, ParseException {
-        
+
         // display a few of the available system information properties
         System.out.println("----------------------------------------------------");
         System.out.println("HARDWARE INFO");
@@ -57,7 +57,7 @@ public class RaspberryInfo {
         System.out.println("Hardware Revision :  " + SystemInfo.getRevision());
         System.out.println("Is Hard Float ABI :  " + SystemInfo.isHardFloatAbi());
         System.out.println("Board Type        :  " + SystemInfo.getBoardType().name());
-        
+
         System.out.println("----------------------------------------------------");
         System.out.println("MEMORY INFO");
         System.out.println("----------------------------------------------------");
@@ -79,7 +79,7 @@ public class RaspberryInfo {
         System.out.println("OS Architecture   :  " + SystemInfo.getOsArch());
         System.out.println("OS Firmware Build :  " + SystemInfo.getOsFirmwareBuild());
         System.out.println("OS Firmware Date  :  " + SystemInfo.getOsFirmwareDate());
-        
+
         System.out.println("----------------------------------------------------");
         System.out.println("JAVA ENVIRONMENT INFO");
         System.out.println("----------------------------------------------------");
@@ -88,11 +88,11 @@ public class RaspberryInfo {
         System.out.println("Java Version      :  " + SystemInfo.getJavaVersion());
         System.out.println("Java VM           :  " + SystemInfo.getJavaVirtualMachine());
         System.out.println("Java Runtime      :  " + SystemInfo.getJavaRuntime());
-     
+
         System.out.println("----------------------------------------------------");
         System.out.println("NETWORK INFO");
         System.out.println("----------------------------------------------------");
-        
+
         // display some of the network information
         System.out.println("Hostname          :  " + NetworkInfo.getHostname());
         for (String ipAddress : NetworkInfo.getIPAddresses())
@@ -124,6 +124,6 @@ public class RaspberryInfo {
         System.out.println("VEC Frequency     :  " + SystemInfo.getClockFrequencyVEC());
         System.out.println("HDMI Frequency    :  " + SystemInfo.getClockFrequencyHDMI());
         System.out.println("DPI Frequency     :  " + SystemInfo.getClockFrequencyDPI());
-*/        
+*/
     }
 }

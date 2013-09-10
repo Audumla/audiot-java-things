@@ -86,7 +86,7 @@ public class DataSourceTest {
         ClimateData cd = getData(now);
         cd.getRainfall();
         Assert.assertEquals(cd.getDataSource().getType(), ClimateDataSource.ClimateDataSourceType.DAILY_FORECAST);
-        cd = getData(DateUtils.addDays(now,-1));
+        cd = getData(DateUtils.addDays(now, -1));
         cd.getRainfall();
         Assert.assertEquals(cd.getDataSource().getType(), ClimateDataSource.ClimateDataSourceType.DAILY_OBSERVATION);
     }
@@ -99,7 +99,7 @@ public class DataSourceTest {
         Assert.assertEquals(cd.getDataSource().getType(), ClimateDataSource.ClimateDataSourceType.DAILY_FORECAST);
         cd.getRainfall();
         Assert.assertEquals(cd.getDataSource().getType(), ClimateDataSource.ClimateDataSourceType.DAILY_FORECAST);
-        cd = getData(DateUtils.addDays(now,-1));
+        cd = getData(DateUtils.addDays(now, -1));
         cd.getRainfall();
         Assert.assertEquals(cd.getDataSource().getType(), ClimateDataSource.ClimateDataSourceType.DAILY_OBSERVATION);
     }

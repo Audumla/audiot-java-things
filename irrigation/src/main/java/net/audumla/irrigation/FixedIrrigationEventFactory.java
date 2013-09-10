@@ -15,7 +15,7 @@ import java.util.Date;
 public class FixedIrrigationEventFactory implements IrrigationEventFactory {
     private IrrigationDurationFactory durationFactory;
 
-    public  FixedIrrigationEventFactory() {
+    public FixedIrrigationEventFactory() {
 
     }
 

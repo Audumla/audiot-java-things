@@ -6,11 +6,9 @@ import net.audumla.devices.activator.Activator;
 import org.apache.log4j.Logger;
 
 /**
- * Created with IntelliJ IDEA.
  * User: mgleeson
  * Date: 10/09/13
  * Time: 3:52 PM
- * To change this template use File | Settings | File Templates.
  */
 public class TinyOSUSBRelayController {
     private static final Logger logger = Logger.getLogger(Activator.class);
@@ -38,7 +36,7 @@ public class TinyOSUSBRelayController {
         } catch (Exception ex) {
             logger.info("Cannot manage TinyOS relays", ex);
         } finally {
-            deactivateAllDevices();
+            deactivateAllDevices(logger::error);
         }
     }
 
@@ -46,81 +44,82 @@ public class TinyOSUSBRelayController {
         return devices.length;
     }
 
-    public boolean deactivateRelay(int device, int relay) {
+    public boolean deactivateRelay(int device, int relay, ErrorHandler handler) {
         try {
-            if (!setRelay(device, relay, RELAY_DEACTIVATE_INCREMENT)) {
-                logger.error("Attempting to shutdown all TinyOS relays due to unexpected failure");
-                deactivateAllDevices();
+            if (!setRelay(device, relay, RELAY_DEACTIVATE_INCREMENT, handler)) {
+                handler.handleError("Attempting to shutdown all TinyOS relays due to unexpected failure", null);
+                deactivateAllDevices(handler);
                 return false;
             }
         } catch (Exception e) {
-            logger.error(e);
+            handler.handleError("Unknown deactivation failure", e);
             return false;
         }
         return true;
     }
 
-    public boolean activateRelay(int device, int relay) {
+    public boolean activateRelay(int device, int relay, ErrorHandler handler) {
         try {
-            if (!setRelay(device, relay, RELAY_ACTIVATE_INCREMENT)) {
-                deactivateRelay(device, relay);
+            if (!setRelay(device, relay, RELAY_ACTIVATE_INCREMENT, handler)) {
+                deactivateRelay(device, relay, handler);
                 return false;
             }
         } catch (Exception e) {
-            logger.error(e);
+            handler.handleError("Unknown activation failure", e);
             return false;
         }
         return true;
     }
 
-    protected boolean setRelay(int device, int relay, int offset) throws Exception {
+    protected boolean setRelay(int device, int relay, int offset, ErrorHandler handler) throws Exception {
         if (relay > 0 && relay < 9) {
             try {
-                if (!writeToDevice(device, relay + offset)) {
-                    logger.error("Failed to set TinyOS relay [Device:" + device + "][Relay:" + relay + "]");
+                if (!writeToDevice(device, relay + offset, handler)) {
+                    handler.handleError("Failed to set TinyOS relay [Device:" + device + "][Relay:" + relay + "]", null);
                 } else {
                     return true;
                 }
             } catch (Exception ex) {
-                logger.error("Failed to set TinyOS relay [Device:" + device + "][Relay:" + relay + "]", ex);
+                handler.handleError("Failed to set TinyOS relay [Device:" + device + "][Relay:" + relay + "]", ex);
             }
         }
         return false;
     }
 
-    protected void deactivateAllDevices() {
+    protected void deactivateAllDevices(ErrorHandler handler) {
         logger.debug("Closing all TinyOS relays");
         for (int i = 0; i < devices.length; ++i) {
             try {
-                if (!writeToDevice(i, RELAY_DEACTIVATE_INCREMENT)) {
-                    logger.error("Failed to deactivate TinyOS relay [Device:" + i + "]");
+                if (!writeToDevice(i, RELAY_DEACTIVATE_INCREMENT, handler)) {
+                    handler.handleError("Failed to deactivate TinyOS relay [Device:" + i + "]", null);
                 }
             } catch (Exception ex) {
-                logger.error("Failed to deactivate TinyOS relay [Device:" + i + "]", ex);
+                handler.handleError("Failed to deactivate TinyOS relay [Device:" + i + "]", ex);
             }
         }
     }
 
-    synchronized protected boolean writeToDevice(int device, int b) throws Exception {
+    synchronized protected boolean writeToDevice(int device, int b, ErrorHandler handler) throws Exception {
         try {
-            openDevice(device);
+            openDevice(device, handler);
             devices[device].write(b);
             return true;
         } catch (Exception ex) {
-            logger.error("Cannot write to TinyOS relay [Device:" + device + "]", ex);
+            handler.handleError("Cannot write to TinyOS relay [Device:" + device + "]", ex);
         }
         return false;
     }
 
-    synchronized protected boolean openDevice(int device) throws Exception {
+    synchronized protected boolean openDevice(int device, ErrorHandler handler) throws Exception {
         try {
             if (!devices[device].isOpen()) {
                 devices[device].open();
             }
             return true;
         } catch (Exception ex) {
-            logger.error("Cannot open TinyOS relay [Device:" + device + "]", ex);
+            handler.handleError("Cannot open TinyOS relay [Device:" + device + "]", ex);
         }
         return false;
     }
+
 }

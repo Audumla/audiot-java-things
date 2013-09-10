@@ -32,7 +32,7 @@ public class BOMStatisticalClimateDataObserver implements ClimateDataFactory, Cl
         c.setTime(new Date(0));
         c.set(Calendar.MONTH, Calendar.JANUARY);
         for (int i = 0; i < 12; ++i) {
-            WritableClimateData cd = ClimateDataFactory.newWritableClimateData(this,getSource());
+            WritableClimateData cd = ClimateDataFactory.newWritableClimateData(this, getSource());
             cd.setTime(c.getTime());
             statData.put(c.getTime(), cd);
             c.add(Calendar.MONTH, 1);
@@ -51,14 +51,14 @@ public class BOMStatisticalClimateDataObserver implements ClimateDataFactory, Cl
         WritableClimateObservation obs = null;
         try {
             obs = ClimateDataFactory.convertToWritableClimateObservation(bomdata.getObservation(requiredTime, ClimateData.ObservationMatch.CLOSEST));
-            if (obs != null && DateUtils.getFragmentInHours(obs.getTime(),Calendar.DAY_OF_YEAR) == hour) {
+            if (obs != null && DateUtils.getFragmentInHours(obs.getTime(), Calendar.DAY_OF_YEAR) == hour) {
                 return obs;
             }
         } catch (Exception ignored) {
             logger.error(ignored);
             ignored.printStackTrace();
         }
-        obs = ClimateDataFactory.newWritableClimateObservation(this,getSource());
+        obs = ClimateDataFactory.newWritableClimateObservation(this, getSource());
         obs.setTime(requiredTime);
         bomdata.addObservation(obs);
         return obs;

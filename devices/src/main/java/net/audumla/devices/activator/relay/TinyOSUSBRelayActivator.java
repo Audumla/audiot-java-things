@@ -1,15 +1,19 @@
 package net.audumla.devices.activator.relay;
 
+import net.audumla.devices.activator.Activator;
 import net.audumla.devices.activator.ActivatorAdaptor;
+import net.audumla.devices.activator.ActivatorListener;
+import org.apache.log4j.Logger;
+
+import java.util.Collection;
 
 /**
- * Created with IntelliJ IDEA.
  * User: mgleeson
  * Date: 10/09/13
  * Time: 3:51 PM
- * To change this template use File | Settings | File Templates.
  */
 public class TinyOSUSBRelayActivator extends ActivatorAdaptor {
+    private static final Logger logger = Logger.getLogger(Activator.class);
 
     private int device = 0;
     private int relay = 0;
@@ -27,12 +31,17 @@ public class TinyOSUSBRelayActivator extends ActivatorAdaptor {
     }
 
     @Override
-    protected void doActivate() {
-        TinyOSUSBRelayController.getInstance().activateRelay(device,relay);
+    protected boolean doActivate(Collection<ActivatorListener> listeners) {
+        return TinyOSUSBRelayController.getInstance().activateRelay(device, relay, (String m, Exception e) -> {
+            listeners.forEach(l -> l.activationFailed(this, e, m));
+        });
     }
 
     @Override
-    protected void doDeactivate() {
-        TinyOSUSBRelayController.getInstance().deactivateRelay(device,relay);
+    protected boolean doDeactivate(Collection<ActivatorListener> listeners) {
+        return TinyOSUSBRelayController.getInstance().deactivateRelay(device, relay, (String m, Exception e) -> {
+            listeners.forEach(l -> l.deactivationFailed(this, e, m));
+        });
     }
+
 }

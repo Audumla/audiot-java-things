@@ -8,29 +8,15 @@ import java.util.Collection;
 import java.util.HashSet;
 
 /**
- * Created with IntelliJ IDEA.
  * User: mgleeson
  * Date: 10/09/13
  * Time: 3:13 PM
- * To change this template use File | Settings | File Templates.
  */
 public abstract class ActivatorAdaptor implements Activator {
     private static final Logger logger = Logger.getLogger(Activator.class);
     private static long count;
     private Collection<ActivatorListener> listeners = new HashSet<ActivatorListener>();
-
     private String name = generateName();
-
-    private static class ActivatorTimeoutJob implements Job {
-
-        public static final String ACTIVATOR_PROPERTY = "activator";
-
-        @Override
-        public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-            Activator activator = (Activator) jobExecutionContext.getMergedJobDataMap().get(ACTIVATOR_PROPERTY);
-            activator.deactivate();
-        }
-    }
 
     private static String generateName() {
         if (count > (Long.MAX_VALUE - 1)) {
@@ -44,54 +30,92 @@ public abstract class ActivatorAdaptor implements Activator {
     }
 
     @Override
-    public void activate() {
+    public boolean activate() {
+        return activate(null);
+    }
+
+    @Override
+    public boolean activate(ActivatorListener listener) {
         listeners.forEach(l -> l.activating(this));
-        doActivate();
-        listeners.forEach(l -> l.activated(this));
+        try {
+            Collection<ActivatorListener> ls = new HashSet<ActivatorListener>(listeners);
+            ls.add(listener);
+            if (doActivate(ls)) {
+                listeners.forEach(l -> l.activated(this));
+                return true;
+            }
+        } catch (Exception ex) {
+            logger.error(ex);
+        }
+        return false;
     }
 
-    protected abstract void doActivate();
+    protected abstract boolean doActivate(Collection<ActivatorListener> listeners);
 
     @Override
-    public void deactivate() {
+    public boolean deactivate() {
+        return deactivate(null);
+    }
+
+    @Override
+    public boolean deactivate(ActivatorListener listener) {
         listeners.forEach(l -> l.deactivating(this));
-        doDeactivate();
-        listeners.forEach(l -> l.deactivated(this));
+        try {
+            Collection<ActivatorListener> ls = new HashSet<ActivatorListener>(listeners);
+            ls.add(listener);
+            if (doDeactivate(ls)) {
+                listeners.forEach(l -> l.deactivated(this));
+                return true;
+            }
+        } catch (Exception ex) {
+            logger.error(ex);
+        }
+        return false;
     }
 
-    protected abstract void doDeactivate();
+    protected abstract boolean doDeactivate(Collection<ActivatorListener> listeners);
 
     @Override
-    public void activate(int seconds, boolean block) {
+    public boolean activate(long seconds, boolean block) {
+        return activate(seconds, block, null);
+    }
+
+    @Override
+    public boolean activate(long seconds, boolean block, ActivatorListener listener) {
         if (block) {
             try {
-                activate();
-                synchronized (this) {
-                    this.wait(seconds * 1000);
+                if (activate(listener)) {
+                    synchronized (this) {
+                        this.wait(seconds * 1000);
+                    }
+                } else {
+                    return false;
                 }
-            } catch (InterruptedException e) {
+            } catch (Exception e) {
                 logger.error(e);
+                return false;
             } finally {
-                deactivate();
+                deactivate(listener);
             }
         } else {
             try {
-                activate();
-                addDeactivateTimeout(seconds);
-
+                activate(listener);
+                addDeactivateTimeout(seconds > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) seconds, listener);
             } catch (Exception e) {
-                deactivate();
                 logger.error(e);
+                deactivate(listener);
+                return false;
             }
-
         }
+        return true;
     }
 
-    protected void addDeactivateTimeout(int seconds) {
+    protected void addDeactivateTimeout(int seconds, ActivatorListener listener) {
         try {
             JobDetail job = JobBuilder.newJob().withIdentity(getName(), "Group:" + getName()).build();
 
             job.getJobDataMap().put(ActivatorTimeoutJob.ACTIVATOR_PROPERTY, this);
+            job.getJobDataMap().put(ActivatorTimeoutJob.ACTIVATOR_LISTENER_PROPERTY, listener);
             ScheduleBuilder builder = SimpleScheduleBuilder.repeatSecondlyForTotalCount(1, seconds).withMisfireHandlingInstructionFireNow();
 
             Trigger trigger = TriggerBuilder.newTrigger().withIdentity("Deactivate -" + job.getKey().getName(), job.getKey().getGroup()).startNow()
@@ -112,5 +136,18 @@ public abstract class ActivatorAdaptor implements Activator {
     @Override
     public void removeListener(ActivatorListener listener) {
         listeners.remove(listener);
+    }
+
+    private static class ActivatorTimeoutJob implements Job {
+
+        public static final String ACTIVATOR_PROPERTY = "activator";
+        public static final String ACTIVATOR_LISTENER_PROPERTY = "listener";
+
+        @Override
+        public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
+            Activator activator = (Activator) jobExecutionContext.getMergedJobDataMap().get(ACTIVATOR_PROPERTY);
+            ActivatorListener listener = (ActivatorListener) jobExecutionContext.getMergedJobDataMap().get(ACTIVATOR_LISTENER_PROPERTY);
+            activator.deactivate(listener);
+        }
     }
 }

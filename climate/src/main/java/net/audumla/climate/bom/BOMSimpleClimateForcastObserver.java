@@ -70,7 +70,7 @@ public class BOMSimpleClimateForcastObserver implements ClimateDataFactory, Clim
                             line[c] = line[c].replace("-9999", "error").trim();
                         }
                         // stn[7] , per, evap, amax, amin, gmin, suns, rain, prob
-                        WritableClimateData bforcast = ClimateDataFactory.newWritableClimateData(this,getSource());
+                        WritableClimateData bforcast = ClimateDataFactory.newWritableClimateData(this, getSource());
                         int day = Integer.parseInt(line[1]);
                         Calendar c = GregorianCalendar.getInstance();
                         c.setTime(new Date(forcastDate.getTime()));

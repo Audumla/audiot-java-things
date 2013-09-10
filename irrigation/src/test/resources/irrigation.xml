@@ -56,7 +56,8 @@
         <property name="group" value="ZoneGroup1"/>
     </bean>
 
-    <bean id="job.Zone1JobDetail" class="org.quartz.JobDetail" factory-bean="job.IrrigationJobFactory" factory-method="buildJobDetail">
+    <bean id="job.Zone1JobDetail" class="org.quartz.JobDetail" factory-bean="job.IrrigationJobFactory"
+          factory-method="buildJobDetail">
         <constructor-arg index="0" value="job.Zone1"/>
         <constructor-arg index="1" value="ZoneGroup1"/>
         <constructor-arg index="2" ref="irrigation.Zone1"/>

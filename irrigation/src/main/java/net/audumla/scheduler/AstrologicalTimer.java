@@ -3,7 +3,7 @@ package net.audumla.scheduler;
 import net.audumla.climate.ClimateDataSource;
 import net.audumla.scheduler.quartz.AstrologicalScheduleBuilder;
 import org.apache.log4j.Logger;
-import org.quartz.*;
+import org.quartz.ScheduleBuilder;
 
 import java.text.ParseException;
 
@@ -14,7 +14,7 @@ import java.text.ParseException;
  * Time: 10:38 AM
  * To change this template use File | Settings | File Templates.
  */
-public class AstrologicalTimer extends TimerAdaptor{
+public class AstrologicalTimer extends TimerAdaptor {
     private static Logger logger = Logger.getLogger(AstrologicalTimer.class);
 
     private AstrologicalScheduleBuilder builder = new AstrologicalScheduleBuilder();

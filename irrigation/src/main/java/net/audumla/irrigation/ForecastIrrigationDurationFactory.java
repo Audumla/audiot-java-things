@@ -12,7 +12,6 @@ package net.audumla.irrigation;
 
 import net.audumla.climate.ClimateData;
 import net.audumla.climate.ClimateObservation;
-import net.audumla.climate.ClimateObserver;
 import org.apache.log4j.Logger;
 
 import java.util.Date;
