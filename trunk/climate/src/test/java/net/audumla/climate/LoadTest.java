@@ -5,7 +5,6 @@ package net.audumla.climate;
  * Time: 6:53 PM
  */
 
-import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
@@ -13,7 +12,7 @@ import org.junit.Test;
 import java.util.Date;
 
 public class LoadTest {
-    private static final Logger logger = LogManager.getLogger(LoadTest.class);
+    private static final Logger logger = Logger.getLogger(LoadTest.class);
 
     @Test
     public void testDoubleLoadByID() {

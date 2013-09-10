@@ -13,9 +13,17 @@ import java.util.Date;
  * Time: 8:42 AM
  */
 public class FixedIrrigationEventFactory implements IrrigationEventFactory {
-    private final IrrigationDurationFactory durationFactory;
+    private IrrigationDurationFactory durationFactory;
+
+    public  FixedIrrigationEventFactory() {
+
+    }
 
     public FixedIrrigationEventFactory(IrrigationDurationFactory durationFactory) {
+        this.durationFactory = durationFactory;
+    }
+
+    public void setDurationFactory(IrrigationDurationFactory durationFactory) {
         this.durationFactory = durationFactory;
     }
 

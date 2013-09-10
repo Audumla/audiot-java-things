@@ -5,7 +5,6 @@ import net.audumla.climate.*;
 import net.audumla.util.SafeParse;
 import net.audumla.util.Time;
 import org.apache.commons.lang.time.DateUtils;
-import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import java.io.BufferedReader;
@@ -16,7 +15,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class BOMHistoricalClimateObserver implements ClimateDataFactory, ClimateObserver {
-    private static final Logger logger = LogManager.getLogger(BOMHistoricalClimateObserver.class);
+    private static final Logger logger = Logger.getLogger(BOMHistoricalClimateObserver.class);
     private static final String indexFile = "stations_db.txt";
     private static final String productID = "IDCKWCDEA0";
     private static final String subDir = BOMDataLoader.CLIMATE + productID + "/tables/";

@@ -1,10 +1,10 @@
 package net.audumla.util;
 
-import java.util.Calendar;
-import java.util.Date;
-
 import org.junit.Assert;
 import org.junit.Test;
+
+import java.util.Calendar;
+import java.util.Date;
 
 public class DateUtilsTest {
 	@Test

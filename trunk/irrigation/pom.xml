@@ -54,7 +54,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Bundle-Activator>net.audumla.irrigation.osgi.IrrigationActivator</Bundle-Activator>
+                        <Bundle-Activator>net.audumla.scheduler.quartz.osgi.IrrigationActivator</Bundle-Activator>
                     </instructions>
                 </configuration>
             </plugin>

@@ -1,14 +1,12 @@
 package net.audumla.util;
 
-import java.util.Date;
-
-
 import net.audumla.collections.ExpiringMap;
-
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.junit.Assert;
 import org.junit.Test;
+
+import java.util.Date;
 
 public class ExpiringCacheTest {
 	@Test

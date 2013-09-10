@@ -3,7 +3,6 @@ package net.audumla.climate.bom;
 import au.com.bytecode.opencsv.CSVReader;
 import net.audumla.climate.*;
 import org.apache.commons.lang.time.DateUtils;
-import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
@@ -15,7 +14,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 public class ObserverTest {
-    private static final Logger logger = LogManager.getLogger(ClimateObserverCollectionHandler.class);
+    private static final Logger logger = Logger.getLogger(ClimateObserverCollectionHandler.class);
 
     @Test
     public void testObservations() {

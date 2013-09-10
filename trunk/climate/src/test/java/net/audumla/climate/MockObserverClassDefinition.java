@@ -7,13 +7,12 @@ package net.audumla.climate;
 
 import net.audumla.bean.SupportedFunction;
 import org.apache.commons.lang.time.DateUtils;
-import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import java.util.*;
 
 public class MockObserverClassDefinition implements ClimateObserver, ClimateDataFactory {
-    private static final Logger logger = LogManager.getLogger(MockObserverClassDefinition.class);
+    private static final Logger logger = Logger.getLogger(MockObserverClassDefinition.class);
     private final ClimateDataSource source;
     private Map<Long, WritableClimateData> dataList = new TreeMap<Long, WritableClimateData>();
 

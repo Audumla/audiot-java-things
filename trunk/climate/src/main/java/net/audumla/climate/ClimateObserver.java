@@ -1,6 +1,5 @@
 package net.audumla.climate;
 
-import java.util.Collection;
 import java.util.Date;
 
 

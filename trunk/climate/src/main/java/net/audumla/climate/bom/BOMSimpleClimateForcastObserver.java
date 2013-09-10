@@ -5,7 +5,6 @@ import net.audumla.bean.SupportedFunction;
 import net.audumla.climate.*;
 import net.audumla.util.Time;
 import org.apache.commons.net.ftp.FTPFile;
-import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import java.text.ParseException;
@@ -15,7 +14,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class BOMSimpleClimateForcastObserver implements ClimateDataFactory, ClimateObserver {
-    private static final Logger LOG = LogManager.getLogger(BOMSimpleClimateForcastObserver.class);
+    private static final Logger LOG = Logger.getLogger(BOMSimpleClimateForcastObserver.class);
     private static String[] BOMForcastFiles = new String[]{"IDY02128.dat", "IDY02123.dat", "IDY02122.dat", "IDY02129.dat"};
     private final int MAX_ENTRIES = 20;
     private final ClimateDataSource source;

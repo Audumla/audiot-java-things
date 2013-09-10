@@ -1,15 +1,13 @@
 package net.audumla.devices.usb.relay;
 
-import java.util.Date;
-
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-
 import com.ftdichip.ftd2xx.Device;
 import com.ftdichip.ftd2xx.Service;
+import org.apache.log4j.Logger;
+
+import java.util.Date;
 
 public class RelayControllerTinyOS extends RelayControllerAdaptor {
-	private static final Logger LOG = LogManager.getLogger(RelayController.class);
+	private static final Logger LOG = Logger.getLogger(RelayController.class);
 	private static final int RELAY_ACTIVATE_INCREMENT = 100;
 	private static final int RELAY_DEACTIVATE_INCREMENT = 110;
 

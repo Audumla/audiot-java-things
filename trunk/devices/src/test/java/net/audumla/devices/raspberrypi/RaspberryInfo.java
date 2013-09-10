@@ -26,11 +26,11 @@ package net.audumla.devices.raspberrypi;
  * #L%
  */
 
-import java.io.IOException;
-import java.text.ParseException;
-
 import com.pi4j.system.NetworkInfo;
 import com.pi4j.system.SystemInfo;
+
+import java.io.IOException;
+import java.text.ParseException;
 
 /**
  * This example code demonstrates how to access a few of the system information properties and

@@ -5,7 +5,6 @@ package net.audumla.irrigation.controller;
  * Time: 9:30 AM
  */
 
-import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.quartz.Scheduler;
 import org.quartz.impl.StdSchedulerFactory;
@@ -13,7 +12,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class Controller implements Runnable {
-    private static final Logger logger = LogManager.getLogger(Controller.class);
+    private static final Logger logger = Logger.getLogger(Controller.class);
     private boolean continueExecution = true;
     private ApplicationContext context;
 

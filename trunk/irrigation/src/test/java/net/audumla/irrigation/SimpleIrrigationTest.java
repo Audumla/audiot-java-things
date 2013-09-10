@@ -9,7 +9,6 @@ package net.audumla.irrigation;
 import net.audumla.climate.*;
 import net.audumla.scheduler.quartz.IrrigationJob;
 import org.apache.commons.lang.time.DateUtils;
-import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
@@ -27,7 +26,7 @@ import java.util.Date;
  * Time: 10:50 PM
  */
 public class SimpleIrrigationTest {
-    private static final Logger logger = LogManager.getLogger("Test");
+    private static final Logger logger = Logger.getLogger("Test");
     static int actualCount = 0;
 
     protected void scheduleJob(Scheduler scheduler, String jobName, String jobGroup, int repeat, Zone zone, IrrigationEventFactory factory) throws SchedulerException {
@@ -103,7 +102,8 @@ public class SimpleIrrigationTest {
         zone.setCoverRating(1);
         zone.setEnclosureRating(0.8);
         zone.setShadeRating(0.1);
-        EToCalculator etc = new EToCalculator(zone);
+        EToCalculator etc = new EToCalculator();
+        etc.setZone(zone);
 
         ClimateObserver obs2 = zone.getClimateObserver();
 
@@ -130,7 +130,8 @@ public class SimpleIrrigationTest {
     @Test
     public void testSingleIrrigation() throws SchedulerException, InterruptedException {
         IrrigationZone zone = buildZone(createObserver());
-        EToCalculator etc = new EToCalculator(zone);
+        EToCalculator etc = new EToCalculator();
+        etc.setZone(zone);
         EToIrrigationEventFactory factory = new EToIrrigationEventFactory(zone, etc, new EToIrrigationDurationFactory(zone, etc));
         factory.setThreshold(1.0);
         initialize(5, zone, factory);

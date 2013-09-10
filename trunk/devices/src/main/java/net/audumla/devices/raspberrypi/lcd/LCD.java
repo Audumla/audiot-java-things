@@ -1,12 +1,10 @@
 package net.audumla.devices.raspberrypi.lcd;
 
-import java.io.IOException;
-
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-
 import com.pi4j.io.i2c.I2CDevice;
 import com.pi4j.io.i2c.I2CFactory;
+import org.apache.log4j.Logger;
+
+import java.io.IOException;
 
 public class LCD {
 	protected static final int MCP23008_ADDRESS = 0x20;
@@ -69,7 +67,7 @@ public class LCD {
 	private int displayMode;
 
 	private static LCD instance;
-	public static Logger logger = LogManager.getLogger(LCD.class);
+	public static Logger logger = Logger.getLogger(LCD.class);
 
 	public static LCD instance() {
 		if (instance == null) {
