@@ -19,7 +19,7 @@ public class IrrigationEventImpl implements IrrigationEvent {
 
     private Date time;
     private long duration;
-    private EventStatus status;
+    private EventStatus status = EventStatus.PENDING;
 
     public IrrigationEventImpl(Date time, long duration, double depth) {
         this.time = time;
