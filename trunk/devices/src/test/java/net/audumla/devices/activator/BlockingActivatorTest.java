@@ -18,7 +18,7 @@ public class BlockingActivatorTest {
 
     @Test
     public void testStateChange() {
-        SucceedingActivator activator = new SucceedingActivator();
+        ActivatorMock activator = new ActivatorMock(true,true);
         assert activator.getCurrentState() == Activator.ActivateState.UNKNOWN;
         activator.deactivate();
         assert activator.getCurrentState() == Activator.ActivateState.DEACTIVATED;
@@ -28,7 +28,7 @@ public class BlockingActivatorTest {
 
     @Test
     public void testStateChangeListener() {
-        final SucceedingActivator activator = new SucceedingActivator();
+        final ActivatorMock activator = new ActivatorMock(true,true);
         final Collection<Activator.ActivateState> states = new ArrayList<Activator.ActivateState>();
 
         final ActivatorListener listener = new ActivatorListener() {
@@ -53,6 +53,7 @@ public class BlockingActivatorTest {
 
             @Override
             public void onStateChangeFailure(ActivatorStateChangeEvent event, Exception ex, String message) {
+                assert false;
             }
         };
 
@@ -74,7 +75,7 @@ public class BlockingActivatorTest {
 
     @Test
     public void testDelayedStateChange() {
-        SucceedingActivator activator = new SucceedingActivator();
+        ActivatorMock activator = new ActivatorMock(true,true);
         assert activator.getCurrentState() == Activator.ActivateState.UNKNOWN;
         activator.deactivate();
         assert activator.getCurrentState() == Activator.ActivateState.DEACTIVATED;
@@ -87,7 +88,7 @@ public class BlockingActivatorTest {
 
     @Test
     public void testDelayedStateChangeListener() {
-        final SucceedingActivator activator = new SucceedingActivator();
+        final ActivatorMock activator = new ActivatorMock(true,true);
         final Collection<Activator.ActivateState> states = new ArrayList<Activator.ActivateState>();
 
         final ActivatorListener listener = new ActivatorListener() {
@@ -112,6 +113,7 @@ public class BlockingActivatorTest {
 
             @Override
             public void onStateChangeFailure(ActivatorStateChangeEvent event, Exception ex, String message) {
+                assert false;
             }
         };
 

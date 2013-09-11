@@ -4,7 +4,6 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <url>http://mvn.audumla.net</url>
-
     <groupId>net.audumla</groupId>
     <artifactId>net.audumla</artifactId>
     <packaging>pom</packaging>
@@ -18,13 +17,6 @@
             <url>https://myfiles.messagingengine.com/audumla.net/mvn</url>
         </repository>
     </repositories>
-    <distributionManagement>
-        <repository>
-            <id>audumla-repository</id>
-            <uniqueVersion>false</uniqueVersion>
-        </repository>
-    </distributionManagement>
-
     <dependencies>
         <dependency>
             <groupId>junit</groupId>

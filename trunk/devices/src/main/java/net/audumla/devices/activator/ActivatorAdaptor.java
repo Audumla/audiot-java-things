@@ -8,6 +8,8 @@ import java.util.Collection;
 import java.util.Deque;
 import java.util.LinkedList;
 
+import static org.quartz.DateBuilder.futureDate;
+
 /**
  * User: mgleeson
  * Date: 10/09/13
@@ -16,19 +18,19 @@ import java.util.LinkedList;
 public abstract class ActivatorAdaptor implements Activator {
     private static final Logger logger = Logger.getLogger(Activator.class);
     private static long count;
+    protected ActivateState state = ActivateState.UNKNOWN;
     private Deque<ActivatorListener> listeners = new LinkedList<ActivatorListener>();
     private String name = generateName();
-    protected ActivateState state = ActivateState.UNKNOWN;
+
+    protected ActivatorAdaptor() {
+        listeners.add(new ActivatorStateListener(this));
+    }
 
     private static String generateName() {
         if (count > (Long.MAX_VALUE - 1)) {
             count = 0;
         }
         return "Activator" + (++count);
-    }
-
-    protected ActivatorAdaptor() {
-        listeners.add(new ActivatorStateListener(this));
     }
 
     @Override
@@ -58,14 +60,15 @@ public abstract class ActivatorAdaptor implements Activator {
                 if (doActivate(ls)) {
                     ls.forEach(l -> l.onStateChange(new ActivatorStateChangeEvent(state, ActivateState.ACTIVATED, this)));
                     return true;
-                }
-                else {
+                } else {
                     if (getCurrentState() != ActivateState.UNKNOWN) {
                         ls.forEach(l -> l.onStateChangeFailure(new ActivatorStateChangeEvent(state, ActivateState.ACTIVATED, this), null, "Unknown Activator failure"));
+                        deactivate(listener);
                     }
                 }
             } catch (Exception ex) {
                 ls.forEach(l -> l.onStateChangeFailure(new ActivatorStateChangeEvent(state, ActivateState.ACTIVATED, this), ex, "Unknown Activator failure"));
+                deactivate(listener);
             }
 
         }
@@ -91,8 +94,7 @@ public abstract class ActivatorAdaptor implements Activator {
                 if (doDeactivate(ls)) {
                     ls.forEach(l -> l.onStateChange(new ActivatorStateChangeEvent(state, ActivateState.DEACTIVATED, this)));
                     return true;
-                }
-                else {
+                } else {
                     if (getCurrentState() != ActivateState.UNKNOWN) {
                         ls.forEach(l -> l.onStateChangeFailure(new ActivatorStateChangeEvent(state, ActivateState.DEACTIVATED, this), null, "Unknown Activator failure"));
                     }
@@ -120,19 +122,19 @@ public abstract class ActivatorAdaptor implements Activator {
                         synchronized (this) {
                             this.wait(seconds * 1000);
                         }
+                        deactivate(listener);
                     } else {
                         return false;
                     }
                 } catch (Exception e) {
                     logger.error(e);
                     return false;
-                } finally {
-                    deactivate(listener);
                 }
             } else {
                 try {
-                    activate(listener);
-                    addDeactivateTimeout(seconds > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) seconds, listener);
+                    if (activate(listener)) {
+                        addDeactivateTimeout(seconds > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) seconds, listener);
+                    }
                 } catch (Exception e) {
                     logger.error(e);
                     deactivate(listener);
@@ -145,13 +147,13 @@ public abstract class ActivatorAdaptor implements Activator {
 
     protected void addDeactivateTimeout(int seconds, ActivatorListener listener) {
         try {
-            JobDetail job = JobBuilder.newJob().withIdentity(getName(), "Group:" + getName()).build();
+            JobDetail job = JobBuilder.newJob(ActivatorTimeoutJob.class).withIdentity(getName(), "Group:" + getName()).build();
 
             job.getJobDataMap().put(ActivatorTimeoutJob.ACTIVATOR_PROPERTY, this);
             job.getJobDataMap().put(ActivatorTimeoutJob.ACTIVATOR_LISTENER_PROPERTY, listener);
-            ScheduleBuilder builder = SimpleScheduleBuilder.repeatSecondlyForTotalCount(1, seconds).withMisfireHandlingInstructionFireNow();
+            ScheduleBuilder builder = SimpleScheduleBuilder.repeatSecondlyForTotalCount(1).withMisfireHandlingInstructionFireNow();
 
-            Trigger trigger = TriggerBuilder.newTrigger().withIdentity("Deactivate -" + job.getKey().getName(), job.getKey().getGroup()).startNow()
+            Trigger trigger = TriggerBuilder.newTrigger().withIdentity("Deactivate -" + job.getKey().getName(), job.getKey().getGroup()).startAt(futureDate(seconds, DateBuilder.IntervalUnit.SECOND))
                     .withSchedule(builder).build();
 
             StdSchedulerFactory.getDefaultScheduler().scheduleJob(job, trigger);
@@ -171,7 +173,7 @@ public abstract class ActivatorAdaptor implements Activator {
         listeners.remove(listener);
     }
 
-    private static class ActivatorTimeoutJob implements Job {
+    public static class ActivatorTimeoutJob implements Job {
 
         public static final String ACTIVATOR_PROPERTY = "activator";
         public static final String ACTIVATOR_LISTENER_PROPERTY = "listener";
