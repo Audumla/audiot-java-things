@@ -76,7 +76,7 @@ public class IrrigationZone implements Zone {
 
     @Override
     public List<IrrigationEvent> getIrrigationEventsForDay(Date day) {
-        return irrigationEvents.stream().filter(e -> DateUtils.isSameDay(e.getEventTime(), day)).collect(Collectors.toCollection(ArrayList::new));
+        return irrigationEvents.stream().filter(e -> DateUtils.isSameDay(e.getEventStartTime(), day)).collect(Collectors.toCollection(ArrayList::new));
     }
 
     @Override

@@ -88,7 +88,7 @@
                     <properties>
                         <property>
                             <name>listener</name>
-                            <value>net.audumla.devices.raspberrypi.lcd.LCDJUnitListener</value>
+                            <value>net.audumla.devices.lcd.LCDJUnitListener</value>
                         </property>
                     </properties>
                     <parallel>methods</parallel>

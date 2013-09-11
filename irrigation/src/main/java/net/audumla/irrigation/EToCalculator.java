@@ -68,7 +68,7 @@ public class EToCalculator {
                     // add all the irrigation events for this day against the water debt
                     List<IrrigationEvent> events = zone.getIrrigationEventsForDay(now);
                     for (IrrigationEvent e : events) {
-                        if (e.getEventTime().before(now)) {
+                        if (e.getEventStartTime().before(now)) {
                             debt -= zone.calculateIrrigatedDepth(e.getEventDuration());
                         }
                     }

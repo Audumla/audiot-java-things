@@ -3,6 +3,7 @@ package net.audumla.devices.activator.relay;
 import com.ftdichip.ftd2xx.Device;
 import com.ftdichip.ftd2xx.Service;
 import net.audumla.devices.activator.Activator;
+import net.audumla.exception.ErrorHandler;
 import org.apache.log4j.Logger;
 
 /**
@@ -26,6 +27,7 @@ public class TinyOSUSBRelayController {
         return instance;
     }
 
+    //
     private TinyOSUSBRelayController() {
         try {
             devices = Service.listDevices();

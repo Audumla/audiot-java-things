@@ -30,7 +30,7 @@ public class IrrigationListener extends TriggerListenerSupport {
         IrrigationEventFactory eventFactory = (IrrigationEventFactory) context.getMergedJobDataMap().get(IrrigationJob.EVENT_FACTORY_PROPERTY);
         IrrigationEvent event = eventFactory.generateIrrigationEvent(now);
         if (event != null) {
-            Date eventTime = event.getEventTime();
+            Date eventTime = event.getEventStartTime();
             if (eventTime.after(now)) {
 
                 Trigger newTrigger = TriggerBuilder.newTrigger().withIdentity(trigger.getJobKey().getName() + ":" + now, trigger.getJobKey().getGroup()).startAt(eventTime).build();
