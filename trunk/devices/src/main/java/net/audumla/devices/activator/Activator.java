@@ -6,6 +6,8 @@ package net.audumla.devices.activator;
  * Time: 3:01 PM
  */
 public interface Activator {
+    public enum ActivateState {ACTIVATING,ACTIVATED,DEACTIVATING,DEACTIVATED,UNKNOWN};
+
     boolean activate();
 
     boolean activate(long seconds, boolean block);
@@ -23,5 +25,9 @@ public interface Activator {
     void removeListener(ActivatorListener listener);
 
     String getName();
+
+    ActivateState getCurrentState();
+
+//    void setCurrentState(ActivateState state);
 
 }

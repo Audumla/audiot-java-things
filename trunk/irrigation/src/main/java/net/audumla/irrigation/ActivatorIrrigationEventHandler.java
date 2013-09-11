@@ -7,6 +7,7 @@ package net.audumla.irrigation;
 
 import net.audumla.devices.activator.Activator;
 import net.audumla.devices.activator.ActivatorListener;
+import net.audumla.devices.activator.ActivatorStateChangeEvent;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
@@ -20,45 +21,30 @@ public class ActivatorIrrigationEventHandler implements IrrigationEventHandler {
 
     @Override
     public void handleEvent(IrrigationEvent event) {
+        //attempts to activate the irrigationEvent and then monitors its progress using a specific listener.
         activator.activate(event.getEventDuration(), false,new EventActivatorListener(event));
     }
 
     protected static class EventActivatorListener implements ActivatorListener {
 
-        private final IrrigationEvent event;
+        private final IrrigationEvent irrigationEvent;
 
         public EventActivatorListener(IrrigationEvent event) {
-            this.event = event;
+            this.irrigationEvent = event;
         }
 
         @Override
-        public void activated(Activator activator) {
-            event.setStatus(IrrigationEvent.EventStatus.EXECUTING);
+        public void onStateChange(ActivatorStateChangeEvent event) {
+            switch (event.getNewState()) {
+                case ACTIVATED: irrigationEvent.setStatus(IrrigationEvent.EventStatus.EXECUTING);
+                case DEACTIVATED: irrigationEvent.setStatus(IrrigationEvent.EventStatus.COMPLETE);
+            }
+            //To change body of implemented methods use File | Settings | File Templates.
         }
 
         @Override
-        public void deactivated(Activator activator) {
-            event.setStatus(IrrigationEvent.EventStatus.COMPLETE);
-        }
-
-        @Override
-        public void activating(Activator activator) {
-        }
-
-        @Override
-        public void deactivating(Activator activator) {
-        }
-
-        @Override
-        public void activationFailed(Activator activator, Exception ex, String message) {
-            logger.error(message, ex);
-            event.setStatus(IrrigationEvent.EventStatus.FAILED);
-        }
-
-        @Override
-        public void deactivationFailed(Activator activator, Exception ex, String message) {
-            logger.error(message, ex);
-            event.setStatus(IrrigationEvent.EventStatus.FAILED);
+        public void onStateChangeFailure(ActivatorStateChangeEvent event, Exception ex, String message) {
+            irrigationEvent.setFailed(ex, message);
         }
     }
 }

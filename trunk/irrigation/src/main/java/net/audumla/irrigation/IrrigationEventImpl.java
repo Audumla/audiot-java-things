@@ -20,6 +20,9 @@ public class IrrigationEventImpl implements IrrigationEvent {
     private Date time;
     private long duration;
     private EventStatus status = EventStatus.PENDING;
+    private Date endTime;
+    private String failureMessage;
+    private Exception failureException;
 
     public IrrigationEventImpl(Date time, long duration, double depth) {
         this.time = time;
@@ -27,8 +30,13 @@ public class IrrigationEventImpl implements IrrigationEvent {
     }
 
     @Override
-    public Date getEventTime() {
+    public Date getEventStartTime() {
         return time;
+    }
+
+    @Override
+    public Date getEventEndTime() {
+        return endTime;
     }
 
     @Override
@@ -44,6 +52,23 @@ public class IrrigationEventImpl implements IrrigationEvent {
     @Override
     public void setStatus(EventStatus status) {
         this.status = status;
+    }
+
+    @Override
+    public void setFailed(Exception ex, String message) {
+        setStatus(EventStatus.FAILED);
+        failureException = ex;
+        failureMessage = message;
+    }
+
+    @Override
+    public String getFailureMessage() {
+        return failureMessage;
+    }
+
+    @Override
+    public Exception getFailureException() {
+        return failureException;
     }
 
 }

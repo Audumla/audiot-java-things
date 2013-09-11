@@ -8,14 +8,54 @@ package net.audumla.irrigation;
 import java.util.Date;
 
 public interface IrrigationEvent {
+    /**
+     * An enum representing each stage of an events lifecycle
+     */
     public enum EventStatus {PENDING, EXECUTING, COMPLETE, FAILED}
 
-    Date getEventTime();
+    /**
+     * @return The date and time that the event should or did start at
+     */
+    Date getEventStartTime();
 
+    /**
+     * @return The data and time that the event stopped. If the event has not yet run null will be returned
+     */
+    Date getEventEndTime();
+
+    /**
+     * @return The number of seconds that the event will or did run for
+     */
     long getEventDuration();
 
+    /**
+     * @return The current status of the event in its lifecycle
+     */
     EventStatus getStatus();
 
+    /**
+     * @param status Sets the status of the event to the given parameter
+     */
     void setStatus(EventStatus status);
+
+    /**
+     * Applies a failure status to the event and stores the given failure reasons
+     *
+     * @param ex        The Exception that caused the failure if any
+     * @param message   A message that describes the failure
+     */
+    void setFailed(Exception ex, String message);
+
+    /**
+     *
+     * @return The message associated with the event failure
+     */
+    String getFailureMessage();
+
+    /**
+     *
+     * @return The Exception associated with the event failure
+     */
+    Exception getFailureException();
 
 }

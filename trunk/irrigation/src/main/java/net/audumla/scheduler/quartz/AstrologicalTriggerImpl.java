@@ -59,14 +59,14 @@ public class AstrologicalTriggerImpl extends AbstractTrigger<AstrologicalTrigger
             if (DateUtils.toCalendar(end).after(DateUtils.toCalendar(nextFire))) {
                 Date start = schedule.startTime.getOffsetTime(now);
                 if (DateUtils.toCalendar(start).after(DateUtils.toCalendar(nextFire))) {
-                    //return the start getEventTime if the start getEventTime is after the calculated interval getEventTime
+                    //return the start getEventStartTime if the start getEventStartTime is after the calculated interval getEventStartTime
                     return start;
                 } else {
                     // return the calculated interval if it lies between the start and end times
                     return nextFire;
                 }
             } else {
-                // return tomorrows start getEventTime if the interval getEventTime is after the end getEventTime.
+                // return tomorrows start getEventStartTime if the interval getEventStartTime is after the end getEventStartTime.
                 return schedule.startTime.getOffsetTime(DateUtils.addDays(now, 1));
             }
         } else {
