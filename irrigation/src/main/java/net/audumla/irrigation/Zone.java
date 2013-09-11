@@ -50,6 +50,8 @@ public interface Zone {
 
     void addIrrigationEvent(IrrigationEvent event);
 
+    void addIrrigationEvent(Date when, int seconds);
+
     /**
      * @return the irrigated depth in mm over a given duration
      */

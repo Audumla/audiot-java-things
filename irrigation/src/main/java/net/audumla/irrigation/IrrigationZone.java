@@ -85,6 +85,11 @@ public class IrrigationZone implements Zone {
         eventHandler.handleEvent( event);
     }
 
+    @Override
+    public void addIrrigationEvent(Date when, int seconds) {
+
+    }
+
     public double getSurfaceArea() {
         return surfaceArea;
     }
