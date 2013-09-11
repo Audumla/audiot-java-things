@@ -27,24 +27,29 @@ public abstract class TimerAdaptor implements Timer {
 
     protected abstract ScheduleBuilder getScheduleBuilder() throws ParseException;
 
+    protected JobDetail start() {
+        JobDetail jd = JobBuilder.newJob(IrrigationJob.class).withIdentity(name, group).build();
+        try {
+
+            jd.getJobDataMap().put(IrrigationJob.EVENT_FACTORY_PROPERTY, factory);
+            jd.getJobDataMap().put(IrrigationJob.ZONE_PROPERTY, zone);
+
+            ScheduleBuilder builder = getScheduleBuilder();
+
+            Trigger trigger = TriggerBuilder.newTrigger().withIdentity("trigger-" + name, group).startNow()
+                    .withSchedule(builder).build();
+
+            StdSchedulerFactory.getDefaultScheduler().scheduleJob(jd, trigger);
+        } catch (Exception e) {
+            logger.error(e);
+        }
+        return jd;
+    }
+
     @Override
     public void setEnabled(boolean enable) {
         if (enable) {
-            try {
-                job = JobBuilder.newJob(IrrigationJob.class).withIdentity(name, group).build();
-
-                job.getJobDataMap().put(IrrigationJob.EVENT_FACTORY_PROPERTY, factory);
-                job.getJobDataMap().put(IrrigationJob.ZONE_PROPERTY, zone);
-
-                ScheduleBuilder builder = getScheduleBuilder();
-
-                Trigger trigger = TriggerBuilder.newTrigger().withIdentity("trigger-" + name, group).startNow()
-                        .withSchedule(builder).build();
-
-                StdSchedulerFactory.getDefaultScheduler().scheduleJob(job, trigger);
-            } catch (Exception e) {
-                logger.error(e);
-            }
+            job = start();
         } else {
             if (job != null) {
                 try {
@@ -70,5 +75,25 @@ public abstract class TimerAdaptor implements Timer {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getGroup() {
+        return group;
+    }
+
+    protected JobDetail getJob() {
+        return job;
+    }
+
+    protected IrrigationEventFactory getFactory() {
+        return factory;
+    }
+
+    protected Zone getZone() {
+        return zone;
     }
 }

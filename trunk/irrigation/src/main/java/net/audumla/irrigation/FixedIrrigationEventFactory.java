@@ -31,4 +31,5 @@ public class FixedIrrigationEventFactory implements IrrigationEventFactory {
     public IrrigationEvent generateIrrigationEvent(Date now) {
         return new IrrigationEventImpl(now, durationFactory.determineIrrigationDuration(now), 0);
     }
+
 }
