@@ -19,28 +19,28 @@ public class FailingBlockingActivatorTest {
 
     @Test
     public void testFailExceptionDeactivate() {
-        failDeactivate(new ExceptionFailingActivator());
+        failDeactivate(new ExceptionActivatorMock(false, false));
     }
 
     @Test
     public void testFailSimpleDeactivate() {
-        failDeactivate(new SimpleFailingActivator());
+        failDeactivate(new ActivatorMock(false, false));
     }
 
     @Test
     public void testFailExceptionActivate() {
-        failActivate(new ExceptionFailingActivator());
+        failActivate(new ExceptionActivatorMock(false, false));
     }
 
     @Test
     public void testFailSimpleActivate() {
-        failActivate(new SimpleFailingActivator());
+        failActivate(new ActivatorMock(false, false));
     }
 
     @Test
     public void testFailDelayedExceptionActivate() {
         Date start = new Date();
-        failDelayActivate(new ExceptionFailingActivator());
+        failDelayActivate(new ExceptionActivatorMock(false, false));
         Date end = new Date();
         Assert.assertEquals((double) (end.getTime() - start.getTime()), 0, 50);
     }
@@ -48,7 +48,7 @@ public class FailingBlockingActivatorTest {
     @Test
     public void testFailDelayedSimpleActivate() {
         Date start = new Date();
-        failDelayActivate(new SimpleFailingActivator());
+        failDelayActivate(new ActivatorMock(false, false));
         Date end = new Date();
         Assert.assertEquals((double) (end.getTime() - start.getTime()), 0, 50);
     }
@@ -61,10 +61,18 @@ public class FailingBlockingActivatorTest {
             public void onStateChange(ActivatorStateChangeEvent event) {
                 states.add(event.getNewState());
                 switch (event.getNewState()) {
-                    case ACTIVATING: assert activator.getCurrentState() != Activator.ActivateState.ACTIVATED; break;
-                    case DEACTIVATING: assert false; break;
-                    case ACTIVATED: assert false; break;
-                    case DEACTIVATED: assert false; break;
+                    case ACTIVATING:
+                        assert activator.getCurrentState() != Activator.ActivateState.ACTIVATED;
+                        break;
+                    case DEACTIVATING:
+                        assert activator.getCurrentState() != Activator.ActivateState.DEACTIVATED;
+                        break;
+                    case ACTIVATED:
+                        assert false;
+                        break;
+                    case DEACTIVATED:
+                        assert false;
+                        break;
                 }
             }
 
@@ -72,20 +80,30 @@ public class FailingBlockingActivatorTest {
             public void onStateChangeFailure(ActivatorStateChangeEvent event, Exception ex, String message) {
                 states.add(event.getNewState());
                 switch (event.getNewState()) {
-                    case ACTIVATING: assert false; break;
-                    case DEACTIVATING: assert false; break;
-                    case ACTIVATED: assert activator.getCurrentState() == Activator.ActivateState.ACTIVATING; break;
-                    case DEACTIVATED: assert false; break;
+                    case ACTIVATING:
+                        assert false;
+                        break;
+                    case DEACTIVATING:
+                        assert false;
+                        break;
+                    case ACTIVATED:
+                        assert activator.getCurrentState() == Activator.ActivateState.ACTIVATING;
+                        break;
+                    case DEACTIVATED:
+                        assert activator.getCurrentState() == Activator.ActivateState.DEACTIVATING;
+                        break;
                 }
             }
         };
 
         assert activator.getCurrentState() == Activator.ActivateState.UNKNOWN;
         assert states.isEmpty();
-            activator.activate(listener);
+        activator.activate(listener);
         assert states.contains(Activator.ActivateState.ACTIVATING);
         assert states.contains(Activator.ActivateState.ACTIVATED);
-        assert states.size() == 2;
+        assert states.contains(Activator.ActivateState.DEACTIVATED);
+        assert states.contains(Activator.ActivateState.DEACTIVATING);
+        assert states.size() == 4;
         assert activator.getCurrentState() == Activator.ActivateState.UNKNOWN;
     }
 
@@ -97,10 +115,18 @@ public class FailingBlockingActivatorTest {
             public void onStateChange(ActivatorStateChangeEvent event) {
                 states.add(event.getNewState());
                 switch (event.getNewState()) {
-                    case ACTIVATING: assert activator.getCurrentState() != Activator.ActivateState.ACTIVATED; break;
-                    case DEACTIVATING: assert activator.getCurrentState() != Activator.ActivateState.ACTIVATING; break;
-                    case ACTIVATED: assert false; break;
-                    case DEACTIVATED: assert false; break;
+                    case ACTIVATING:
+                        assert activator.getCurrentState() != Activator.ActivateState.ACTIVATED;
+                        break;
+                    case DEACTIVATING:
+                        assert activator.getCurrentState() != Activator.ActivateState.ACTIVATING;
+                        break;
+                    case ACTIVATED:
+                        assert false;
+                        break;
+                    case DEACTIVATED:
+                        assert false;
+                        break;
                 }
             }
 
@@ -108,21 +134,29 @@ public class FailingBlockingActivatorTest {
             public void onStateChangeFailure(ActivatorStateChangeEvent event, Exception ex, String message) {
                 states.add(event.getNewState());
                 switch (event.getNewState()) {
-                    case ACTIVATING: assert false; break;
-                    case DEACTIVATING:  assert false; break;
-                    case ACTIVATED: assert activator.getCurrentState() == Activator.ActivateState.ACTIVATING; break;
-                    case DEACTIVATED:  assert activator.getCurrentState() == Activator.ActivateState.DEACTIVATING; break;
+                    case ACTIVATING:
+                        assert false;
+                        break;
+                    case DEACTIVATING:
+                        assert false;
+                        break;
+                    case ACTIVATED:
+                        assert activator.getCurrentState() == Activator.ActivateState.ACTIVATING;
+                        break;
+                    case DEACTIVATED:
+                        assert activator.getCurrentState() == Activator.ActivateState.DEACTIVATING;
+                        break;
                 }
             }
         };
 
         assert activator.getCurrentState() == Activator.ActivateState.UNKNOWN;
         assert states.isEmpty();
-        activator.activate(2,true,listener);
+        activator.activate(2, true, listener);
         assert states.contains(Activator.ActivateState.ACTIVATING);
         assert states.contains(Activator.ActivateState.ACTIVATED);
         assert states.contains(Activator.ActivateState.DEACTIVATED);
-        assert states.contains(Activator.ActivateState.DEACTIVATED);
+        assert states.contains(Activator.ActivateState.DEACTIVATING);
         assert states.size() == 4;
         assert activator.getCurrentState() == Activator.ActivateState.UNKNOWN;
     }
@@ -135,10 +169,18 @@ public class FailingBlockingActivatorTest {
             public void onStateChange(ActivatorStateChangeEvent event) {
                 states.add(event.getNewState());
                 switch (event.getNewState()) {
-                    case ACTIVATING: assert false; break;
-                    case DEACTIVATING: assert activator.getCurrentState() != Activator.ActivateState.DEACTIVATED; break;
-                    case ACTIVATED: assert false; break;
-                    case DEACTIVATED: assert false; break;
+                    case ACTIVATING:
+                        assert false;
+                        break;
+                    case DEACTIVATING:
+                        assert activator.getCurrentState() != Activator.ActivateState.DEACTIVATED;
+                        break;
+                    case ACTIVATED:
+                        assert false;
+                        break;
+                    case DEACTIVATED:
+                        assert false;
+                        break;
                 }
             }
 
@@ -146,10 +188,18 @@ public class FailingBlockingActivatorTest {
             public void onStateChangeFailure(ActivatorStateChangeEvent event, Exception ex, String message) {
                 states.add(event.getNewState());
                 switch (event.getNewState()) {
-                    case DEACTIVATING:  assert false; break;
-                    case ACTIVATING: assert false; break;
-                    case DEACTIVATED: assert activator.getCurrentState() == Activator.ActivateState.DEACTIVATING; break;
-                    case ACTIVATED: assert false; break;
+                    case DEACTIVATING:
+                        assert false;
+                        break;
+                    case ACTIVATING:
+                        assert false;
+                        break;
+                    case DEACTIVATED:
+                        assert activator.getCurrentState() == Activator.ActivateState.DEACTIVATING;
+                        break;
+                    case ACTIVATED:
+                        assert false;
+                        break;
                 }
             }
         };
