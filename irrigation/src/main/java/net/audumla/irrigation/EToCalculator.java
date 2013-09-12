@@ -10,6 +10,7 @@ package net.audumla.irrigation;
  * Time: 3:42 PM
  */
 
+import net.audumla.automate.Event;
 import net.audumla.climate.ClimateData;
 import net.audumla.climate.ClimateDataSource;
 import net.audumla.util.Time;
@@ -66,10 +67,10 @@ public class EToCalculator {
                         // no rain information available
                     }
                     // add all the irrigation events for this day against the water debt
-                    List<IrrigationEvent> events = zone.getIrrigationEventsForDay(now);
-                    for (IrrigationEvent e : events) {
+                    List<Event> events = zone.getIrrigationEventsForDay(now);
+                    for (Event e : events) {
                         if (e.getEventStartTime().before(now)) {
-                            debt -= zone.calculateIrrigatedDepth(e.getEventDuration());
+                            debt -= IrrigationZone.calculateIrrigatedDepth(zone, e.getEventDuration());
                         }
                     }
                 } catch (UnsupportedOperationException ex) {

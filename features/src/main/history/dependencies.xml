@@ -27,6 +27,7 @@
         <bundle>wrap:mvn:com.pi4j/pi4j-native/0.0.5/so/soft-float</bundle>
         <bundle>wrap:mvn:commons-logging/commons-logging/1.1.1</bundle>
         <bundle>wrap:mvn:ftd2xxj/ftd2xxj/2.1</bundle>
+        <bundle>wrap:mvn:net.audumla/AudumlaAutomate/1.0-SNAPSHOT</bundle>
         <bundle>wrap:mvn:opencsv/opencsv/2.3</bundle>
         <bundle>wrap:mvn:org.json/json/20090211</bundle>
     </feature>

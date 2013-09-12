@@ -11,7 +11,9 @@ package net.audumla.irrigation;
  */
 
 
+import net.audumla.automate.ActivatorEventHandler;
 import net.audumla.climate.*;
+import net.audumla.devices.activator.ActivatorMock;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
@@ -20,6 +22,19 @@ import java.util.Date;
 
 public class ZoneTest {
     private static final Logger logger = Logger.getLogger(ZoneTest.class);
+
+    @Test
+    public void testSuccessfulFixedEvent() throws Exception {
+        ActivatorEventHandler handler = new ActivatorEventHandler();
+        handler.setActivator(new ActivatorMock(true, true));
+
+        IrrigationZone zone = new IrrigationZone();
+        zone.setEventHandler(handler);
+        zone.addIrrigationEvent(new Date(), 2);
+        synchronized (this) {
+            this.wait(2100);
+        }
+    }
 
     @Test
     public void testZoneCalculations() {

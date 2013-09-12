@@ -35,14 +35,14 @@ public class TinyOSUSBRelayActivator extends ActivatorAdaptor {
     @Override
     protected boolean doActivate(Collection<ActivatorListener> listeners) {
         return TinyOSUSBRelayController.getInstance().activateRelay(device, relay, (String m, Exception e) -> {
-            listeners.forEach(l -> l.onStateChangeFailure(new ActivatorStateChangeEvent(getCurrentState(),ActivateState.ACTIVATED,this),e,m));
+            listeners.forEach(l -> l.onStateChangeFailure(new ActivatorStateChangeEvent(getCurrentState(), ActivateState.ACTIVATED, this), e, m));
         });
     }
 
     @Override
     protected boolean doDeactivate(Collection<ActivatorListener> listeners) {
         return TinyOSUSBRelayController.getInstance().deactivateRelay(device, relay, (String m, Exception e) -> {
-            listeners.forEach(l -> l.onStateChangeFailure(new ActivatorStateChangeEvent(getCurrentState(),ActivateState.DEACTIVATED,this),e,m));
+            listeners.forEach(l -> l.onStateChangeFailure(new ActivatorStateChangeEvent(getCurrentState(), ActivateState.DEACTIVATED, this), e, m));
         });
     }
 

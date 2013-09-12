@@ -18,7 +18,7 @@ public class BlockingActivatorTest {
 
     @Test
     public void testStateChange() {
-        ActivatorMock activator = new ActivatorMock(true,true);
+        ActivatorMock activator = new ActivatorMock(true, true);
         assert activator.getCurrentState() == Activator.ActivateState.UNKNOWN;
         activator.deactivate();
         assert activator.getCurrentState() == Activator.ActivateState.DEACTIVATED;
@@ -28,7 +28,7 @@ public class BlockingActivatorTest {
 
     @Test
     public void testStateChangeListener() {
-        final ActivatorMock activator = new ActivatorMock(true,true);
+        final ActivatorMock activator = new ActivatorMock(true, true);
         final Collection<Activator.ActivateState> states = new ArrayList<Activator.ActivateState>();
 
         final ActivatorListener listener = new ActivatorListener() {
@@ -75,7 +75,7 @@ public class BlockingActivatorTest {
 
     @Test
     public void testDelayedStateChange() {
-        ActivatorMock activator = new ActivatorMock(true,true);
+        ActivatorMock activator = new ActivatorMock(true, true);
         assert activator.getCurrentState() == Activator.ActivateState.UNKNOWN;
         activator.deactivate();
         assert activator.getCurrentState() == Activator.ActivateState.DEACTIVATED;
@@ -88,7 +88,7 @@ public class BlockingActivatorTest {
 
     @Test
     public void testDelayedStateChangeListener() {
-        final ActivatorMock activator = new ActivatorMock(true,true);
+        final ActivatorMock activator = new ActivatorMock(true, true);
         final Collection<Activator.ActivateState> states = new ArrayList<Activator.ActivateState>();
 
         final ActivatorListener listener = new ActivatorListener() {

@@ -28,7 +28,7 @@ public class LCDCommandQueue {
     }
 
     protected void start(LCD lcd) {
-        thread = new AsyncThread(lcd,queue);
+        thread = new AsyncThread(lcd, queue);
         append(new LCDInitializeCommand());
         thread.start();
     }
@@ -68,7 +68,7 @@ public class LCDCommandQueue {
         private final BlockingQueue<LCDCommand> queue;
         private LCD lcd;
 
-        public AsyncThread(LCD lcd,final BlockingQueue<LCDCommand> queue) {
+        public AsyncThread(LCD lcd, final BlockingQueue<LCDCommand> queue) {
             this.queue = queue;
             this.lcd = lcd;
         }
