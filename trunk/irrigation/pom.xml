@@ -11,7 +11,7 @@
     <version>1.0-SNAPSHOT</version>
     <name>AudumlaIrrigation</name>
     <parent>
-        <artifactId>net.audumla</artifactId>
+        <artifactId>base</artifactId>
         <groupId>net.audumla</groupId>
         <version>1.0-SNAPSHOT</version>
     </parent>
@@ -19,11 +19,6 @@
         <springframework.version>3.2.4.RELEASE</springframework.version>
     </properties>
     <dependencies>
-        <dependency>
-            <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.core</artifactId>
-            <version>4.3.1</version>
-        </dependency>
         <dependency>
             <groupId>net.audumla</groupId>
             <artifactId>AudumlaClimate</artifactId>
@@ -40,6 +35,11 @@
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
+            <groupId>net.audumla</groupId>
+            <artifactId>AudumlaAutomate</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context-support</artifactId>
             <version>${springframework.version}</version>
@@ -49,6 +49,13 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-tx</artifactId>
             <version>${springframework.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.audumla</groupId>
+            <artifactId>AudumlaDevices</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <type>test-jar</type>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -61,7 +68,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Bundle-Activator>net.audumla.scheduler.quartz.osgi.IrrigationActivator</Bundle-Activator>
+                        <Bundle-Activator>net.audumla.automate.scheduler.quartz.osgi.AutomateActivator</Bundle-Activator>
                     </instructions>
                 </configuration>
             </plugin>

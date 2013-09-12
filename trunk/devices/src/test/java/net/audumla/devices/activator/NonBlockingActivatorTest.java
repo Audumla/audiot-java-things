@@ -25,11 +25,11 @@ public class NonBlockingActivatorTest {
 
     @Test
     public void testStateChange() {
-        ActivatorMock activator = new ActivatorMock(true,true);
+        ActivatorMock activator = new ActivatorMock(true, true);
         assert activator.getCurrentState() == Activator.ActivateState.UNKNOWN;
         activator.deactivate();
         assert activator.getCurrentState() == Activator.ActivateState.DEACTIVATED;
-        activator.activate(2,false);
+        activator.activate(2, false);
         assert activator.getCurrentState() == Activator.ActivateState.ACTIVATED;
         synchronized (this) {
             try {
@@ -45,7 +45,7 @@ public class NonBlockingActivatorTest {
 
     @Test
     public void testStateChangeListener() {
-        final ActivatorMock activator = new ActivatorMock(true,true);
+        final ActivatorMock activator = new ActivatorMock(true, true);
         final Collection<Activator.ActivateState> states = new ArrayList<Activator.ActivateState>();
 
         final ActivatorListener listener = new ActivatorListener() {
@@ -53,10 +53,18 @@ public class NonBlockingActivatorTest {
             public void onStateChange(ActivatorStateChangeEvent event) {
                 states.add(event.getNewState());
                 switch (event.getNewState()) {
-                    case ACTIVATING: assert activator.getCurrentState() != Activator.ActivateState.ACTIVATED; break;
-                    case DEACTIVATING: assert activator.getCurrentState() != Activator.ActivateState.DEACTIVATED; break;
-                    case ACTIVATED: assert activator.getCurrentState() == Activator.ActivateState.ACTIVATING; break;
-                    case DEACTIVATED: assert activator.getCurrentState() == Activator.ActivateState.DEACTIVATING; break;
+                    case ACTIVATING:
+                        assert activator.getCurrentState() != Activator.ActivateState.ACTIVATED;
+                        break;
+                    case DEACTIVATING:
+                        assert activator.getCurrentState() != Activator.ActivateState.DEACTIVATED;
+                        break;
+                    case ACTIVATED:
+                        assert activator.getCurrentState() == Activator.ActivateState.ACTIVATING;
+                        break;
+                    case DEACTIVATED:
+                        assert activator.getCurrentState() == Activator.ActivateState.DEACTIVATING;
+                        break;
                 }
             }
 
@@ -68,7 +76,7 @@ public class NonBlockingActivatorTest {
 
         assert activator.getCurrentState() == Activator.ActivateState.UNKNOWN;
         assert states.isEmpty();
-        activator.activate(2,false,listener);
+        activator.activate(2, false, listener);
         assert states.contains(Activator.ActivateState.ACTIVATING);
         assert states.contains(Activator.ActivateState.ACTIVATED);
         assert activator.getCurrentState() == Activator.ActivateState.ACTIVATED;

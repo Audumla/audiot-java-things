@@ -5,6 +5,10 @@
 
 package net.audumla.irrigation;
 
+import net.audumla.automate.DefaultEvent;
+import net.audumla.automate.DurationFactory;
+import net.audumla.automate.Event;
+import net.audumla.automate.EventFactory;
 import org.apache.log4j.Logger;
 
 import java.util.Date;
@@ -14,15 +18,15 @@ import java.util.Date;
  * Date: 21/07/13
  * Time: 6:54 PM
  */
-public class EToIrrigationEventFactory implements IrrigationEventFactory {
+public class EToIrrigationEventFactory implements EventFactory {
     private static final Logger logger = Logger.getLogger(EToIrrigationEventFactory.class);
-    private final IrrigationDurationFactory durationFactory;
+    private final DurationFactory durationFactory;
     private final EToCalculator etc;
     private double threshold = 0.0;
     private Zone zone;
 
 
-    public EToIrrigationEventFactory(Zone zone, EToCalculator etc, IrrigationDurationFactory durationFactory) {
+    public EToIrrigationEventFactory(Zone zone, EToCalculator etc, DurationFactory durationFactory) {
         this.zone = zone;
         this.durationFactory = durationFactory;
         this.etc = etc;
@@ -38,15 +42,15 @@ public class EToIrrigationEventFactory implements IrrigationEventFactory {
     }
 
     @Override
-    public IrrigationEvent generateIrrigationEvent(Date now) {
+    public Event generateEvent(Date now) {
         try {
             long duration = 0;
             double debt = etc.calculateETo(now); //mm
             if (debt > threshold) {
-                duration = durationFactory.determineIrrigationDuration(now);
+                duration = durationFactory.determineDuration(now);
             }
             if (duration > 0) {
-                return new IrrigationEventImpl(now, duration, debt);
+                return new DefaultEvent(now, duration, debt);
             }
         } catch (Throwable th) {
             logger.error(th);

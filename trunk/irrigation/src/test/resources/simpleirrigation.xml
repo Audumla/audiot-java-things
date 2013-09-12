@@ -31,15 +31,15 @@
         <property name="shadeRating" value="1"/>
     </bean>
 
-    <bean id="irrigation.Zone1.DurationFactory" class="net.audumla.irrigation.FixedIrrigationDurationFactory">
+    <bean id="irrigation.Zone1.DurationFactory" class="net.audumla.automate.FixedDurationFactory">
         <property name="seconds" value="360"/>
     </bean>
 
-    <bean id="irrigation.Zone1.IrrigationEventFactory" class="net.audumla.irrigation.FixedIrrigationEventFactory">
+    <bean id="irrigation.Zone1.IrrigationEventFactory" class="net.audumla.automate.DefaultEventFactory">
         <property name="durationFactory" ref="irrigation.Zone1.DurationFactory"/>
     </bean>
 
-    <bean id="job.Zone1Timer" class="net.audumla.scheduler.FixedTimer">
+    <bean id="job.Zone1Timer" class="net.audumla.automate.scheduler.FixedTimer">
         <!-- run every morning at 6 AM -->
         <property name="cronExpression" value="0 0 6 * * ?"/>
         <property name="group" value="ZoneGroup1"/>

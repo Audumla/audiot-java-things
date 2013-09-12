@@ -6,8 +6,10 @@
 package net.audumla.irrigation;
 
 
+import net.audumla.automate.EventFactory;
+import net.audumla.automate.EventHandler;
+import net.audumla.automate.scheduler.quartz.AutomateJob;
 import net.audumla.climate.*;
-import net.audumla.scheduler.quartz.IrrigationJob;
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
@@ -29,10 +31,10 @@ public class SimpleIrrigationTest {
     private static final Logger logger = Logger.getLogger("Test");
     static int actualCount = 0;
 
-    protected void scheduleJob(Scheduler scheduler, String jobName, String jobGroup, int repeat, Zone zone, IrrigationEventFactory factory) throws SchedulerException {
-        JobDetail job = JobBuilder.newJob(IrrigationJob.class).withIdentity(jobName, jobGroup).build();
-        job.getJobDataMap().put(IrrigationJob.EVENT_FACTORY_PROPERTY, factory);
-        job.getJobDataMap().put(IrrigationJob.ZONE_PROPERTY, zone);
+    protected void scheduleJob(Scheduler scheduler, String jobName, String jobGroup, int repeat, EventHandler handler, EventFactory factory) throws SchedulerException {
+        JobDetail job = JobBuilder.newJob(AutomateJob.class).withIdentity(jobName, jobGroup).build();
+        job.getJobDataMap().put(AutomateJob.EVENT_FACTORY_PROPERTY, factory);
+        job.getJobDataMap().put(AutomateJob.EVENT_HANDLER_PROPERTY, handler);
 
         Trigger trigger = TriggerBuilder.newTrigger().withIdentity("trigger-" + jobName, jobGroup).startNow()
                 .withSchedule(SimpleScheduleBuilder.repeatSecondlyForTotalCount(repeat))
@@ -58,7 +60,7 @@ public class SimpleIrrigationTest {
         return zone;
     }
 
-    protected void initialize(int repeatCount, Zone zone, IrrigationEventFactory factory) throws SchedulerException, InterruptedException {
+    protected void initialize(int repeatCount, Zone zone, EventFactory factory) throws SchedulerException, InterruptedException {
 
         Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
 

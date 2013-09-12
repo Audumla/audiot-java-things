@@ -5,7 +5,7 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>bundle</packaging>
     <parent>
-        <artifactId>net.audumla</artifactId>
+        <artifactId>base</artifactId>
         <groupId>net.audumla</groupId>
         <version>1.0-SNAPSHOT</version>
     </parent>

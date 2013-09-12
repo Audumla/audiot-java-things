@@ -1,9 +1,11 @@
 package net.audumla.devices.activator;
 
+import net.audumla.bean.BeanUtils;
 import org.apache.log4j.Logger;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.LinkedList;
@@ -17,20 +19,16 @@ import static org.quartz.DateBuilder.futureDate;
  */
 public abstract class ActivatorAdaptor implements Activator {
     private static final Logger logger = Logger.getLogger(Activator.class);
-    private static long count;
-    protected ActivateState state = ActivateState.UNKNOWN;
-    private Deque<ActivatorListener> listeners = new LinkedList<ActivatorListener>();
-    private String name = generateName();
+    private ActivateState state = ActivateState.UNKNOWN;
+    private Deque<ActivatorListener> registeredListeners = new LinkedList<ActivatorListener>();
+    private String name = BeanUtils.generateName(Activator.class);
 
     protected ActivatorAdaptor() {
-        listeners.add(new ActivatorStateListener(this));
+        registeredListeners.add(new ActivatorStateListener(this));
     }
 
-    private static String generateName() {
-        if (count > (Long.MAX_VALUE - 1)) {
-            count = 0;
-        }
-        return "Activator" + (++count);
+    protected void setActiveState(ActivateState state) {
+        this.state = state;
     }
 
     @Override
@@ -44,17 +42,10 @@ public abstract class ActivatorAdaptor implements Activator {
     }
 
     @Override
-    public boolean activate() {
-        return activate(null);
-    }
-
-    @Override
-    public boolean activate(ActivatorListener listener) {
+    public boolean activate(ActivatorListener... listeners) {
         if (getCurrentState() != ActivateState.ACTIVATED) {
-            Deque<ActivatorListener> ls = new LinkedList<ActivatorListener>(listeners);
-            if (listener != null) {
-                ls.addFirst(listener);
-            }
+            Deque<ActivatorListener> ls = new LinkedList<ActivatorListener>(registeredListeners);
+            Arrays.asList(listeners).forEach(l -> ls.addFirst(l));
             ls.forEach(l -> l.onStateChange(new ActivatorStateChangeEvent(state, ActivateState.ACTIVATING, this)));
             try {
                 if (doActivate(ls)) {
@@ -63,12 +54,12 @@ public abstract class ActivatorAdaptor implements Activator {
                 } else {
                     if (getCurrentState() != ActivateState.UNKNOWN) {
                         ls.forEach(l -> l.onStateChangeFailure(new ActivatorStateChangeEvent(state, ActivateState.ACTIVATED, this), null, "Unknown Activator failure"));
-                        deactivate(listener);
+                        deactivate(listeners);
                     }
                 }
             } catch (Exception ex) {
                 ls.forEach(l -> l.onStateChangeFailure(new ActivatorStateChangeEvent(state, ActivateState.ACTIVATED, this), ex, "Unknown Activator failure"));
-                deactivate(listener);
+                deactivate(listeners);
             }
 
         }
@@ -78,17 +69,10 @@ public abstract class ActivatorAdaptor implements Activator {
     protected abstract boolean doActivate(Collection<ActivatorListener> listeners);
 
     @Override
-    public boolean deactivate() {
-        return deactivate(null);
-    }
-
-    @Override
-    public boolean deactivate(ActivatorListener listener) {
+    public boolean deactivate(ActivatorListener... listeners) {
         if (getCurrentState() != ActivateState.DEACTIVATED) {
-            Deque<ActivatorListener> ls = new LinkedList<ActivatorListener>(listeners);
-            if (listener != null) {
-                ls.addFirst(listener);
-            }
+            Deque<ActivatorListener> ls = new LinkedList<ActivatorListener>(registeredListeners);
+            Arrays.asList(listeners).forEach(l -> ls.addFirst(l));
             ls.forEach(l -> l.onStateChange(new ActivatorStateChangeEvent(state, ActivateState.DEACTIVATING, this)));
             try {
                 if (doDeactivate(ls)) {
@@ -109,20 +93,15 @@ public abstract class ActivatorAdaptor implements Activator {
     protected abstract boolean doDeactivate(Collection<ActivatorListener> listeners);
 
     @Override
-    public boolean activate(long seconds, boolean block) {
-        return activate(seconds, block, null);
-    }
-
-    @Override
-    public boolean activate(long seconds, boolean block, ActivatorListener listener) {
+    public boolean activate(long seconds, boolean block, ActivatorListener... listeners) {
         if (getCurrentState() != ActivateState.ACTIVATED) {
             if (block) {
                 try {
-                    if (activate(listener)) {
+                    if (activate(listeners)) {
                         synchronized (this) {
                             this.wait(seconds * 1000);
                         }
-                        deactivate(listener);
+                        deactivate(listeners);
                     } else {
                         return false;
                     }
@@ -132,12 +111,12 @@ public abstract class ActivatorAdaptor implements Activator {
                 }
             } else {
                 try {
-                    if (activate(listener)) {
-                        addDeactivateTimeout(seconds > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) seconds, listener);
+                    if (activate(listeners)) {
+                        addDeactivateTimeout(seconds > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) seconds, listeners);
                     }
                 } catch (Exception e) {
                     logger.error(e);
-                    deactivate(listener);
+                    deactivate(listeners);
                     return false;
                 }
             }
@@ -145,12 +124,12 @@ public abstract class ActivatorAdaptor implements Activator {
         return true;
     }
 
-    protected void addDeactivateTimeout(int seconds, ActivatorListener listener) {
+    protected void addDeactivateTimeout(int seconds, ActivatorListener... listeners) {
         try {
             JobDetail job = JobBuilder.newJob(ActivatorTimeoutJob.class).withIdentity(getName(), "Group:" + getName()).build();
 
             job.getJobDataMap().put(ActivatorTimeoutJob.ACTIVATOR_PROPERTY, this);
-            job.getJobDataMap().put(ActivatorTimeoutJob.ACTIVATOR_LISTENER_PROPERTY, listener);
+            job.getJobDataMap().put(ActivatorTimeoutJob.ACTIVATOR_LISTENER_PROPERTY, listeners);
             ScheduleBuilder builder = SimpleScheduleBuilder.repeatSecondlyForTotalCount(1).withMisfireHandlingInstructionFireNow();
 
             Trigger trigger = TriggerBuilder.newTrigger().withIdentity("Deactivate -" + job.getKey().getName(), job.getKey().getGroup()).startAt(futureDate(seconds, DateBuilder.IntervalUnit.SECOND))
@@ -165,12 +144,12 @@ public abstract class ActivatorAdaptor implements Activator {
 
     @Override
     public void addListener(ActivatorListener listener) {
-        listeners.addFirst(listener);
+        registeredListeners.addFirst(listener);
     }
 
     @Override
     public void removeListener(ActivatorListener listener) {
-        listeners.remove(listener);
+        registeredListeners.remove(listener);
     }
 
     public static class ActivatorTimeoutJob implements Job {
@@ -181,7 +160,7 @@ public abstract class ActivatorAdaptor implements Activator {
         @Override
         public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
             Activator activator = (Activator) jobExecutionContext.getMergedJobDataMap().get(ACTIVATOR_PROPERTY);
-            ActivatorListener listener = (ActivatorListener) jobExecutionContext.getMergedJobDataMap().get(ACTIVATOR_LISTENER_PROPERTY);
+            ActivatorListener listener[] = (ActivatorListener[]) jobExecutionContext.getMergedJobDataMap().get(ACTIVATOR_LISTENER_PROPERTY);
             activator.deactivate(listener);
         }
     }
@@ -197,14 +176,14 @@ public abstract class ActivatorAdaptor implements Activator {
         @Override
         public void onStateChange(ActivatorStateChangeEvent event) {
             logger.trace("Changed [" + event.getActivator().getName() + "] from " + event.getOldState() + " to " + event.getNewState());
-            activator.state = event.getNewState();
+            activator.setActiveState(event.getNewState());
         }
 
         @Override
         public void onStateChangeFailure(ActivatorStateChangeEvent event, Exception ex, String message) {
             logger.trace("Failed changing [" + event.getActivator().getName() + "] from " + event.getOldState() + " to " + event.getNewState());
             logger.error(message, ex);
-            activator.state = ActivateState.UNKNOWN;
+            activator.setActiveState(ActivateState.UNKNOWN);
         }
     }
 

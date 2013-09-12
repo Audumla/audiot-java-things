@@ -1,5 +1,21 @@
 package net.audumla.climate;
 
+/*
+ * *********************************************************************
+ *  ORGANIZATION : audumla.net
+ *  More information about this project can be found at the following locations:
+ *  http://www.audumla.net/
+ *  http://audumla.googlecode.com/
+ * *********************************************************************
+ *  Copyright (C) 2012 - 2013 Audumla.net
+ *  Licensed under the Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License.
+ *  You may not use this file except in compliance with the License located at http://creativecommons.org/licenses/by-nc-nd/3.0/
+ *
+ *  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an
+ *  "AS I BASIS", WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and limitations under the License.
+ */
+
 import net.audumla.util.Time;
 
 import java.util.ArrayList;
@@ -405,7 +421,7 @@ public class ClimateCalculations {
         // Calendar.HOUR, Calendar.DAY_OF_YEAR, Calendar.MONTH
 
 		/*
-		 * P atmospheric presssure [kPa] D slope vapour pressure curve [kPa °C-1] Rn net radiation at the crop surface [MJ m-2 day-1] G soil heat flux density
+         * P atmospheric presssure [kPa] D slope vapour pressure curve [kPa °C-1] Rn net radiation at the crop surface [MJ m-2 day-1] G soil heat flux density
 		 * [MJ m-2 day-1] g psychrometric constant [kPa °C-1] ETo reference evapotranspiration [mm day-1], T mean daily air temperature at 2 m height [°C], u2
 		 * wind speed at 2 m height [m s-1], es saturation vapour pressure [kPa], ea actual vapour pressure [kPa], es - ea saturation vapour pressure deficit
 		 * [kPa], Twet saturation vapour pressure at wet bulb temperature [kPa] Tdew dewpoint temperature is the temperature to which the air needs to be cooled

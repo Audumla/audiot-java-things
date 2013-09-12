@@ -13,6 +13,8 @@ import java.util.*;
  */
 public class BeanUtils {
 
+    public static long count;
+
     /**
      * Builds the bean delegator.
      *
@@ -131,6 +133,13 @@ public class BeanUtils {
         } catch (Exception ex) {
             return false;
         }
+    }
+
+    public static String generateName(Class<?> clazz) {
+        if (count > (Long.MAX_VALUE - 1)) {
+            count = 0;
+        }
+        return clazz.getSimpleName() + (++count);
     }
 
     public static interface BeanProxy {

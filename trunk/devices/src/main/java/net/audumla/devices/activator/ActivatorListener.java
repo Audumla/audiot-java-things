@@ -7,5 +7,6 @@ package net.audumla.devices.activator;
  */
 public interface ActivatorListener {
     void onStateChange(ActivatorStateChangeEvent event);
+
     void onStateChangeFailure(ActivatorStateChangeEvent event, Exception ex, String message);
 }

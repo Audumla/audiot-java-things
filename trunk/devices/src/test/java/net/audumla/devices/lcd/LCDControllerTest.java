@@ -1,6 +1,5 @@
 package net.audumla.devices.lcd;
 
-import net.audumla.devices.lcd.*;
 import net.audumla.devices.lcd.raspberrypi.RaspberryPII2CLCD;
 import org.junit.Test;
 

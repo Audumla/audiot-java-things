@@ -5,6 +5,10 @@
 
 package net.audumla.irrigation;
 
+import net.audumla.automate.Event;
+import net.audumla.automate.EventHandler;
+import net.audumla.automate.scheduler.AtomicTimer;
+import net.audumla.bean.BeanUtils;
 import net.audumla.climate.ClimateObserver;
 import net.audumla.climate.ClimateObserverCollection;
 import org.apache.commons.lang.time.DateUtils;
@@ -20,12 +24,13 @@ public class IrrigationZone implements Zone {
     private double shadeRating;
     private double enclosureRating;
     private double coverRating;
-    private double surfaceArea;
-    private double flowRate;
-    private List<IrrigationEvent> irrigationEvents = new ArrayList<IrrigationEvent>();
+    private Double surfaceArea;
+    private Double flowRate;
+    private List<Event> irrigationEvents = new ArrayList<Event>();
     private ClimateObserver observer;
-    private IrrigationEventHandler eventHandler;
-
+    private EventHandler eventHandler;
+    private Double depthRate;
+    private String name = BeanUtils.generateName(Zone.class);
 
     public IrrigationZone(ClimateObserver observer) {
         if (observer instanceof ClimateObserverCollection) {
@@ -37,15 +42,57 @@ public class IrrigationZone implements Zone {
         this.observer = observer;
     }
 
-    public void setEventHandler(IrrigationEventHandler eventHandler) {
+    public IrrigationZone() {
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * @return the irrigated depth in mm over a given duration
+     */
+    public static double calculateIrrigatedDepth(Zone zone, long seconds) {
+        double litres = seconds * zone.getFlowRate();
+        double volume = litres / 1000;
+        double depth = (volume / zone.getSurfaceArea()) * 1000;
+        return depth;
+    }
+
+    /**
+     * @return the number of seconds required to irrigate to the given depth
+     */
+    public static long calculateIrrigationDuration(Zone zone, double depth) {
+        double area = zone.getSurfaceArea(); // m2
+        double volume = (depth / 1000) * area; //m3
+        double litres = volume * 1000; // litres
+        long duration = (long) (litres / zone.getFlowRate()); //seconds
+        return duration;
+    }
+
+    public void setDepthRate(double depthRate) {
+        this.depthRate = depthRate;
+    }
+
+    public void setObserver(ClimateObserver observer) {
+        this.observer = observer;
+    }
+
+    public void setEventHandler(EventHandler eventHandler) {
         this.eventHandler = eventHandler;
     }
 
+    @Override
     public ClimateObserver getClimateObserver() {
         return observer;
     }
 
+    @Override
+    public String getName() {
+        return name;
+    }
 
+    @Override
     public double getShadeRating() {
         return shadeRating;
     }
@@ -54,6 +101,7 @@ public class IrrigationZone implements Zone {
         this.shadeRating = shadeRating;
     }
 
+    @Override
     public double getEnclosureRating() {
         return enclosureRating;
     }
@@ -62,10 +110,12 @@ public class IrrigationZone implements Zone {
         this.enclosureRating = enclosureRating;
     }
 
+    @Override
     public List<Crop> getCrops() {
         return null;
     }
 
+    @Override
     public double getCoverRating() {
         return coverRating;
     }
@@ -75,21 +125,30 @@ public class IrrigationZone implements Zone {
     }
 
     @Override
-    public List<IrrigationEvent> getIrrigationEventsForDay(Date day) {
+    public List<Event> getIrrigationEventsForDay(Date day) {
         return irrigationEvents.stream().filter(e -> DateUtils.isSameDay(e.getEventStartTime(), day)).collect(Collectors.toCollection(ArrayList::new));
     }
 
     @Override
-    public void addIrrigationEvent(IrrigationEvent event) {
+    public void handleEvent(Event event) {
         irrigationEvents.add(event);
-        eventHandler.handleEvent( event);
+        if (eventHandler != null) {
+            eventHandler.handleEvent(event);
+        } else {
+            logger.error("Event Handler not set for [" + getName() + "]");
+        }
     }
 
     @Override
     public void addIrrigationEvent(Date when, int seconds) {
-
+        AtomicTimer timer = new AtomicTimer(null);
+        timer.setSeconds(seconds);
+        timer.setWhen(when);
+        timer.setHandler(this);
+        timer.setEnabled(true);
     }
 
+    @Override
     public double getSurfaceArea() {
         return surfaceArea;
     }
@@ -98,11 +157,19 @@ public class IrrigationZone implements Zone {
         this.surfaceArea = surfaceArea;
     }
 
+    @Override
     public double getFlowRate() {
         return flowRate;
+    }
+
+    @Override
+    public double getDepthRate() {
+        return depthRate;
     }
 
     public void setFlowRate(double flowRate) {
         this.flowRate = flowRate;
     }
+
+
 }

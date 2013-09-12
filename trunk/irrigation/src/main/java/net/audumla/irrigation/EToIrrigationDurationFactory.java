@@ -10,11 +10,12 @@ package net.audumla.irrigation;
  * Time: 3:40 PM
  */
 
+import net.audumla.automate.DurationFactory;
 import org.apache.log4j.Logger;
 
 import java.util.Date;
 
-public class EToIrrigationDurationFactory implements IrrigationDurationFactory {
+public class EToIrrigationDurationFactory implements DurationFactory {
     private static final Logger logger = Logger.getLogger(EToIrrigationDurationFactory.class);
     private final Zone zone;
     private final EToCalculator etc;
@@ -25,7 +26,7 @@ public class EToIrrigationDurationFactory implements IrrigationDurationFactory {
     }
 
     @Override
-    public long determineIrrigationDuration(Date now) {
-        return zone.calculateIrrigationDuration(etc.calculateETo(now));
+    public long determineDuration(Date now) {
+        return IrrigationZone.calculateIrrigationDuration(zone, etc.calculateETo(now));
     }
 }
