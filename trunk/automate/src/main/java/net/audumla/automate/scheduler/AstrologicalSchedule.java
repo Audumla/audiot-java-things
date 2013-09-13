@@ -7,19 +7,12 @@ import org.quartz.ScheduleBuilder;
 
 import java.text.ParseException;
 
-/**
- * Created with IntelliJ IDEA.
- * User: mgleeson
- * Date: 10/09/13
- * Time: 10:38 AM
- * To change this template use File | Settings | File Templates.
- */
-public class AstrologicalTimer extends TimerAdaptor {
-    private static Logger logger = Logger.getLogger(AstrologicalTimer.class);
+public class AstrologicalSchedule extends ScheduleAdaptor {
+    private static Logger logger = Logger.getLogger(AstrologicalSchedule.class);
     private AstrologicalScheduleBuilder builder = new AstrologicalScheduleBuilder();
 
-    public AstrologicalTimer(Scheduler scheduler) {
-        scheduler.addSchedule(this);
+    public AstrologicalSchedule(Scheduler scheduler) {
+        super(scheduler);
     }
 
     public void setStartFromSunrise(int seconds) {

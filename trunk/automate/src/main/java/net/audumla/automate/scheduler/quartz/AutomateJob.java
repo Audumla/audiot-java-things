@@ -22,11 +22,10 @@ import org.quartz.JobExecutionException;
 
 @DisallowConcurrentExecution
 public class AutomateJob implements Job {
-    private static final Logger logger = Logger.getLogger(AutomateJob.class);
-
     public static final String EVENT_HANDLER_PROPERTY = "handler";
     public static final String EVENT_PROPERTY = "event";
     public static final String EVENT_FACTORY_PROPERTY = "eventFactory";
+    private static final Logger logger = Logger.getLogger(AutomateJob.class);
 
     public AutomateJob() {
     }
@@ -35,12 +34,20 @@ public class AutomateJob implements Job {
         Event event = (Event) context.getMergedJobDataMap().get(EVENT_PROPERTY);
         if (event == null) {
             EventFactory eventFactory = (EventFactory) context.getMergedJobDataMap().get(EVENT_FACTORY_PROPERTY);
-            event = eventFactory.generateEvent(context.getFireTime());
+            if (eventFactory != null) {
+                event = eventFactory.generateEvent(context.getFireTime());
+            } else {
+                logger.error("No event factory has been set for job [" + context.getJobDetail().getKey().getName() + ":" + context.getJobDetail().getKey().getName() + "]");
+            }
         }
         if (event != null && event.getEventDuration() > 0) {
-            EventHandler handler= (EventHandler) context.getMergedJobDataMap().get(EVENT_HANDLER_PROPERTY);
-            handler.handleEvent(event);
-            logger.info("Executing automation function for " + event.getEventDuration() + " seconds");
+            EventHandler handler = (EventHandler) context.getMergedJobDataMap().get(EVENT_HANDLER_PROPERTY);
+            if (handler != null) {
+                handler.handleEvent(event);
+                logger.info("Executing automation function for " + event.getEventDuration() + " seconds");
+            } else {
+                logger.error("No event handler has been set for job [" + context.getJobDetail().getKey().getName() + ":" + context.getJobDetail().getKey().getName() + "]");
+            }
         }
         context.getMergedJobDataMap().put(EVENT_PROPERTY, null);
     }

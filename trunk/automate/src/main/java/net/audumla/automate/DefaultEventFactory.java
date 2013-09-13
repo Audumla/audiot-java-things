@@ -29,7 +29,7 @@ public class DefaultEventFactory implements EventFactory {
 
     @Override
     public Event generateEvent(Date now) {
-        return new DefaultEvent(now, durationFactory.determineDuration(now), 0);
+        return new DefaultEvent(now, durationFactory.determineDuration(now));
     }
 
 }

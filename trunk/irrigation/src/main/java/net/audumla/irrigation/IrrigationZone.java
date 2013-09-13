@@ -7,7 +7,7 @@ package net.audumla.irrigation;
 
 import net.audumla.automate.Event;
 import net.audumla.automate.EventHandler;
-import net.audumla.automate.scheduler.AtomicTimer;
+import net.audumla.automate.scheduler.AtomicSchedule;
 import net.audumla.bean.BeanUtils;
 import net.audumla.climate.ClimateObserver;
 import net.audumla.climate.ClimateObserverCollection;
@@ -141,7 +141,7 @@ public class IrrigationZone implements Zone {
 
     @Override
     public void addIrrigationEvent(Date when, int seconds) {
-        AtomicTimer timer = new AtomicTimer(null);
+        AtomicSchedule timer = new AtomicSchedule(null);
         timer.setSeconds(seconds);
         timer.setWhen(when);
         timer.setHandler(this);
