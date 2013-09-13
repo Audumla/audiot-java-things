@@ -129,12 +129,13 @@ public class IrrigationZone implements Zone {
     }
 
     @Override
-    public void handleEvent(Event event) {
+    public boolean handleEvent(Event event) {
         irrigationEvents.add(event);
         if (eventHandler != null) {
-            eventHandler.handleEvent(event);
+            return eventHandler.handleEvent(event);
         } else {
             logger.error("Event Handler not set for [" + getName() + "]");
+            return false;
         }
     }
 

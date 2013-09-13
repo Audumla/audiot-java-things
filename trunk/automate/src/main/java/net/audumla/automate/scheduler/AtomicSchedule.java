@@ -49,9 +49,9 @@ public class AtomicSchedule extends ScheduleAdaptor {
         }
 
         @Override
-        public void handleEvent(Event event) {
+        public boolean handleEvent(Event event) {
             getScheduler().removeSchedule(AtomicSchedule.this);
-            handler.handleEvent(event);
+            return handler.handleEvent(event);
         }
     }
 }

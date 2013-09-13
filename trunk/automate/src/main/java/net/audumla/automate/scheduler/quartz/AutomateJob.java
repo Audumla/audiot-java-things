@@ -23,9 +23,9 @@ import org.quartz.JobExecutionException;
 
 @DisallowConcurrentExecution
 public class AutomateJob implements Job {
-//    public static final String EVENT_HANDLER_PROPERTY = "handler";
+    //    public static final String EVENT_HANDLER_PROPERTY = "handler";
     public static final String EVENT_PROPERTY = "event";
-//    public static final String EVENT_FACTORY_PROPERTY = "eventFactory";
+    //    public static final String EVENT_FACTORY_PROPERTY = "eventFactory";
     public static final String SCHEDULE_PROPERTY = "schedule";
     private static final Logger logger = Logger.getLogger(AutomateJob.class);
 
@@ -46,8 +46,12 @@ public class AutomateJob implements Job {
         if (event != null && event.getEventDuration() > 0) {
             EventHandler handler = schedule.getHandler();
             if (handler != null) {
-                handler.handleEvent(event);
-                logger.info("Executing automation ["+event.getName()+"] for " + event.getEventDuration() + " seconds");
+                if (handler.handleEvent(event)) {
+                    logger.info("Executing automation [" + event.getName() + "] for " + event.getEventDuration() + " seconds");
+                } else {
+                    logger.info("Unable to execute automation [" + event.getName() + "] for " + event.getEventDuration() + " seconds");
+
+                }
             } else {
                 logger.error("No event handler has been set for job [" + context.getJobDetail().getKey().getName() + ":" + context.getJobDetail().getKey().getName() + "]");
             }

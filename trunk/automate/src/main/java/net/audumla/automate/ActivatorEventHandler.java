@@ -43,9 +43,9 @@ public class ActivatorEventHandler implements EventHandler {
     }
 
     @Override
-    public void handleEvent(Event event) {
+    public boolean handleEvent(Event event) {
         //attempts to activate the irrigationEvent and then monitors its progress using a specific listener.
-        activator.activate(event.getEventDuration(), false, new EventActivatorListener(event));
+        return activator.activate(event.getEventDuration(), false, new EventActivatorListener(event));
     }
 
     protected static class EventActivatorListener implements ActivatorListener {

@@ -50,6 +50,7 @@ public class TinyOSUSBRelayController {
     }
 
     public boolean deactivateRelay(int device, int relay, ErrorHandler handler) {
+        if (hasDevice(device)) {
         try {
             if (!setRelay(device, relay, RELAY_DEACTIVATE_INCREMENT, handler)) {
                 handler.handleError("Attempting to shutdown all TinyOS relays due to unexpected failure", null);
@@ -61,6 +62,11 @@ public class TinyOSUSBRelayController {
             return false;
         }
         return true;
+        }
+        else {
+            logger.error("Cannot locate TinyOS Relay at index ["+device+":"+relay+"]");
+            return false;
+        }
     }
 
     public boolean activateRelay(int device, int relay, ErrorHandler handler) {
