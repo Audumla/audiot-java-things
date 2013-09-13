@@ -18,7 +18,7 @@ public class TinyOSUSBRelayController {
     private static final int RELAY_DEACTIVATE_INCREMENT = 110;
     private static TinyOSUSBRelayController instance;
 
-    private Device devices[];
+    private Device devices[] = new Device[0];
 
     public static TinyOSUSBRelayController getInstance() {
         if (instance == null) {
@@ -31,6 +31,9 @@ public class TinyOSUSBRelayController {
     private TinyOSUSBRelayController() {
         try {
             devices = Service.listDevices();
+            if (devices == null) {
+                devices = new Device[0];
+            }
             logger.info("Found " + devices.length + " TinyOS Relay devices");
             for (Device device : devices) {
                 logger.debug("TinyOS Relay Serial Number : " + device.getDeviceDescriptor().getSerialNumber());
