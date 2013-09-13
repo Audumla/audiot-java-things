@@ -22,7 +22,7 @@ import java.util.Date;
 
 public class ZoneTest {
     private static final Logger logger = Logger.getLogger(ZoneTest.class);
-
+    /*
     @Test
     public void testSuccessfulFixedEvent() throws Exception {
         ActivatorEventHandler handler = new ActivatorEventHandler();
@@ -35,6 +35,7 @@ public class ZoneTest {
             this.wait(2100);
         }
     }
+    */
 
     @Test
     public void testZoneCalculations() {

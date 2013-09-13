@@ -98,7 +98,7 @@ public class SimpleIrrigationTest {
         int time = 0;
         synchronized (this) {
             while (time < 10 && repeatCount != actualCount) {
-                this.wait(100000);
+                this.wait(1000);
                 ++time;
             }
         }
