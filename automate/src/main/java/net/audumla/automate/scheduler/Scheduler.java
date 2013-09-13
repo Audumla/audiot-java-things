@@ -16,22 +16,61 @@ package net.audumla.automate.scheduler;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
+import org.apache.log4j.Logger;
+import org.quartz.impl.StdSchedulerFactory;
+
 import java.util.Collection;
 import java.util.HashSet;
 
 public class Scheduler {
-    private Collection<Timer> timers = new HashSet<Timer>();
+    private static final Logger logger = Logger.getLogger(Scheduler.class);
+    private org.quartz.Scheduler scheduler;
+    private Collection<Schedule> schedules = new HashSet<Schedule>();
+    private boolean autoStartSchedules = true;
 
-    public void addSchedule(Timer timer) {
-        timers.add(timer);
+    public void addSchedule(Schedule schedule) {
+        schedules.add(schedule);
+        schedule.setEnabled(autoStartSchedules);
     }
 
-    public Collection<Timer> getSchedules() {
-        return timers;
+    public Collection<Schedule> getSchedules() {
+        return schedules;
     }
 
-    public void removeSchedule(Timer timer) {
-        timer.setEnabled(false);
-        timers.remove(timer);
+    public void setAutoStartSchedules(boolean autoStartSchedules) {
+        this.autoStartSchedules = autoStartSchedules;
     }
+
+    public void removeSchedule(Schedule schedule) {
+        schedule.setEnabled(false);
+        schedules.remove(schedule);
+    }
+
+    public void setEnableAll(boolean enable) {
+        schedules.forEach(t -> t.setEnabled(enable));
+    }
+
+    public void initialize() {
+        try {
+            scheduler = StdSchedulerFactory.getDefaultScheduler();
+            scheduler.start();
+            logger.info("Audumla Irrigation - started");
+
+        } catch (Exception e) {
+            logger.error(e);
+        }
+
+    }
+
+    public void shutdown() {
+        try {
+            if (scheduler != null) {
+                scheduler.shutdown();
+                logger.info("Audumla Irrigation - stopped");
+            }
+        } catch (Exception ex) {
+            logger.error(ex);
+        }
+    }
+
 }

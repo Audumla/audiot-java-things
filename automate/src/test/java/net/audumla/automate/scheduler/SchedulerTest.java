@@ -17,16 +17,13 @@ package net.audumla.automate.scheduler;
  */
 
 import net.audumla.automate.ActivatorEventHandler;
-import net.audumla.automate.DefaultEventFactory;
 import net.audumla.automate.Event;
-import net.audumla.automate.FixedDurationFactory;
 import net.audumla.devices.activator.ActivatorMock;
 import org.junit.Before;
 import org.junit.Test;
 import org.quartz.SchedulerException;
 import org.quartz.impl.StdSchedulerFactory;
 
-import java.lang.ref.Reference;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -43,7 +40,7 @@ public class SchedulerTest {
         Scheduler scheduler = new Scheduler();
         final AtomicReference<Boolean> active = new AtomicReference<Boolean>(false);
 
-        AtomicTimer timer1 = new AtomicTimer(scheduler);
+        AtomicSchedule timer1 = new AtomicSchedule(scheduler);
         timer1.setWhen(new Date(new Date().getTime() + 200));
         timer1.setSeconds(2);
         timer1.setHandler((Event e) -> {
@@ -54,7 +51,7 @@ public class SchedulerTest {
             }
             active.set(true);}
         );
-        AtomicTimer timer2 = new AtomicTimer(scheduler);
+        AtomicSchedule timer2 = new AtomicSchedule(scheduler);
         timer2.setWhen(new Date(new Date().getTime() + 500));
         timer2.setSeconds(3);
         timer2.setHandler((Event e) -> {
@@ -91,7 +88,7 @@ public class SchedulerTest {
         Scheduler scheduler = new Scheduler();
         final AtomicReference<Boolean> active = new AtomicReference<Boolean>(false);
 
-        AtomicTimer timer = new AtomicTimer(scheduler);
+        AtomicSchedule timer = new AtomicSchedule(scheduler);
         timer.setWhen(new Date(new Date().getTime() + 200));
         timer.setSeconds(2);
         timer.setHandler((Event e) -> {
@@ -120,7 +117,7 @@ public class SchedulerTest {
         Scheduler scheduler = new Scheduler();
         final AtomicReference<Boolean> active = new AtomicReference<Boolean>(false);
 
-        AtomicTimer timer = new AtomicTimer(scheduler);
+        AtomicSchedule timer = new AtomicSchedule(scheduler);
         timer.setWhen(new Date(new Date().getTime() + 200));
         timer.setSeconds(20);
         timer.setHandler(new ActivatorEventHandler(new ActivatorMock(true,true)));

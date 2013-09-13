@@ -50,7 +50,7 @@ public class EToIrrigationEventFactory implements EventFactory {
                 duration = durationFactory.determineDuration(now);
             }
             if (duration > 0) {
-                return new DefaultEvent(now, duration, debt);
+                return new DefaultEvent(now, duration);
             }
         } catch (Throwable th) {
             logger.error(th);

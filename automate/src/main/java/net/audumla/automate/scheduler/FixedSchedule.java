@@ -14,12 +14,12 @@ import java.text.ParseException;
  * Time: 11:03 AM
  * To change this template use File | Settings | File Templates.
  */
-public class FixedTimer extends TimerAdaptor {
-    private static Logger logger = Logger.getLogger(FixedTimer.class);
+public class FixedSchedule extends ScheduleAdaptor {
+    private static Logger logger = Logger.getLogger(FixedSchedule.class);
     private String cronExpression;
 
-    public FixedTimer(Scheduler scheduler) {
-        scheduler.addSchedule(this);
+    public FixedSchedule(Scheduler scheduler) {
+        super(scheduler);
     }
 
     public void setCronExpression(String cronExpression) {

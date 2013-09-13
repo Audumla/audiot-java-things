@@ -26,11 +26,19 @@
     <version>1.0-SNAPSHOT</version>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <springframework.version>3.2.4.RELEASE</springframework.version>
     </properties>
     <repositories>
         <repository>
             <id>audumla-repository</id>
             <url>https://myfiles.messagingengine.com/audumla.net/mvn</url>
+        </repository>
+        <repository>
+            <id>com.springsource.repository.maven.snapshot</id>
+            <url>http://maven.springframework.org/snapshot/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
         </repository>
     </repositories>
     <dependencies>

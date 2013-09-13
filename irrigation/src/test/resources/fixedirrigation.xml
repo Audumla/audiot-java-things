@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ **********************************************************************
+  ~  ORGANIZATION : audumla.net
+  ~  More information about this project can be found at the following locations:
+  ~  http://www.audumla.net/
+  ~  http://audumla.googlecode.com/
+  ~ **********************************************************************
+  ~  Copyright (C) 2012 - 2013 Audumla.net
+  ~  Licensed under the Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License.
+  ~  You may not use this file except in compliance with the License located at http://creativecommons.org/licenses/by-nc-nd/3.0/
+  ~
+  ~  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an
+  ~  "AS IS BASIS", WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  See the License for the specific language governing permissions and limitations under the License.
+  -->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="irrigation.zone1" class="net.audumla.irrigation.IrrigationZone">
+        <property name="eventHandler" ref="irrigation.zone1.eventHandler"/>
+    </bean>
+
+    <bean id="irrigation.durationFactory.5Minutes" class="net.audumla.automate.FixedDurationFactory">
+        <property name="seconds" value="360"/>
+    </bean>
+
+    <bean id="irrigation.eventFactory.5Minutes" class="net.audumla.automate.DefaultEventFactory">
+        <property name="durationFactory" ref="irrigation.durationFactory.5Minutes"/>
+    </bean>
+
+    <bean id="irrigation.zone1.eventHandler" class="net.audumla.automate.ActivatorEventHandler">
+        <property name="activator" ref="irrigation.zone1.activator" />
+    </bean>
+
+    <bean id="irrigation.zone1.activator" class="net.audumla.devices.activator.relay.TinyOSUSBRelayActivator">
+        <property name="device" value="0"/>
+        <property name="relay"  value="1"/>
+    </bean>
+
+    <bean id="automate.zone1Timer" class="net.audumla.automate.scheduler.FixedSchedule" init-method="enable">
+        <constructor-arg ref="automate.scheduler"/>
+        <property name="cronExpression" value="0 0 6 * * ?"/> <!-- run every morning at 6 AM -->
+        <property name="group" value="ZoneGroup1"/>
+        <property name="factory" ref="irrigation.eventFactory.5Minutes"/>
+        <property name="handler" ref="irrigation.zone1"/>
+    </bean>
+
+    <bean id="automate.scheduler" class="net.audumla.automate.scheduler.Scheduler">
+    </bean>
+
+
+</beans>

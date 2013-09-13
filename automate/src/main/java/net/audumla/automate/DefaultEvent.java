@@ -24,7 +24,7 @@ public class DefaultEvent implements Event {
     private String failureMessage;
     private Exception failureException;
 
-    public DefaultEvent(Date time, long duration, double depth) {
+    public DefaultEvent(Date time, long duration) {
         this.time = time;
         this.duration = duration;
     }
