@@ -44,7 +44,6 @@ public class AutomatedActivatorTest {
         }
     }
 
-    @Test
     public void testNonSyncTimersTime5() throws Exception {
         for (int i = 0; i < 5;++i)
             testNonSyncTimers();
