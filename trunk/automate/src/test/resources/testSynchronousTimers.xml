@@ -22,7 +22,7 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
 
     <bean id="eventFactory" class="net.audumla.devices.activator.MockEventFactory" >
         <property name="duration" value="2" />
-        <property name="synchronous" value="false" />
+        <property name="synchronous" value="true" />
     </bean>
 
     <bean id="eventHandler" class="net.audumla.automate.ActivatorEventHandler" scope="prototype">
@@ -38,34 +38,38 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
         <constructor-arg ref="scheduler"/>
         <property name="handler" ref="eventHandler"/>
         <property name="factory" ref="eventFactory"/>
+        <property name="syncGroup" value="group1" />
     </bean>
 
     <bean id="timer2" class="net.audumla.automate.scheduler.AtomicSchedule" init-method="enable">
         <constructor-arg ref="scheduler"/>
         <property name="handler" ref="eventHandler"/>
         <property name="factory" ref="eventFactory"/>
+        <property name="syncGroup" value="group1" />
     </bean>
 
     <bean id="timer3" class="net.audumla.automate.scheduler.AtomicSchedule" init-method="enable">
         <constructor-arg ref="scheduler"/>
         <property name="handler" ref="eventHandler"/>
         <property name="factory" ref="eventFactory"/>
+        <property name="syncGroup" value="group1" />
     </bean>
 
     <bean id="timer4" class="net.audumla.automate.scheduler.AtomicSchedule" init-method="enable">
         <constructor-arg ref="scheduler"/>
         <property name="handler" ref="eventHandler"/>
         <property name="factory" ref="eventFactory"/>
+        <property name="syncGroup" value="group1" />
     </bean>
 
     <bean id="timer5" class="net.audumla.automate.scheduler.AtomicSchedule" init-method="enable">
         <constructor-arg ref="scheduler"/>
         <property name="handler" ref="eventHandler"/>
         <property name="factory" ref="eventFactory"/>
+        <property name="syncGroup" value="group1" />
     </bean>
 
     <bean id="scheduler" class="net.audumla.automate.scheduler.Scheduler" init-method="initialize" destroy-method="shutdown">
     </bean>
-
 
 </beans>

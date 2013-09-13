@@ -21,12 +21,14 @@ import net.audumla.automate.EventHandler;
 
 public interface Schedule {
     void setEnabled(boolean enable);
+
     EventFactory getFactory();
+
     EventHandler getHandler();
-    default void enable() {
-        setEnabled(true);
-    }
-    default void disable() {
-        setEnabled(false);
-    }
+
+    void enable();
+
+    void disable();
+
+    void setSyncGroup(String group);
 }
