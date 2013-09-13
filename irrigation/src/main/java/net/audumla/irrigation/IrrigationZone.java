@@ -139,6 +139,7 @@ public class IrrigationZone implements Zone {
         }
     }
 
+    /*
     @Override
     public void addIrrigationEvent(Date when, int seconds) {
         AtomicSchedule timer = new AtomicSchedule(null);
@@ -147,6 +148,7 @@ public class IrrigationZone implements Zone {
         timer.setHandler(this);
         timer.setEnabled(true);
     }
+    */
 
     @Override
     public double getSurfaceArea() {
