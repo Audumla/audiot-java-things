@@ -7,7 +7,6 @@ package net.audumla.irrigation;
 
 import net.audumla.automate.Event;
 import net.audumla.automate.EventHandler;
-import net.audumla.automate.scheduler.AtomicSchedule;
 import net.audumla.bean.BeanUtils;
 import net.audumla.climate.ClimateObserver;
 import net.audumla.climate.ClimateObserverCollection;

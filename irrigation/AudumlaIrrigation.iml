@@ -53,14 +53,15 @@
     <orderEntry type="library" name="Maven: log4j:apache-log4j-extras:1.1" level="project" />
     <orderEntry type="module" module-name="AudumlaAutomate" />
     <orderEntry type="library" name="Maven: org.osgi:org.osgi.core:4.3.1" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.springframework:spring-context-support:3.2.4.RELEASE" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.springframework:spring-beans:3.2.4.RELEASE" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.springframework:spring-core:3.2.4.RELEASE" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.springframework:spring-context:3.2.4.RELEASE" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.springframework:spring-aop:3.2.4.RELEASE" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.springframework:spring-context-support:3.1.4.RELEASE" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.springframework:spring-beans:3.1.4.RELEASE" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.springframework:spring-core:3.1.4.RELEASE" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.springframework:spring-asm:3.1.4.RELEASE" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.springframework:spring-context:3.1.4.RELEASE" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.springframework:spring-aop:3.1.4.RELEASE" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: aopalliance:aopalliance:1.0" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.springframework:spring-expression:3.2.4.RELEASE" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.springframework:spring-tx:3.2.4.RELEASE" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.springframework:spring-expression:3.1.4.RELEASE" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.springframework:spring-tx:3.1.4.RELEASE" level="project" />
     <orderEntry type="module" module-name="AudumlaDevices" scope="TEST" production-on-test="" />
     <orderEntry type="library" scope="TEST" name="Maven: net.audumla:AudumlaDevices:test-jar:tests:1.0-SNAPSHOT" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:4.11" level="project" />

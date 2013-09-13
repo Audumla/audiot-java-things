@@ -9,11 +9,10 @@ import net.audumla.bean.BeanUtils;
 import net.audumla.devices.activator.Activator;
 import net.audumla.devices.activator.ActivatorListener;
 import net.audumla.devices.activator.ActivatorStateChangeEvent;
-import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 public class ActivatorEventHandler implements EventHandler {
-    private static final Logger logger = LogManager.getLogger(ActivatorEventHandler.class);
+    private static final Logger logger = Logger.getLogger(ActivatorEventHandler.class);
     private Activator activator;
     private String name = BeanUtils.generateName(EventHandler.class);
 

@@ -32,9 +32,9 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
         <property name="activator" ref="activator"/>
     </bean>
 
-    <bean id="activator" class="net.audumla.devices.activator.ActivatorMock">
-        <constructor-arg index="0" value="true"/>
-        <constructor-arg index="1" value="true"/>
+    <bean id="activator" class="net.audumla.devices.activator.relay.TinyOSUSBRelayActivator">
+        <property name="relay" value="0" />
+        <property name="device" value="1" />
     </bean>
 
     <bean id="schedule" class="net.audumla.automate.scheduler.AtomicSchedule" init-method="enable">
