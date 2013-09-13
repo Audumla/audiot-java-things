@@ -10,6 +10,7 @@ package net.audumla.automate;
  * Time: 10:20 AM
  */
 
+import net.audumla.bean.BeanUtils;
 import org.apache.log4j.Logger;
 
 import java.util.Date;
@@ -23,6 +24,7 @@ public class DefaultEvent implements Event {
     private Date endTime;
     private String failureMessage;
     private Exception failureException;
+    private String name = BeanUtils.generateName(Event.class);
 
     public DefaultEvent(Date time, long duration) {
         this.time = time;
@@ -69,6 +71,11 @@ public class DefaultEvent implements Event {
     @Override
     public Exception getFailureException() {
         return failureException;
+    }
+
+    @Override
+    public String getName() {
+        return name;
     }
 
 }

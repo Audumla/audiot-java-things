@@ -42,7 +42,11 @@ public class AutomatedActivatorTest {
             assert factory.getCompletedCount() == 0;
             assert factory.getExecutedCount() == 0;
             assert factory.getFailedCount() == 0;
-            this.wait(3000);
+            int count = 0;
+            while (count < 10 && factory.getCompletedCount() != 5) {
+                this.wait(1000);
+                ++count;
+            }
             assert factory.getCompletedCount() == 5;
             assert factory.getExecutedCount() == 5;
             assert factory.getFailedCount() == 0;

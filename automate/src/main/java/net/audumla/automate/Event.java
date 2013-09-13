@@ -58,4 +58,6 @@ public interface Event {
      */
     Exception getFailureException();
 
+    String getName();
+
 }

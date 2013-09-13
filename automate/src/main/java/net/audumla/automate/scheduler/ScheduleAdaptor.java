@@ -19,6 +19,7 @@ package net.audumla.automate.scheduler;
 import net.audumla.automate.EventFactory;
 import net.audumla.automate.EventHandler;
 import net.audumla.automate.scheduler.quartz.AutomateJob;
+import net.audumla.bean.BeanUtils;
 import org.apache.log4j.Logger;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
@@ -31,7 +32,7 @@ public abstract class ScheduleAdaptor implements Schedule {
     private final Scheduler scheduler;
 
     private String group;
-    private String name;
+    private String name = BeanUtils.generateName(Schedule.class);
     private JobDetail job;
     private EventFactory factory;
     private EventHandler handler;
@@ -61,8 +62,7 @@ public abstract class ScheduleAdaptor implements Schedule {
         JobDetail jd = JobBuilder.newJob(jobClazz).withIdentity(name, group).build();
         try {
 
-            jd.getJobDataMap().put(AutomateJob.EVENT_FACTORY_PROPERTY, factory);
-            jd.getJobDataMap().put(AutomateJob.EVENT_HANDLER_PROPERTY, handler);
+            jd.getJobDataMap().put(AutomateJob.SCHEDULE_PROPERTY,this);
 
 
             ScheduleBuilder builder = getScheduleBuilder();
@@ -119,7 +119,7 @@ public abstract class ScheduleAdaptor implements Schedule {
         return job;
     }
 
-    protected EventFactory getFactory() {
+    public EventFactory getFactory() {
         return factory;
     }
 
