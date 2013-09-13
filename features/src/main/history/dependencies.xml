@@ -6,8 +6,6 @@
         <bundle>mvn:commons-io/commons-io/2.4</bundle>
         <bundle>mvn:commons-lang/commons-lang/2.6</bundle>
         <bundle>mvn:commons-net/commons-net/3.3</bundle>
-        <bundle>mvn:log4j/apache-log4j-extras/1.1</bundle>
-        <bundle>mvn:log4j/log4j/1.2.16</bundle>
         <bundle>mvn:log4j/log4j/1.2.17</bundle>
         <bundle>mvn:net.audumla/AudumlaAutomate/1.0-SNAPSHOT</bundle>
         <bundle>mvn:net.audumla/AudumlaClimate/1.0-SNAPSHOT</bundle>
