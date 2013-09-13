@@ -64,13 +64,11 @@ public class SequentialListenerTest {
         scheduler.start();
         int time = 0;
         synchronized (this) {
-            while (time < 30) {
+            while (time < 30 && expectedCount != TestJob.count) {
                 this.wait(1000);
                 ++time;
-                logger.debug("Executing for " + time + " seconds - [" + expectedCount + ":" + TestJob.count + "]");
             }
         }
-        System.out.println(TestJob.count);
         scheduler.shutdown();
     }
 }
