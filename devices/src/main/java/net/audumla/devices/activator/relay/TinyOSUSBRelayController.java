@@ -127,4 +127,8 @@ public class TinyOSUSBRelayController {
         return false;
     }
 
+    protected boolean hasDevice(int device) {
+        return devices != null && devices.length > device;
+    }
+
 }
