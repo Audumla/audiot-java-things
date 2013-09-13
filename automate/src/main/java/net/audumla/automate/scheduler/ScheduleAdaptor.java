@@ -19,10 +19,13 @@ package net.audumla.automate.scheduler;
 import net.audumla.automate.EventFactory;
 import net.audumla.automate.EventHandler;
 import net.audumla.automate.scheduler.quartz.AutomateJob;
+import net.audumla.automate.scheduler.quartz.SequentialTriggerListener;
 import net.audumla.bean.BeanUtils;
 import org.apache.log4j.Logger;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
+import org.quartz.impl.matchers.GroupMatcher;
+import org.quartz.listeners.TriggerListenerSupport;
 
 import java.text.ParseException;
 import java.util.Date;
@@ -59,7 +62,7 @@ public abstract class ScheduleAdaptor implements Schedule {
     }
 
     protected JobDetail start() {
-        JobDetail jd = JobBuilder.newJob(jobClazz).withIdentity(name, group).build();
+        JobDetail jd = JobBuilder.newJob(jobClazz).withIdentity(getName(), getGroup()).build();
         try {
 
             jd.getJobDataMap().put(AutomateJob.SCHEDULE_PROPERTY,this);
@@ -68,9 +71,9 @@ public abstract class ScheduleAdaptor implements Schedule {
             ScheduleBuilder builder = getScheduleBuilder();
             Trigger trigger = null;
             if (startTime.before(new Date())) {
-                trigger = TriggerBuilder.newTrigger().withIdentity("trigger-" + getName()).startNow().withSchedule(builder).build();
+                trigger = TriggerBuilder.newTrigger().withIdentity("trigger-" + getName(),getGroup()).startNow().withSchedule(builder).build();
             } else {
-                trigger = TriggerBuilder.newTrigger().withIdentity("trigger-" + getName()).startAt(startTime).withSchedule(builder).build();
+                trigger = TriggerBuilder.newTrigger().withIdentity("trigger-" + getName(),getGroup()).startAt(startTime).withSchedule(builder).build();
             }
 
             StdSchedulerFactory.getDefaultScheduler().scheduleJob(jd, trigger);
@@ -99,7 +102,7 @@ public abstract class ScheduleAdaptor implements Schedule {
         this.factory = factory;
     }
 
-    public void setGroup(String group) {
+    protected void setGroup(String group) {
         this.group = group;
     }
 
@@ -111,7 +114,7 @@ public abstract class ScheduleAdaptor implements Schedule {
         return name;
     }
 
-    public String getGroup() {
+    protected String getGroup() {
         return group;
     }
 
@@ -129,5 +132,25 @@ public abstract class ScheduleAdaptor implements Schedule {
 
     public void setHandler(EventHandler handler) {
         this.handler = handler;
+    }
+
+    public void enable() {
+        setEnabled(true);
+    }
+
+    public void disable() {
+        setEnabled(false);
+    }
+
+    @Override
+    public void setSyncGroup(String group) {
+        setGroup(group);
+        try {
+            if (StdSchedulerFactory.getDefaultScheduler().getListenerManager().getTriggerListener(group) == null) {
+                StdSchedulerFactory.getDefaultScheduler().getListenerManager().addTriggerListener(new SequentialTriggerListener(group), GroupMatcher.groupEquals(group));
+            }
+        } catch (SchedulerException e) {
+            logger.error(e);
+        }
     }
 }

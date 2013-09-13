@@ -26,7 +26,7 @@ public class Scheduler {
     private static final Logger logger = Logger.getLogger(Scheduler.class);
     private org.quartz.Scheduler scheduler;
     private Collection<Schedule> schedules = new HashSet<Schedule>();
-    private boolean autoStartSchedules = true;
+    private boolean autoStartSchedules = false;
 
     synchronized public void addSchedule(Schedule schedule) {
         schedules.add(schedule);

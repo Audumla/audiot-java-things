@@ -21,10 +21,20 @@ package net.audumla.devices.activator;
  * Time: 9:30 AM
  */
 
+import org.junit.After;
 import org.junit.Test;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class AutomatedActivatorTest {
+    ClassPathXmlApplicationContext context;
+
+    @After
+    public void tearDown() throws Exception {
+        if (context != null) {
+            context.close();
+        }
+
+    }
 
     @Test
     public void testFixedTimer() throws Exception {
@@ -35,15 +45,38 @@ public class AutomatedActivatorTest {
     }
 
     @Test
+    public void testNonSyncTimersTime5() throws Exception {
+        for (int i = 0; i < 5;++i)
+            testNonSyncTimers();
+    }
+
+    @Test
     public void testNonSyncTimers() throws Exception {
-        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("testNonSynchronousTimers.xml");
+        context = new ClassPathXmlApplicationContext("testNonSynchronousTimers.xml");
+        MockEventFactory factory = (MockEventFactory) context.getBean("eventFactory");
+        synchronized (this) {
+            int count = 0;
+            while (count < 30 && factory.getCompletedCount() != 5) {
+                this.wait(1000);
+                ++count;
+            }
+            assert factory.getCompletedCount() == 5;
+            assert factory.getExecutedCount() == 5;
+            assert factory.getFailedCount() == 0;
+        }
+        context.close();
+    }
+
+
+    public void testSyncTimers() throws Exception {
+        context = new ClassPathXmlApplicationContext("testSynchronousTimers.xml");
         MockEventFactory factory = (MockEventFactory) context.getBean("eventFactory");
         synchronized (this) {
             assert factory.getCompletedCount() == 0;
             assert factory.getExecutedCount() == 0;
             assert factory.getFailedCount() == 0;
             int count = 0;
-            while (count < 10 && factory.getCompletedCount() != 5) {
+            while (count < 20 && factory.getCompletedCount() != 5) {
                 this.wait(1000);
                 ++count;
             }

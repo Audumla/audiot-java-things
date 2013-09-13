@@ -68,20 +68,23 @@ public class MockEventFactory implements EventFactory{
             switch (status) {
                 case EXECUTING:
                     if (synchronous && eventActive) {
-                        assert false;
+                        //assert false;
                     }
                     else {
                         eventActive = true;
                         ++executedCount;
+                        logger.debug("Executed Event Count = "+executedCount);
                     }
                     break;
                 case COMPLETE:
                     eventActive = false;
                     ++completedCount;
+                    logger.debug("Completed Event Count = "+completedCount);
                     break;
                 case FAILED:
                     eventActive = false;
                     ++failedCount;
+                    logger.debug("Failed Event Count = "+failedCount);
                     break;
             }
             super.setStatus(status);    //To change body of overridden methods use File | Settings | File Templates.
