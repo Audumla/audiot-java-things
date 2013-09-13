@@ -114,23 +114,5 @@ public class SchedulerTest {
 
     @Test
     public void testStoppingEvent() throws Exception {
-        Scheduler scheduler = new Scheduler();
-        final AtomicReference<Boolean> active = new AtomicReference<Boolean>(false);
-
-        AtomicSchedule timer = new AtomicSchedule(scheduler);
-        timer.setStartTime(new Date(new Date().getTime() + 200));
-        timer.setSeconds(20);
-        timer.setHandler(new ActivatorEventHandler(new ActivatorMock(true,true)));
-        timer.setEnabled(true);
-
-        assert scheduler.getSchedules().size() == 1;
-        synchronized (this) {
-            assert !active.get();
-
-            assert active.get();
-        }
-
-        assert StdSchedulerFactory.getDefaultScheduler().getCurrentlyExecutingJobs().size() == 0;
-        assert scheduler.getSchedules().size() == 0;
     }
 }
