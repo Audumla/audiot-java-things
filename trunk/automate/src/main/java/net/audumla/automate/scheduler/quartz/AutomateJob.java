@@ -8,6 +8,7 @@ package net.audumla.automate.scheduler.quartz;
 import net.audumla.automate.Event;
 import net.audumla.automate.EventFactory;
 import net.audumla.automate.EventHandler;
+import net.audumla.automate.scheduler.Schedule;
 import org.apache.log4j.Logger;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.Job;
@@ -22,9 +23,10 @@ import org.quartz.JobExecutionException;
 
 @DisallowConcurrentExecution
 public class AutomateJob implements Job {
-    public static final String EVENT_HANDLER_PROPERTY = "handler";
+//    public static final String EVENT_HANDLER_PROPERTY = "handler";
     public static final String EVENT_PROPERTY = "event";
-    public static final String EVENT_FACTORY_PROPERTY = "eventFactory";
+//    public static final String EVENT_FACTORY_PROPERTY = "eventFactory";
+    public static final String SCHEDULE_PROPERTY = "schedule";
     private static final Logger logger = Logger.getLogger(AutomateJob.class);
 
     public AutomateJob() {
@@ -32,8 +34,9 @@ public class AutomateJob implements Job {
 
     public void execute(JobExecutionContext context) throws JobExecutionException {
         Event event = (Event) context.getMergedJobDataMap().get(EVENT_PROPERTY);
+        Schedule schedule = (Schedule) context.getMergedJobDataMap().get(SCHEDULE_PROPERTY);
         if (event == null) {
-            EventFactory eventFactory = (EventFactory) context.getMergedJobDataMap().get(EVENT_FACTORY_PROPERTY);
+            EventFactory eventFactory = schedule.getFactory();
             if (eventFactory != null) {
                 event = eventFactory.generateEvent(context.getFireTime());
             } else {
@@ -41,10 +44,10 @@ public class AutomateJob implements Job {
             }
         }
         if (event != null && event.getEventDuration() > 0) {
-            EventHandler handler = (EventHandler) context.getMergedJobDataMap().get(EVENT_HANDLER_PROPERTY);
+            EventHandler handler = schedule.getHandler();
             if (handler != null) {
                 handler.handleEvent(event);
-                logger.info("Executing automation function for " + event.getEventDuration() + " seconds");
+                logger.info("Executing automation ["+event.getName()+"] for " + event.getEventDuration() + " seconds");
             } else {
                 logger.error("No event handler has been set for job [" + context.getJobDetail().getKey().getName() + ":" + context.getJobDetail().getKey().getName() + "]");
             }

@@ -16,8 +16,13 @@ package net.audumla.automate.scheduler;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
+import net.audumla.automate.EventFactory;
+import net.audumla.automate.EventHandler;
+
 public interface Schedule {
     void setEnabled(boolean enable);
+    EventFactory getFactory();
+    EventHandler getHandler();
     default void enable() {
         setEnabled(true);
     }

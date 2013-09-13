@@ -41,7 +41,7 @@ public class SchedulerTest {
         final AtomicReference<Boolean> active = new AtomicReference<Boolean>(false);
 
         AtomicSchedule timer1 = new AtomicSchedule(scheduler);
-        timer1.setWhen(new Date(new Date().getTime() + 200));
+        timer1.setStartTime(new Date(new Date().getTime() + 200));
         timer1.setSeconds(2);
         timer1.setHandler((Event e) -> {
             try {
@@ -52,7 +52,7 @@ public class SchedulerTest {
             active.set(true);}
         );
         AtomicSchedule timer2 = new AtomicSchedule(scheduler);
-        timer2.setWhen(new Date(new Date().getTime() + 500));
+        timer2.setStartTime(new Date(new Date().getTime() + 500));
         timer2.setSeconds(3);
         timer2.setHandler((Event e) -> {
             try {
@@ -89,7 +89,7 @@ public class SchedulerTest {
         final AtomicReference<Boolean> active = new AtomicReference<Boolean>(false);
 
         AtomicSchedule timer = new AtomicSchedule(scheduler);
-        timer.setWhen(new Date(new Date().getTime() + 200));
+        timer.setStartTime(new Date(new Date().getTime() + 200));
         timer.setSeconds(2);
         timer.setHandler((Event e) -> {
             try {
@@ -118,7 +118,7 @@ public class SchedulerTest {
         final AtomicReference<Boolean> active = new AtomicReference<Boolean>(false);
 
         AtomicSchedule timer = new AtomicSchedule(scheduler);
-        timer.setWhen(new Date(new Date().getTime() + 200));
+        timer.setStartTime(new Date(new Date().getTime() + 200));
         timer.setSeconds(20);
         timer.setHandler(new ActivatorEventHandler(new ActivatorMock(true,true)));
         timer.setEnabled(true);

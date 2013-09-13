@@ -40,7 +40,7 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
     <bean id="schedule" class="net.audumla.automate.scheduler.AtomicSchedule" >
         <constructor-arg ref="scheduler"/>
         <property name="handler" ref="eventHandler"/>
-        <property name="eventFactory" ref="eventFactory"/>
+        <property name="factory" ref="eventFactory"/>
     </bean>
 
     <bean id="scheduler" class="net.audumla.automate.scheduler.Scheduler" init-method="initialize" destroy-method="shutdown">

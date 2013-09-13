@@ -43,9 +43,9 @@ public abstract class ActivatorAdaptor implements Activator {
 
     @Override
     public boolean activate(ActivatorListener... listeners) {
-        if (getCurrentState() != ActivateState.ACTIVATED) {
+        if (getCurrentState() != ActivateState.ACTIVATED && getCurrentState() != ActivateState.ACTIVATING) {
             Deque<ActivatorListener> ls = new LinkedList<ActivatorListener>(registeredListeners);
-            Arrays.asList(listeners).forEach(l -> ls.addFirst(l));
+            Arrays.asList(listeners).forEach(ls::addFirst);
             ls.forEach(l -> l.onStateChange(new ActivatorStateChangeEvent(state, ActivateState.ACTIVATING, this)));
             try {
                 if (doActivate(ls)) {
@@ -63,6 +63,9 @@ public abstract class ActivatorAdaptor implements Activator {
             }
 
         }
+        else {
+            logger.warn("Cannot activate Activator ["+getName()+"] when state is ["+getCurrentState()+"]");
+        }
         return false;
     }
 
@@ -70,7 +73,7 @@ public abstract class ActivatorAdaptor implements Activator {
 
     @Override
     public boolean deactivate(ActivatorListener... listeners) {
-        if (getCurrentState() != ActivateState.DEACTIVATED) {
+        if (getCurrentState() != ActivateState.DEACTIVATED && getCurrentState() != ActivateState.DEACTIVATING) {
             Deque<ActivatorListener> ls = new LinkedList<ActivatorListener>(registeredListeners);
             Arrays.asList(listeners).forEach(l -> ls.addFirst(l));
             ls.forEach(l -> l.onStateChange(new ActivatorStateChangeEvent(state, ActivateState.DEACTIVATING, this)));
@@ -86,6 +89,9 @@ public abstract class ActivatorAdaptor implements Activator {
             } catch (Exception ex) {
                 ls.forEach(l -> l.onStateChangeFailure(new ActivatorStateChangeEvent(state, ActivateState.DEACTIVATED, this), ex, "Unknown Activator failure"));
             }
+        }
+        else {
+            logger.warn("Cannot deactivate Activator ["+getName()+"] when state is ["+getCurrentState()+"]");
         }
         return false;
     }

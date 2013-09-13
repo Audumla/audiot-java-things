@@ -28,7 +28,7 @@ public class Scheduler {
     private Collection<Schedule> schedules = new HashSet<Schedule>();
     private boolean autoStartSchedules = true;
 
-    public void addSchedule(Schedule schedule) {
+    synchronized public void addSchedule(Schedule schedule) {
         schedules.add(schedule);
         schedule.setEnabled(autoStartSchedules);
     }
@@ -41,7 +41,7 @@ public class Scheduler {
         this.autoStartSchedules = autoStartSchedules;
     }
 
-    public void removeSchedule(Schedule schedule) {
+    synchronized public void removeSchedule(Schedule schedule) {
         schedule.setEnabled(false);
         schedules.remove(schedule);
     }

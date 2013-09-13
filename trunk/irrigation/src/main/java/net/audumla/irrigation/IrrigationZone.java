@@ -143,7 +143,7 @@ public class IrrigationZone implements Zone {
     public void addIrrigationEvent(Date when, int seconds) {
         AtomicSchedule timer = new AtomicSchedule(null);
         timer.setSeconds(seconds);
-        timer.setWhen(when);
+        timer.setStartTime(when);
         timer.setHandler(this);
         timer.setEnabled(true);
     }

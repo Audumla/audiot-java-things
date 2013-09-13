@@ -7,6 +7,7 @@ package net.audumla.automate.scheduler.quartz;
 
 import net.audumla.automate.Event;
 import net.audumla.automate.EventFactory;
+import net.audumla.automate.scheduler.Schedule;
 import org.apache.log4j.Logger;
 import org.quartz.JobExecutionContext;
 import org.quartz.SchedulerException;
@@ -27,7 +28,9 @@ public class AutomateListener extends TriggerListenerSupport {
     @Override
     public boolean vetoJobExecution(Trigger trigger, JobExecutionContext context) {
         Date now = context.getFireTime();
-        EventFactory eventFactory = (EventFactory) context.getMergedJobDataMap().get(AutomateJob.EVENT_FACTORY_PROPERTY);
+        Schedule schedule= (Schedule) context.getMergedJobDataMap().get(AutomateJob.SCHEDULE_PROPERTY);
+
+        EventFactory eventFactory = schedule.getFactory();
         Event event = eventFactory.generateEvent(now);
         if (event != null) {
             Date eventTime = event.getEventStartTime();

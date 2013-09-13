@@ -20,16 +20,16 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd">
 
-    <bean id="eventFactory" class="net.audumla.devices.activator.MockEventFactory">
+    <bean id="eventFactory" class="net.audumla.devices.activator.MockEventFactory" >
         <property name="duration" value="2" />
         <property name="synchronous" value="false" />
     </bean>
 
-    <bean id="eventHandler" class="net.audumla.automate.ActivatorEventHandler">
+    <bean id="eventHandler" class="net.audumla.automate.ActivatorEventHandler" scope="prototype">
         <property name="activator" ref="activator"/>
     </bean>
 
-    <bean id="activator" class="net.audumla.devices.activator.ActivatorMock">
+    <bean id="activator" class="net.audumla.devices.activator.ActivatorMock" scope="prototype">
         <constructor-arg index="0" value="true"/>
         <constructor-arg index="1" value="true"/>
     </bean>
@@ -49,19 +49,19 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
     <bean id="timer3" class="net.audumla.automate.scheduler.AtomicSchedule" >
         <constructor-arg ref="scheduler"/>
         <property name="handler" ref="eventHandler"/>
-        <property name="eventFactory" ref="eventFactory"/>
+        <property name="factory" ref="eventFactory"/>
     </bean>
 
     <bean id="timer4" class="net.audumla.automate.scheduler.AtomicSchedule" >
         <constructor-arg ref="scheduler"/>
         <property name="handler" ref="eventHandler"/>
-        <property name="eventFactory" ref="eventFactory"/>
+        <property name="factory" ref="eventFactory"/>
     </bean>
 
     <bean id="timer5" class="net.audumla.automate.scheduler.AtomicSchedule" >
         <constructor-arg ref="scheduler"/>
         <property name="handler" ref="eventHandler"/>
-        <property name="eventFactory" ref="eventFactory"/>
+        <property name="factory" ref="eventFactory"/>
     </bean>
 
     <bean id="scheduler" class="net.audumla.automate.scheduler.Scheduler" init-method="initialize" destroy-method="shutdown">

@@ -8,6 +8,7 @@ package net.audumla.irrigation;
 
 import net.audumla.automate.EventFactory;
 import net.audumla.automate.EventHandler;
+import net.audumla.automate.scheduler.ScheduleAdaptor;
 import net.audumla.automate.scheduler.quartz.AutomateJob;
 import net.audumla.climate.*;
 import org.apache.commons.lang.time.DateUtils;
@@ -19,6 +20,7 @@ import org.quartz.impl.StdSchedulerFactory;
 import org.quartz.impl.matchers.GroupMatcher;
 import org.quartz.listeners.JobListenerSupport;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -33,8 +35,16 @@ public class SimpleIrrigationTest {
 
     protected void scheduleJob(Scheduler scheduler, String jobName, String jobGroup, int repeat, EventHandler handler, EventFactory factory) throws SchedulerException {
         JobDetail job = JobBuilder.newJob(AutomateJob.class).withIdentity(jobName, jobGroup).build();
-        job.getJobDataMap().put(AutomateJob.EVENT_FACTORY_PROPERTY, factory);
-        job.getJobDataMap().put(AutomateJob.EVENT_HANDLER_PROPERTY, handler);
+        ScheduleAdaptor schedule = new ScheduleAdaptor(new net.audumla.automate.scheduler.Scheduler()) {
+            @Override
+            protected ScheduleBuilder getScheduleBuilder() throws ParseException {
+                return null;
+            }
+        };
+
+        schedule.setFactory(factory);
+        schedule.setHandler(handler);
+        job.getJobDataMap().put(AutomateJob.SCHEDULE_PROPERTY, schedule);
 
         Trigger trigger = TriggerBuilder.newTrigger().withIdentity("trigger-" + jobName, jobGroup).startNow()
                 .withSchedule(SimpleScheduleBuilder.repeatSecondlyForTotalCount(repeat))
