@@ -13,6 +13,6 @@ public interface EventHandler {
         return BeanUtils.generateName(EventHandler.class);
     }
 
-    void handleEvent(Event event);
+    boolean handleEvent(Event event);
 
 }

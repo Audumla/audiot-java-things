@@ -46,8 +46,11 @@ public class SchedulerTest {
                 assert scheduler.getSchedules().size() == 1;
                 assert StdSchedulerFactory.getDefaultScheduler().getCurrentlyExecutingJobs().size() == 1;
             } catch (SchedulerException e1) {
+                return false;
             }
-            active.set(true);}
+            active.set(true);
+            return true;
+        }
         );
         AtomicSchedule timer2 = new AtomicSchedule(scheduler);
         timer2.setStartTime(new Date(new Date().getTime() + 500));
@@ -57,8 +60,11 @@ public class SchedulerTest {
                 assert scheduler.getSchedules().size() == 0;
                 assert StdSchedulerFactory.getDefaultScheduler().getCurrentlyExecutingJobs().size() == 1;
             } catch (SchedulerException e1) {
+                return false;
             }
-            active.set(true);}
+            active.set(true);
+            return true;
+        }
         );
 
 
@@ -93,8 +99,12 @@ public class SchedulerTest {
             try {
                 assert StdSchedulerFactory.getDefaultScheduler().getCurrentlyExecutingJobs().size() == 1;
             } catch (SchedulerException e1) {
+                return false;
             }
-            active.set(true);}
+            active.set(true);
+            return true;
+
+        }
         );
 
         timer.setEnabled(true);
