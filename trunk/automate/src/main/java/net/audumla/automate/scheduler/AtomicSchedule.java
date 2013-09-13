@@ -5,19 +5,18 @@ package net.audumla.automate.scheduler;
  * Time: 10:28 PM
  */
 
-import net.audumla.automate.*;
-import net.audumla.automate.scheduler.quartz.AutomateJob;
-import net.audumla.bean.BeanUtils;
-import org.apache.log4j.LogManager;
+import net.audumla.automate.DefaultEventFactory;
+import net.audumla.automate.Event;
+import net.audumla.automate.EventHandler;
+import net.audumla.automate.FixedDurationFactory;
 import org.apache.log4j.Logger;
-import org.quartz.*;
-import org.quartz.impl.StdSchedulerFactory;
+import org.quartz.ScheduleBuilder;
+import org.quartz.SimpleScheduleBuilder;
 
 import java.text.ParseException;
-import java.util.Date;
 
 public class AtomicSchedule extends ScheduleAdaptor {
-    private static final Logger logger = LogManager.getLogger(AtomicSchedule.class);
+    private static final Logger logger = Logger.getLogger(AtomicSchedule.class);
 
     public AtomicSchedule(Scheduler scheduler) {
         super(scheduler);
@@ -36,7 +35,6 @@ public class AtomicSchedule extends ScheduleAdaptor {
     protected ScheduleBuilder getScheduleBuilder() throws ParseException {
         return SimpleScheduleBuilder.repeatSecondlyForTotalCount(1).withMisfireHandlingInstructionFireNow();
     }
-
 
     /**
      * Used to remove the instance of the timer from the scheduler once it has activated as this timer is designed as a single shot

@@ -11,9 +11,7 @@ package net.audumla.irrigation;
  */
 
 
-import net.audumla.automate.ActivatorEventHandler;
 import net.audumla.climate.*;
-import net.audumla.devices.activator.ActivatorMock;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;

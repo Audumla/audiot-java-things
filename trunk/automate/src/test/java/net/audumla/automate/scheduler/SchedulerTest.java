@@ -16,9 +16,7 @@ package net.audumla.automate.scheduler;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import net.audumla.automate.ActivatorEventHandler;
 import net.audumla.automate.Event;
-import net.audumla.devices.activator.ActivatorMock;
 import org.junit.Before;
 import org.junit.Test;
 import org.quartz.SchedulerException;

@@ -20,12 +20,11 @@ import net.audumla.automate.DefaultEvent;
 import net.audumla.automate.Event;
 import net.audumla.automate.EventFactory;
 import org.apache.log4j.Logger;
-import org.apache.log4j.LogManager;
 
 import java.util.Date;
 
-public class MockEventFactory implements EventFactory{
-    private static final Logger logger = LogManager.getLogger(MockEventFactory.class);
+public class MockEventFactory implements EventFactory {
+    private static final Logger logger = Logger.getLogger(MockEventFactory.class);
     private boolean synchronous = false;
     private boolean eventActive = false;
     private int duration = 2;
@@ -57,6 +56,11 @@ public class MockEventFactory implements EventFactory{
         this.duration = duration;
     }
 
+    @Override
+    public Event generateEvent(Date now) {
+        return new MockEvent(now, duration);
+    }
+
     private class MockEvent extends DefaultEvent {
 
         public MockEvent(Date time, long duration) {
@@ -69,30 +73,24 @@ public class MockEventFactory implements EventFactory{
                 case EXECUTING:
                     if (synchronous && eventActive) {
                         //assert false;
-                    }
-                    else {
+                    } else {
                         eventActive = true;
                         ++executedCount;
-                        logger.debug("Executed Event Count = "+executedCount);
+                        logger.debug("Executed Event Count = " + executedCount);
                     }
                     break;
                 case COMPLETE:
                     eventActive = false;
                     ++completedCount;
-                    logger.debug("Completed Event Count = "+completedCount);
+                    logger.debug("Completed Event Count = " + completedCount);
                     break;
                 case FAILED:
                     eventActive = false;
                     ++failedCount;
-                    logger.debug("Failed Event Count = "+failedCount);
+                    logger.debug("Failed Event Count = " + failedCount);
                     break;
             }
             super.setStatus(status);    //To change body of overridden methods use File | Settings | File Templates.
         }
-    }
-
-    @Override
-    public Event generateEvent(Date now) {
-        return new MockEvent(now,duration);
     }
 }

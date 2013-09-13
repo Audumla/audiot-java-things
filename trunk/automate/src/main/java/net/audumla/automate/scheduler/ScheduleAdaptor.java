@@ -25,7 +25,6 @@ import org.apache.log4j.Logger;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 import org.quartz.impl.matchers.GroupMatcher;
-import org.quartz.listeners.TriggerListenerSupport;
 
 import java.text.ParseException;
 import java.util.Date;
