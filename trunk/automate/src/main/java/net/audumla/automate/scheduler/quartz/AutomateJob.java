@@ -39,6 +39,7 @@ public class AutomateJob implements Job {
             EventFactory eventFactory = schedule.getFactory();
             if (eventFactory != null) {
                 event = eventFactory.generateEvent(context.getFireTime());
+                context.getMergedJobDataMap().put(EVENT_PROPERTY,event);
             } else {
                 logger.error("No event factory has been set for job [" + context.getJobDetail().getKey().getName() + ":" + context.getJobDetail().getKey().getName() + "]");
             }
@@ -47,9 +48,9 @@ public class AutomateJob implements Job {
             EventHandler handler = schedule.getHandler();
             if (handler != null) {
                 if (handler.handleEvent(event)) {
-                    logger.info("Executing automation [" + event.getName() + "] for " + event.getEventDuration() + " seconds");
+                    logger.info("Executing automation [" + event.getName() + " - Status:"+event.getStatus()+"] for " + event.getEventDuration() + " seconds - for job [" + context.getJobDetail().getKey().getName() + ":" + context.getJobDetail().getKey().getName() + "]");
                 } else {
-                    logger.info("Unable to execute automation [" + event.getName() + "] for " + event.getEventDuration() + " seconds");
+                    logger.info("Unable to execute automation [" + event.getName() + "] for " + event.getEventDuration() + " seconds - for job [" + context.getJobDetail().getKey().getName() + ":" + context.getJobDetail().getKey().getName() + "]");
 
                 }
             } else {

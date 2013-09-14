@@ -52,7 +52,7 @@ public class BlockingActivatorTest {
             }
 
             @Override
-            public void onStateChangeFailure(ActivatorStateChangeEvent event, Exception ex, String message) {
+            public void onStateChangeFailure(ActivatorStateChangeEvent event, Throwable ex, String message) {
                 assert false;
             }
         };
@@ -112,7 +112,7 @@ public class BlockingActivatorTest {
             }
 
             @Override
-            public void onStateChangeFailure(ActivatorStateChangeEvent event, Exception ex, String message) {
+            public void onStateChangeFailure(ActivatorStateChangeEvent event, Throwable ex, String message) {
                 assert false;
             }
         };

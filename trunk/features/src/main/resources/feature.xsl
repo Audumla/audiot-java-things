@@ -7,7 +7,7 @@
 
     <xsl:template match="karaf:bundle">
         <xsl:choose>
-            <xsl:when test="contains(text(),'log4j') or contains(text(),'commons-logging') or contains(text(),'slf4j')">
+            <xsl:when test="contains(text(),'log4j') or contains(text(),'commons-logging') or contains(text(),'slf4j') or contains(text(),'ftd2xxj')">
             </xsl:when>
             <xsl:otherwise>
                 <xsl:copy>

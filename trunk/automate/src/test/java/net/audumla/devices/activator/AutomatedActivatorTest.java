@@ -84,4 +84,38 @@ public class AutomatedActivatorTest {
             assert factory.getFailedCount() == 0;
         }
     }
+
+    @Test
+    public void testCronSchedule() throws Exception {
+        context = new ClassPathXmlApplicationContext("testCronTimers.xml");
+        MockEventFactory factory = (MockEventFactory) context.getBean("eventFactory");
+        synchronized (this) {
+            int count = 0;
+            while (count < 18 && factory.getCompletedCount() != 5) {
+                this.wait(1000);
+                ++count;
+            }
+            assert factory.getCompletedCount() == 5;
+            assert factory.getExecutedCount() == 5;
+            assert factory.getFailedCount() == 0;
+        }
+    }
+
+    @Test
+    public void testFailingUSBCronSchedule() throws Exception {
+        context = new ClassPathXmlApplicationContext("testFailingUSBCronTimers.xml");
+//        MockEventFactory factory = (MockEventFactory) context.getBean("eventFactory");
+        synchronized (this) {
+            int count = 0;
+            while (count < 18 ) {
+                this.wait(1000);
+                ++count;
+            }
+//            assert factory.getCompletedCount() == 5;
+//            assert factory.getExecutedCount() == 5;
+//            assert factory.getFailedCount() == 0;
+        }
+    }
 }
+
+

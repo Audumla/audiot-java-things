@@ -61,6 +61,7 @@ public abstract class ScheduleAdaptor implements Schedule {
     }
 
     protected JobDetail start() {
+        logger.trace("Starting Schedule ["+getName()+"]");
         JobDetail jd = JobBuilder.newJob(jobClazz).withIdentity(getName(), getGroup()).build();
         try {
 
@@ -75,8 +76,12 @@ public abstract class ScheduleAdaptor implements Schedule {
                 trigger = TriggerBuilder.newTrigger().withIdentity("trigger-" + getName(),getGroup()).startAt(startTime).withSchedule(builder).build();
             }
 
+            if (StdSchedulerFactory.getDefaultScheduler().getJobDetail(jd.getKey()) != null) {
+                logger.trace("Schedule ["+getName()+"] already exists - Replacing with new instance");
+                StdSchedulerFactory.getDefaultScheduler().deleteJob(jd.getKey());
+            }
             StdSchedulerFactory.getDefaultScheduler().scheduleJob(jd, trigger);
-        } catch (Exception e) {
+        } catch (Throwable e) {
             logger.error(e);
         }
         return jd;
@@ -89,8 +94,9 @@ public abstract class ScheduleAdaptor implements Schedule {
         } else {
             if (job != null) {
                 try {
+                    logger.trace("Stopping Schedule ["+getName()+"]");
                     StdSchedulerFactory.getDefaultScheduler().deleteJob(job.getKey());
-                } catch (SchedulerException e) {
+                } catch (Throwable e) {
                     logger.error(e);
                 }
             }
