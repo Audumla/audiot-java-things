@@ -70,7 +70,7 @@ public class ActivatorEventHandler implements EventHandler {
         }
 
         @Override
-        public void onStateChangeFailure(ActivatorStateChangeEvent event, Exception ex, String message) {
+        public void onStateChangeFailure(ActivatorStateChangeEvent event, Throwable ex, String message) {
             irrigationEvent.setFailed(ex, message);
         }
     }

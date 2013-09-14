@@ -53,12 +53,12 @@ public abstract class ActivatorAdaptor implements Activator {
                     return true;
                 } else {
                     if (getCurrentState() != ActivateState.UNKNOWN) {
-                        ls.forEach(l -> l.onStateChangeFailure(new ActivatorStateChangeEvent(state, ActivateState.ACTIVATED, this), null, "Unknown Activator failure"));
+                        ls.forEach(l -> l.onStateChangeFailure(new ActivatorStateChangeEvent(state, ActivateState.ACTIVATED, this), null, "Unknown failure activating Activator ["+getName()+"]"));
                         deactivate(listeners);
                     }
                 }
-            } catch (Exception ex) {
-                ls.forEach(l -> l.onStateChangeFailure(new ActivatorStateChangeEvent(state, ActivateState.ACTIVATED, this), ex, "Unknown Activator failure"));
+            } catch (Throwable ex) {
+                ls.forEach(l -> l.onStateChangeFailure(new ActivatorStateChangeEvent(state, ActivateState.ACTIVATED, this), ex, "Unknown failure activating Activator ["+getName()+"]"));
                 deactivate(listeners);
             }
 
@@ -75,7 +75,7 @@ public abstract class ActivatorAdaptor implements Activator {
     public boolean deactivate(ActivatorListener... listeners) {
         if (getCurrentState() != ActivateState.DEACTIVATED && getCurrentState() != ActivateState.DEACTIVATING) {
             Deque<ActivatorListener> ls = new LinkedList<ActivatorListener>(registeredListeners);
-            Arrays.asList(listeners).forEach(l -> ls.addFirst(l));
+            Arrays.asList(listeners).forEach(ls::addFirst);
             ls.forEach(l -> l.onStateChange(new ActivatorStateChangeEvent(state, ActivateState.DEACTIVATING, this)));
             try {
                 if (doDeactivate(ls)) {
@@ -83,11 +83,11 @@ public abstract class ActivatorAdaptor implements Activator {
                     return true;
                 } else {
                     if (getCurrentState() != ActivateState.UNKNOWN) {
-                        ls.forEach(l -> l.onStateChangeFailure(new ActivatorStateChangeEvent(state, ActivateState.DEACTIVATED, this), null, "Unknown Activator failure"));
+                        ls.forEach(l -> l.onStateChangeFailure(new ActivatorStateChangeEvent(state, ActivateState.DEACTIVATED, this), null, "Unknown failure deactivating Activator ["+getName()+"]"));
                     }
                 }
-            } catch (Exception ex) {
-                ls.forEach(l -> l.onStateChangeFailure(new ActivatorStateChangeEvent(state, ActivateState.DEACTIVATED, this), ex, "Unknown Activator failure"));
+            } catch (Throwable ex) {
+                ls.forEach(l -> l.onStateChangeFailure(new ActivatorStateChangeEvent(state, ActivateState.DEACTIVATED, this), ex, "Unknown failure deactivating Activator ["+getName()+"]"));
             }
         }
         else {
@@ -119,6 +119,9 @@ public abstract class ActivatorAdaptor implements Activator {
                 try {
                     if (activate(listeners)) {
                         addDeactivateTimeout(seconds > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) seconds, listeners);
+                    }
+                    else {
+                        return false;
                     }
                 } catch (Exception e) {
                     logger.error(e);
@@ -186,7 +189,7 @@ public abstract class ActivatorAdaptor implements Activator {
         }
 
         @Override
-        public void onStateChangeFailure(ActivatorStateChangeEvent event, Exception ex, String message) {
+        public void onStateChangeFailure(ActivatorStateChangeEvent event, Throwable ex, String message) {
             logger.trace("Failed changing [" + event.getActivator().getName() + "] from " + event.getOldState() + " to " + event.getNewState());
             logger.error(message, ex);
             activator.setActiveState(ActivateState.UNKNOWN);

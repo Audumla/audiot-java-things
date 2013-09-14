@@ -37,7 +37,7 @@
         <property name="activator" ref="irrigation.zone1.activator"/>
     </bean>
 
-    <bean id="irrigation.zone1.activator" class="net.audumla.devices.activator.relay.TinyOSUSBRelayActivator">
+    <bean id="irrigation.zone1.activator" class="net.audumla.devices.activator.relay.TinyOSUSBRelayActivator" init-method="deactivate">
         <property name="device" value="0"/>
         <property name="relay" value="1"/>
     </bean>
@@ -51,7 +51,7 @@
         <property name="activator" ref="irrigation.zone1.activator"/>
     </bean>
 
-    <bean id="irrigation.zone2.activator" class="net.audumla.devices.activator.relay.TinyOSUSBRelayActivator">
+    <bean id="irrigation.zone2.activator" class="net.audumla.devices.activator.relay.TinyOSUSBRelayActivator" init-method="deactivate">
         <property name="device" value="0"/>
         <property name="relay" value="2"/>
     </bean>
@@ -65,7 +65,7 @@
         <property name="activator" ref="irrigation.zone1.activator" />
     </bean>
 
-    <bean id="irrigation.zone3.activator" class="net.audumla.devices.activator.relay.TinyOSUSBRelayActivator">
+    <bean id="irrigation.zone3.activator" class="net.audumla.devices.activator.relay.TinyOSUSBRelayActivator" init-method="deactivate">
         <property name="device" value="0"/>
         <property name="relay"  value="3"/>
     </bean>
@@ -79,7 +79,7 @@
         <property name="activator" ref="irrigation.zone1.activator" />
     </bean>
 
-    <bean id="irrigation.zone4.activator" class="net.audumla.devices.activator.relay.TinyOSUSBRelayActivator">
+    <bean id="irrigation.zone4.activator" class="net.audumla.devices.activator.relay.TinyOSUSBRelayActivator" init-method="deactivate">
         <property name="device" value="0"/>
         <property name="relay"  value="4"/>
     </bean>
@@ -93,7 +93,7 @@
         <property name="activator" ref="irrigation.zone1.activator" />
     </bean>
 
-    <bean id="irrigation.zone5.activator" class="net.audumla.devices.activator.relay.TinyOSUSBRelayActivator">
+    <bean id="irrigation.zone5.activator" class="net.audumla.devices.activator.relay.TinyOSUSBRelayActivator" init-method="deactivate">
         <property name="device" value="0"/>
         <property name="relay"  value="5"/>
     </bean>
@@ -107,7 +107,7 @@
         <property name="activator" ref="irrigation.zone1.activator" />
     </bean>
 
-    <bean id="irrigation.zone6.activator" class="net.audumla.devices.activator.relay.TinyOSUSBRelayActivator">
+    <bean id="irrigation.zone6.activator" class="net.audumla.devices.activator.relay.TinyOSUSBRelayActivator" init-method="deactivate">
         <property name="device" value="0"/>
         <property name="relay"  value="6"/>
     </bean>
@@ -121,7 +121,7 @@
         <property name="activator" ref="irrigation.zone1.activator" />
     </bean>
 
-    <bean id="irrigation.zone7.activator" class="net.audumla.devices.activator.relay.TinyOSUSBRelayActivator">
+    <bean id="irrigation.zone7.activator" class="net.audumla.devices.activator.relay.TinyOSUSBRelayActivator" init-method="deactivate">
         <property name="device" value="0"/>
         <property name="relay"  value="7"/>
     </bean>
@@ -135,7 +135,7 @@
         <property name="activator" ref="irrigation.zone1.activator" />
     </bean>
 
-    <bean id="irrigation.zone8.activator" class="net.audumla.devices.activator.relay.TinyOSUSBRelayActivator">
+    <bean id="irrigation.zone8.activator" class="net.audumla.devices.activator.relay.TinyOSUSBRelayActivator" init-method="deactivate">
         <property name="device" value="0"/>
         <property name="relay"  value="8"/>
     </bean>

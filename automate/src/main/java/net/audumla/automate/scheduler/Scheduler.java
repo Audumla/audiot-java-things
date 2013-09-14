@@ -29,6 +29,7 @@ public class Scheduler {
     private boolean autoStartSchedules = false;
 
     synchronized public void addSchedule(Schedule schedule) {
+        logger.trace("Adding schedule ["+schedule.getName()+"]");
         schedules.add(schedule);
         schedule.setEnabled(autoStartSchedules);
     }
@@ -52,12 +53,13 @@ public class Scheduler {
 
     public void initialize() {
         try {
+            logger.info("Audumla Irrigation - starting");
             scheduler = StdSchedulerFactory.getDefaultScheduler();
             scheduler.start();
             logger.info("Audumla Irrigation - started");
 
-        } catch (Exception e) {
-            logger.error(e);
+        } catch (Throwable e) {
+            logger.error("Audumla Irrigation failed to start",e);
         }
 
     }
@@ -68,7 +70,7 @@ public class Scheduler {
                 scheduler.shutdown();
                 logger.info("Audumla Irrigation - stopped");
             }
-        } catch (Exception ex) {
+        } catch (Throwable ex) {
             logger.error(ex);
         }
     }

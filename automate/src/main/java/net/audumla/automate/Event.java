@@ -46,7 +46,7 @@ public interface Event {
      * @param ex      The Exception that caused the failure if any
      * @param message A message that describes the failure
      */
-    void setFailed(Exception ex, String message);
+    void setFailed(Throwable ex, String message);
 
     /**
      * @return The message associated with the event failure
@@ -56,7 +56,7 @@ public interface Event {
     /**
      * @return The Exception associated with the event failure
      */
-    Exception getFailureException();
+    Throwable getFailureException();
 
     String getName();
 

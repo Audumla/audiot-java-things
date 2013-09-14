@@ -24,7 +24,7 @@ public class FixedSchedule extends ScheduleAdaptor {
 
     @Override
     protected ScheduleBuilder getScheduleBuilder() throws ParseException {
-        return CronScheduleBuilder.cronSchedule(new CronExpression(cronExpression));
+        return CronScheduleBuilder.cronSchedule(new CronExpression(cronExpression)).withMisfireHandlingInstructionFireAndProceed();
     }
 
     public void setSeconds(int seconds) {

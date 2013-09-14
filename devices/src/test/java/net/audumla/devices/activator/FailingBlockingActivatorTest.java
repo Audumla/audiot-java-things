@@ -77,7 +77,7 @@ public class FailingBlockingActivatorTest {
             }
 
             @Override
-            public void onStateChangeFailure(ActivatorStateChangeEvent event, Exception ex, String message) {
+            public void onStateChangeFailure(ActivatorStateChangeEvent event, Throwable ex, String message) {
                 states.add(event.getNewState());
                 switch (event.getNewState()) {
                     case ACTIVATING:
@@ -131,7 +131,7 @@ public class FailingBlockingActivatorTest {
             }
 
             @Override
-            public void onStateChangeFailure(ActivatorStateChangeEvent event, Exception ex, String message) {
+            public void onStateChangeFailure(ActivatorStateChangeEvent event, Throwable ex, String message) {
                 states.add(event.getNewState());
                 switch (event.getNewState()) {
                     case ACTIVATING:
@@ -185,7 +185,7 @@ public class FailingBlockingActivatorTest {
             }
 
             @Override
-            public void onStateChangeFailure(ActivatorStateChangeEvent event, Exception ex, String message) {
+            public void onStateChangeFailure(ActivatorStateChangeEvent event, Throwable ex, String message) {
                 states.add(event.getNewState());
                 switch (event.getNewState()) {
                     case DEACTIVATING:

@@ -31,4 +31,6 @@ public interface Schedule {
     void disable();
 
     void setSyncGroup(String group);
+
+    String getName();
 }

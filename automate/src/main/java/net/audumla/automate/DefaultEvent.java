@@ -23,7 +23,7 @@ public class DefaultEvent implements Event {
     private EventStatus status = EventStatus.PENDING;
     private Date endTime;
     private String failureMessage;
-    private Exception failureException;
+    private Throwable failureException;
     private String name = BeanUtils.generateName(Event.class);
 
     public DefaultEvent(Date time, long duration) {
@@ -57,7 +57,7 @@ public class DefaultEvent implements Event {
     }
 
     @Override
-    public void setFailed(Exception ex, String message) {
+    public void setFailed(Throwable ex, String message) {
         setStatus(EventStatus.FAILED);
         failureException = ex;
         failureMessage = message;
@@ -69,7 +69,7 @@ public class DefaultEvent implements Event {
     }
 
     @Override
-    public Exception getFailureException() {
+    public Throwable getFailureException() {
         return failureException;
     }
 
