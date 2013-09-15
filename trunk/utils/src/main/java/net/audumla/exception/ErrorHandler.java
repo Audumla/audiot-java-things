@@ -8,6 +8,6 @@ package net.audumla.exception;
 
 @FunctionalInterface
 public interface ErrorHandler {
-    void handleError(String message, Exception ex);
+    void handleError(String message, Throwable ex);
 
 }
