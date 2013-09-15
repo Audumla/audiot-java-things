@@ -8,7 +8,7 @@
     <xsl:template match="karaf:bundle">
         <xsl:choose>
             <xsl:when
-                    test="contains(text(),'log4j') or contains(text(),'commons-logging') or contains(text(),'slf4j') or contains(text(),'ftd2xxj') or contains(text(),'osgi')">
+                    test="contains(text(),'log4j') or contains(text(),'commons-logging') or contains(text(),'slf4j') or contains(text(),'osgi')">
             </xsl:when>
             <xsl:otherwise>
                 <xsl:copy>
@@ -24,6 +24,9 @@
             <xsl:copy-of select="@name"/>
             <xsl:apply-templates select="*"/>
         </features>
+    </xsl:template>
+
+    <xsl:template match="@xmlns">
     </xsl:template>
 
     <xsl:template match="*">

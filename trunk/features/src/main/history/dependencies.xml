@@ -11,18 +11,16 @@
         <bundle>mvn:net.audumla/AudumlaDevices/1.0-SNAPSHOT</bundle>
         <bundle>mvn:net.audumla/AudumlaIrrigation/1.0-SNAPSHOT</bundle>
         <bundle>mvn:net.audumla/AudumlaUtils/1.0-SNAPSHOT</bundle>
+        <bundle>mvn:net.audumla/ftd2xxj/1.0-SNAPSHOT</bundle>
         <bundle>mvn:org.apache.commons/commons-lang3/3.1</bundle>
         <bundle>mvn:org.osgi/org.osgi.core/4.3.1</bundle>
         <bundle>mvn:org.quartz-scheduler/quartz/2.2.0</bundle>
-        <bundle>mvn:org.slf4j/slf4j-api/1.6.6</bundle>
         <bundle>wrap:mvn:c3p0/c3p0/0.9.1.1</bundle>
         <bundle>wrap:mvn:com.luckycatlabs.sotoo/SunriseSunsetCalculator/1.0-SNAPSHOT</bundle>
         <bundle>wrap:mvn:com.pi4j/pi4j-device/0.0.5</bundle>
         <bundle>wrap:mvn:com.pi4j/pi4j-gpio-extension/0.0.5</bundle>
         <bundle>wrap:mvn:com.pi4j/pi4j-native/0.0.5/so/hard-float</bundle>
         <bundle>wrap:mvn:com.pi4j/pi4j-native/0.0.5/so/soft-float</bundle>
-        <bundle>wrap:mvn:commons-logging/commons-logging/1.1.1</bundle>
-        <bundle>wrap:mvn:ftd2xxj/ftd2xxj/2.1</bundle>
         <bundle>wrap:mvn:log4j/log4j/1.2.14</bundle>
         <bundle>wrap:mvn:opencsv/opencsv/2.3</bundle>
         <bundle>wrap:mvn:org.json/json/20090211</bundle>
