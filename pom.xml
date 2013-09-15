@@ -62,6 +62,7 @@
         <module>utils</module>
         <module>features</module>
         <module>automate</module>
+        <module>ftd2xxj</module>
     </modules>
     <build>
         <plugins>

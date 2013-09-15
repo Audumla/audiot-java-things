@@ -15,11 +15,20 @@ import java.util.Collection;
  */
 public class TinyOSUSBRelayActivator extends ActivatorAdaptor {
     private static final Logger logger = Logger.getLogger(Activator.class);
+    private TinyOSUSBRelayController controller;
     private int device = 0;
     private int relay = 0;
 
     //
     public TinyOSUSBRelayActivator() {
+    }
+
+    public TinyOSUSBRelayActivator(TinyOSUSBRelayController controller) {
+        this.controller = controller;
+    }
+
+    public void setController(TinyOSUSBRelayController controller) {
+        this.controller = controller;
     }
 
     public void deactivate() {
@@ -36,14 +45,14 @@ public class TinyOSUSBRelayActivator extends ActivatorAdaptor {
 
     @Override
     protected boolean doActivate(Collection<ActivatorListener> listeners) {
-        return TinyOSUSBRelayController.getInstance().activateRelay(device, relay, (String m, Exception e) -> {
+        return controller.activateRelay(device, relay, (String m, Throwable e) -> {
             listeners.forEach(l -> l.onStateChangeFailure(new ActivatorStateChangeEvent(getCurrentState(), ActivateState.ACTIVATED, this), e, m));
         });
     }
 
     @Override
     protected boolean doDeactivate(Collection<ActivatorListener> listeners) {
-        if (TinyOSUSBRelayController.getInstance().deactivateRelay(device, relay, (String m, Exception e) -> {
+        if (controller.deactivateRelay(device, relay, (String m, Throwable e) -> {
             listeners.forEach(l -> l.onStateChangeFailure(new ActivatorStateChangeEvent(getCurrentState(), ActivateState.DEACTIVATED, this), e, m));
         })) {
             return true;
