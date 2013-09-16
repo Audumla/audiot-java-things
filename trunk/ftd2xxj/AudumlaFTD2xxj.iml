@@ -2,11 +2,11 @@
 <module org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule="true" type="JAVA_MODULE" version="4">
   <component name="FacetManager">
     <facet type="Osmorc" name="OSGi">
-      <configuration manifestGenerationMode="OsmorcControlled" manifestLocation="" jarfileLocation="ftd2xxj-1.0-SNAPSHOT.jar" outputPathType="CompilerOutputPath" bndFileLocation="" bundlorFileLocation="" bundleActivator="" bundleSymbolicName="net.audumla.ftd2xxj" bundleVersion="1.0.0.SNAPSHOT" ignoreFilePattern="" useProjectDefaultManifestFileLocation="true" alwaysRebuildBundleJAR="false" doNotSynchronizeWithMaven="false">
+      <configuration manifestGenerationMode="OsmorcControlled" manifestLocation="" jarfileLocation="AudumlaFTD2xxj-1.0-SNAPSHOT.jar" outputPathType="CompilerOutputPath" bndFileLocation="" bundlorFileLocation="" bundleActivator="" bundleSymbolicName="net.audumla.AudumlaFTD2xxj" bundleVersion="1.0.0.SNAPSHOT" ignoreFilePattern="" useProjectDefaultManifestFileLocation="true" alwaysRebuildBundleJAR="false" doNotSynchronizeWithMaven="false">
         <additionalProperties>
           <property key="Bundle-NativeCode" value="lib/ftd2xxj.dll ; osname=Win32 ; processor=x86" />
-          <property key="Bundle-Name" value="net.audumla.ftd2xxj" />
-          <property key="Include-Resource" value="ftd2xxj.dll=$MODULE_DIR$/libraries/ftd2xxj.dll,libftd2xxj.so=$MODULE_DIR$/libraries/libftd2xxj.so" />
+          <property key="Bundle-Name" value="net.audumla.AudumlaFTD2xxj" />
+          <property key="Include-Resource" value="lib/ftd2xxj.dll=$MODULE_DIR$/libraries/lib/ftd2xxj.dll,lib/libftd2xxj.so=$MODULE_DIR$/libraries/lib/libftd2xxj.so" />
         </additionalProperties>
         <additionalJARContents />
       </configuration>

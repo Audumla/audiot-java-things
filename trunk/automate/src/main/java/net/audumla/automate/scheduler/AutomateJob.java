@@ -3,12 +3,11 @@
  * This work is licensed under the Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License. To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-nd/3.0/.
  */
 
-package net.audumla.automate.scheduler.quartz;
+package net.audumla.automate.scheduler;
 
 import net.audumla.automate.Event;
 import net.audumla.automate.EventFactory;
 import net.audumla.automate.EventHandler;
-import net.audumla.automate.scheduler.Schedule;
 import org.apache.log4j.Logger;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.Job;

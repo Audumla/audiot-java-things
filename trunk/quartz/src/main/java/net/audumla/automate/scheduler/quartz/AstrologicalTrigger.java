@@ -1,4 +1,5 @@
-package net.audumla.util;
+package net.audumla.automate.scheduler.quartz;
+
 /*
  * *********************************************************************
  *  ORGANIZATION : audumla.net
@@ -15,20 +16,11 @@ package net.audumla.util;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-/**
- * User: audumla
- * Date: 23/07/13
- * Time: 11:15 PM
- */
+import org.quartz.Trigger;
 
-import org.apache.log4j.Logger;
-import org.junit.Test;
+import java.io.Serializable;
 
-public class BeanTest {
-    private static final Logger logger = Logger.getLogger(BeanTest.class);
+public interface AstrologicalTrigger extends Cloneable, Comparable<Trigger>, Serializable, Trigger {
 
-    @Test
-    public void testToString() {
 
-    }
 }

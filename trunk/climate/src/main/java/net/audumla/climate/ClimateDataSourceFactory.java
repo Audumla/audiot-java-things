@@ -18,7 +18,7 @@ package net.audumla.climate;
 
 import net.audumla.bean.BeanUtils;
 import net.audumla.climate.bom.BOMDataLoader;
-import net.audumla.util.SafeParse;
+import net.audumla.bean.SafeParse;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;

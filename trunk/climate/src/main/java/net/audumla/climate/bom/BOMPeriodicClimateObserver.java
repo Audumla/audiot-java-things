@@ -18,8 +18,8 @@ package net.audumla.climate.bom;
 
 import net.audumla.bean.SupportedFunction;
 import net.audumla.climate.*;
-import net.audumla.util.SafeParse;
-import net.audumla.util.Time;
+import net.audumla.bean.SafeParse;
+import net.audumla.spacetime.Time;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.log4j.Logger;

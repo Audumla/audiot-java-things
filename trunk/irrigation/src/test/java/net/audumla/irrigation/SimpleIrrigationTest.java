@@ -9,7 +9,7 @@ package net.audumla.irrigation;
 import net.audumla.automate.EventFactory;
 import net.audumla.automate.EventHandler;
 import net.audumla.automate.scheduler.ScheduleAdaptor;
-import net.audumla.automate.scheduler.quartz.AutomateJob;
+import net.audumla.automate.scheduler.AutomateJob;
 import net.audumla.climate.*;
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.log4j.Logger;

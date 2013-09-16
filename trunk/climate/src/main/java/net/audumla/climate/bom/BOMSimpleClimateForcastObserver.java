@@ -19,7 +19,7 @@ package net.audumla.climate.bom;
 import au.com.bytecode.opencsv.CSVReader;
 import net.audumla.bean.SupportedFunction;
 import net.audumla.climate.*;
-import net.audumla.util.Time;
+import net.audumla.spacetime.Time;
 import org.apache.commons.net.ftp.FTPFile;
 import org.apache.log4j.Logger;
 

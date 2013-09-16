@@ -1,7 +1,6 @@
-package net.audumla.util;
+package net.audumla.spacetime;
 
-import com.luckycatlabs.sunrisesunset.SunriseSunsetCalculator;
-import com.luckycatlabs.sunrisesunset.dto.Location;
+import net.audumla.spacetime.astrological.SunriseSunsetCalculator;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -114,7 +113,7 @@ public class Time {
         Calendar c = newCalendar();
         c.setTime(now);
         TimeZone tz = TimeZone.getDefault();
-        SunriseSunsetCalculator sc = new SunriseSunsetCalculator(new Location(llat, llong), tz);
+        SunriseSunsetCalculator sc = new SunriseSunsetCalculator(new Location(llat, llong,0.0), tz);
         return sc.getOfficialSunriseCalendarForDate(c).getTime();
     }
 
@@ -122,7 +121,7 @@ public class Time {
         Calendar c = newCalendar();
         c.setTime(now);
         TimeZone tz = TimeZone.getDefault();
-        SunriseSunsetCalculator sc = new SunriseSunsetCalculator(new Location(llat, llong), tz);
+        SunriseSunsetCalculator sc = new SunriseSunsetCalculator(new Location(llat, llong,0.0), tz);
         return sc.getOfficialSunsetCalendarForDate(c).getTime();
     }
 
