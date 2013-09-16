@@ -18,7 +18,7 @@ package net.audumla.climate.bom;
 
 import au.com.bytecode.opencsv.CSVReader;
 import net.audumla.climate.*;
-import net.audumla.util.SafeParse;
+import net.audumla.bean.SafeParse;
 import org.apache.commons.lang.reflect.ConstructorUtils;
 import org.apache.log4j.Logger;
 

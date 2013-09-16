@@ -1,11 +1,22 @@
-/*
- * Copyright (c) Audumla Technologies 2013.
- * This work is licensed under the Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License. To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-nd/3.0/.
- */
-
 package net.audumla.automate.scheduler.quartz;
 
-import net.audumla.util.Time;
+/*
+ * *********************************************************************
+ *  ORGANIZATION : audumla.net
+ *  More information about this project can be found at the following locations:
+ *  http://www.audumla.net/
+ *  http://audumla.googlecode.com/
+ * *********************************************************************
+ *  Copyright (C) 2012 - 2013 Audumla.net
+ *  Licensed under the Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License.
+ *  You may not use this file except in compliance with the License located at http://creativecommons.org/licenses/by-nc-nd/3.0/
+ *
+ *  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an
+ *  "AS IS BASIS", WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and limitations under the License.
+ */
+
+import net.audumla.spacetime.Time;
 import org.apache.commons.lang.time.DateUtils;
 import org.quartz.Calendar;
 import org.quartz.ScheduleBuilder;
@@ -56,9 +67,9 @@ public class AstrologicalTriggerImpl extends AbstractTrigger<AstrologicalTrigger
         if (schedule.repeat == Integer.MIN_VALUE || count < schedule.repeat) {
             Date nextFire = Time.offset(now, 0, 0, schedule.interval);
             Date end = schedule.endTime.getOffsetTime(now);
-            if (DateUtils.toCalendar(end).after(DateUtils.toCalendar(nextFire))) {
+            if (end.after(nextFire)) {
                 Date start = schedule.startTime.getOffsetTime(now);
-                if (DateUtils.toCalendar(start).after(DateUtils.toCalendar(nextFire))) {
+                if (start.after(nextFire)) {
                     //return the start getEventStartTime if the start getEventStartTime is after the calculated interval getEventStartTime
                     return start;
                 } else {
@@ -115,24 +126,18 @@ public class AstrologicalTriggerImpl extends AbstractTrigger<AstrologicalTrigger
         ++count;
         setPreviousFireTime(getNextFireTime());
         setNextFireTime(getFireTimeAfter(getNextFireTime()));
-
     }
 
     @Override
     public void updateAfterMisfire(Calendar arg0) {
-        // TODO Auto-generated method stub
-
     }
 
     @Override
     public void updateWithNewCalendar(Calendar arg0, long arg1) {
-        // TODO Auto-generated method stub
-
     }
 
     @Override
     protected boolean validateMisfireInstruction(int arg0) {
-        // TODO Auto-generated method stub
         return false;
     }
 

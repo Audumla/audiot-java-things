@@ -1,6 +1,6 @@
 package net.audumla.collections;
 
-import net.audumla.util.Time;
+import net.audumla.spacetime.Time;
 import org.apache.commons.configuration.PropertiesConfiguration;
 
 import java.util.*;

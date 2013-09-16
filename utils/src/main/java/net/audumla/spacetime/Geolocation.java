@@ -1,4 +1,4 @@
-package net.audumla.util;
+package net.audumla.spacetime;
 
 public interface Geolocation {
     double getLatitude();

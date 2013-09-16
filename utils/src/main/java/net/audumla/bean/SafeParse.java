@@ -1,4 +1,4 @@
-package net.audumla.util;
+package net.audumla.bean;
 
 public class SafeParse {
 
@@ -7,7 +7,7 @@ public class SafeParse {
             return null;
         }
         if (data instanceof Double) {
-            return ((Double) data).doubleValue();
+            return (Double) data;
         }
         if (data instanceof Integer) {
             return ((Integer) data).doubleValue();

@@ -16,7 +16,7 @@ package net.audumla.climate;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import net.audumla.util.Time;
+import net.audumla.spacetime.Time;
 
 import java.util.ArrayList;
 import java.util.Calendar;

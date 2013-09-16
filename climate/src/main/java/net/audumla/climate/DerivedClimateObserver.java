@@ -18,7 +18,7 @@ package net.audumla.climate;
 
 import net.audumla.bean.BeanUtils.BeanProxy;
 import net.audumla.bean.SupportedFunction;
-import net.audumla.util.Time;
+import net.audumla.spacetime.Time;
 
 import java.util.Date;
 

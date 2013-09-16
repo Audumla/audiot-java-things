@@ -63,6 +63,7 @@
         <module>features</module>
         <module>automate</module>
         <module>ftd2xxj</module>
+        <module>quartz</module>
     </modules>
     <build>
         <plugins>

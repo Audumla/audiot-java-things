@@ -18,7 +18,6 @@ package net.audumla.automate.scheduler;
 
 import net.audumla.automate.EventFactory;
 import net.audumla.automate.EventHandler;
-import net.audumla.automate.scheduler.quartz.AutomateJob;
 import net.audumla.automate.scheduler.quartz.SequentialTriggerListener;
 import net.audumla.bean.BeanUtils;
 import org.apache.log4j.Logger;

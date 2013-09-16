@@ -10,6 +10,7 @@
         <bundle>mvn:net.audumla/AudumlaClimate/1.0-SNAPSHOT</bundle>
         <bundle>mvn:net.audumla/AudumlaDevices/1.0-SNAPSHOT</bundle>
         <bundle>mvn:net.audumla/AudumlaIrrigation/1.0-SNAPSHOT</bundle>
+        <bundle>mvn:net.audumla/AudumlaQuartz/1.0-SNAPSHOT</bundle>
         <bundle>mvn:net.audumla/AudumlaUtils/1.0-SNAPSHOT</bundle>
         <bundle>mvn:net.audumla/ftd2xxj/1.0-SNAPSHOT</bundle>
         <bundle>mvn:org.apache.commons/commons-lang3/3.1</bundle>
