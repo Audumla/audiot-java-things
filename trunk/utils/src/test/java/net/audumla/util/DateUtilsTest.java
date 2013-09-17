@@ -18,12 +18,21 @@ package net.audumla.util;
 
 import net.audumla.spacetime.Time;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 public class DateUtilsTest {
+
+    @Before
+    public void setUp() throws Exception {
+        //TimeZone.setDefault();
+
+    }
+
     @Test
     public void testDateOffsetSecond() {
         Date t1 = new Date(0);
