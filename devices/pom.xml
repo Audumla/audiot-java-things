@@ -49,6 +49,11 @@
             <version>1.7.2</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>net.audumla</groupId>
+            <artifactId>AudumlaFTD2xxj</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
