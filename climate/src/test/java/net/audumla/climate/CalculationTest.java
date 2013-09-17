@@ -576,8 +576,13 @@ public class CalculationTest {
         ClimateData data = station.getClimateData(new Date());
         ClimateObservation obs = data.getObservation(new Date(), ClimateData.ObservationMatch.CLOSEST);
         while (obs != null) {
+            try {
             Assert.assertEquals(obs.getHumidity(), cc.eaDew(obs) / ClimateCalculations.getSaturationVapourPressure(obs.getTemperature()) * 100, 2);
             obs = obs.getPreviousObservation();
+            }
+            catch (Throwable th) {
+                assert  false;
+            }
         }
     }
     /*
