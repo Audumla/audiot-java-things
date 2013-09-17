@@ -101,9 +101,13 @@
     <orderEntry type="library" name="Maven: log4j:log4j:1.2.14" level="project" />
     <orderEntry type="module" module-name="AudumlaAutomate" />
     <orderEntry type="module" module-name="AudumlaDevices" />
-    <orderEntry type="module" module-name="AudumlaQuartz" />
+    <orderEntry type="library" name="Maven: com.pi4j:pi4j-core:0.0.5" level="project" />
+    <orderEntry type="library" name="Maven: com.pi4j:pi4j-device:0.0.5" level="project" />
+    <orderEntry type="library" name="Maven: com.pi4j:pi4j-gpio-extension:0.0.5" level="project" />
     <orderEntry type="library" name="Maven: org.quartz-scheduler:quartz:2.2.0" level="project" />
     <orderEntry type="library" name="Maven: c3p0:c3p0:0.9.1.1" level="project" />
+    <orderEntry type="module" module-name="AudumlaFTD2xxj" />
+    <orderEntry type="module" module-name="AudumlaQuartz" />
     <orderEntry type="library" name="Maven: org.osgi:org.osgi.core:4.3.1" level="project" />
     <orderEntry type="module" module-name="AudumlaIrrigation" />
   </component>
