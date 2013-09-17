@@ -29,19 +29,6 @@
         <springframework.version>3.1.4.RELEASE</springframework.version>
         <log4j.version>1.2.14</log4j.version>
     </properties>
-    <repositories>
-        <repository>
-            <id>audumla-repository</id>
-            <url>https://myfiles.messagingengine.com/audumla.net/mvn</url>
-        </repository>
-        <repository>
-            <id>com.springsource.repository.maven.snapshot</id>
-            <url>http://maven.springframework.org/snapshot/</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -64,6 +51,8 @@
         <module>automate</module>
         <module>ftd2xxj</module>
         <module>quartz</module>
+        <module>org.openhab.core</module>
+        <module>org.openhab.core.library</module>
     </modules>
     <build>
         <plugins>
@@ -98,9 +87,6 @@
                     </execution>
                 </executions>
             </plugin>
-
         </plugins>
-
     </build>
-
 </project>
