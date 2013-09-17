@@ -17,7 +17,7 @@
     <orderEntry type="library" name="Maven: jline:jline:2.9" level="project" />
     <orderEntry type="library" name="Maven: org.apache.sshd:sshd-core:0.8.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.mina:mina-core:2.0.5" level="project" />
-    <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.5" level="project" />
+    <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.6.6" level="project" />
     <orderEntry type="library" name="Maven: org.apache.karaf.jaas:org.apache.karaf.jaas.boot:3.0.0.RC1" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.eclipse:osgi:3.8.0.v20120529-1548" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.apache.felix:org.apache.felix.framework:4.0.3" level="project" />
@@ -101,20 +101,11 @@
     <orderEntry type="library" name="Maven: log4j:log4j:1.2.14" level="project" />
     <orderEntry type="module" module-name="AudumlaAutomate" />
     <orderEntry type="module" module-name="AudumlaDevices" />
-    <orderEntry type="library" name="Maven: net.audumla:ftd2xxj:1.0-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: com.pi4j:pi4j-core:0.0.5" level="project" />
-    <orderEntry type="library" name="Maven: com.pi4j:pi4j-device:0.0.5" level="project" />
-    <orderEntry type="library" name="Maven: com.pi4j:pi4j-gpio-extension:0.0.5" level="project" />
+    <orderEntry type="module" module-name="AudumlaQuartz" />
     <orderEntry type="library" name="Maven: org.quartz-scheduler:quartz:2.2.0" level="project" />
     <orderEntry type="library" name="Maven: c3p0:c3p0:0.9.1.1" level="project" />
-    <orderEntry type="module" module-name="AudumlaQuartz" />
     <orderEntry type="library" name="Maven: org.osgi:org.osgi.core:4.3.1" level="project" />
     <orderEntry type="module" module-name="AudumlaIrrigation" />
-    <orderEntry type="library" name="Maven: org.openhab.core:core:1.0-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: org.osgi:org.osgi.compendium:4.0.0" level="project" />
-    <orderEntry type="library" name="Maven: commons-collections:commons-collections:3.2.1" level="project" />
-    <orderEntry type="library" name="Maven: org.slf4j:jul-to-slf4j:1.7.5" level="project" />
-    <orderEntry type="library" name="Maven: org.openhab.core:library:1.0-SNAPSHOT" level="project" />
   </component>
 </module>
 
