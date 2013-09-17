@@ -110,11 +110,11 @@
     <orderEntry type="module" module-name="AudumlaQuartz" />
     <orderEntry type="library" name="Maven: org.osgi:org.osgi.core:4.3.1" level="project" />
     <orderEntry type="module" module-name="AudumlaIrrigation" />
-    <orderEntry type="module" module-name="org.openhab.core" />
+    <orderEntry type="library" name="Maven: org.openhab.core:core:1.0-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: org.osgi:org.osgi.compendium:4.0.0" level="project" />
     <orderEntry type="library" name="Maven: commons-collections:commons-collections:3.2.1" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:jul-to-slf4j:1.7.5" level="project" />
-    <orderEntry type="module" module-name="org.openhab.core.library" />
+    <orderEntry type="library" name="Maven: org.openhab.core:library:1.0-SNAPSHOT" level="project" />
   </component>
 </module>
 
