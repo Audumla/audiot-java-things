@@ -6,6 +6,7 @@
         <artifactId>base</artifactId>
         <groupId>net.audumla</groupId>
         <version>1.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -78,11 +79,8 @@
                             <threadCount>1</threadCount>
                         </configuration>
                     </plugin>
-
                 </plugins>
             </build>
-
-
         </profile>
     </profiles>
 </project>
