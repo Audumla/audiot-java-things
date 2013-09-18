@@ -58,6 +58,7 @@
         <module>ftd2xxj</module>
         <module>quartz</module>
         <module>integrate</module>
+        <module>raspberry</module>
     </modules>
     <build>
         <plugins>
@@ -94,4 +95,6 @@
             </plugin>
         </plugins>
     </build>
+
+
 </project>
