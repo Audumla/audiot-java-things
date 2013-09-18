@@ -96,7 +96,7 @@ public class HistoricalDataTest {
         c.set(Calendar.HOUR_OF_DAY, 0);
         c.set(Calendar.MINUTE, 0);
         c.set(Calendar.DAY_OF_YEAR, 200);
-        c.set(Calendar.YEAR, 2012);
+        c.set(Calendar.YEAR, 2013);
         Date now = c.getTime();
         c.set(Calendar.HOUR, 10);
         Date time1 = c.getTime();

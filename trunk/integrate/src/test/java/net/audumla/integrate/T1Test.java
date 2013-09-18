@@ -1,7 +1,5 @@
 package net.audumla.integrate;
 
-import org.apache.camel.ProducerTemplate;
-import org.apache.camel.builder.RouteBuilder;
 import org.apache.log4j.Logger;
 import org.junit.Test;
 
@@ -21,7 +19,8 @@ public class T1Test {
 
         ProducerTemplate template = context.createProducerTemplate();
         template.sendBody("direct:in", "Direct Stream");
-  */  }
+  */
+    }
 
     @Test
     public void testHeaderStream() throws Exception {
