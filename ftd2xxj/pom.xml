@@ -25,6 +25,8 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <version>1.0-SNAPSHOT</version>
+    <dependencies>
+    </dependencies>
     <packaging>bundle</packaging>
     <artifactId>AudumlaFTD2xxj</artifactId>
 
@@ -42,7 +44,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Bundle-NativeCode> lib/ftd2xxj.dll ; osname=Win32 ; processor=x86 </Bundle-NativeCode>
+                        <Bundle-NativeCode>lib/ftd2xxj.dll ; osname=Win32 ; processor=x86</Bundle-NativeCode>
                     </instructions>
                 </configuration>
             </plugin>
