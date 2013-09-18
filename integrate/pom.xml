@@ -14,29 +14,13 @@
     <properties>
         <apache.camel.version>2.11.1</apache.camel.version>
         <junit-version>4.4</junit-version>
-        <exam.version>3.2.0</exam.version>
-        <apache.karaf.version>3.0.0.RC1</apache.karaf.version>
-        <url.version>1.5.2</url.version>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>org.apache.karaf.tooling.exam</groupId>
-            <artifactId>org.apache.karaf.tooling.exam.container</artifactId>
-            <version>${apache.karaf.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.ops4j.pax.exam</groupId>
-            <artifactId>pax-exam-junit4</artifactId>
-            <version>${exam.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.karaf</groupId>
-            <artifactId>apache-karaf</artifactId>
-            <version>${apache.karaf.version}</version>
-            <type>zip</type>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-test-blueprint</artifactId>
+            <version>${apache.camel.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -44,7 +28,6 @@
             <artifactId>junit</artifactId>
             <version>${junit-version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.apache.camel</groupId>
             <artifactId>camel-core</artifactId>
@@ -61,22 +44,4 @@
             <version>${apache.camel.version}</version>
         </dependency>
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.servicemix.tooling</groupId>
-                <artifactId>depends-maven-plugin</artifactId>
-                <version>1.2</version>
-                <executions>
-                    <execution>
-                        <id>generate-depends-file</id>
-                        <goals>
-                            <goal>generate-depends-file</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
 </project>
