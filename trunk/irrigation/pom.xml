@@ -9,7 +9,8 @@
     <artifactId>AudumlaIrrigation</artifactId>
     <packaging>bundle</packaging>
     <version>1.0-SNAPSHOT</version>
-    <name>AudumlaIrrigation</name>
+    <name>Audumla Irrigation</name>
+    <description>Irrigation management framework utilizing Climate monitoring and watering automation</description>
     <parent>
         <artifactId>base</artifactId>
         <groupId>net.audumla</groupId>

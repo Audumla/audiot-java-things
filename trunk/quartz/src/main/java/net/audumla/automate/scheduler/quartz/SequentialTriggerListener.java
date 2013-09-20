@@ -21,6 +21,7 @@ import org.quartz.*;
 import org.quartz.Trigger.CompletedExecutionInstruction;
 import org.quartz.listeners.TriggerListenerSupport;
 
+import java.util.Date;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -47,7 +48,7 @@ public class SequentialTriggerListener extends TriggerListenerSupport {
             getLog().debug("Queueing Sequential Job - " + context.getJobDetail().getKey().getName());
             JobDetail jd = context.getJobDetail();
             activeScheduler = context.getScheduler();
-            jd = JobBuilder.newJob().usingJobData(jd.getJobDataMap()).withIdentity(getName() + ":" + jd.getKey().getName(), jd.getKey().getGroup())
+            jd = JobBuilder.newJob().usingJobData(jd.getJobDataMap()).withIdentity(BeanUtils.generateName(this.getClass()) + ":" + jd.getKey().getName(), jd.getKey().getGroup())
                     .ofType(jd.getJobClass()).build();
             queuedJobs.add(jd);
             return true;
@@ -73,9 +74,15 @@ public class SequentialTriggerListener extends TriggerListenerSupport {
                 activeJob = null;
                 JobDetail jd = queuedJobs.poll();
                 if (jd != null) {
-                    getLog().debug("Triggering Sequential Job - " + jd.getKey().getName());
-                    activeScheduler.scheduleJob(jd, TriggerBuilder.newTrigger().forJob(jd).withIdentity("trigger:" + jd.getKey().getName(), jd.getKey().getGroup())
-                            .startNow().withSchedule(SimpleScheduleBuilder.simpleSchedule().withRepeatCount(0).withIntervalInMilliseconds(1)).build());
+                    getLog().debug("Triggering queued Sequential Job - " + jd.getKey().getName());
+                    Date value = activeScheduler.scheduleJob(jd,
+                            TriggerBuilder.newTrigger().forJob(jd).
+                                    startNow().
+                                    withSchedule(SimpleScheduleBuilder.simpleSchedule().withRepeatCount(0).
+                                            withIntervalInMilliseconds(1)).build());
+                    if (value == null) {
+                        getLog().error("Unable to schedule queued job : " + jd.getKey().getName());
+                    }
                 }
             } else {
                 // this should not occur as the trigger finalizing should be the one we are tracking.

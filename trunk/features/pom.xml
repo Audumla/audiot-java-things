@@ -26,8 +26,8 @@
     <version>1.0.0-SNAPSHOT</version>
     <packaging>feature</packaging>
 
-    <name>Audumla-features</name>
-    <description>Audumla features details</description>
+    <name>Audumla Features</name>
+    <description>Feature files for deploying to Apache Karaf</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
