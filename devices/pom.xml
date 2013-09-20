@@ -3,7 +3,8 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>AudumlaDevices</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <name>AudumlaDevices</name>
+    <name>Audumla Devices</name>
+    <description>Management classes for specific devices such as LCDs, Relays and other equipment that requires automation</description>
     <packaging>bundle</packaging>
     <parent>
         <artifactId>base</artifactId>

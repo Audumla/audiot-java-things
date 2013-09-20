@@ -19,11 +19,35 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <url>http://mvn.audumla.net</url>
+    <url>http://www.audumla.net</url>
     <groupId>net.audumla</groupId>
     <artifactId>base</artifactId>
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
+    <name>Audumla.net</name>
+    <description>A set of reusable modules built by and for Audumla.net</description>
+    <licenses>
+        <license>
+            <name>Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License</name>
+            <url>http://creativecommons.org/licenses/by-nc-nd/3.0/</url>
+            <distribution>repo</distribution>
+            <comments>Unless required by applicable law or agreed to in writing, software distributed under the License
+                is distributed on an "AS I BASIS", WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+                implied. See the License for the specific language governing permissions and limitations under the
+                License.
+            </comments>
+        </license>
+    </licenses>
+    <organization>
+        <name>Audumla.net</name>
+        <url>http://www.audumla.net</url>
+    </organization>
+    <scm>
+        <connection>scm:svn:http://audumla.googlecode.com/svn/trunk</connection>
+        <developerConnection>scm:svn:https://audumla.googlecode.com/svn/trunk</developerConnection>
+        <tag>HEAD</tag>
+        <url>https://code.google.com/p/audumla/source/browse</url>
+    </scm>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <springframework.version>3.1.4.RELEASE</springframework.version>
@@ -53,7 +77,6 @@
         <module>climate</module>
         <module>irrigation</module>
         <module>utils</module>
-        <module>features</module>
         <module>automate</module>
         <module>ftd2xxj</module>
         <module>quartz</module>
@@ -94,7 +117,118 @@
                 </executions>
             </plugin>
         </plugins>
-    </build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-site-plugin</artifactId>
+                    <version>3.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <executions>
+                        <execution>
+                            <id>attach-sources</id>
+                            <goals>
+                                <goal>jar</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
 
+                <!-- INCLUDE JAVADOC JAR -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <executions>
+                        <execution>
+                            <id>attach-javadocs</id>
+                            <goals>
+                                <goal>jar</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>license-maven-plugin</artifactId>
+                    <version>1.3</version>
+                    <configuration>
+                        <verbose>false</verbose>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>append-license-file-headers</id>
+                            <goals>
+                                <goal>update-file-header</goal>
+                            </goals>
+                            <phase>process-sources</phase>
+                            <configuration>
+                                <licenseName>cc by-nc-nd</licenseName>
+                                <descriptionTemplate>${basedir}/../src/license/template.ftl</descriptionTemplate>
+                                <canUpdateCopyright>true</canUpdateCopyright>
+                                <canUpdateDescription>true</canUpdateDescription>
+                                <canUpdateLicense>true</canUpdateLicense>
+                                <roots>
+                                    <root>src/main/native</root>
+                                    <root>src/main/java</root>
+                                    <root>src/test</root>
+                                </roots>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>2.7</version>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>index</report>
+                            <report>cim</report>
+                            <report>help</report>
+                            <report>issue-tracking</report>
+                            <report>license</report>
+                            <report>mailing-list</report>
+                            <report>modules</report>
+                            <report>project-team</report>
+                            <report>scm</report>
+                            <report>summary</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+        </plugins>
+    </reporting>
+
+    <distributionManagement>
+        <site>
+            <id>www.audumla.net</id>
+            <name>Audumla.net</name>
+            <url>http://www.audumla.net/</url>
+        </site>
+    </distributionManagement>
+
+    <!-- MAVEN REPOSITORIES -->
+    <repositories>
+        <repository>
+            <id>audumla-repository</id>
+            <name>Audumla Maven Repository</name>
+            <url>http://mvn.audumla.net</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 
 </project>

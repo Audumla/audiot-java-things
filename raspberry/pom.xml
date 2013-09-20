@@ -9,7 +9,8 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-
+    <name>Audumla Raspberry</name>
+    <description>RaspberryPI enabled functionality and device implementations</description>
     <artifactId>AudumlaRaspberry</artifactId>
 
     <profiles>
