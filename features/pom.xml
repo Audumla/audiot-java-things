@@ -51,27 +51,27 @@
         </dependency>
         <dependency>
             <groupId>net.audumla</groupId>
-            <artifactId>AudumlaClimate</artifactId>
+            <artifactId>climate</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>net.audumla</groupId>
-            <artifactId>AudumlaAutomate</artifactId>
+            <artifactId>automate</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>net.audumla</groupId>
-            <artifactId>AudumlaIrrigation</artifactId>
+            <artifactId>irrigation</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>net.audumla</groupId>
-            <artifactId>AudumlaDevices</artifactId>
+            <artifactId>devices</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>net.audumla</groupId>
-            <artifactId>AudumlaUtils</artifactId>
+            <artifactId>utils</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>

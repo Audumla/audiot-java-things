@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
     <name>Audumla Integration</name>
     <description>Integration mechanisms designed around Apache Camel</description>
-    <artifactId>AudumlaIntegrate</artifactId>
+    <artifactId>integrate</artifactId>
 
     <properties>
         <apache.camel.version>2.12.0</apache.camel.version>
