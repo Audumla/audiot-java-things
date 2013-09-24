@@ -28,7 +28,7 @@
 
     <name>Audumla Automate</name>
     <description>An automation framework to allow triggering and handling of events</description>
-    <artifactId>AudumlaAutomate</artifactId>
+    <artifactId>automate</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <dependencies>
