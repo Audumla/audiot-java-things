@@ -21,7 +21,7 @@
     <modelVersion>4.0.0</modelVersion>
     <url>http://www.audumla.net</url>
     <groupId>net.audumla</groupId>
-    <artifactId>base</artifactId>
+    <artifactId>core</artifactId>
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
     <name>Audumla.net</name>

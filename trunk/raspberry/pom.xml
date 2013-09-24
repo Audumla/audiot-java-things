@@ -11,7 +11,7 @@
     <modelVersion>4.0.0</modelVersion>
     <name>Audumla Raspberry</name>
     <description>RaspberryPI enabled functionality and device implementations</description>
-    <artifactId>AudumlaRaspberry</artifactId>
+    <artifactId>raspberry</artifactId>
 
     <profiles>
         <profile>
@@ -39,7 +39,7 @@
                                     <artifactItems>
                                         <artifactItem>
                                             <groupId>net.audumla</groupId>
-                                            <artifactId>AudumlaDevices</artifactId>
+                                            <artifactId>devices</artifactId>
                                             <type>test-jar</type>
                                             <overWrite>true</overWrite>
                                             <version>1.0-SNAPSHOT</version>

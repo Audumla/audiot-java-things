@@ -19,7 +19,7 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>base</artifactId>
+        <artifactId>core</artifactId>
         <groupId>net.audumla</groupId>
         <version>1.0-SNAPSHOT</version>
     </parent>
@@ -28,7 +28,7 @@
     <name>Audumla Quartz</name>
     <description>Extensions to Quartz timer library. Includes schedulers based on Astrological events as well as sequence coordination mechanisms</description>
     <packaging>bundle</packaging>
-    <artifactId>AudumlaQuartz</artifactId>
+    <artifactId>quartz</artifactId>
 
     <dependencies>
         <dependency>
@@ -38,7 +38,7 @@
         </dependency>
         <dependency>
             <groupId>net.audumla</groupId>
-            <artifactId>AudumlaUtils</artifactId>
+            <artifactId>utils</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
