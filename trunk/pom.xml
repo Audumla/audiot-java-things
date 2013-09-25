@@ -24,7 +24,7 @@
     <artifactId>core</artifactId>
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
-    <name>Audumla.net</name>
+    <name>core</name>
     <description>A set of reusable modules built by and for Audumla.net</description>
     <licenses>
         <license>
