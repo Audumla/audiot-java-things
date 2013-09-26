@@ -46,6 +46,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
+                        <Private-Package></Private-Package>
                         <Bundle-NativeCode>lib/ftd2xxj.dll ; osname=Win32 ; processor=x86</Bundle-NativeCode>
                     </instructions>
                 </configuration>
