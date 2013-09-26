@@ -214,16 +214,35 @@
             <name>Audumla.net</name>
             <url>http://www.audumla.net/</url>
         </site>
+        <snapshotRepository>
+            <id>audumla-snapshot-repository</id>
+            <url>http://maven.audumla.net/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>audumla-release-repository</id>
+            <url>http://maven.audumla.net/releases</url>
+        </repository>
     </distributionManagement>
 
     <!-- MAVEN REPOSITORIES -->
     <repositories>
         <repository>
-            <id>audumla-repository</id>
-            <name>Audumla Maven Repository</name>
-            <url>http://mvn.audumla.net</url>
+            <id>audumla-release-repository</id>
+            <name>Audumla release Repository</name>
+            <url>http://maven.audumla.net/releases</url>
             <releases>
                 <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>audumla-snapshot-repository</id>
+            <name>Audumla snapshot Repository</name>
+            <url>http://maven.audumla.net/snapshots</url>
+            <releases>
+                <enabled>false</enabled>
             </releases>
             <snapshots>
                 <enabled>true</enabled>
