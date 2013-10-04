@@ -7,7 +7,7 @@
           <property key="Bundle-Description" value="Management classes for specific devices such as LCDs, Relays and other equipment that requires automation" />
           <property key="Bundle-Vendor" value="Audumla.net" />
           <property key="Bundle-DocURL" value="http://www.audumla.net" />
-          <property key="Bundle-Name" value="Audumla Devices" />
+          <property key="Bundle-Name" value="Audumla Devices" />
         </additionalProperties>
         <additionalJARContents />
       </configuration>

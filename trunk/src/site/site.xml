@@ -15,7 +15,7 @@
   ~  See the License for the specific language governing permissions and limitations under the License.
   -->
 
-<project name="The Pi4J Project">
+<project name="Audumla">
     <skin>
         <groupId>org.apache.maven.skins</groupId>
         <artifactId>maven-fluido-skin</artifactId>
@@ -23,7 +23,7 @@
     </skin>
     <bannerLeft>
         <name>Audumla.net</name>
-        <src>/images/logos/pi4j-header-small3.png</src>
+        <src>/images/Eye_of_Horus_Logo.png</src>
         <href>http://www.audumla.net/</href>
     </bannerLeft>
     <!--<bannerRight>
@@ -43,7 +43,7 @@
             <META NAME="KEYWORDS" CONTENT="automation, irrigation, climate, weather, BOM, meteorology, quartz, sunrise, sunset, raspberry, pi, raspberrypi, raspi, java, pi4j, java pi, gpio, input, output, io"/>
             <META NAME="ROBOTS" CONTENT="ALL"/>
             <META NAME="DESCRIPTION" CONTENT="A collection of reusable modules built by and for Audumla.net"/>
-            <META NAME="AUTHOR" CONTENT="Robert Savage"/>
+            <META NAME="AUTHOR" CONTENT="Marius Gleeson"/>
 
             <!-- GOOGLE ANALYTICS SCRIPT -->
             <script type="text/javascript">
@@ -78,10 +78,9 @@
             <item name="Download" href="download.html" />
             <item name="Installation" href="install.html" />
             <item name="Usage" href="usage.html" />
-            <item name="JavaDoc" href="apidocs/index.html" target="pi4j-javadoc"/>
+            <item name="JavaDoc" href="apidocs/index.html" target="audumla-javadoc"/>
         </menu>
         <menu name="Examples">
-<!--            <item name="Control GPIO" href="example/control.html" />-->
         </menu>
         <menu name="Project Development">
             <item name="Project Information" href="project-info.html" />

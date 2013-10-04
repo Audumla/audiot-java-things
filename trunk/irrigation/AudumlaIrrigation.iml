@@ -7,7 +7,7 @@
           <property key="Bundle-Description" value="Irrigation management framework utilizing Climate monitoring and watering automation" />
           <property key="Bundle-Vendor" value="Audumla.net" />
           <property key="Bundle-DocURL" value="http://www.audumla.net" />
-          <property key="Bundle-Name" value="Audumla Irrigation" />
+          <property key="Bundle-Name" value="Audumla Irrigation" />
         </additionalProperties>
         <additionalJARContents />
       </configuration>
