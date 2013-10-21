@@ -7,7 +7,7 @@ import java.io.OutputStream;
  * <code>OutputStream</code> to write data to a
  * {@link com.ftdichip.ftd2xx.Device}using standard Java I/O.
  * 
- * @author Mike Werner
+
  */
 class DeviceOututStream extends OutputStream {
 

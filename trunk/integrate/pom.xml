@@ -8,12 +8,12 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <name>Audumla&nbsp;Integration</name>
+    <name>Audumla&#160;Integration</name>
     <description>Integration mechanisms designed around Apache Camel</description>
     <artifactId>integrate</artifactId>
 
     <properties>
-        <apache.camel.version>2.12.0</apache.camel.version>
+        <apache.camel.version>2.13-SNAPSHOT</apache.camel.version>
     </properties>
 
     <dependencies>
@@ -43,6 +43,25 @@
             <artifactId>org.apache.felix.eventadmin</artifactId>
             <version>1.3.2</version>
         </dependency>
-
+        <dependency>
+            <groupId>net.audumla</groupId>
+            <artifactId>quartz</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.quartz-scheduler</groupId>
+            <artifactId>quartz</artifactId>
+            <version>2.2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-quartz2</artifactId>
+            <version>${apache.camel.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>2.6</version>
+        </dependency>
     </dependencies>
 </project>

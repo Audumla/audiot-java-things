@@ -1,20 +1,14 @@
 package org.apache.camel.test.blueprint;
 
-import net.audumla.integrate.CamelTestBase;
-import net.audumla.integrate.StringToMapTypeConverter;
+import net.audumla.integrate.camel.CamelTestBase;
+import net.audumla.integrate.camel.StringToMapTypeConverter;
 import org.apache.camel.Exchange;
 import org.apache.camel.model.ProcessorDefinition;
-import org.apache.camel.test.blueprint.CamelBlueprintTestSupport;
 import org.apache.camel.util.KeyValueHolder;
-import org.apache.felix.eventadmin.impl.Activator;
 import org.apache.log4j.Logger;
-import org.junit.Before;
 import org.junit.Test;
-import org.osgi.service.event.Event;
-import org.osgi.service.event.EventAdmin;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class OSGICamelTest extends CamelBlueprintTestSupport {
     private static final Logger logger = Logger.getLogger(CamelTestBase.class);

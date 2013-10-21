@@ -7,7 +7,7 @@ import java.io.InputStream;
  * <code>InputStream</code> to read data from a
  * {@link com.ftdichip.ftd2xx.Device} using standard Java I/O.
  * 
- * @author Mike Werner
+
  */
 class DeviceInputStream extends InputStream {
 

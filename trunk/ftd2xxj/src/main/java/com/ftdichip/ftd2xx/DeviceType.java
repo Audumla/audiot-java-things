@@ -3,7 +3,7 @@ package com.ftdichip.ftd2xx;
 /**
  * Enumeration of all supported devices.
  * 
- * @author Mike Werner
+
  */
 public enum DeviceType {
     /**

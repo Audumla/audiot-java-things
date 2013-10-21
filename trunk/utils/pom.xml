@@ -9,7 +9,7 @@
         <groupId>net.audumla</groupId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-    <name>Audumla&nbsp;Utils</name>
+    <name>Audumla&#160;Utils</name>
     <description>Utilities used by other Audumla modules. Includes bean wrapping and automated bean generation, Astrological event calculation and a key based timed caching Map.</description>
     <properties>
     </properties>

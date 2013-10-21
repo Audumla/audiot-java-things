@@ -4,7 +4,7 @@ package com.ftdichip.ftd2xx;
 /**
  * Enumeration of valid stop bit values.
  * 
- * @author Mike Werner
+
  */
 public enum StopBits {
     /**

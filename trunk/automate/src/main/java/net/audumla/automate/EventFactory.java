@@ -14,7 +14,7 @@ import java.util.Date;
 public interface EventFactory {
     /**
      * @return an irrigation event
-     *         <p/>
+     *         @param now The time that the event should be triggered
      *         Returns null if no event should be generated for the given time
      */
     Event generateEvent(Date now);

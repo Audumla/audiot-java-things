@@ -3,7 +3,7 @@ package com.ftdichip.ftd2xx;
 /**
  * Enumeration of valid parity values.
  * 
- * @author Mike Werner
+
  */
 public enum Parity {
     /**

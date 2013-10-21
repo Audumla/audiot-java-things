@@ -5,7 +5,7 @@ package com.ftdichip.ftd2xx;
 /**
  * Provides access to a device`s serial port.
  * 
- * @author Mike Werner
+
  */
 public class Port {
 
@@ -76,8 +76,8 @@ public class Port {
 	 * Sets the divisor used for non-standard baud rates. <br>
 	 * <br>
 	 * <b>Note: </b> The application note "Setting Baude rates for the
-	 * FT8U232AM", which is available on <href
-	 * link=https://www.ftdichip.com>www.ftdichip.com </href>, describes how to
+	 * FT8U232AM", which is available on
+	 * link=https://www.ftdichip.com, describes how to
 	 * calculate the divisor for a non standard baude rate.
 	 * 
 	 * @param divisor

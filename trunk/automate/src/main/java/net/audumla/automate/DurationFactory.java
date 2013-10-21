@@ -16,6 +16,7 @@ public interface DurationFactory {
 
     /**
      * @return the irrigation duration in seconds
+     * @param now The time used to determine the duration value
      */
     long determineDuration(Date now);
 

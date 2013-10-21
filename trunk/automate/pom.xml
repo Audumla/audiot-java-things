@@ -26,7 +26,7 @@
     <modelVersion>4.0.0</modelVersion>
     <packaging>bundle</packaging>
 
-    <name>Audumla&nbsp;Automate</name>
+    <name>Audumla&#160;Automate</name>
     <description>An automation framework to allow triggering and handling of events</description>
     <artifactId>automate</artifactId>
     <version>1.0-SNAPSHOT</version>

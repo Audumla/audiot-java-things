@@ -5,7 +5,7 @@ package com.ftdichip.ftd2xx;
 /**
  * Enumeration of all possible <i>Bit Bang Modes </i>.
  * 
- * @author Mike Werner
+
  */
 public enum BitBangMode {
 

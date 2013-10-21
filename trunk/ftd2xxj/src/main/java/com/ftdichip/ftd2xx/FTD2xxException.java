@@ -5,7 +5,7 @@ import java.io.IOException;
 /**
  * Signals errors accessing a ftd2xx device.
  * 
- * @author Mike Werner
+
  */
 public class FTD2xxException extends IOException {
 

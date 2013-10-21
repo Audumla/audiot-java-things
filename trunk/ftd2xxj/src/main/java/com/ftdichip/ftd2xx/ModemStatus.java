@@ -3,7 +3,7 @@ package com.ftdichip.ftd2xx;
 /**
  * Enumeration of possible modem status values.
  * 
- * @author Mike Werner
+
  */
 public enum ModemStatus {
 

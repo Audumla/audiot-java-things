@@ -7,7 +7,7 @@ package com.ftdichip.ftd2xx;
 /**
  * Enumeration of all known errors of the FTD2xx API.
  * 
- * @author Mike Werner
+
  */
 public enum FTStatus {
 	/**

@@ -3,7 +3,7 @@ package com.ftdichip.ftd2xx;
 /**
  * Signals a {@link com.ftdichip.ftd2xx.DeviceDescriptor}contains invalid data.
  * 
- * @author Mike Werner
+
  */
 public class InvalidDeviceDescriptorException extends EEPROMException {
     

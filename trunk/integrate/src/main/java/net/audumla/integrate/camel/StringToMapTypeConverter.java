@@ -1,4 +1,4 @@
-package net.audumla.integrate;
+package net.audumla.integrate.camel;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.support.TypeConverterSupport;

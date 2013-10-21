@@ -4,7 +4,7 @@ package com.ftdichip.ftd2xx;
 /**
  * Enumeration of valid flow control values.
  * 
- * @author Mike Werner
+
  */
 public enum FlowControl {
     /**

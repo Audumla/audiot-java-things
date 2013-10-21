@@ -1,4 +1,4 @@
-package net.audumla.integrate;
+package net.audumla.integrate.camel;
 
 import org.apache.camel.CamelContext;
 import org.apache.camel.impl.DefaultCamelContext;
@@ -20,7 +20,7 @@ public class CamelTestBase {
     @After
     public void tearDown() throws Exception {
         context.stop();
-
+        context = null;
     }
 
 }

@@ -26,7 +26,7 @@
     <version>1.0.0-SNAPSHOT</version>
     <packaging>feature</packaging>
 
-    <name>Audumla&nbsp;Features</name>
+    <name>Audumla&#160;Features</name>
     <description>Feature files for deploying to Apache Karaf</description>
 
     <properties>
