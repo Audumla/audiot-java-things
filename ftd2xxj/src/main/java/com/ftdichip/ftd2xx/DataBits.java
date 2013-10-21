@@ -4,7 +4,7 @@ package com.ftdichip.ftd2xx;
  * Enumeration of valid data size values used for a {@code Port}`s data
  * characteristics.
  * 
- * @author Mike Werner
+
  */
 public enum DataBits {
     /**

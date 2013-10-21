@@ -7,7 +7,7 @@ package com.ftdichip.ftd2xx;
  * <b>For a more detailed description of the fields see the ftd2xx-API
  * specification. </b>
  * 
- * @author Mike Werner
+
  */
 public class DeviceDescriptorRev4 extends DeviceDescriptor {
 

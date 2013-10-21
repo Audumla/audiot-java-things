@@ -25,7 +25,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <version>1.0-SNAPSHOT</version>
-    <name>Audumla&nbsp;FTD2xxj</name>
+    <name>Audumla&#160;FTD2xxj</name>
     <description>A customized implementation of the FTD2xxj libraries that work and deploy within an OSGI environment. All resource files have been disabled pending a rework of how to load these correctly in an OSGI environment.</description>
     <dependencies>
     </dependencies>

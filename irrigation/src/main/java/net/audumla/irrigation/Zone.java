@@ -69,6 +69,7 @@ public interface Zone extends EventHandler {
      * TODO Make this a period to search over using Java 8 time functions
      *
      * @return The events that have been scheduled for the given day
+     * @param day The day to return events for
      */
     List<Event> getIrrigationEventsForDay(Date day);
 

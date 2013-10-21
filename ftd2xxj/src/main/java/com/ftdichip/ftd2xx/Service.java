@@ -42,7 +42,7 @@ import org.apache.log4j.Logger;
  * <br>
  * For detailed description of the values see the <i>ftd2xxj </i> API.
  * 
- * @author Mike Werner
+
  * @see com.ftdichip.ftd2xx.Device
  */
 public final class Service {

@@ -3,7 +3,7 @@ package com.ftdichip.ftd2xx;
 /**
  * Signals errors accessing a device`s EEPROM.
  * 
- * @author Mike Werner
+
  */
 public class EEPROMException extends FTD2xxException {
 

@@ -5,7 +5,7 @@ package com.ftdichip.ftd2xx;
 /**
  * Provides access to a FTD2xx device`s EEPROM.
  * 
- * @author Mike Werner
+
  */
 public class EEPROM {
 

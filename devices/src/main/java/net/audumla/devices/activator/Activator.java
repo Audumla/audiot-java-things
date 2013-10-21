@@ -23,23 +23,23 @@ public interface Activator {
      * The intention of the activator is to have a mechanism that is independent of the underlying device and to ensure that
      * where an error has occurred the device will always be placed back into a deactivated state.
      * Activator implementations should attempt to deactivate the activator upon instantiation to ensure a know state is applied
-     * <p/>
+     *
      * The lifecycle status for an activator is as follows
-     * <p/>
+     *
      * 1. Instantiated
      * State:UNKNOWN
-     * <p/>
+     *
      * 2. Activate
-     * Success flow - State:ACTIVATING -> [Device Successfully Activated] -> State:ACTIVATED
-     * Failure flow - State:ACTIVATING -> [Device Unsuccessfully Activated] -> [Call Deactivate (3)]
-     * <p/>
+     * Success flow - State:ACTIVATING -&gt; [Device Successfully Activated] -&gt; State:ACTIVATED
+     * Failure flow - State:ACTIVATING -&gt; [Device Unsuccessfully Activated] -&gt; [Call Deactivate (3)]
+     *
      * 3. Deactivate
-     * Success flow - State:DEACTIVATING -> [Device Successfully Deactivated] -> State:DEACTIVATED
-     * Failure flow - State:DEACTIVATING -> [Device Unsuccessfully Activated] -> State:UNKNOWN
-     * <p/>
+     * Success flow - State:DEACTIVATING -&gt; [Device Successfully Deactivated] -&gt; State:DEACTIVATED
+     * Failure flow - State:DEACTIVATING -&gt; [Device Unsuccessfully Activated] -&gt; State:UNKNOWN
+     *
      * 3. Activate with timeout
-     * [Call Activate (2)] -> [Wait for timeout] -> [Call Deactivate (3)]
-     * <p/>
+     * [Call Activate (2)] -&gt; [Wait for timeout] -&gt; [Call Deactivate (3)]
+     *
      * Listeners can be attached to the activator. These will be called on each change of state and when failures occur
      * Listeners can also be passed as parameters to any of the activate or deactivate methods. This listener will only
      * be called back for events that occur on that specific calls state changes and no others.

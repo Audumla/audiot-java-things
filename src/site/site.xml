@@ -65,20 +65,15 @@
         </head>
         <links>
             <item name="Home" href="http://www.audumla.net/" />
-            <item name="Downloads" href="download.html" />
             <item name="source" href="https://code.google.com/p/audumla/source/browse/"  />
-            <item name="Blog" href="http://www.audumla.net" target="_blank"/>
         </links>
         <menu name="Audumla.net">
             <item name="Welcome" href="index.html" />
             <item name="Contact" href="contact.html" />
-            <item name="FAQ" href="faq.html" />
             <item name="License" href="license.html" />
             <item name="Release Notes" href="release-notes.html" />
             <item name="Download" href="download.html" />
-            <item name="Installation" href="install.html" />
-            <item name="Usage" href="usage.html" />
-            <item name="JavaDoc" href="apidocs/index.html" target="audumla-javadoc"/>
+            <item name="JavaDoc" href="apidocs/index.html"/>
         </menu>
         <menu name="Examples">
         </menu>

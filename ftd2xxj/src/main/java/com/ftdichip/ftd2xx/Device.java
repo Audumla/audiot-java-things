@@ -38,7 +38,7 @@ import org.apache.log4j.Logger;
  * <li>Events are currently not supported</li>
  * </ul>
  * 
- * @author Mike Werner
+
  */
 public class Device {
 

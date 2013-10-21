@@ -16,11 +16,13 @@ package net.audumla.climate;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
+import net.audumla.bean.BeanUtils;
 import net.audumla.bean.SupportedFunction;
 
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
 import java.util.Date;
 import java.util.NavigableSet;
-
 public interface ClimateData {
     @SupportedFunction(supported = false)
     double getMinimumTemperature();
