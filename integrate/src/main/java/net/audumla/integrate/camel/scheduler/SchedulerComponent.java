@@ -19,6 +19,7 @@ package net.audumla.integrate.camel.scheduler;
 import org.apache.camel.CamelContext;
 import org.apache.camel.Endpoint;
 import org.apache.camel.StartupListener;
+import org.apache.camel.component.quartz2.QuartzComponent;
 import org.apache.camel.component.quartz2.QuartzConstants;
 import org.apache.camel.impl.DefaultComponent;
 import org.apache.camel.util.IntrospectionSupport;
@@ -36,10 +37,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Arrays.*;
 
-public class SchedulerComponent extends DefaultComponent implements StartupListener {
+public class SchedulerComponent extends QuartzComponent {
 
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger(SchedulerComponent.class);
-    private static Map<Class<? extends DefaultSchedulerEndpoint>, Collection<String>> registeredSchedulers;
+    private static Map<Class<? extends DefaultSchedulerEndpoint>, Collection<String>> registeredSchedulers = new HashMap<Class<? extends DefaultSchedulerEndpoint>, Collection<String>>();
     private SchedulerFactory schedulerFactory;
     private Scheduler scheduler;
     private Properties properties;
@@ -186,6 +187,14 @@ public class SchedulerComponent extends DefaultComponent implements StartupListe
     }
 
     public Scheduler getScheduler() {
+
+        if (scheduler == null) {
+            try {
+                createAndInitScheduler();
+            } catch (SchedulerException e) {
+                logger.error("Unable to start scheduler",e);
+            }
+        }
         return scheduler;
     }
 
