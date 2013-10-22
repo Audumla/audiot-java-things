@@ -16,9 +16,11 @@ package net.audumla.integrate.camel;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
+import net.audumla.integrate.camel.scheduler.SchedulerComponent;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.mock.MockEndpoint;
+import org.apache.camel.impl.DefaultCamelContext;
 import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,9 +31,18 @@ import org.quartz.impl.StdSchedulerFactory;
 public class QuartzTest extends CamelTestBase {
     protected static final Logger logger = Logger.getLogger(QuartzTest.class);
 
+    @Before
+    public void setUp() throws Exception {
+        context = new DefaultCamelContext();
+        context.addComponent("scheduler", new SchedulerComponent(context));
+        context.start();
+        context.getComponent("scheduler")
+    }
+
+
     @Test
     public void testAudumlaCron() throws Exception {
-        context.addRoutes(new RouteBuilder() {
+       context.addRoutes(new RouteBuilder() {
             public void configure() {
                 from("scheduler://group/timer?cron=*/10+*+*+*+*+?").to("mock:out");
             }

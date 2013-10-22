@@ -1,5 +1,6 @@
 package net.audumla.integrate.camel;
 
+import net.audumla.integrate.camel.scheduler.SchedulerComponent;
 import org.apache.camel.CamelContext;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.apache.log4j.Logger;

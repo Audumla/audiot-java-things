@@ -34,7 +34,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public abstract class DefaultSchedulerEndpoint extends DefaultEndpoint {
+public abstract class DefaultSchedulerEndpoint extends QuartzEndpoint {
     private static final Logger logger = LoggerFactory.getLogger(DefaultSchedulerEndpoint.class);
     private TriggerKey triggerKey;
     private LoadBalancer consumerLoadBalancer;
@@ -222,8 +222,8 @@ public abstract class DefaultSchedulerEndpoint extends DefaultEndpoint {
 
     private void ensureNoDupTriggerKey() {
         for (Route route : getCamelContext().getRoutes()) {
-            if (route.getEndpoint() instanceof QuartzEndpoint) {
-                QuartzEndpoint quartzEndpoint = (QuartzEndpoint) route.getEndpoint();
+            if (route.getEndpoint() instanceof DefaultSchedulerEndpoint) {
+                DefaultSchedulerEndpoint quartzEndpoint = (DefaultSchedulerEndpoint) route.getEndpoint();
                 TriggerKey checkTriggerKey = quartzEndpoint.getTriggerKey();
                 if (triggerKey.equals(checkTriggerKey)) {
                     throw new IllegalArgumentException("Trigger key " + triggerKey + " is already in used by " + quartzEndpoint);
