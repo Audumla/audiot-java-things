@@ -16,9 +16,9 @@ package net.audumla.astronomical.algorithims;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-public class CAAInterpolate
+public class Interpolate
 {
-    public static double Interpolate(double n, double Y1, double Y2, double Y3)
+    public static double interpolate(double n, double Y1, double Y2, double Y3)
     {
         double a = Y2 - Y1;
         double b = Y3 - Y2;
@@ -26,7 +26,7 @@ public class CAAInterpolate
 
         return Y2 + n / 2 * (a + b + n * c);
     }
-    public static double Interpolate(double n, double Y1, double Y2, double Y3, double Y4, double Y5)
+    public static double interpolate(double n, double Y1, double Y2, double Y3, double Y4, double Y5)
     {
         double A = Y2 - Y1;
         double B = Y3 - Y2;
@@ -45,11 +45,11 @@ public class CAAInterpolate
 
         return Y3 + n * ((B + C) / 2 - (H + J) / 12) + N2 * (F / 2 - K / 24) + N3 * ((H + J) / 12) + N4 * (K / 24);
     }
-    public static double InterpolateToHalves(double Y1, double Y2, double Y3, double Y4)
+    public static double interpolateToHalves(double Y1, double Y2, double Y3, double Y4)
     {
         return (9 * (Y2 + Y3) - Y1 - Y4) / 16;
     }
-    public static double LagrangeInterpolate(double X, int n, double[] pX, double[] pY)
+    public static double lagrangeInterpolate(double X, int n, double[] pX, double[] pY)
     {
 
         double V = 0;
@@ -70,7 +70,7 @@ public class CAAInterpolate
 
         return V;
     }
-    public static double Extremum(double Y1, double Y2, double Y3, /*TODO*/ double nm)
+    public static double extremum(double Y1, double Y2, double Y3, /*TODO*/ double nm)
     {
         throw new UnsupportedOperationException("Unconverted C++ reference in parameters");
 /*        double a = Y2 - Y1;
@@ -83,7 +83,7 @@ public class CAAInterpolate
         return (Y2 - ((ab * ab) / (8 * c)));
         */
     }
-    public static double Extremum(double Y1, double Y2, double Y3, double Y4, double Y5, /*TODO*/ double nm)
+    public static double extremum(double Y1, double Y2, double Y3, double Y4, double Y5, /*TODO*/ double nm)
     {
         throw new UnsupportedOperationException("Unconverted C++ reference in parameters");
 /*        double A = Y2 - Y1;
@@ -113,10 +113,10 @@ public class CAAInterpolate
             }
         }
 
-        return Interpolate(nm, Y1, Y2, Y3, Y4, Y5);
+        return interpolate(nm, Y1, Y2, Y3, Y4, Y5);
         */
     }
-    public static double Zero(double Y1, double Y2, double Y3)
+    public static double zero(double Y1, double Y2, double Y3)
     {
         double a = Y2 - Y1;
         double b = Y3 - Y2;
@@ -138,7 +138,7 @@ public class CAAInterpolate
 
         return n0;
     }
-    public static double Zero(double Y1, double Y2, double Y3, double Y4, double Y5)
+    public static double zero(double Y1, double Y2, double Y3, double Y4, double Y5)
     {
         double A = Y2 - Y1;
         double B = Y3 - Y2;

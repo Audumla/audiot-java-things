@@ -16,18 +16,16 @@ package net.audumla.astronomical.algorithims;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-public class CAA3DCoordinate
+public class Coordinate2D
 {
     //Constructors / Destructors
-    public CAA3DCoordinate()
+    public Coordinate2D()
     {
         this.X = 0;
         this.Y = 0;
-        this.Z = 0;
     }
 
-    //member variables
+    //Member variables
     public double X;
     public double Y;
-    public double Z;
 }

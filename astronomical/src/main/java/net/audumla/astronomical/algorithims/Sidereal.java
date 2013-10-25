@@ -16,15 +16,15 @@ package net.audumla.astronomical.algorithims;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-public class CAASidereal
+public class Sidereal
 {
     public static double meanGreenwichSiderealTime(final double JD)
     {
-        CAADate date = new CAADate();
-        date.Set(JD, CAADate.AfterPapalReform(JD));
-        CAACalendarDate dt = date.Get();
-        date.Set(dt.year, dt.month, dt.day, 0, 0, 0, date.InGregorianCalendar());
-        double JDMidnight = date.Julian();
+        JulianDate date = new JulianDate();
+        date.set(JD, JulianDate.afterPapalReform(JD));
+        CalendarDate dt = date.get();
+        date.set(dt.year, dt.month, dt.day, 0, 0, 0, date.inGregorianCalendar());
+        double JDMidnight = date.julian();
 
         //Calculate the sidereal time at midnight
         double T = (JDMidnight - 2451545) / 36525;
@@ -35,17 +35,17 @@ public class CAASidereal
         //Adjust by the time of day
         Value += (((dt.hour * 15) + (dt.minute * 0.25) + (dt.second * 0.0041666666666666666666666666666667)) * 1.00273790935);
 
-        Value = CAACoordinateTransformation.DegreesToHours(Value);
+        Value = CoordinateTransformation.degreesToHours(Value);
 
-        return CAACoordinateTransformation.MapTo0To24Range(Value);
+        return CoordinateTransformation.MapTo0To24Range(Value);
     }
     public static double apparentGreenwichSiderealTime(final double JD)
     {
-        double MeanObliquity = CAANutation.MeanObliquityOfEcliptic(JD);
-        double TrueObliquity = MeanObliquity + CAANutation.NutationInObliquity(JD) / 3600;
-        double NutationInLongitude = CAANutation.NutationInLongitude(JD);
+        double MeanObliquity = Nutation.meanObliquityOfEcliptic(JD);
+        double TrueObliquity = MeanObliquity + Nutation.nutationInObliquity(JD) / 3600;
+        double NutationInLongitude = Nutation.nutationInLongitude(JD);
 
-        double Value = meanGreenwichSiderealTime(JD) + (NutationInLongitude * Math.cos(CAACoordinateTransformation.DegreesToRadians(TrueObliquity)) / 54000);
-        return CAACoordinateTransformation.MapTo0To24Range(Value);
+        double Value = meanGreenwichSiderealTime(JD) + (NutationInLongitude * Math.cos(CoordinateTransformation.degreesToRadians(TrueObliquity)) / 54000);
+        return CoordinateTransformation.MapTo0To24Range(Value);
     }
 }

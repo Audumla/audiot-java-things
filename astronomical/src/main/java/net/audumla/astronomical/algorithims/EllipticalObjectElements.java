@@ -16,16 +16,29 @@ package net.audumla.astronomical.algorithims;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-public class CAA2DCoordinate
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class EllipticalObjectElements
 {
     //Constructors / Destructors
-    public CAA2DCoordinate()
+    public EllipticalObjectElements()
     {
-        this.X = 0;
-        this.Y = 0;
+        this.a = 0;
+        this.e = 0;
+        this.i = 0;
+        this.w = 0;
+        this.omega = 0;
+        this.JDEquinox = 0;
+        this.T = 0;
     }
 
-    //Member variables
-    public double X;
-    public double Y;
+    //member variables
+    public double a;
+    public double e;
+    public double i;
+    public double w;
+    public double omega;
+    public double JDEquinox;
+    public double T;
 }

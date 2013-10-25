@@ -16,27 +16,18 @@ package net.audumla.astronomical.algorithims;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-public class CAAEllipticalPlanetaryDetails
+public class Coordinate3D
 {
     //Constructors / Destructors
-    public CAAEllipticalPlanetaryDetails()
+    public Coordinate3D()
     {
-        this.ApparentGeocentricLongitude = 0;
-        this.ApparentGeocentricLatitude = 0;
-        this.ApparentGeocentricDistance = 0;
-        this.ApparentLightTime = 0;
-        this.ApparentGeocentricRA = 0;
-        this.ApparentGeocentricDeclination = 0;
+        this.X = 0;
+        this.Y = 0;
+        this.Z = 0;
     }
 
-    //Member variables
-    public double ApparentGeocentricLongitude;
-    public double ApparentGeocentricLatitude;
-    public double ApparentGeocentricDistance;
-    public double ApparentLightTime;
-    public double ApparentGeocentricRA;
-    public double ApparentGeocentricDeclination;
+    //member variables
+    public double X;
+    public double Y;
+    public double Z;
 }

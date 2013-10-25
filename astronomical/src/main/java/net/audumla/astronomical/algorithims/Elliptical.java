@@ -16,45 +16,18 @@ package net.audumla.astronomical.algorithims;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-
-
-public class CAAElliptical
+public class Elliptical
 {
-    //Enums
-    public enum EllipticalObject
-    {
-        SUN,
-        MERCURY,
-        VENUS,
-        MARS,
-        JUPITER,
-        SATURN,
-        URANUS,
-        NEPTUNE,
-        PLUTO;
 
-        public int getValue()
-        {
-            return this.ordinal();
-        }
-
-        public static EllipticalObject getEnum(int intValue)
-        {
-            return values()[intValue];
-        }
-    }
-
-    public static double DistanceToLightTime(double Distance)
+    public static double distanceToLightTime(double Distance)
     {
         return Distance * 0.0057755183;
     }
-    public static CAAEllipticalPlanetaryDetails Calculate(double JD, EllipticalObject object)
+    public static EllipticalPlanetaryDetails calculate(double JD, EllipticalObject object)
     {
         //What will the the return value
-        CAAEllipticalPlanetaryDetails details = new CAAEllipticalPlanetaryDetails();
+        EllipticalPlanetaryDetails details = new EllipticalPlanetaryDetails();
 
         double JD0 = JD;
         double L0 = 0;
@@ -63,11 +36,11 @@ public class CAAElliptical
         double cosB0 = 0;
         if (object != EllipticalObject.SUN)
         {
-            L0 = CAAEarth.EclipticLongitude(JD0);
-            B0 = CAAEarth.EclipticLatitude(JD0);
-            R0 = CAAEarth.RadiusVector(JD0);
-            L0 = CAACoordinateTransformation.DegreesToRadians(L0);
-            B0 = CAACoordinateTransformation.DegreesToRadians(B0);
+            L0 = Earth.eclipticLongitude(JD0);
+            B0 = Earth.eclipticLatitude(JD0);
+            R0 = Earth.radiusVector(JD0);
+            L0 = CoordinateTransformation.degreesToRadians(L0);
+            B0 = CoordinateTransformation.degreesToRadians(B0);
             cosB0 = Math.cos(B0);
         }
 
@@ -80,66 +53,66 @@ public class CAAElliptical
         {
             case SUN:
             {
-                L = CAASun.GeometricEclipticLongitude(JD0);
-                B = CAASun.GeometricEclipticLatitude(JD0);
-                R = CAAEarth.RadiusVector(JD0);
+                L = Sun.geometricEclipticLongitude(JD0);
+                B = Sun.geometricEclipticLatitude(JD0);
+                R = Earth.radiusVector(JD0);
                 break;
             }
             /*
             case MERCURY:
             {
-                L = CAAMercury.EclipticLongitude(JD0);
-                B = CAAMercury.EclipticLatitude(JD0);
-                R = CAAMercury.RadiusVector(JD0);
+                L = CAAMercury.eclipticLongitude(JD0);
+                B = CAAMercury.eclipticLatitude(JD0);
+                R = CAAMercury.radiusVector(JD0);
                 break;
             }
             case VENUS:
             {
-                L = CAAVenus.EclipticLongitude(JD0);
-                B = CAAVenus.EclipticLatitude(JD0);
-                R = CAAVenus.RadiusVector(JD0);
+                L = CAAVenus.eclipticLongitude(JD0);
+                B = CAAVenus.eclipticLatitude(JD0);
+                R = CAAVenus.radiusVector(JD0);
                 break;
             }
             case MARS:
             {
-                L = CAAMars.EclipticLongitude(JD0);
-                B = CAAMars.EclipticLatitude(JD0);
-                R = CAAMars.RadiusVector(JD0);
+                L = CAAMars.eclipticLongitude(JD0);
+                B = CAAMars.eclipticLatitude(JD0);
+                R = CAAMars.radiusVector(JD0);
                 break;
             }
             case JUPITER:
             {
-                L = CAAJupiter.EclipticLongitude(JD0);
-                B = CAAJupiter.EclipticLatitude(JD0);
-                R = CAAJupiter.RadiusVector(JD0);
+                L = CAAJupiter.eclipticLongitude(JD0);
+                B = CAAJupiter.eclipticLatitude(JD0);
+                R = CAAJupiter.radiusVector(JD0);
                 break;
             }
             case SATURN:
             {
-                L = CAASaturn.EclipticLongitude(JD0);
-                B = CAASaturn.EclipticLatitude(JD0);
-                R = CAASaturn.RadiusVector(JD0);
+                L = CAASaturn.eclipticLongitude(JD0);
+                B = CAASaturn.eclipticLatitude(JD0);
+                R = CAASaturn.radiusVector(JD0);
                 break;
             }
             case URANUS:
             {
-                L = CAAUranus.EclipticLongitude(JD0);
-                B = CAAUranus.EclipticLatitude(JD0);
-                R = CAAUranus.RadiusVector(JD0);
+                L = CAAUranus.eclipticLongitude(JD0);
+                B = CAAUranus.eclipticLatitude(JD0);
+                R = CAAUranus.radiusVector(JD0);
                 break;
             }
             case NEPTUNE:
             {
-                L = CAANeptune.EclipticLongitude(JD0);
-                B = CAANeptune.EclipticLatitude(JD0);
-                R = CAANeptune.RadiusVector(JD0);
+                L = CAANeptune.eclipticLongitude(JD0);
+                B = CAANeptune.eclipticLatitude(JD0);
+                R = CAANeptune.radiusVector(JD0);
                 break;
             }
             case PLUTO:
             {
-                L = CAAPluto.EclipticLongitude(JD0);
-                B = CAAPluto.EclipticLatitude(JD0);
-                R = CAAPluto.RadiusVector(JD0);
+                L = CAAPluto.eclipticLongitude(JD0);
+                B = CAAPluto.eclipticLatitude(JD0);
+                R = CAAPluto.radiusVector(JD0);
                 break;
             }       */
             default:
@@ -160,66 +133,66 @@ public class CAAElliptical
             {
                 case SUN:
                 {
-                    L = CAASun.GeometricEclipticLongitude(JD0);
-                    B = CAASun.GeometricEclipticLatitude(JD0);
-                    R = CAAEarth.RadiusVector(JD0);
+                    L = Sun.geometricEclipticLongitude(JD0);
+                    B = Sun.geometricEclipticLatitude(JD0);
+                    R = Earth.radiusVector(JD0);
                     break;
                 }
                 /*
                 case MERCURY:
                 {
-                    L = CAAMercury.EclipticLongitude(JD0);
-                    B = CAAMercury.EclipticLatitude(JD0);
-                    R = CAAMercury.RadiusVector(JD0);
+                    L = CAAMercury.eclipticLongitude(JD0);
+                    B = CAAMercury.eclipticLatitude(JD0);
+                    R = CAAMercury.radiusVector(JD0);
                     break;
                 }
                 case VENUS:
                 {
-                    L = CAAVenus.EclipticLongitude(JD0);
-                    B = CAAVenus.EclipticLatitude(JD0);
-                    R = CAAVenus.RadiusVector(JD0);
+                    L = CAAVenus.eclipticLongitude(JD0);
+                    B = CAAVenus.eclipticLatitude(JD0);
+                    R = CAAVenus.radiusVector(JD0);
                     break;
                 }
                 case MARS:
                 {
-                    L = CAAMars.EclipticLongitude(JD0);
-                    B = CAAMars.EclipticLatitude(JD0);
-                    R = CAAMars.RadiusVector(JD0);
+                    L = CAAMars.eclipticLongitude(JD0);
+                    B = CAAMars.eclipticLatitude(JD0);
+                    R = CAAMars.radiusVector(JD0);
                     break;
                 }
                 case JUPITER:
                 {
-                    L = CAAJupiter.EclipticLongitude(JD0);
-                    B = CAAJupiter.EclipticLatitude(JD0);
-                    R = CAAJupiter.RadiusVector(JD0);
+                    L = CAAJupiter.eclipticLongitude(JD0);
+                    B = CAAJupiter.eclipticLatitude(JD0);
+                    R = CAAJupiter.radiusVector(JD0);
                     break;
                 }
                 case SATURN:
                 {
-                    L = CAASaturn.EclipticLongitude(JD0);
-                    B = CAASaturn.EclipticLatitude(JD0);
-                    R = CAASaturn.RadiusVector(JD0);
+                    L = CAASaturn.eclipticLongitude(JD0);
+                    B = CAASaturn.eclipticLatitude(JD0);
+                    R = CAASaturn.radiusVector(JD0);
                     break;
                 }
                 case URANUS:
                 {
-                    L = CAAUranus.EclipticLongitude(JD0);
-                    B = CAAUranus.EclipticLatitude(JD0);
-                    R = CAAUranus.RadiusVector(JD0);
+                    L = CAAUranus.eclipticLongitude(JD0);
+                    B = CAAUranus.eclipticLatitude(JD0);
+                    R = CAAUranus.radiusVector(JD0);
                     break;
                 }
                 case NEPTUNE:
                 {
-                    L = CAANeptune.EclipticLongitude(JD0);
-                    B = CAANeptune.EclipticLatitude(JD0);
-                    R = CAANeptune.RadiusVector(JD0);
+                    L = CAANeptune.eclipticLongitude(JD0);
+                    B = CAANeptune.eclipticLatitude(JD0);
+                    R = CAANeptune.radiusVector(JD0);
                     break;
                 }
                 case PLUTO:
                 {
-                    L = CAAPluto.EclipticLongitude(JD0);
-                    B = CAAPluto.EclipticLatitude(JD0);
-                    R = CAAPluto.RadiusVector(JD0);
+                    L = CAAPluto.eclipticLongitude(JD0);
+                    B = CAAPluto.eclipticLatitude(JD0);
+                    R = CAAPluto.radiusVector(JD0);
                     break;
                 }          */
                 default:
@@ -247,8 +220,8 @@ public class CAAElliptical
                 double distance;
                 if (object != EllipticalObject.SUN)
                 {
-                    double Lrad = CAACoordinateTransformation.DegreesToRadians(L);
-                    double Brad = CAACoordinateTransformation.DegreesToRadians(B);
+                    double Lrad = CoordinateTransformation.degreesToRadians(L);
+                    double Brad = CoordinateTransformation.degreesToRadians(B);
                     double cosB = Math.cos(Brad);
                     double cosL = Math.cos(Lrad);
                     double x = R * cosB * cosL - R0 * cosB0 * Math.cos(L0);
@@ -262,12 +235,12 @@ public class CAAElliptical
                 }
 
                 //Prepare for the next loop around
-                JD0 = JD - CAAElliptical.DistanceToLightTime(distance);
+                JD0 = JD - Elliptical.distanceToLightTime(distance);
             }
         }
 
-        double Lrad = CAACoordinateTransformation.DegreesToRadians(L);
-        double Brad = CAACoordinateTransformation.DegreesToRadians(B);
+        double Lrad = CoordinateTransformation.degreesToRadians(L);
+        double Brad = CoordinateTransformation.degreesToRadians(B);
         double cosB = Math.cos(Brad);
         double cosL = Math.cos(Lrad);
         double x = R * cosB * cosL - R0 * cosB0 * Math.cos(L0);
@@ -276,54 +249,54 @@ public class CAAElliptical
         double x2 = x * x;
         double y2 = y * y;
 
-        details.ApparentGeocentricLatitude = CAACoordinateTransformation.RadiansToDegrees(Math.atan2(z, Math.sqrt(x2 + y2)));
+        details.ApparentGeocentricLatitude = CoordinateTransformation.radiansToDegrees(Math.atan2(z, Math.sqrt(x2 + y2)));
         details.ApparentGeocentricDistance = Math.sqrt(x2 + y2 + z * z);
-        details.ApparentGeocentricLongitude = CAACoordinateTransformation.MapTo0To360Range(CAACoordinateTransformation.RadiansToDegrees(Math.atan2(y, x)));
-        details.ApparentLightTime = CAAElliptical.DistanceToLightTime(details.ApparentGeocentricDistance);
+        details.ApparentGeocentricLongitude = CoordinateTransformation.MapTo0To360Range(CoordinateTransformation.radiansToDegrees(Math.atan2(y, x)));
+        details.ApparentLightTime = Elliptical.distanceToLightTime(details.ApparentGeocentricDistance);
 
         //Adjust for Aberration
-        CAA2DCoordinate Aberration = CAAAberration.EclipticAberration(details.ApparentGeocentricLongitude, details.ApparentGeocentricLatitude, JD);
+        Coordinate2D Aberration = net.audumla.astronomical.algorithims.Aberration.eclipticAberration(details.ApparentGeocentricLongitude, details.ApparentGeocentricLatitude, JD);
         details.ApparentGeocentricLongitude += Aberration.X;
         details.ApparentGeocentricLatitude += Aberration.Y;
 
         //convert to the FK5 system
-        double DeltaLong = CAAFK5.CorrectionInLongitude(details.ApparentGeocentricLongitude, details.ApparentGeocentricLatitude, JD);
-        details.ApparentGeocentricLatitude += CAAFK5.CorrectionInLatitude(details.ApparentGeocentricLongitude, JD);
+        double DeltaLong = FK5.correctionInLongitude(details.ApparentGeocentricLongitude, details.ApparentGeocentricLatitude, JD);
+        details.ApparentGeocentricLatitude += FK5.correctionInLatitude(details.ApparentGeocentricLongitude, JD);
         details.ApparentGeocentricLongitude += DeltaLong;
 
         //Correct for nutation
-        double NutationInLongitude = CAANutation.NutationInLongitude(JD);
-        double Epsilon = CAANutation.TrueObliquityOfEcliptic(JD);
-        details.ApparentGeocentricLongitude += CAACoordinateTransformation.DMSToDegrees(0, 0, NutationInLongitude);
+        double NutationInLongitude = Nutation.nutationInLongitude(JD);
+        double Epsilon = Nutation.trueObliquityOfEcliptic(JD);
+        details.ApparentGeocentricLongitude += CoordinateTransformation.dMSToDegrees(0, 0, NutationInLongitude);
 
         //Convert to RA and Dec
-        CAA2DCoordinate ApparentEqu = CAACoordinateTransformation.Ecliptic2Equatorial(details.ApparentGeocentricLongitude, details.ApparentGeocentricLatitude, Epsilon);
+        Coordinate2D ApparentEqu = CoordinateTransformation.Ecliptic2Equatorial(details.ApparentGeocentricLongitude, details.ApparentGeocentricLatitude, Epsilon);
         details.ApparentGeocentricRA = ApparentEqu.X;
         details.ApparentGeocentricDeclination = ApparentEqu.Y;
 
         return details;
     }
-    public static double SemiMajorAxisFromPerihelionDistance(double q, double e)
+    public static double semiMajorAxisFromPerihelionDistance(double q, double e)
     {
         return q / (1 - e);
     }
-    public static double MeanMotionFromSemiMajorAxis(double a)
+    public static double meanMotionFromSemiMajorAxis(double a)
     {
         return 0.9856076686 / (a * Math.sqrt(a));
     }
-    public static CAAEllipticalObjectDetails Calculate(double JD, CAAEllipticalObjectElements elements)
+    public static EllipticalObjectDetails calculate(double JD, EllipticalObjectElements elements)
     {
-        double Epsilon = CAANutation.MeanObliquityOfEcliptic(elements.JDEquinox);
+        double Epsilon = Nutation.meanObliquityOfEcliptic(elements.JDEquinox);
 
         double JD0 = JD;
 
         //What will be the return value
-        CAAEllipticalObjectDetails details = new CAAEllipticalObjectDetails();
+        EllipticalObjectDetails details = new EllipticalObjectDetails();
 
-        Epsilon = CAACoordinateTransformation.DegreesToRadians(Epsilon);
-        double omega = CAACoordinateTransformation.DegreesToRadians(elements.omega);
-        double w = CAACoordinateTransformation.DegreesToRadians(elements.w);
-        double i = CAACoordinateTransformation.DegreesToRadians(elements.i);
+        Epsilon = CoordinateTransformation.degreesToRadians(Epsilon);
+        double omega = CoordinateTransformation.degreesToRadians(elements.omega);
+        double w = CoordinateTransformation.degreesToRadians(elements.w);
+        double i = CoordinateTransformation.degreesToRadians(elements.i);
 
         double sinEpsilon = Math.sin(Epsilon);
         double cosEpsilon = Math.cos(Epsilon);
@@ -344,15 +317,15 @@ public class CAAElliptical
         double A = Math.atan2(F, P);
         double B = Math.atan2(G, Q);
         double C = Math.atan2(H, R);
-        double n = CAAElliptical.MeanMotionFromSemiMajorAxis(elements.a);
+        double n = Elliptical.meanMotionFromSemiMajorAxis(elements.a);
 
-        CAA3DCoordinate SunCoord = CAASun.EquatorialRectangularCoordinatesAnyEquinox(JD, elements.JDEquinox);
+        Coordinate3D SunCoord = Sun.equatorialRectangularCoordinatesAnyEquinox(JD, elements.JDEquinox);
 
         for (int j = 0; j < 2; j++)
         {
             double M = n * (JD0 - elements.T);
-            double E = CAAKepler.Calculate(M, elements.e);
-            E = CAACoordinateTransformation.DegreesToRadians(E);
+            double E = Kepler.calculate(M, elements.e);
+            E = CoordinateTransformation.degreesToRadians(E);
             double v = 2 * Math.atan(Math.sqrt((1 + elements.e) / (1 - elements.e)) * Math.tan(E / 2));
             double r = elements.a * (1 - elements.e * Math.cos(E));
             double x = r * a * Math.sin(A + w + v);
@@ -374,8 +347,8 @@ public class CAAElliptical
                 details.HeliocentricRectangularEcliptical.Y = r * (sinOmega * cosu + cosOmega * sinu * cosi);
                 details.HeliocentricRectangularEcliptical.Z = r * sini * sinu;
 
-                details.HeliocentricEclipticLongitude = CAACoordinateTransformation.MapTo0To360Range(CAACoordinateTransformation.RadiansToDegrees(Math.atan2(details.HeliocentricRectangularEcliptical.Y, details.HeliocentricRectangularEcliptical.X)));
-                details.HeliocentricEclipticLatitude = CAACoordinateTransformation.RadiansToDegrees(Math.asin(details.HeliocentricRectangularEcliptical.Z / r));
+                details.HeliocentricEclipticLongitude = CoordinateTransformation.MapTo0To360Range(CoordinateTransformation.radiansToDegrees(Math.atan2(details.HeliocentricRectangularEcliptical.Y, details.HeliocentricRectangularEcliptical.X)));
+                details.HeliocentricEclipticLatitude = CoordinateTransformation.radiansToDegrees(Math.asin(details.HeliocentricRectangularEcliptical.Z / r));
             }
 
             double psi = SunCoord.X + x;
@@ -383,32 +356,32 @@ public class CAAElliptical
             double sigma = SunCoord.Z + z;
 
             double Alpha = Math.atan2(nu, psi);
-            Alpha = CAACoordinateTransformation.RadiansToDegrees(Alpha);
+            Alpha = CoordinateTransformation.radiansToDegrees(Alpha);
             double Delta = Math.atan2(sigma, Math.sqrt(psi * psi + nu * nu));
-            Delta = CAACoordinateTransformation.RadiansToDegrees(Delta);
+            Delta = CoordinateTransformation.radiansToDegrees(Delta);
             double Distance = Math.sqrt(psi * psi + nu * nu + sigma * sigma);
 
             if (j == 0)
             {
-                details.TrueGeocentricRA = CAACoordinateTransformation.MapTo0To24Range(Alpha / 15);
+                details.TrueGeocentricRA = CoordinateTransformation.MapTo0To24Range(Alpha / 15);
                 details.TrueGeocentricDeclination = Delta;
                 details.TrueGeocentricDistance = Distance;
-                details.TrueGeocentricLightTime = DistanceToLightTime(Distance);
+                details.TrueGeocentricLightTime = distanceToLightTime(Distance);
             }
             else
             {
-                details.AstrometricGeocentricRA = CAACoordinateTransformation.MapTo0To24Range(Alpha / 15);
+                details.AstrometricGeocentricRA = CoordinateTransformation.MapTo0To24Range(Alpha / 15);
                 details.AstrometricGeocentricDeclination = Delta;
                 details.AstrometricGeocentricDistance = Distance;
-                details.AstrometricGeocentricLightTime = DistanceToLightTime(Distance);
+                details.AstrometricGeocentricLightTime = distanceToLightTime(Distance);
 
                 double RES = Math.sqrt(SunCoord.X * SunCoord.X + SunCoord.Y * SunCoord.Y + SunCoord.Z * SunCoord.Z);
 
                 details.Elongation = Math.acos((RES * RES + Distance * Distance - r * r) / (2 * RES * Distance));
-                details.Elongation = CAACoordinateTransformation.RadiansToDegrees(details.Elongation);
+                details.Elongation = CoordinateTransformation.radiansToDegrees(details.Elongation);
 
                 details.PhaseAngle = Math.acos((r * r + Distance * Distance - RES * RES) / (2 * r * Distance));
-                details.PhaseAngle = CAACoordinateTransformation.RadiansToDegrees(details.PhaseAngle);
+                details.PhaseAngle = CoordinateTransformation.radiansToDegrees(details.PhaseAngle);
             }
 
             if (j == 0) //Prepare for the next loop around
@@ -419,31 +392,31 @@ public class CAAElliptical
 
         return details;
     }
-    public static double InstantaneousVelocity(double r, double a)
+    public static double instantaneousVelocity(double r, double a)
     {
         return 42.1219 * Math.sqrt((1 / r) - (1 / (2 * a)));
     }
-    public static double VelocityAtPerihelion(double e, double a)
+    public static double velocityAtPerihelion(double e, double a)
     {
         return 29.7847 / Math.sqrt(a) * Math.sqrt((1 + e) / (1 - e));
     }
-    public static double VelocityAtAphelion(double e, double a)
+    public static double velocityAtAphelion(double e, double a)
     {
         return 29.7847 / Math.sqrt(a) * Math.sqrt((1 - e) / (1 + e));
     }
-    public static double LengthOfEllipse(double e, double a)
+    public static double lengthOfEllipse(double e, double a)
     {
         double b = a * Math.sqrt(1 - e * e);
-        return CAACoordinateTransformation.PI() * (3 * (a + b) - Math.sqrt((a + 3 * b) * (3 * a + b)));
+        return CoordinateTransformation.pI() * (3 * (a + b) - Math.sqrt((a + 3 * b) * (3 * a + b)));
     }
-    public static double CometMagnitude(double g, double delta, double k, double r)
+    public static double cometMagnitude(double g, double delta, double k, double r)
     {
         return g + 5 * Math.log10(delta) + k * Math.log10(r);
     }
-    public static double MinorPlanetMagnitude(double H, double delta, double G, double r, double PhaseAngle)
+    public static double minorPlanetMagnitude(double H, double delta, double G, double r, double PhaseAngle)
     {
         //Convert from degrees to radians
-        PhaseAngle = CAACoordinateTransformation.DegreesToRadians(PhaseAngle);
+        PhaseAngle = CoordinateTransformation.degreesToRadians(PhaseAngle);
 
         double phi1 = Math.exp(-3.33 * Math.pow(Math.tan(PhaseAngle / 2), 0.63));
         double phi2 = Math.exp(-1.87 * Math.pow(Math.tan(PhaseAngle / 2), 1.22));

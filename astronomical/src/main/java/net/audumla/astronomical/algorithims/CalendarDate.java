@@ -16,29 +16,37 @@ package net.audumla.astronomical.algorithims;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-public class CAAEllipticalObjectElements
-{
-    //Constructors / Destructors
-    public CAAEllipticalObjectElements()
-    {
-        this.a = 0;
-        this.e = 0;
-        this.i = 0;
-        this.w = 0;
-        this.omega = 0;
-        this.JDEquinox = 0;
-        this.T = 0;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
+
+public class CalendarDate {
+    /**
+     * Years are counted astronomically i.e. 1 BC = Year 0
+     */
+    public int year = 0;
+    /**
+     * 1 for January to 12 for December
+     */
+    public int month = 0;
+    /**
+     * day of the month.
+     */
+    public int day = 0;
+    public int hour = 0;
+    public int minute = 0;
+    public double second = 0.0;
+
+    public Date toDate() {
+        Calendar c = Calendar.getInstance();
+        c.setTimeZone(TimeZone.getTimeZone("UTC"));
+        c.set(Calendar.YEAR, year);
+        c.set(Calendar.DAY_OF_MONTH, day);
+        c.set(Calendar.MONTH, month);
+        c.set(Calendar.HOUR, hour);
+        c.set(Calendar.MINUTE, minute);
+        c.set(Calendar.SECOND, (int) second);
+        return c.getTime();
     }
-
-    //member variables
-    public double a;
-    public double e;
-    public double i;
-    public double w;
-    public double omega;
-    public double JDEquinox;
-    public double T;
 }

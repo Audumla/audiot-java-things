@@ -16,37 +16,22 @@ package net.audumla.astronomical.algorithims;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
+public enum EllipticalObject {
+        SUN,
+        MERCURY,
+        VENUS,
+        MARS,
+        JUPITER,
+        SATURN,
+        URANUS,
+        NEPTUNE,
+        PLUTO;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.TimeZone;
+        public int getValue() {
+            return this.ordinal();
+        }
 
-public class CAACalendarDate {
-    /**
-     * Years are counted astronomically i.e. 1 BC = Year 0
-     */
-    public int year = 0;
-    /**
-     * 1 for January to 12 for December
-     */
-    public int month = 0;
-    /**
-     * day of the month.
-     */
-    public int day = 0;
-    public int hour = 0;
-    public int minute = 0;
-    public double second = 0.0;
-
-    public Date toDate() {
-        Calendar c = Calendar.getInstance();
-        c.setTimeZone(TimeZone.getTimeZone("UTC"));
-        c.set(Calendar.YEAR, year);
-        c.set(Calendar.DAY_OF_MONTH, day);
-        c.set(Calendar.MONTH, month);
-        c.set(Calendar.HOUR, hour);
-        c.set(Calendar.MINUTE, minute);
-        c.set(Calendar.SECOND, (int) second);
-        return c.getTime();
-    }
+        public static EllipticalObject getEnum(int intValue) {
+            return EllipticalObject.values()[intValue];
+        }
 }

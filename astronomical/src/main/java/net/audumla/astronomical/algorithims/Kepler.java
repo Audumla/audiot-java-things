@@ -16,20 +16,17 @@ package net.audumla.astronomical.algorithims;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-public class CAAKepler
+public class Kepler
 {
-    public static double Calculate(double M, double e) {
-        return Calculate(M,e,53);
+    public static double calculate(double M, double e) {
+        return calculate(M,e,53);
     }
 
-    public static double Calculate(double M, double e, int nIterations)
+    public static double calculate(double M, double e, int nIterations)
     {
         //Convert from degrees to radians
-        M = CAACoordinateTransformation.DegreesToRadians(M);
-        double PI = CAACoordinateTransformation.PI();
+        M = CoordinateTransformation.degreesToRadians(M);
+        double PI = CoordinateTransformation.pI();
 
         double F = 1;
         if (M < 0)
@@ -69,6 +66,6 @@ public class CAAKepler
         }
 
         //Convert the result back to degrees
-        return CAACoordinateTransformation.RadiansToDegrees(E) * F;
+        return CoordinateTransformation.radiansToDegrees(E) * F;
     }
 }
