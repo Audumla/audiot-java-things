@@ -16,14 +16,11 @@ package net.audumla.astronomical.algorithims;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-
-public class CAAEllipticalObjectDetails
+public class EllipticalObjectDetails
 {
     //Constructors / Destructors
-    public CAAEllipticalObjectDetails()
+    public EllipticalObjectDetails()
     {
         this.HeliocentricEclipticLongitude = 0;
         this.HeliocentricEclipticLatitude = 0;
@@ -40,8 +37,8 @@ public class CAAEllipticalObjectDetails
     }
 
     //Member variables
-    public CAA3DCoordinate HeliocentricRectangularEquatorial = new CAA3DCoordinate();
-    public CAA3DCoordinate HeliocentricRectangularEcliptical = new CAA3DCoordinate();
+    public Coordinate3D HeliocentricRectangularEquatorial = new Coordinate3D();
+    public Coordinate3D HeliocentricRectangularEcliptical = new Coordinate3D();
     public double HeliocentricEclipticLongitude;
     public double HeliocentricEclipticLatitude;
     public double TrueGeocentricRA;
