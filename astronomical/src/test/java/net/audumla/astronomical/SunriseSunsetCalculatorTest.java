@@ -1,4 +1,4 @@
-package net.audumla.spacetime.astrological;
+package net.audumla.astronomical;
 
 /*
  * *********************************************************************
@@ -20,8 +20,8 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Calendar;
 
-import net.audumla.spacetime.Geolocation;
-import net.audumla.spacetime.Location;
+import net.audumla.astronomical.Geolocation;
+import net.audumla.astronomical.Location;
 import org.junit.Before;
 import org.junit.Test;
 

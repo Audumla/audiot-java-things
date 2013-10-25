@@ -16,7 +16,8 @@ package net.audumla.climate;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import net.audumla.spacetime.Time;
+import net.audumla.astronomical.Geolocation;
+import net.audumla.Time;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -28,30 +29,29 @@ public class ClimateCalculations {
         return w < -1 * ws || w > ws;
     }
 
-    protected static double w(ClimateData data, Date now, int hours) {
+    protected static double w(Geolocation data, Date now, int hours) {
+        //solar time angle at midpoint of hourly or shorter period
         Calendar c = Calendar.getInstance();
         c.setTime(now);
         int dayOfYear = c.get(Calendar.DAY_OF_YEAR);
         double b = ((2 * Math.PI) * (dayOfYear - 81)) / 364;
         Date mid = new Date((now.getTime() + subHoursFromDate(now, hours).getTime()) / 2);
         c.setTime(mid);
-        double Lm = data.getDataSource().getLongitude();
-        double Lz = Lm;
+        double Lm = data.getLongitude();
         double Sc = 0.1645 * Math.sin(2 * b) - 0.1255 * Math.cos(b) - 0.025 * Math.sin(b);
         double midTime = c.get(Calendar.HOUR_OF_DAY) + c.get(Calendar.MINUTE) / 60.0;
-        double w = (Math.PI / 12) * ((midTime + 0.06667 * (Lz - Lm) + Sc) - 12);
-        return w;
+        return (Math.PI / 12) * ((midTime + 0.06667 * (Lm - Lm) + Sc) - 12);
 
     }
 
-    protected static double Ra(ClimateData data, Date now, int hours) {
+    protected static double Ra(Geolocation data, Date now, int hours) {
         // Extraterrestrial radiation
         Calendar c = Calendar.getInstance();
         c.setTime(now);
         int dayOfYear = c.get(Calendar.DAY_OF_YEAR);
         double Gsc = 0.0820f;
         double dr = (double) (1 + 0.033 * Math.cos(((2 * Math.PI) / 365) * dayOfYear));
-        double d = d(now); // decimation
+        double d = d(now); // declination
         double j = j(data);
         double ws = ws(data, now);
 
@@ -75,22 +75,26 @@ public class ClimateCalculations {
 
     protected static double d(Date now) {
         // formula 24
-        // solar decimation
+        // solar declination
         Calendar c = Calendar.getInstance();
         c.setTime(now);
-        return (0.409 * Math.sin(((2 * Math.PI * c.get(Calendar.DAY_OF_YEAR)) / 365) - 1.39)); // solar
+        return (0.409 * Math.sin(((2 * Math.PI * c.get(Calendar.DAY_OF_YEAR)) / 365) - 1.39));
 
     }
 
-    protected static double j(ClimateData data) {
-        return (Math.PI / 180) * data.getDataSource().getLatitude(); // latitude radians
+    protected static double j(Geolocation data) {
+        // formula 22
+        // latitude radians
+        return (Math.PI / 180) * data.getLatitude();
     }
 
-    protected static double ws(ClimateData data, Date now) {
+    protected static double ws(Geolocation data, Date now) {
+        // formula 25
+        // The sunset hour angle
         return Math.acos(-1 * Math.tan(j(data)) * Math.tan(d(now)));
     }
 
-    protected static double N(ClimateData data, Date now) {
+    protected static double N(Geolocation data, Date now) {
         // formula 34
         // Daylight hours (N)
         return 24 / Math.PI * ws(data, now);
@@ -98,7 +102,7 @@ public class ClimateCalculations {
 
     public static double getSolarRadiationFromTemperature(ClimateData data, Date now, int durationLength) {
         double k = 0.16;
-        return k * Math.sqrt(data.getMaximumTemperature() - data.getMinimumTemperature()) * Ra(data, now, durationLength);
+        return k * Math.sqrt(data.getMaximumTemperature() - data.getMinimumTemperature()) * Ra(data.getDataSource(), now, durationLength);
     }
 
 
@@ -107,8 +111,8 @@ public class ClimateCalculations {
         double n = data.getSunshineHours();
         double as = 0.25d;
         double bs = 0.5d;
-        double N = N(data, now);
-        double Ra = Ra(data, now, durationLength);
+        double N = N(data.getDataSource(), now);
+        double Ra = Ra(data.getDataSource(), now, durationLength);
         double Rs1 = (as + (bs * (n / N)));
         double Rs = Rs1 * Ra;
         return Rs;
@@ -133,10 +137,10 @@ public class ClimateCalculations {
             }
         }
         if (hours < 24) {
-            if (sunBelowHorizon(w(data, now, hours), ws(data, now))) {
+            if (sunBelowHorizon(w(data.getDataSource(), now, hours), ws(data.getDataSource(), now))) {
                 return 0.0;
             }
-            Rs = Rs / N(data, now);
+            Rs = Rs / N(data.getDataSource(), now);
 //			Rs = 0.0;
         }
 
@@ -168,7 +172,7 @@ public class ClimateCalculations {
     }
 
     protected double Rso(ClimateData data, Date now, int hours) {
-        double Ra = Ra(data, now, hours);
+        double Ra = Ra(data.getDataSource(), now, hours);
         double Rso = (double) ((0.75 + (0.00002 * data.getDataSource().getElevation())) * Ra);
         return Rso;
     }
@@ -206,7 +210,7 @@ public class ClimateCalculations {
         if (hours < 24) {
             o = o / 24;// (24 / hours);
             oT = o * Math.pow(T(data, now, hours) + 273.16, 4);
-            RsRso = RsRso(Rs, Rso, w(data, now, hours), ws(data, now));
+            RsRso = RsRso(Rs, Rso, w(data.getDataSource(), now, hours), ws(data.getDataSource(), now));
         } else {
             oT = o * ((Math.pow(data.getMaximumTemperature() + 273.16, 4) + Math.pow(data.getMinimumTemperature() + 273.16, 4)) / 2);
             RsRso = RsRso(Rs, Rso);
@@ -299,7 +303,7 @@ public class ClimateCalculations {
 
     protected double G(ClimateData data, Date now, int hours) {
         if (hours < 24) {
-            if (sunBelowHorizon(w(data, now, hours), ws(data, now))) {
+            if (sunBelowHorizon(w(data.getDataSource(), now, hours), ws(data.getDataSource(), now))) {
                 return 0.5 * Rn(data, now, hours);
             } else {
                 return 0.1 * Rn(data, now, hours);

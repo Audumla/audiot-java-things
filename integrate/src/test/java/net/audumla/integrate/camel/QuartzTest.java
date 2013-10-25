@@ -36,9 +36,25 @@ public class QuartzTest extends CamelTestBase {
         context = new DefaultCamelContext();
         context.addComponent("scheduler", new SchedulerComponent(context));
         context.start();
-        context.getComponent("scheduler")
+        context.getComponent("scheduler");
     }
 
+
+    @Test
+    public void testAudumlaAstro() throws Exception {
+        context.addRoutes(new RouteBuilder() {
+            public void configure() {
+                from("scheduler://group/timer?fromSunset=*/10+*+*+*+*+?").to("mock:out");
+            }
+        });
+        MockEndpoint resultEndpoint = context.getEndpoint("mock:out", MockEndpoint.class);
+
+        resultEndpoint.setAssertPeriod(4000);
+        resultEndpoint.expectedMessageCount(1);
+
+        resultEndpoint.assertIsSatisfied();
+
+    }
 
     @Test
     public void testAudumlaCron() throws Exception {
@@ -60,13 +76,13 @@ public class QuartzTest extends CamelTestBase {
     public void testAudumlaSimple() throws Exception {
         context.addRoutes(new RouteBuilder() {
             public void configure() {
-                from("scheduler://group/timer12?trigger.repeatInterval=1&trigger.repeatCount=0").to("mock:out");
+                from("scheduler://group/timer12?trigger.repeatInterval=1&trigger.repeatCount=1").to("mock:out");
             }
         });
         MockEndpoint resultEndpoint = context.getEndpoint("mock:out", MockEndpoint.class);
 
         resultEndpoint.setAssertPeriod(4000);
-        resultEndpoint.expectedMessageCount(1);
+        resultEndpoint.expectedMessageCount(2);
 
         resultEndpoint.assertIsSatisfied();
 
@@ -93,13 +109,13 @@ public class QuartzTest extends CamelTestBase {
     public void testStandardSimple() throws Exception {
         context.addRoutes(new RouteBuilder() {
             public void configure() {
-                from("quartz2://group/timer12?trigger.repeatInterval=1&trigger.repeatCount=0").to("mock:out");
+                from("quartz2://group/timer12?trigger.repeatInterval=1&trigger.repeatCount=1").to("mock:out");
             }
         });
         MockEndpoint resultEndpoint = context.getEndpoint("mock:out", MockEndpoint.class);
 
         resultEndpoint.setAssertPeriod(4000);
-        resultEndpoint.expectedMessageCount(1);
+        resultEndpoint.expectedMessageCount(2);
 
         resultEndpoint.assertIsSatisfied();
 

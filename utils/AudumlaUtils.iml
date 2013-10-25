@@ -4,9 +4,6 @@
     <facet type="Osmorc" name="OSGi">
       <configuration manifestGenerationMode="OsmorcControlled" manifestLocation="" jarfileLocation="utils-1.0-SNAPSHOT.jar" outputPathType="CompilerOutputPath" bndFileLocation="" bundlorFileLocation="" bundleActivator="" bundleSymbolicName="net.audumla.utils" bundleVersion="1.0.0" ignoreFilePattern="" useProjectDefaultManifestFileLocation="true" alwaysRebuildBundleJAR="false" doNotSynchronizeWithMaven="false">
         <additionalProperties>
-          <property key="Bundle-Description" value="Utilities used by other Audumla modules. Includes bean wrapping and automated bean generation, Astrological event calculation and a key based timed caching Map." />
-          <property key="Bundle-Vendor" value="Audumla.net" />
-          <property key="Bundle-DocURL" value="http://www.audumla.net" />
           <property key="Bundle-Name" value="Audumla Utils" />
         </additionalProperties>
         <additionalJARContents />

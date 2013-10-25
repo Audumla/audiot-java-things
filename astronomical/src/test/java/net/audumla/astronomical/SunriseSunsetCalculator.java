@@ -1,4 +1,4 @@
-package net.audumla.spacetime.astrological;
+package net.audumla.astronomical;
 
 /*
  * *********************************************************************
@@ -15,8 +15,6 @@ package net.audumla.spacetime.astrological;
  *  "AS IS BASIS", WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and limitations under the License.
  */
-
-import net.audumla.spacetime.Geolocation;
 
 import java.util.Calendar;
 import java.util.TimeZone;
@@ -61,7 +59,7 @@ public class SunriseSunsetCalculator {
      * @return the astronomical sunrise time in HH:MM (24-hour clock) form.
      */
     public String getAstronomicalSunriseForDate(Calendar date) {
-        return calculator.computeSunriseTime(net.audumla.spacetime.astrological.Zenith.ASTRONOMICAL, date);
+        return calculator.computeSunriseTime(net.audumla.astronomical.Zenith.ASTRONOMICAL, date);
     }
 
     /**
@@ -71,7 +69,7 @@ public class SunriseSunsetCalculator {
      * @return the astronomical sunrise time as a Calendar
      */
     public Calendar getAstronomicalSunriseCalendarForDate(Calendar date) {
-        return calculator.computeSunriseCalendar(net.audumla.spacetime.astrological.Zenith.ASTRONOMICAL, date);
+        return calculator.computeSunriseCalendar(net.audumla.astronomical.Zenith.ASTRONOMICAL, date);
     }
 
     /**
@@ -81,7 +79,7 @@ public class SunriseSunsetCalculator {
      * @return the astronomical sunset time in HH:MM (24-hour clock) form.
      */
     public String getAstronomicalSunsetForDate(Calendar date) {
-        return calculator.computeSunsetTime(net.audumla.spacetime.astrological.Zenith.ASTRONOMICAL, date);
+        return calculator.computeSunsetTime(net.audumla.astronomical.Zenith.ASTRONOMICAL, date);
     }
 
     /**
@@ -91,7 +89,7 @@ public class SunriseSunsetCalculator {
      * @return the astronomical sunset time as a Calendar
      */
     public Calendar getAstronomicalSunsetCalendarForDate(Calendar date) {
-        return calculator.computeSunsetCalendar(net.audumla.spacetime.astrological.Zenith.ASTRONOMICAL, date);
+        return calculator.computeSunsetCalendar(net.audumla.astronomical.Zenith.ASTRONOMICAL, date);
     }
 
     /**
@@ -101,7 +99,7 @@ public class SunriseSunsetCalculator {
      * @return the nautical sunrise time in HH:MM (24-hour clock) form.
      */
     public String getNauticalSunriseForDate(Calendar date) {
-        return calculator.computeSunriseTime(net.audumla.spacetime.astrological.Zenith.NAUTICAL, date);
+        return calculator.computeSunriseTime(net.audumla.astronomical.Zenith.NAUTICAL, date);
     }
 
     /**
@@ -111,7 +109,7 @@ public class SunriseSunsetCalculator {
      * @return the nautical sunrise time as a Calendar
      */
     public Calendar getNauticalSunriseCalendarForDate(Calendar date) {
-        return calculator.computeSunriseCalendar(net.audumla.spacetime.astrological.Zenith.NAUTICAL, date);
+        return calculator.computeSunriseCalendar(net.audumla.astronomical.Zenith.NAUTICAL, date);
     }
 
     /**
@@ -121,7 +119,7 @@ public class SunriseSunsetCalculator {
      * @return the nautical sunset time in HH:MM (24-hour clock) form.
      */
     public String getNauticalSunsetForDate(Calendar date) {
-        return calculator.computeSunsetTime(net.audumla.spacetime.astrological.Zenith.NAUTICAL, date);
+        return calculator.computeSunsetTime(net.audumla.astronomical.Zenith.NAUTICAL, date);
     }
 
     /**
@@ -131,7 +129,7 @@ public class SunriseSunsetCalculator {
      * @return the nautical sunset time as a Calendar
      */
     public Calendar getNauticalSunsetCalendarForDate(Calendar date) {
-        return calculator.computeSunsetCalendar(net.audumla.spacetime.astrological.Zenith.NAUTICAL, date);
+        return calculator.computeSunsetCalendar(net.audumla.astronomical.Zenith.NAUTICAL, date);
     }
 
     /**
@@ -141,7 +139,7 @@ public class SunriseSunsetCalculator {
      * @return the civil sunrise time in HH:MM (24-hour clock) form.
      */
     public String getCivilSunriseForDate(Calendar date) {
-        return calculator.computeSunriseTime(net.audumla.spacetime.astrological.Zenith.CIVIL, date);
+        return calculator.computeSunriseTime(net.audumla.astronomical.Zenith.CIVIL, date);
     }
 
     /**
@@ -151,7 +149,7 @@ public class SunriseSunsetCalculator {
      * @return the civil sunrise time as a Calendar
      */
     public Calendar getCivilSunriseCalendarForDate(Calendar date) {
-        return calculator.computeSunriseCalendar(net.audumla.spacetime.astrological.Zenith.CIVIL, date);
+        return calculator.computeSunriseCalendar(net.audumla.astronomical.Zenith.CIVIL, date);
     }
 
     /**
@@ -161,7 +159,7 @@ public class SunriseSunsetCalculator {
      * @return the civil sunset time in HH:MM (24-hour clock) form.
      */
     public String getCivilSunsetForDate(Calendar date) {
-        return calculator.computeSunsetTime(net.audumla.spacetime.astrological.Zenith.CIVIL, date);
+        return calculator.computeSunsetTime(net.audumla.astronomical.Zenith.CIVIL, date);
     }
 
     /**
@@ -171,7 +169,7 @@ public class SunriseSunsetCalculator {
      * @return the civil sunset time as a Calendar
      */
     public Calendar getCivilSunsetCalendarForDate(Calendar date) {
-        return calculator.computeSunsetCalendar(net.audumla.spacetime.astrological.Zenith.CIVIL, date);
+        return calculator.computeSunsetCalendar(net.audumla.astronomical.Zenith.CIVIL, date);
     }
 
     /**
@@ -181,7 +179,7 @@ public class SunriseSunsetCalculator {
      * @return the official sunrise time in HH:MM (24-hour clock) form.
      */
     public String getOfficialSunriseForDate(Calendar date) {
-        return calculator.computeSunriseTime(net.audumla.spacetime.astrological.Zenith.OFFICIAL, date);
+        return calculator.computeSunriseTime(net.audumla.astronomical.Zenith.OFFICIAL, date);
     }
 
     /**
@@ -191,7 +189,7 @@ public class SunriseSunsetCalculator {
      * @return the official sunrise time as a Calendar
      */
     public Calendar getOfficialSunriseCalendarForDate(Calendar date) {
-        return calculator.computeSunriseCalendar(net.audumla.spacetime.astrological.Zenith.OFFICIAL, date);
+        return calculator.computeSunriseCalendar(net.audumla.astronomical.Zenith.OFFICIAL, date);
     }
 
     /**
@@ -201,7 +199,7 @@ public class SunriseSunsetCalculator {
      * @return the official sunset time in HH:MM (24-hour clock) form.
      */
     public String getOfficialSunsetForDate(Calendar date) {
-        return calculator.computeSunsetTime(net.audumla.spacetime.astrological.Zenith.OFFICIAL, date);
+        return calculator.computeSunsetTime(net.audumla.astronomical.Zenith.OFFICIAL, date);
     }
 
     /**
@@ -211,7 +209,7 @@ public class SunriseSunsetCalculator {
      * @return the official sunset time as a Calendar
      */
     public Calendar getOfficialSunsetCalendarForDate(Calendar date) {
-        return calculator.computeSunsetCalendar(net.audumla.spacetime.astrological.Zenith.OFFICIAL, date);
+        return calculator.computeSunsetCalendar(net.audumla.astronomical.Zenith.OFFICIAL, date);
     }
 
     /**
@@ -227,7 +225,7 @@ public class SunriseSunsetCalculator {
 
     public static Calendar getSunrise(Geolocation location, TimeZone timeZone, Calendar date, double degrees) {
         SolarEventCalculator solarEventCalculator = new SolarEventCalculator(location, timeZone);
-        return solarEventCalculator.computeSunriseCalendar(new net.audumla.spacetime.astrological.Zenith(90 - degrees), date);
+        return solarEventCalculator.computeSunriseCalendar(new net.audumla.astronomical.Zenith(90 - degrees), date);
     }
 
     /**
@@ -243,7 +241,7 @@ public class SunriseSunsetCalculator {
 
     public static Calendar getSunset(Geolocation location, TimeZone timeZone, Calendar date, double degrees) {
         SolarEventCalculator solarEventCalculator = new SolarEventCalculator(location, timeZone);
-        return solarEventCalculator.computeSunsetCalendar(new net.audumla.spacetime.astrological.Zenith(90 - degrees), date);
+        return solarEventCalculator.computeSunsetCalendar(new net.audumla.astronomical.Zenith(90 - degrees), date);
     }
 
     /**

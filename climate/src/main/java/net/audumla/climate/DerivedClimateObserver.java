@@ -18,7 +18,7 @@ package net.audumla.climate;
 
 import net.audumla.bean.BeanUtils.BeanProxy;
 import net.audumla.bean.SupportedFunction;
-import net.audumla.spacetime.Time;
+import net.audumla.Time;
 
 import java.util.Date;
 
@@ -96,7 +96,7 @@ public class DerivedClimateObserver implements ClimateDataFactory, ClimateObserv
 
         @SupportedFunction(supported = true)
         public double getDaylightHours() {
-            return ClimateCalculations.N(this, getTime());
+            return ClimateCalculations.N(this.getDataSource(), getTime());
         }
 
         @SupportedFunction(supported = true)

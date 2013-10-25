@@ -17,8 +17,8 @@ package net.audumla.automate.scheduler.quartz;
  */
 
 import net.audumla.bean.BeanUtils;
-import net.audumla.spacetime.Geolocation;
-import net.audumla.spacetime.Time;
+import net.audumla.astronomical.Geolocation;
+import net.audumla.Time;
 import org.quartz.ScheduleBuilder;
 import org.quartz.spi.MutableTrigger;
 

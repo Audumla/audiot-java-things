@@ -17,7 +17,7 @@ package net.audumla.util;
  */
 
 import net.audumla.collections.ExpiringMap;
-import net.audumla.spacetime.Time;
+import net.audumla.Time;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.junit.Assert;
