@@ -44,7 +44,7 @@ public class CalendarDate {
         c.set(Calendar.YEAR, year);
         c.set(Calendar.DAY_OF_MONTH, day);
         c.set(Calendar.MONTH, month);
-        c.set(Calendar.HOUR, hour);
+        c.set(Calendar.HOUR_OF_DAY, hour);
         c.set(Calendar.MINUTE, minute);
         c.set(Calendar.SECOND, (int) second);
         return c.getTime();

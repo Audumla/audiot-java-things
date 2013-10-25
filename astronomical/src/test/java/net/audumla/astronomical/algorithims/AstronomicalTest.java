@@ -16,13 +16,15 @@ package net.audumla.astronomical.algorithims;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
+import net.audumla.astronomical.Geolocation;
 import net.audumla.astronomical.Location;
 import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Date;
+import java.util.Calendar;
+import java.util.TimeZone;
 
 public class AstronomicalTest {
     private static final Logger logger = LoggerFactory.getLogger(AstronomicalTest.class);
@@ -30,39 +32,38 @@ public class AstronomicalTest {
     @Test
     public void testSunrise() throws Exception {
 
-        CAADate CalcDate = new CAADate(2009, 8, 8, true);
-        double JD = CalcDate.Julian();
-        CAAEllipticalPlanetaryDetails SunDetails = CAAElliptical.Calculate(JD - 1, CAAElliptical.EllipticalObject.SUN);
+        JulianDate CalcDate = new JulianDate(2009, 8, 8, true);
+        double JD = CalcDate.julian();
+        EllipticalPlanetaryDetails SunDetails = Elliptical.calculate(JD - 1, EllipticalObject.SUN);
         double Alpha1 = SunDetails.ApparentGeocentricRA;
         double Delta1 = SunDetails.ApparentGeocentricDeclination;
-        SunDetails = CAAElliptical.Calculate(JD, CAAElliptical.EllipticalObject.SUN);
+        SunDetails = Elliptical.calculate(JD, EllipticalObject.SUN);
         double Alpha2 = SunDetails.ApparentGeocentricRA;
         double Delta2 = SunDetails.ApparentGeocentricDeclination;
-        SunDetails = CAAElliptical.Calculate(JD + 1, CAAElliptical.EllipticalObject.SUN);
+        SunDetails = Elliptical.calculate(JD + 1, EllipticalObject.SUN);
         double Alpha3 = SunDetails.ApparentGeocentricRA;
         double Delta3 = SunDetails.ApparentGeocentricDeclination;
 
+        Location loc = new Location(-37.70461920, 145.1030275, 0.0);
 
-        Location loc = new Location(-37.70461920, -145.1030275, 0.0);
+        RiseTransitSet.CAARiseTransitSetDetails RiseTransitSetTime = RiseTransitSet.calculate(JD, Alpha1, Delta1, Alpha2, Delta2, Alpha3, Delta3, loc.getLongitude(Geolocation.Direction.WEST), loc.getLatitude(Geolocation.Direction.NORTH), -6);
 
-        CAARiseTransitSet.CAARiseTransitSetDetails RiseTransitSetTime = CAARiseTransitSet.Calculate(JD, Alpha1, Delta1, Alpha2, Delta2, Alpha3, Delta3, loc.getLongitude() , loc.getLatitude() , -6);
-
-        Date set = RiseTransitSetTime.getSet().toDate();
-        Date rise = RiseTransitSetTime.getRise().toDate();
+        java.util.Date rise = RiseTransitSetTime.getRise().toDate();
+        java.util.Date set = RiseTransitSetTime.getSet().toDate();
 
         logger.debug("Sunrise : Algorithms: " + rise + " : " + rise.getTime());
         logger.debug("Sunset  : Algorithms: " + set + " : " + set.getTime());
 
-        assert rise.getTime() == 1252442651737l;
-        assert set.getTime() == 1252397140737l;
+        Assert.assertEquals(rise.getTime(),1252442651158l,1000);
+        Assert.assertEquals(set.getTime(),1252397140158l,1000);
 
 
     }
 
     @Test
     public void testDateConversion() throws Exception {
-        Date date = new Date();
-        CAADate cDate = new CAADate(date);
+        java.util.Date date = new java.util.Date();
+        JulianDate cDate = new JulianDate(date);
         logger.debug("Algorithms: " + cDate.toDate() + " : " +cDate.toDate().getTime() );
         logger.debug("Algorithms: " + date + " : " + date.getTime());
         Assert.assertEquals(cDate.toDate().getTime(),date.getTime(),1100);
