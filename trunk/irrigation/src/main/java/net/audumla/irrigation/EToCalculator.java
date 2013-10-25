@@ -13,7 +13,7 @@ package net.audumla.irrigation;
 import net.audumla.automate.Event;
 import net.audumla.climate.ClimateData;
 import net.audumla.climate.ClimateDataSource;
-import net.audumla.spacetime.Time;
+import net.audumla.Time;
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.log4j.Logger;
 

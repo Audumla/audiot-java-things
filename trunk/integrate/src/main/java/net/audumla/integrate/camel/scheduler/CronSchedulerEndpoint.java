@@ -28,10 +28,6 @@ public class CronSchedulerEndpoint extends DefaultSchedulerEndpoint {
     private static final Logger logger = LoggerFactory.getLogger(CronSchedulerEndpoint.class);
     private String cron;
 
-    static {
-        SchedulerComponent.registerScheduler(CronSchedulerEndpoint.class,"cron");
-    }
-
     public String getCron() {
         return cron;
     }

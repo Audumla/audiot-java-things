@@ -1,6 +1,6 @@
-package net.audumla.spacetime;
+package net.audumla;
 
-import net.audumla.spacetime.astrological.SunriseSunsetCalculator;
+import net.audumla.astronomical.SunriseSunsetCalculator;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

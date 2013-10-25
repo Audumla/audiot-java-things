@@ -55,13 +55,13 @@ public class CalculationTest {
 
         data.addObservation(obs);
 
-        double Ra = cc.Ra(data, now, 2);
+        double Ra = cc.Ra(data.getDataSource(), now, 2);
         Assert.assertEquals(0, Ra, Ra * 0.01);
         double Rs = cc.Rs(data, now, 2);
         Assert.assertEquals(0, Rs, Rs * 0.01);
         double Rso = cc.Rso(data, now, 2);
         Assert.assertEquals(0, Rso, 0.01);
-        double RsRso = cc.RsRso(Rs, Rso, cc.w(data, now, 2), cc.ws(data, now));
+        double RsRso = cc.RsRso(Rs, Rso, cc.w(data.getDataSource(), now, 2), cc.ws(data.getDataSource(), now));
         Assert.assertEquals(0.8, RsRso, 0.01);
         double ea = cc.ea(data, now, 2);
         Assert.assertEquals(3.402, ea, ea * 0.01);
@@ -115,7 +115,7 @@ public class CalculationTest {
         obs2.setWindSpeed(3.3);
         obs2.setTime(now);
 
-        double Ra = cc.Ra(data, now, 24);
+        double Ra = cc.Ra(data.getDataSource(), now, 24);
         Assert.assertEquals(41.09, Ra, Ra * 0.01);
         double Rs = cc.Rs(data, now, 24);
         Assert.assertEquals(22.07, Rs, Rs * 0.01);
@@ -167,7 +167,7 @@ public class CalculationTest {
         data.setWindSpeedHeight(10.0);
         data.setAverageWindSpeed(2.78);
 
-        double Ra = cc.Ra(data, now, 24);
+        double Ra = cc.Ra(data.getDataSource(), now, 24);
         Assert.assertEquals(41.09, Ra, Ra * 0.01);
         double Rs = cc.Rs(data, now, 24);
         Assert.assertEquals(22.07, Rs, Rs * 0.01);
@@ -382,7 +382,7 @@ public class CalculationTest {
         ClimateCalculations cc = new ClimateCalculations();
         ClimateDataFactory sw = new BOMHistoricalClimateObserver(source);
         ClimateData data = ClimateDataFactory.newWritableClimateData(sw, source);
-        double value = cc.Ra(data, now, 24);
+        double value = cc.Ra(data.getDataSource(), now, 24);
         Assert.assertEquals(32.2, value, 0.1);
     }
 
@@ -398,7 +398,7 @@ public class CalculationTest {
         ClimateCalculations cc = new ClimateCalculations();
         ClimateDataFactory sw = new BOMHistoricalClimateObserver(source);
         WritableClimateData data = (WritableClimateData) ClimateDataFactory.newWritableClimateData(sw, source);
-        double Ra = cc.Ra(data, now, 24);
+        double Ra = cc.Ra(data.getDataSource(), now, 24);
         Assert.assertEquals(25.1, Ra, 0.1);
         data.setSunshineHours(7.1);
         double Rs = cc.Rs(data, now, 24);
@@ -427,7 +427,7 @@ public class CalculationTest {
         data.setMinimumTemperature(19.1);
         data.setSunshineHours(7.1);
 
-        double Ra = cc.Ra(data, now, 24);
+        double Ra = cc.Ra(data.getDataSource(), now, 24);
         Assert.assertEquals(25.1, Ra, 0.1);
         double Rs = cc.Rs(data, now, 24);
         Assert.assertEquals(14.5, Rs, 0.1);

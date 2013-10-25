@@ -1,6 +1,6 @@
 package net.audumla.automate.scheduler.quartz;
 
-import net.audumla.spacetime.Time;
+import net.audumla.Time;
 import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;

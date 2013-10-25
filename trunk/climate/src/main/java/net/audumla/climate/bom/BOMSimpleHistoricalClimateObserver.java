@@ -20,7 +20,7 @@ import au.com.bytecode.opencsv.CSVReader;
 import net.audumla.bean.SupportedFunction;
 import net.audumla.climate.*;
 import net.audumla.bean.SafeParse;
-import net.audumla.spacetime.Time;
+import net.audumla.Time;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.log4j.Logger;

@@ -1,4 +1,4 @@
-package net.audumla.spacetime.astrological;
+package net.audumla.astronomical;
 
 /*
  * *********************************************************************
@@ -15,8 +15,6 @@ package net.audumla.spacetime.astrological;
  *  "AS IS BASIS", WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and limitations under the License.
  */
-
-import net.audumla.spacetime.Geolocation;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -339,7 +337,7 @@ public class SolarEventCalculator {
             hour = 0;
         }
 
-        // Set the local time
+        // set the local time
         resultTime.set(Calendar.HOUR_OF_DAY, hour);
         resultTime.set(Calendar.MINUTE, minutes.intValue());
         resultTime.set(Calendar.SECOND, 0);

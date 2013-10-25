@@ -16,7 +16,7 @@ package net.audumla.automate.scheduler.quartz;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import net.audumla.spacetime.Time;
+import net.audumla.Time;
 import org.apache.commons.lang.time.DateUtils;
 import org.quartz.Calendar;
 import org.quartz.ScheduleBuilder;

@@ -1,4 +1,4 @@
-package net.audumla.spacetime.astrological;
+package net.audumla.astronomical;
 
 /*
  * *********************************************************************
@@ -19,10 +19,9 @@ package net.audumla.spacetime.astrological;
 import java.io.File;
 import java.util.Calendar;
 import java.util.List;
-import java.util.TimeZone;
 
-import net.audumla.spacetime.Geolocation;
-import net.audumla.spacetime.Location;
+import net.audumla.astronomical.Geolocation;
+import net.audumla.astronomical.Location;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;

@@ -16,14 +16,13 @@ package net.audumla.util;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import net.audumla.spacetime.Time;
+import net.audumla.Time;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.TimeZone;
 
 public class DateUtilsTest {
 

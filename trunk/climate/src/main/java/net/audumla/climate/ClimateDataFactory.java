@@ -17,7 +17,7 @@ package net.audumla.climate;
  */
 
 import net.audumla.bean.BeanUtils;
-import net.audumla.spacetime.Time;
+import net.audumla.Time;
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.commons.lang3.ClassUtils;
 
