@@ -17,6 +17,8 @@ package net.audumla.astronomical.algorithims;
  */
 
 
+import sun.security.krb5.internal.crypto.Des;
+
 public class Elliptical
 {
 
@@ -24,7 +26,7 @@ public class Elliptical
     {
         return Distance * 0.0057755183;
     }
-    public static EllipticalPlanetaryDetails calculate(double JD, EllipticalObject object)
+    public static EllipticalPlanetaryDetails calculate(double JD, AstronomicalObject object)
     {
         //What will the the return value
         EllipticalPlanetaryDetails details = new EllipticalPlanetaryDetails();
@@ -34,11 +36,12 @@ public class Elliptical
         double B0 = 0;
         double R0 = 0;
         double cosB0 = 0;
-        if (object != EllipticalObject.SUN)
+        if (object.getType() != EllipticalObject.SUN)
         {
-            L0 = Earth.eclipticLongitude(JD0);
-            B0 = Earth.eclipticLatitude(JD0);
-            R0 = Earth.radiusVector(JD0);
+            Earth earth = new Earth();
+            L0 = earth.eclipticLongitude(JD0);
+            B0 = earth.eclipticLatitude(JD0);
+            R0 = earth.radiusVector(JD0);
             L0 = CoordinateTransformation.degreesToRadians(L0);
             B0 = CoordinateTransformation.degreesToRadians(B0);
             cosB0 = Math.cos(B0);
@@ -46,81 +49,10 @@ public class Elliptical
 
 
         //Calculate the initial values
-        double L = 0;
-        double B = 0;
-        double R = 0;
-        switch (object)
-        {
-            case SUN:
-            {
-                L = Sun.geometricEclipticLongitude(JD0);
-                B = Sun.geometricEclipticLatitude(JD0);
-                R = Earth.radiusVector(JD0);
-                break;
-            }
-            /*
-            case MERCURY:
-            {
-                L = CAAMercury.eclipticLongitude(JD0);
-                B = CAAMercury.eclipticLatitude(JD0);
-                R = CAAMercury.radiusVector(JD0);
-                break;
-            }
-            case VENUS:
-            {
-                L = CAAVenus.eclipticLongitude(JD0);
-                B = CAAVenus.eclipticLatitude(JD0);
-                R = CAAVenus.radiusVector(JD0);
-                break;
-            }
-            case MARS:
-            {
-                L = CAAMars.eclipticLongitude(JD0);
-                B = CAAMars.eclipticLatitude(JD0);
-                R = CAAMars.radiusVector(JD0);
-                break;
-            }
-            case JUPITER:
-            {
-                L = CAAJupiter.eclipticLongitude(JD0);
-                B = CAAJupiter.eclipticLatitude(JD0);
-                R = CAAJupiter.radiusVector(JD0);
-                break;
-            }
-            case SATURN:
-            {
-                L = CAASaturn.eclipticLongitude(JD0);
-                B = CAASaturn.eclipticLatitude(JD0);
-                R = CAASaturn.radiusVector(JD0);
-                break;
-            }
-            case URANUS:
-            {
-                L = CAAUranus.eclipticLongitude(JD0);
-                B = CAAUranus.eclipticLatitude(JD0);
-                R = CAAUranus.radiusVector(JD0);
-                break;
-            }
-            case NEPTUNE:
-            {
-                L = CAANeptune.eclipticLongitude(JD0);
-                B = CAANeptune.eclipticLatitude(JD0);
-                R = CAANeptune.radiusVector(JD0);
-                break;
-            }
-            case PLUTO:
-            {
-                L = CAAPluto.eclipticLongitude(JD0);
-                B = CAAPluto.eclipticLatitude(JD0);
-                R = CAAPluto.radiusVector(JD0);
-                break;
-            }       */
-            default:
-            {
-                assert false;
-                break;
-            }
-        }
+        double L = object.eclipticLongitude(JD0);
+        double B = object.eclipticLatitude(JD0);
+        double R = object.radiusVector(JD0);
+
 
         boolean bRecalc = true;
         boolean bFirstRecalc = true;
@@ -129,78 +61,9 @@ public class Elliptical
         double RPrevious = 0;
         while (bRecalc)
         {
-            switch (object)
-            {
-                case SUN:
-                {
-                    L = Sun.geometricEclipticLongitude(JD0);
-                    B = Sun.geometricEclipticLatitude(JD0);
-                    R = Earth.radiusVector(JD0);
-                    break;
-                }
-                /*
-                case MERCURY:
-                {
-                    L = CAAMercury.eclipticLongitude(JD0);
-                    B = CAAMercury.eclipticLatitude(JD0);
-                    R = CAAMercury.radiusVector(JD0);
-                    break;
-                }
-                case VENUS:
-                {
-                    L = CAAVenus.eclipticLongitude(JD0);
-                    B = CAAVenus.eclipticLatitude(JD0);
-                    R = CAAVenus.radiusVector(JD0);
-                    break;
-                }
-                case MARS:
-                {
-                    L = CAAMars.eclipticLongitude(JD0);
-                    B = CAAMars.eclipticLatitude(JD0);
-                    R = CAAMars.radiusVector(JD0);
-                    break;
-                }
-                case JUPITER:
-                {
-                    L = CAAJupiter.eclipticLongitude(JD0);
-                    B = CAAJupiter.eclipticLatitude(JD0);
-                    R = CAAJupiter.radiusVector(JD0);
-                    break;
-                }
-                case SATURN:
-                {
-                    L = CAASaturn.eclipticLongitude(JD0);
-                    B = CAASaturn.eclipticLatitude(JD0);
-                    R = CAASaturn.radiusVector(JD0);
-                    break;
-                }
-                case URANUS:
-                {
-                    L = CAAUranus.eclipticLongitude(JD0);
-                    B = CAAUranus.eclipticLatitude(JD0);
-                    R = CAAUranus.radiusVector(JD0);
-                    break;
-                }
-                case NEPTUNE:
-                {
-                    L = CAANeptune.eclipticLongitude(JD0);
-                    B = CAANeptune.eclipticLatitude(JD0);
-                    R = CAANeptune.radiusVector(JD0);
-                    break;
-                }
-                case PLUTO:
-                {
-                    L = CAAPluto.eclipticLongitude(JD0);
-                    B = CAAPluto.eclipticLatitude(JD0);
-                    R = CAAPluto.radiusVector(JD0);
-                    break;
-                }          */
-                default:
-                {
-                    assert false;
-                    break;
-                }
-            }
+            L = object.eclipticLongitude(JD0);
+            B = object.eclipticLatitude(JD0);
+            R = object.radiusVector(JD0);
 
             if (!bFirstRecalc)
             {
@@ -218,7 +81,7 @@ public class Elliptical
             if (bRecalc)
             {
                 double distance;
-                if (object != EllipticalObject.SUN)
+                if (object.getType() != EllipticalObject.SUN)
                 {
                     double Lrad = CoordinateTransformation.degreesToRadians(L);
                     double Brad = CoordinateTransformation.degreesToRadians(B);
@@ -319,7 +182,7 @@ public class Elliptical
         double C = Math.atan2(H, R);
         double n = Elliptical.meanMotionFromSemiMajorAxis(elements.a);
 
-        Coordinate3D SunCoord = Sun.equatorialRectangularCoordinatesAnyEquinox(JD, elements.JDEquinox);
+        Coordinate3D SunCoord = new Sun().equatorialRectangularCoordinatesAnyEquinox(JD, elements.JDEquinox);
 
         for (int j = 0; j < 2; j++)
         {

@@ -16,23 +16,12 @@ package net.audumla.astronomical.algorithims;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-public enum EllipticalObject {
-        SUN,
-        MERCURY,
-        VENUS,
-        MARS,
-        JUPITER,
-        SATURN,
-        URANUS,
-        NEPTUNE,
-        PLUTO,
-        EARTH;
+public interface AstronomicalObject {
+    double eclipticLongitude(double JD);
 
-        public int getValue() {
-            return this.ordinal();
-        }
+    double eclipticLatitude(double JD);
 
-        public static EllipticalObject getEnum(int intValue) {
-            return EllipticalObject.values()[intValue];
-        }
+    double radiusVector(double JD);
+
+    EllipticalObject getType();
 }

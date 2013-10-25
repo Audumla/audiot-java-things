@@ -157,7 +157,7 @@ public class Aberration {
         double e = 0.016708634 - 0.000042037 * T - 0.0000001267 * Tsquared;
         double pi = 102.93735 + 1.71946 * T + 0.00046 * Tsquared;
         double k = 20.49552;
-        double SunLongitude = Sun.geometricEclipticLongitude(JD);
+        double SunLongitude = new Sun().geometricEclipticLongitude(JD);
 
         // Convert to radians
         pi = CoordinateTransformation.degreesToRadians(pi);

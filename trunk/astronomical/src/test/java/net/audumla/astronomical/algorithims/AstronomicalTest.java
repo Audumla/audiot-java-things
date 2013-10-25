@@ -34,13 +34,14 @@ public class AstronomicalTest {
 
         JulianDate CalcDate = new JulianDate(2009, 8, 8, true);
         double JD = CalcDate.julian();
-        EllipticalPlanetaryDetails SunDetails = Elliptical.calculate(JD - 1, EllipticalObject.SUN);
+        AstronomicalObject ao = new Sun();
+        EllipticalPlanetaryDetails SunDetails = Elliptical.calculate(JD - 1, ao);
         double Alpha1 = SunDetails.ApparentGeocentricRA;
         double Delta1 = SunDetails.ApparentGeocentricDeclination;
-        SunDetails = Elliptical.calculate(JD, EllipticalObject.SUN);
+        SunDetails = Elliptical.calculate(JD, ao);
         double Alpha2 = SunDetails.ApparentGeocentricRA;
         double Delta2 = SunDetails.ApparentGeocentricDeclination;
-        SunDetails = Elliptical.calculate(JD + 1, EllipticalObject.SUN);
+        SunDetails = Elliptical.calculate(JD + 1, ao);
         double Alpha3 = SunDetails.ApparentGeocentricRA;
         double Delta3 = SunDetails.ApparentGeocentricDeclination;
 

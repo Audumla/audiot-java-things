@@ -14,25 +14,27 @@ package net.audumla.astronomical.algorithims;
  *  "AS IS BASIS", WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and limitations under the License.
  */
-public class Sun {
+public class Sun implements AstronomicalObject {
 
-    public static double geometricEclipticLongitude(double JD) {
-        return CoordinateTransformation.MapTo0To360Range(Earth.eclipticLongitude(JD) + 180);
+    Earth earth = new Earth();
+
+    public double geometricEclipticLongitude(double JD) {
+        return CoordinateTransformation.MapTo0To360Range(earth.eclipticLongitude(JD) + 180);
     }
 
-    public static double geometricEclipticLatitude(double JD) {
-        return -Earth.eclipticLatitude(JD);
+    public double geometricEclipticLatitude(double JD) {
+        return -earth.eclipticLatitude(JD);
     }
 
-    public static double GeometricEclipticLongitudeJ2000(double JD) {
-        return CoordinateTransformation.MapTo0To360Range(Earth.EclipticLongitudeJ2000(JD) + 180);
+    public double geometricEclipticLongitudeJ2000(double JD) {
+        return CoordinateTransformation.MapTo0To360Range(earth.eclipticLongitudeJ2000(JD) + 180);
     }
 
-    public static double GeometricEclipticLatitudeJ2000(double JD) {
-        return -Earth.EclipticLatitudeJ2000(JD);
+    public double geometricEclipticLatitudeJ2000(double JD) {
+        return -earth.eclipticLatitudeJ2000(JD);
     }
 
-    public static double GeometricFK5EclipticLongitude(double JD) {
+    public double geometricFK5EclipticLongitude(double JD) {
         //Convert to the FK5 stystem
         double Longitude = geometricEclipticLongitude(JD);
         double Latitude = geometricEclipticLatitude(JD);
@@ -41,7 +43,7 @@ public class Sun {
         return Longitude;
     }
 
-    public static double GeometricFK5EclipticLatitude(double JD) {
+    public double geometricFK5EclipticLatitude(double JD) {
         //Convert to the FK5 stystem
         double Longitude = geometricEclipticLongitude(JD);
         double Latitude = geometricEclipticLatitude(JD);
@@ -51,27 +53,27 @@ public class Sun {
         return Latitude;
     }
 
-    public static double apparentEclipticLongitude(double JD) {
-        double Longitude = GeometricFK5EclipticLongitude(JD);
+    public double apparentEclipticLongitude(double JD) {
+        double Longitude = geometricFK5EclipticLongitude(JD);
 
         //Apply the correction in longitude due to nutation
         Longitude += CoordinateTransformation.dMSToDegrees(0, 0, Nutation.nutationInLongitude(JD), true);
 
         //Apply the correction in longitude due to aberration
-        double R = Earth.radiusVector(JD);
+        double R = earth.radiusVector(JD);
         Longitude -= CoordinateTransformation.dMSToDegrees(0, 0, 20.4898 / R, true);
 
         return Longitude;
     }
 
-    public static double apparentEclipticLatitude(double JD) {
-        return GeometricFK5EclipticLatitude(JD);
+    public double apparentEclipticLatitude(double JD) {
+        return geometricFK5EclipticLatitude(JD);
     }
 
-    public static Coordinate3D equatorialRectangularCoordinatesMeanEquinox(double JD) {
-        double Longitude = CoordinateTransformation.degreesToRadians(GeometricFK5EclipticLongitude(JD));
-        double Latitude = CoordinateTransformation.degreesToRadians(GeometricFK5EclipticLatitude(JD));
-        double R = Earth.radiusVector(JD);
+    public Coordinate3D equatorialRectangularCoordinatesMeanEquinox(double JD) {
+        double Longitude = CoordinateTransformation.degreesToRadians(geometricFK5EclipticLongitude(JD));
+        double Latitude = CoordinateTransformation.degreesToRadians(geometricFK5EclipticLatitude(JD));
+        double R = earth.radiusVector(JD);
         double epsilon = CoordinateTransformation.degreesToRadians(Nutation.meanObliquityOfEcliptic(JD));
 
         Coordinate3D value = new Coordinate3D();
@@ -82,12 +84,12 @@ public class Sun {
         return value;
     }
 
-    public static Coordinate3D EclipticRectangularCoordinatesJ2000(double JD) {
-        double Longitude = GeometricEclipticLongitudeJ2000(JD);
+    public Coordinate3D eclipticRectangularCoordinatesJ2000(double JD) {
+        double Longitude = geometricEclipticLongitudeJ2000(JD);
         Longitude = CoordinateTransformation.degreesToRadians(Longitude);
-        double Latitude = GeometricEclipticLatitudeJ2000(JD);
+        double Latitude = geometricEclipticLatitudeJ2000(JD);
         Latitude = CoordinateTransformation.degreesToRadians(Latitude);
-        double R = Earth.radiusVector(JD);
+        double R = earth.radiusVector(JD);
 
         Coordinate3D value = new Coordinate3D();
         double coslatitude = Math.cos(Latitude);
@@ -98,24 +100,44 @@ public class Sun {
         return value;
     }
 
-    public static Coordinate3D EquatorialRectangularCoordinatesJ2000(double JD) {
-        Coordinate3D value = EclipticRectangularCoordinatesJ2000(JD);
+    public Coordinate3D equatorialRectangularCoordinatesJ2000(double JD) {
+        Coordinate3D value = eclipticRectangularCoordinatesJ2000(JD);
         value = FK5.ConvertVSOPToFK5J2000(value);
 
         return value;
     }
 
-    public static Coordinate3D EquatorialRectangularCoordinatesB1950(double JD) {
-        Coordinate3D value = EclipticRectangularCoordinatesJ2000(JD);
+    public Coordinate3D equatorialRectangularCoordinatesB1950(double JD) {
+        Coordinate3D value = eclipticRectangularCoordinatesJ2000(JD);
         value = FK5.ConvertVSOPToFK5B1950(value);
 
         return value;
     }
 
-    public static Coordinate3D equatorialRectangularCoordinatesAnyEquinox(double JD, double JDEquinox) {
-        Coordinate3D value = EquatorialRectangularCoordinatesJ2000(JD);
+    public Coordinate3D equatorialRectangularCoordinatesAnyEquinox(double JD, double JDEquinox) {
+        Coordinate3D value = equatorialRectangularCoordinatesJ2000(JD);
         value = FK5.ConvertVSOPToFK5AnyEquinox(value, JDEquinox);
 
         return value;
+    }
+
+    @Override
+    public double eclipticLongitude(double JD) {
+        return geometricEclipticLongitude(JD);
+    }
+
+    @Override
+    public double eclipticLatitude(double JD) {
+        return geometricEclipticLatitude(JD);
+    }
+
+    @Override
+    public double radiusVector(double JD) {
+        return earth.radiusVector(JD);
+    }
+
+    @Override
+    public EllipticalObject getType() {
+        return EllipticalObject.SUN;
     }
 }
