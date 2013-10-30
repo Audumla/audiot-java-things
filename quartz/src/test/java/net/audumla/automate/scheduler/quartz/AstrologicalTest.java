@@ -1,6 +1,8 @@
 package net.audumla.automate.scheduler.quartz;
 
 import net.audumla.Time;
+import net.audumla.astronomical.Location;
+import net.audumla.astronomical.algorithims.Sun;
 import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
@@ -57,7 +59,7 @@ public class AstrologicalTest {
     @Test
     public void testExecution() throws Exception {
         Date now = new Date();
-        Date time2 = Time.getSunrise(now, -38, 145);
+        Date time2 = new Sun().getTransitDetails(now,new Location(-38.0, 145.0,0.0),Sun.CIVIL).getRiseTime();
 
         int expectedCount = 4;
         Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
@@ -81,7 +83,7 @@ public class AstrologicalTest {
     @Test
     public void testAstrologicalExecution() throws Exception {
         Date now = new Date();
-        Date time2 = Time.getSunrise(now, -38, 145);
+        Date time2 = new Sun().getTransitDetails(now,new Location(-38.0, 145.0,0.0),Sun.CIVIL).getRiseTime();
         // get the time offset 1 second later than now relative to sunrise
         int offset = (int) ((now.getTime() - time2.getTime()+1000)/1000);
 
@@ -105,7 +107,7 @@ public class AstrologicalTest {
     @Test
     public void testAstrologicalExecution2() throws Exception {
         Date now = new Date();
-        Date time2 = Time.getSunrise(now, -38, 145);
+        Date time2 = new Sun().getTransitDetails(now,new Location(-38.0, 145.0,0.0),Sun.CIVIL).getRiseTime();
         // get the time offset 1 second later than now relative to sunrise
         int offset = (int) ((now.getTime() - time2.getTime()+1000)/1000);
 
