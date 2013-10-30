@@ -16,6 +16,8 @@ package net.audumla.automate.scheduler.quartz;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
+import net.audumla.astronomical.AstronomicEvent;
+import net.audumla.astronomical.ObjectRiseEvent;
 import net.audumla.astronomical.algorithims.Sun;
 import net.audumla.bean.BeanUtils;
 import net.audumla.astronomical.Geolocation;
@@ -26,14 +28,17 @@ import org.quartz.spi.MutableTrigger;
 import java.util.Calendar;
 import java.util.Date;
 
-public class AstrologicalScheduleBuilder extends ScheduleBuilder<AstrologicalTrigger> {
+public class AstronomicalScheduleBuilder extends ScheduleBuilder<AstronomicalTrigger> {
 
-    private AstrologicalSchedule schedule = new AstrologicalSchedule();
+    private AstronomicalSchedule schedule = new AstronomicalSchedule();
 
-    public static class AstrologicalSchedule {
-        public Geolocation location = BeanUtils.buildBean(Geolocation.class);
-        public ReferenceTime startTime = new SunriseReferenceTime(null, location);
-        public ReferenceTime endTime = new SunsetReferenceTime(null, location);
+    public AstronomicalScheduleBuilder startEvent(ObjectRiseEvent objectRiseEvent) {
+        return null;
+    }
+
+    public static class AstronomicalSchedule {
+        public AstronomicEvent startTime;
+        public AstronomicEvent endTime;
         public int interval = 60 * 30; // 30 minutes
         public int repeat = Integer.MIN_VALUE;
     }
@@ -91,53 +96,58 @@ public class AstrologicalScheduleBuilder extends ScheduleBuilder<AstrologicalTri
 
     }
 
-    public AstrologicalScheduleBuilder offsetStartFromSunset(int seconds) {
+    public AstronomicalScheduleBuilder offsetStartFromSet(int seconds) {
         schedule.startTime = new SunsetReferenceTime(schedule.startTime, schedule.location);
         schedule.startTime.offset = seconds;
         return this;
     }
 
-    public AstrologicalScheduleBuilder offsetStartFromSunrise(int seconds) {
+    public AstronomicalScheduleBuilder startEventOffset(int seconds) {
         schedule.startTime = new SunriseReferenceTime(schedule.startTime, schedule.location);
         schedule.startTime.offset = seconds;
         return this;
     }
 
-    public AstrologicalScheduleBuilder offsetEndFromSunset(int seconds) {
+    public AstronomicalScheduleBuilder offsetEndFromSet(int seconds) {
         schedule.endTime = new SunsetReferenceTime(schedule.endTime, schedule.location);
         schedule.endTime.offset = seconds;
         return this;
     }
 
-    public AstrologicalScheduleBuilder offsetEndFromSunrise(int seconds) {
+    public AstronomicalScheduleBuilder offsetEndFromRise(int seconds) {
         schedule.endTime = new SunriseReferenceTime(schedule.endTime, schedule.location);
         schedule.endTime.offset = seconds;
         return this;
     }
 
-    public AstrologicalScheduleBuilder atLocation(double llat, double llong) {
+    public AstronomicalScheduleBuilder atLocation(double llat, double llong) {
         schedule.location.setLatitude(llat);
         schedule.location.setLongitude(llong);
         return this;
     }
 
-    public AstrologicalScheduleBuilder withSecondInterval(int seconds) {
+    public AstronomicalScheduleBuilder atLocation(Geolocation location) {
+        schedule.location = location;
+        return this;
+    }
+
+    public AstronomicalScheduleBuilder withSecondInterval(int seconds) {
         schedule.interval = seconds;
         return this;
     }
 
-    public AstrologicalScheduleBuilder withRepeatCount(int count) {
+    public AstronomicalScheduleBuilder withCount(int count) {
         schedule.repeat = count;
         return this;
     }
 
-    public static AstrologicalScheduleBuilder astrologicalSchedule() {
-        return new AstrologicalScheduleBuilder();
+    public static AstronomicalScheduleBuilder astronomicalSchedule() {
+        return new AstronomicalScheduleBuilder();
     }
 
     @Override
     protected MutableTrigger build() {
-        return new AstrologicalTriggerImpl(schedule);
+        return new AstronomicalTriggerImpl(schedule);
     }
 
 }

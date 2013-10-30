@@ -24,17 +24,17 @@ import org.quartz.impl.triggers.AbstractTrigger;
 
 import java.util.Date;
 
-public class AstrologicalTriggerImpl extends AbstractTrigger<AstrologicalTrigger> implements AstrologicalTrigger {
+public class AstronomicalTriggerImpl extends AbstractTrigger<AstronomicalTrigger> implements AstronomicalTrigger {
 
     private static final long serialVersionUID = 1L;
-    protected AstrologicalScheduleBuilder.AstrologicalSchedule schedule;
+    protected AstronomicalScheduleBuilder.AstronomicalSchedule schedule;
     protected Date startTime;
     protected Date endTime;
     protected Date nextFireTime;
     protected Date previousFireTime;
     protected int count = 0;
 
-    public AstrologicalTriggerImpl(AstrologicalScheduleBuilder.AstrologicalSchedule schedule) {
+    public AstronomicalTriggerImpl(AstronomicalScheduleBuilder.AstronomicalSchedule schedule) {
         this.schedule = schedule;
     }
 
@@ -97,8 +97,8 @@ public class AstrologicalTriggerImpl extends AbstractTrigger<AstrologicalTrigger
     }
 
     @Override
-    public ScheduleBuilder<AstrologicalTrigger> getScheduleBuilder() {
-        return new AstrologicalScheduleBuilder();
+    public ScheduleBuilder<AstronomicalTrigger> getScheduleBuilder() {
+        return new AstronomicalScheduleBuilder();
     }
 
     @Override

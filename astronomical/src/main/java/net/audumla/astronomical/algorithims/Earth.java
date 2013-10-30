@@ -85,8 +85,7 @@ public class Earth extends EllipticalObject {
             new VSOP87Coefficient(1, 0, 0)
     };
 
-    protected Earth() {
-        super(EARTH);
+    public Earth() {
     }
 
     @Override
@@ -219,11 +218,6 @@ public class Earth extends EllipticalObject {
         }
 
         return (R0 + R1 * rho + R2 * rhosquared + R3 * rhocubed + R4 * rho4) / 100000000;
-    }
-
-    @Override
-    public int getType() {
-        return EARTH;
     }
 
     public double eclipticLongitudeJ2000(double JD) {

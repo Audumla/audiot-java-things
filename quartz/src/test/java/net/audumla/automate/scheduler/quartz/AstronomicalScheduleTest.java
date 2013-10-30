@@ -1,6 +1,5 @@
 package net.audumla.automate.scheduler.quartz;
 
-import net.audumla.Time;
 import net.audumla.astronomical.Location;
 import net.audumla.astronomical.algorithims.Sun;
 import org.apache.log4j.Logger;
@@ -11,7 +10,7 @@ import org.quartz.impl.StdSchedulerFactory;
 
 import java.util.Date;
 
-public class AstrologicalTest {
+public class AstronomicalScheduleTest {
     private static Logger logger = Logger.getLogger("Test");
 
     @Before
@@ -49,7 +48,7 @@ public class AstrologicalTest {
         JobDetail job = JobBuilder.newJob(TestJob.class).withIdentity(jobName, jobGroup).build();
 
         Trigger trigger = TriggerBuilder.newTrigger().withIdentity("trigger-" + jobName, jobGroup).startNow()
-                .withSchedule(AstrologicalScheduleBuilder.astrologicalSchedule().offsetStartFromSunrise(offset).offsetEndFromSunset(60 * 60 * 5).withRepeatCount(repeatCount).withSecondInterval(interval).atLocation(-38, 145)).build();
+                .withSchedule(AstronomicalScheduleBuilder.astronomicalSchedule().startEventOffset(offset).offsetEndFromSet(60 * 60 * 5).withCount(repeatCount).withSecondInterval(interval).atLocation(-38, 145)).build();
 
         scheduler.scheduleJob(job, trigger);
 
@@ -81,7 +80,7 @@ public class AstrologicalTest {
 
 
     @Test
-    public void testAstrologicalExecution() throws Exception {
+    public void testAstronomicalExecution() throws Exception {
         Date now = new Date();
         Date time2 = new Sun().getTransitDetails(now,new Location(-38.0, 145.0,0.0),Sun.CIVIL).getRiseTime();
         // get the time offset 1 second later than now relative to sunrise
@@ -105,7 +104,7 @@ public class AstrologicalTest {
 
 
     @Test
-    public void testAstrologicalExecution2() throws Exception {
+    public void testAstronomicalExecution2() throws Exception {
         Date now = new Date();
         Date time2 = new Sun().getTransitDetails(now,new Location(-38.0, 145.0,0.0),Sun.CIVIL).getRiseTime();
         // get the time offset 1 second later than now relative to sunrise

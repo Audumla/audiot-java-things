@@ -23,6 +23,11 @@ package net.audumla.astronomical;
  */
 public interface Geolocation {
 
+    static Geolocation newGeoLocation(double lat, double lng, double elevation) {
+        return net.audumla.bean.BeanUtils.
+
+    }
+
     /**
      * Direction settings for Latitude and Longitude values
      * Default is
