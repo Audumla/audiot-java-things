@@ -6,7 +6,7 @@
 package net.audumla.irrigation;
 /**
  * User: audumla
- * Date: 24/07/13
+ * JulianDate: 24/07/13
  * Time: 11:20 PM
  */
 
@@ -28,7 +28,7 @@ public class ZoneTest {
 
         IrrigationZone zone = new IrrigationZone();
         zone.setEventHandler(handler);
-        zone.addIrrigationEvent(new Date(), 2);
+        zone.addIrrigationEvent(new JulianDate(), 2);
         synchronized (this) {
             this.wait(2100);
         }

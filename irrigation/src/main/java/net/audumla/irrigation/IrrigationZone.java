@@ -141,7 +141,7 @@ public class IrrigationZone implements Zone {
 
     /*
     @Override
-    public void addIrrigationEvent(Date when, int seconds) {
+    public void addIrrigationEvent(JulianDate when, int seconds) {
         AtomicSchedule timer = new AtomicSchedule(null);
         timer.setSeconds(seconds);
         timer.setStartTime(when);

@@ -91,7 +91,7 @@ public class BOMSimpleHistoricalClimateObserver implements ClimateDataFactory, C
         try {
             while ((data = reader.readNext()) != null) {
                 if (pastHeader) {
-                    // [, Date, Minimum temperature (�C), Maximum temperature (�C), Rainfall (mm), Evaporation (mm),
+                    // [, JulianDate, Minimum temperature (�C), Maximum temperature (�C), Rainfall (mm), Evaporation (mm),
                     // Sunshine (hours), Direction of maximum wind gust , Speed of maximum wind gust (km/h), Time of
                     // maximum wind gust, 9am Temperature (�C), 9am relative humidity (%), 9am cloud amount (oktas), 9am
                     // wind direction, 9am wind speed (km/h), 9am MSL pressure (hPa), 3pm Temperature (�C), 3pm relative
@@ -200,7 +200,7 @@ public class BOMSimpleHistoricalClimateObserver implements ClimateDataFactory, C
                         LOG.error("Unable to parse date for historical record [" + getSource().toString() + "] - " + Arrays.toString(data), e);
                     }
                 } else {
-                    if (data.length > 1 && data[1].contains("Date")) {
+                    if (data.length > 1 && data[1].contains("JulianDate")) {
                         pastHeader = true;
                     }
                 }

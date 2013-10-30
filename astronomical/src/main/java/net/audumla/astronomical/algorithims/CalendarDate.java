@@ -43,10 +43,11 @@ public class CalendarDate {
         c.setTimeZone(TimeZone.getTimeZone("UTC"));
         c.set(Calendar.YEAR, year);
         c.set(Calendar.DAY_OF_MONTH, day);
-        c.set(Calendar.MONTH, month);
+        c.set(Calendar.MONTH, month-1);
         c.set(Calendar.HOUR_OF_DAY, hour);
         c.set(Calendar.MINUTE, minute);
         c.set(Calendar.SECOND, (int) second);
+        //c.setTimeZone(TimeZone.getDefault());
         return c.getTime();
     }
 }

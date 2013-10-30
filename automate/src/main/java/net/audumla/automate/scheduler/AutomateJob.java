@@ -16,7 +16,7 @@ import org.quartz.JobExecutionException;
 
 /**
  * User: audumla
- * Date: 20/07/13
+ * JulianDate: 20/07/13
  * Time: 8:55 PM
  */
 

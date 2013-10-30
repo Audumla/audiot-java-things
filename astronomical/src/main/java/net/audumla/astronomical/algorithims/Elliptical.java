@@ -17,7 +17,7 @@ package net.audumla.astronomical.algorithims;
  */
 
 
-import sun.security.krb5.internal.crypto.Des;
+import net.audumla.astronomical.OrbitingObject;
 
 public class Elliptical
 {
@@ -26,7 +26,7 @@ public class Elliptical
     {
         return Distance * 0.0057755183;
     }
-    public static EllipticalPlanetaryDetails calculate(double JD, AstronomicalObject object)
+    public static EllipticalPlanetaryDetails calculate(double JD, EllipticalObject object)
     {
         //What will the the return value
         EllipticalPlanetaryDetails details = new EllipticalPlanetaryDetails();
@@ -36,7 +36,7 @@ public class Elliptical
         double B0 = 0;
         double R0 = 0;
         double cosB0 = 0;
-        if (object.getType() != EllipticalObject.SUN)
+        if (object.getType() != OrbitingObject.SUN)
         {
             Earth earth = new Earth();
             L0 = earth.eclipticLongitude(JD0);
@@ -81,7 +81,7 @@ public class Elliptical
             if (bRecalc)
             {
                 double distance;
-                if (object.getType() != EllipticalObject.SUN)
+                if (object.getType() != OrbitingObject.SUN)
                 {
                     double Lrad = CoordinateTransformation.degreesToRadians(L);
                     double Brad = CoordinateTransformation.degreesToRadians(B);

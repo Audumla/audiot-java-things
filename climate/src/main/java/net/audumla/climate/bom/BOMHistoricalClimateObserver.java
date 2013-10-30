@@ -70,7 +70,7 @@ public class BOMHistoricalClimateObserver implements ClimateDataFactory, Climate
                     try {
                         String[] data = line.split(",");
                         if (data[0].toLowerCase().equals(stationName)) {
-                            // Station Name,Date,EvapoTranspiration,Rain,Pan Evaporation,Maximum Temp,Minimum Temp,Max
+                            // Station Name,JulianDate,EvapoTranspiration,Rain,Pan Evaporation,Maximum Temp,Minimum Temp,Max
                             // Relative Hum,Min Relative Hum,Avg 10m Wind Sp,Solar Radiation
                             // VIEWBANK,12/01/2013,4.5,0.0, ,25.2,15.7,77,43,3.53,16.10
                             Date date = yearMonthDay.parse(data[1].trim());
@@ -187,11 +187,11 @@ public class BOMHistoricalClimateObserver implements ClimateDataFactory, Climate
     synchronized public ClimateData getClimateData(Date date) {
         if (!invalidMonths.contains(Time.getMonthAndYear(date))) {
             if (!date.before(Time.getToday())) {
-                throw new UnsupportedOperationException("Date requested is in the future");
+                throw new UnsupportedOperationException("JulianDate requested is in the future");
             }
             try {
                 if (date.after(source.getLastRecord())) {
-                    throw new UnsupportedOperationException("Date requested is after the last record");
+                    throw new UnsupportedOperationException("JulianDate requested is after the last record");
                 }
             } catch (Exception ignored) {
 

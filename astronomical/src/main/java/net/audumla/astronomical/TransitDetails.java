@@ -1,4 +1,4 @@
-package net.audumla.astronomical.algorithims;
+package net.audumla.astronomical;
 
 /*
  * *********************************************************************
@@ -16,12 +16,12 @@ package net.audumla.astronomical.algorithims;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-public interface AstronomicalObject {
-    double eclipticLongitude(double JD);
+import java.util.Date;
 
-    double eclipticLatitude(double JD);
+public interface TransitDetails {
+    Date getRiseTime();
 
-    double radiusVector(double JD);
+    Date getSetTime();
 
-    EllipticalObject getType();
+    double getTransitPeriod();
 }

@@ -131,7 +131,7 @@ public class DerivedClimateObserver implements ClimateDataFactory, ClimateObserv
      */
     /*
      * public double getRainfall(int minutes) { if (minutes == 0) { return (Double) bean.get("Rainfall"); } else { double current = bean.getRainfall(0);
-	 * Calendar c = Calendar.getInstance(); c.setTime(bean.getTime()); c.add(Calendar.MINUTE, minutes); Date past = c.getTime(); ClimateObservation ob = bean;
+	 * Calendar c = Calendar.getInstance(); c.setTime(bean.getTime()); c.add(Calendar.MINUTE, minutes); JulianDate past = c.getTime(); ClimateObservation ob = bean;
 	 * ClimateObservation prev = null; while (ob != null) { if (ob.getTime().before(past)) { if (prev != null) { current = current - prev.getRainfall(0); } ob =
 	 * null; } else { prev = ob; ob = ob.getPreviousObservation(); } } ; return current; } }
 	 */

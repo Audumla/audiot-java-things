@@ -6,7 +6,7 @@
 package net.audumla.irrigation;
 /**
  * User: audumla
- * Date: 30/07/13
+ * JulianDate: 30/07/13
  * Time: 7:16 PM
  */
 

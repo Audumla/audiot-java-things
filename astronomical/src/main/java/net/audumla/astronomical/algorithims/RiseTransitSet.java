@@ -19,16 +19,14 @@ package net.audumla.astronomical.algorithims;
 /**
  * Class description
  *
- * @author         Marius Gleeson    
+ * @author Marius Gleeson
  */
 public class RiseTransitSet {
 
     /**
      * Method description
      *
-     *
      * @param M
-     *
      * @return
      */
     public static double constraintM(double M) {
@@ -48,11 +46,9 @@ public class RiseTransitSet {
     /**
      * Method description
      *
-     *
      * @param Alpha2
      * @param theta0
      * @param Longitude
-     *
      * @return
      */
     public static double calculateTransit(double Alpha2, double theta0, double Longitude) {
@@ -68,21 +64,19 @@ public class RiseTransitSet {
     /**
      * Method description
      *
-     *
      * @param M0
      * @param cosH0
      * @param details
-     *
      * @return
      */
-    public static double[] calculateRiseSet(double M0, double cosH0, CAARiseTransitSetDetails details) {
+    public static double[] calculateRiseSet(double M0, double cosH0, JulianTransitDetails details) {
         double M1 = 0;
         double M2 = 0;
 
         if ((cosH0 > -1) && (cosH0 < 1)) {
-            details.riseValid = true;
-            details.setValid = true;
-            details.transitAboveHorizon = true;
+            details.setRiseValid(true);
+            details.setSetValid(true);
+            details.setTransitAboveHorizon(true);
 
             double H0 = Math.acos(cosH0);
 
@@ -94,18 +88,16 @@ public class RiseTransitSet {
             M1 = constraintM(M1);
             M2 = constraintM(M2);
         } else if (cosH0 < 1) {
-            details.transitAboveHorizon = true;
+            details.setTransitAboveHorizon(true);
         }
 
-        return new double[] { M1, M2 };
+        return new double[]{M1, M2};
     }
 
     /**
      * Method description
      *
-     *
      * @param alphas
-     *
      * @return
      */
     public static double[] correctRAValuesForInterpolation(double[] alphas) {
@@ -129,7 +121,6 @@ public class RiseTransitSet {
     /**
      * Method description
      *
-     *
      * @param details
      * @param theta0
      * @param deltaT
@@ -144,18 +135,17 @@ public class RiseTransitSet {
      * @param LatitudeRad
      * @param h0
      * @param M1
-     *
      * @return
      */
-    public static double calculateRiseHelper(CAARiseTransitSetDetails details, double theta0, double deltaT, double Alpha1, double Delta1,
-        double Alpha2, double Delta2, double Alpha3, double Delta3, double Longitude, double Latitude, double LatitudeRad, double h0,
-        double M1) {
+    public static double calculateRiseHelper(JulianTransitDetails details, double theta0, double deltaT, double Alpha1, double Delta1,
+                                             double Alpha2, double Delta2, double Alpha3, double Delta3, double Longitude, double Latitude, double LatitudeRad, double h0,
+                                             double M1) {
 
         // converted M1 C++ parameter reference to return value
         for (int i = 0; i < 2; i++) {
 
             // Calculate the details of rising
-            if (details.riseValid) {
+            if (details.isRiseValid()) {
                 double theta1 = theta0 + 360.985647 * M1;
 
                 theta1 = CoordinateTransformation.MapTo0To360Range(theta1);
@@ -166,8 +156,8 @@ public class RiseTransitSet {
                 double H = theta1 - Longitude - Alpha * 15;
                 Coordinate2D Horizontal = CoordinateTransformation.Equatorial2Horizontal(H / 15, Delta, Latitude);
                 double DeltaM = (Horizontal.Y - h0)
-                                / (360 * Math.cos(CoordinateTransformation.degreesToRadians(Delta)) * Math.cos(LatitudeRad)
-                                   * Math.sin(CoordinateTransformation.degreesToRadians(H)));
+                        / (360 * Math.cos(CoordinateTransformation.degreesToRadians(Delta)) * Math.cos(LatitudeRad)
+                        * Math.sin(CoordinateTransformation.degreesToRadians(H)));
 
                 M1 += DeltaM;
             }
@@ -178,7 +168,6 @@ public class RiseTransitSet {
 
     /**
      * Method description
-     *
      *
      * @param details
      * @param theta0
@@ -194,18 +183,17 @@ public class RiseTransitSet {
      * @param LatitudeRad
      * @param h0
      * @param M2
-     *
      * @return
      */
-    public static double calculateSetHelper(CAARiseTransitSetDetails details, double theta0, double deltaT, double Alpha1, double Delta1,
-        double Alpha2, double Delta2, double Alpha3, double Delta3, double Longitude, double Latitude, double LatitudeRad, double h0,
-        double M2) {
+    public static double calculateSetHelper(JulianTransitDetails details, double theta0, double deltaT, double Alpha1, double Delta1,
+                                            double Alpha2, double Delta2, double Alpha3, double Delta3, double Longitude, double Latitude, double LatitudeRad, double h0,
+                                            double M2) {
 
         // converted M2 C++ parameter reference to return value
         for (int i = 0; i < 2; i++) {
 
             // Calculate the details of setting
-            if (details.setValid) {
+            if (details.isSetValid()) {
                 double theta1 = theta0 + 360.985647 * M2;
 
                 theta1 = CoordinateTransformation.MapTo0To360Range(theta1);
@@ -216,8 +204,8 @@ public class RiseTransitSet {
                 double H = theta1 - Longitude - Alpha * 15;
                 Coordinate2D Horizontal = CoordinateTransformation.Equatorial2Horizontal(H / 15, Delta, Latitude);
                 double DeltaM = (Horizontal.Y - h0)
-                                / (360 * Math.cos(CoordinateTransformation.degreesToRadians(Delta)) * Math.cos(LatitudeRad)
-                                   * Math.sin(CoordinateTransformation.degreesToRadians(H)));
+                        / (360 * Math.cos(CoordinateTransformation.degreesToRadians(Delta)) * Math.cos(LatitudeRad)
+                        * Math.sin(CoordinateTransformation.degreesToRadians(H)));
 
                 M2 += DeltaM;
             }
@@ -229,7 +217,6 @@ public class RiseTransitSet {
     /**
      * Method description
      *
-     *
      * @param theta0
      * @param deltaT
      * @param Alpha1
@@ -237,11 +224,10 @@ public class RiseTransitSet {
      * @param Alpha3
      * @param Longitude
      * @param M0
-     *
      * @return
      */
     public static double calculateTransitHelper(double theta0, double deltaT, double Alpha1, double Alpha2, double Alpha3,
-        double Longitude, double M0) {
+                                                double Longitude, double M0) {
 
         // converted M0 C++ parameter reference to return value
         for (int i = 0; i < 2; i++) {
@@ -272,7 +258,6 @@ public class RiseTransitSet {
     /**
      * Method description
      *
-     *
      * @param JD
      * @param Alpha1
      * @param Delta1
@@ -283,18 +268,17 @@ public class RiseTransitSet {
      * @param Longitude
      * @param Latitude
      * @param h0
-     *
      * @return
      */
-    public static CAARiseTransitSetDetails calculate(double JD, double Alpha1, double Delta1, double Alpha2, double Delta2, double Alpha3,
-        double Delta3, double Longitude, double Latitude, double h0) {
+    public static JulianTransitDetails calculate(double JD, double Alpha1, double Delta1, double Alpha2, double Delta2, double Alpha3,
+                                                     double Delta3, double Longitude, double Latitude, double h0) {
 
         // What will be the return value
-        CAARiseTransitSetDetails details = new CAARiseTransitSetDetails(new JulianDate(JD, true));
+        JulianTransitDetails details = new JulianTransitDetails(new JulianDate(JD, true));
 
-        details.riseValid = false;
-        details.setValid = false;
-        details.transitAboveHorizon = false;
+        details.setRiseValid(false);
+        details.setSetValid(false);
+        details.setTransitAboveHorizon(false);
 
         // Calculate the sidereal time
         double theta0 = Sidereal.apparentGreenwichSiderealTime(JD);
@@ -323,7 +307,7 @@ public class RiseTransitSet {
         double M2 = riseSet[1];
 
         // Ensure the RA values are corrected for interpolation. Due to important Remark 2 by Meeus on Interopolation of RA values
-        double[] alphas = correctRAValuesForInterpolation(new double[] { Alpha1, Alpha2, Alpha3 });
+        double[] alphas = correctRAValuesForInterpolation(new double[]{Alpha1, Alpha2, Alpha3});
 
         Alpha1 = alphas[0];
         Alpha2 = alphas[1];
@@ -332,130 +316,20 @@ public class RiseTransitSet {
         // Do the main work
         M0 = calculateTransitHelper(theta0, deltaT, Alpha1, Alpha2, Alpha3, Longitude, M0);
         M1 = calculateRiseHelper(details, theta0, deltaT, Alpha1, Delta1, Alpha2, Delta2, Alpha3, Delta3, Longitude, Latitude, LatitudeRad,
-                                 h0, M1);
+                h0, M1);
         M2 = calculateSetHelper(details, theta0, deltaT, Alpha1, Delta1, Alpha2, Delta2, Alpha3, Delta3, Longitude, Latitude, LatitudeRad,
-                                h0, M2);
-        details.rise = details.riseValid
-                       ? (M1 * 24)
-                       : 0.0;
-        details.set = details.setValid
-                      ? (M2 * 24)
-                      : 0.0;
-        details.transit = M0 * 24;    // We always return the transit time even if it occurs below the horizon
+                h0, M2);
+        details.setRise(details.isRiseValid()
+                ? (M1 * 24)
+                : 0.0);
+        details.setSet(details.isSetValid()
+                ? (M2 * 24)
+                : 0.0);
+        details.setTransit(M0 * 24);    // We always return the transit time even if it occurs below the horizon
 
         return details;
     }
 
-    /**
-     * Class description
-     *
-     * @author         Marius Gleeson    
-     */
-    public static class CAARiseTransitSetDetails {
-
-        // Member variables
-        private final JulianDate referenceTime;
-
-        /** Field description */
-        public boolean riseValid;
-
-        /** Field description */
-        public double rise;
-
-        /** Field description */
-        public boolean transitAboveHorizon;
-
-        /** Field description */
-        public double transit;
-
-        /** Field description */
-        public boolean setValid;
-
-        /** Field description */
-        public double set;
-
-        // Constructors / Destructors
-
-        /**
-         * Constructs ...
-         *
-         *
-         * @param referenceTime
-         */
-        public CAARiseTransitSetDetails(JulianDate referenceTime) {
-            this.riseValid = false;
-            this.rise = 0;
-            this.transitAboveHorizon = false;
-            this.transit = 0;
-            this.setValid = false;
-            this.set = 0;
-            this.referenceTime = referenceTime;
-        }
-
-        /**
-         * Method description
-         *
-         *
-         * @return
-         */
-        public JulianDate getRise() {
-            double rtsJD = (referenceTime.julian() + ((rise) / 24.00));
-
-            return new JulianDate(rtsJD, true);
-        }
-
-        /**
-         * Method description
-         *
-         *
-         * @return
-         */
-        public JulianDate getSet() {
-            double rtsJD = (referenceTime.julian() + ((set) / 24.00));
-
-            return new JulianDate(rtsJD, true);
-        }
-
-        /**
-         * Method description
-         *
-         *
-         * @return
-         */
-        public boolean isRiseValid() {
-            return riseValid;
-        }
-
-        /**
-         * Method description
-         *
-         *
-         * @return
-         */
-        public boolean isTransitAboveHorizon() {
-            return transitAboveHorizon;
-        }
-
-        /**
-         * Method description
-         *
-         *
-         * @return
-         */
-        public double getTransit() {
-            return transit;
-        }
-
-        /**
-         * Method description
-         *
-         *
-         * @return
-         */
-        public boolean isSetValid() {
-            return setValid;
-        }
-    }
 }
 
 

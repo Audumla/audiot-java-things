@@ -17,7 +17,7 @@ package net.audumla.climate;
 
 /**
  * User: audumla
- * Date: 1/08/13
+ * JulianDate: 1/08/13
  * Time: 9:42 PM
  */
 
