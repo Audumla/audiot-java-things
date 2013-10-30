@@ -18,6 +18,7 @@ package net.audumla.climate;
 
 import net.audumla.astronomical.Geolocation;
 import net.audumla.Time;
+import net.audumla.astronomical.algorithims.CoordinateTransformation;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -85,7 +86,8 @@ public class ClimateCalculations {
     protected static double j(Geolocation data) {
         // formula 22
         // latitude radians
-        return (Math.PI / 180) * data.getLatitude();
+        return CoordinateTransformation.degreesToRadians(data.getLatitude());
+//        return (Math.PI / 180) * data.getLatitude();
     }
 
     protected static double ws(Geolocation data, Date now) {
