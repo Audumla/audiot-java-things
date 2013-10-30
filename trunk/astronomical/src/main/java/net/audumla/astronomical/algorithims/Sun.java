@@ -36,7 +36,6 @@ public class Sun extends EllipticalObject {
     protected Earth earth = new Earth();
 
     public Sun() {
-        super(SUN);
     }
 
     public double geometricEclipticLongitude(double JD) {
@@ -155,10 +154,5 @@ public class Sun extends EllipticalObject {
     @Override
     public double radiusVector(double JD) {
         return earth.radiusVector(JD);
-    }
-
-    @Override
-    public int getType() {
-        return SUN;
     }
 }

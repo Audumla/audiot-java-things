@@ -28,10 +28,7 @@ import java.util.TimeZone;
 
 public abstract class EllipticalObject implements OrbitingObject {
 
-    private final int type;
-
-    protected EllipticalObject(int type) {
-        this.type = type;
+    protected EllipticalObject() {
     }
 
     public abstract double eclipticLongitude(double JD);
@@ -39,11 +36,6 @@ public abstract class EllipticalObject implements OrbitingObject {
     public abstract double eclipticLatitude(double JD);
 
     public abstract double radiusVector(double JD);
-
-    @Override
-    public int getType() {
-        return type;
-    }
 
     @Override
     public TransitDetails getTransitDetails(Date date, Geolocation location, double altitude) {

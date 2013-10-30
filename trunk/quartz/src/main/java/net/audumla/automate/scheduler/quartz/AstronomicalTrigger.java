@@ -20,7 +20,7 @@ import org.quartz.Trigger;
 
 import java.io.Serializable;
 
-public interface AstrologicalTrigger extends Cloneable, Comparable<Trigger>, Serializable, Trigger {
+public interface AstronomicalTrigger extends Cloneable, Comparable<Trigger>, Serializable, Trigger {
 
 
 }

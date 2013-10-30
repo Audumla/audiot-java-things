@@ -36,7 +36,7 @@ public class Elliptical
         double B0 = 0;
         double R0 = 0;
         double cosB0 = 0;
-        if (object.getType() != OrbitingObject.SUN)
+        if (object instanceof Sun)
         {
             Earth earth = new Earth();
             L0 = earth.eclipticLongitude(JD0);
@@ -81,7 +81,7 @@ public class Elliptical
             if (bRecalc)
             {
                 double distance;
-                if (object.getType() != OrbitingObject.SUN)
+                if (object instanceof Sun)
                 {
                     double Lrad = CoordinateTransformation.degreesToRadians(L);
                     double Brad = CoordinateTransformation.degreesToRadians(B);

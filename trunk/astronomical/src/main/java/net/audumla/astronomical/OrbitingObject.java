@@ -15,6 +15,9 @@ package net.audumla.astronomical;
 *  "AS IS BASIS", WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 *  See the License for the specific language governing permissions and limitations under the License.
  */
+import net.audumla.astronomical.algorithims.Earth;
+import net.audumla.astronomical.algorithims.Sun;
+
 import java.util.Date;
 
 /**
@@ -23,22 +26,8 @@ import java.util.Date;
  * @author         Marius Gleeson
  */
 public interface OrbitingObject {
-    int SUN = 0;
-    int MERCURY = 1;
-    int VENUS = 2;
-    int MARS = 3;
-    int JUPITER = 4;
-    int SATURN = 5;
-    int URANUS = 6;
-    int NEPTUNE = 7;
-    int PLUTO = 8;
-    int EARTH = 9;
-
-    /**
-     *
-     * @return Returns the type of the object represented
-     */
-    int getType();
+    OrbitingObject Sun = new net.audumla.astronomical.algorithims.Sun();
+    OrbitingObject Earth = new net.audumla.astronomical.algorithims.Earth();
 
     /**
      *
