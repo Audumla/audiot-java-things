@@ -16,6 +16,7 @@ package net.audumla.automate.scheduler.quartz;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
+import net.audumla.astronomical.algorithims.Sun;
 import net.audumla.bean.BeanUtils;
 import net.audumla.astronomical.Geolocation;
 import net.audumla.Time;
@@ -69,7 +70,7 @@ public class AstrologicalScheduleBuilder extends ScheduleBuilder<AstrologicalTri
 
         @Override
         public Date getReferenceTime(Date now) {
-            return Time.getSunset(now, location.getLatitude(), location.getLongitude());
+            return new Sun().getTransitDetails(now,location,Sun.CIVIL).getSetTime();
         }
 
     }
@@ -85,7 +86,7 @@ public class AstrologicalScheduleBuilder extends ScheduleBuilder<AstrologicalTri
 
         @Override
         public Date getReferenceTime(Date now) {
-            return Time.getSunrise(now, location.getLatitude(), location.getLongitude());
+            return new Sun().getTransitDetails(now,location,Sun.CIVIL).getRiseTime();
         }
 
     }

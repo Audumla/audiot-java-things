@@ -35,7 +35,7 @@ public class Sun extends EllipticalObject {
     public static final double OFFICIAL = 0.83333;
     protected Earth earth = new Earth();
 
-    protected Sun() {
+    public Sun() {
         super(SUN);
     }
 

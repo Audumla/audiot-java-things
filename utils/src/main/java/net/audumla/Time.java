@@ -1,7 +1,5 @@
 package net.audumla;
 
-import net.audumla.astronomical.SunriseSunsetCalculator;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -107,22 +105,6 @@ public class Time {
         c1.setTime(time);
         c1.set(Calendar.DAY_OF_YEAR, 1);
         return c1.getTime();
-    }
-
-    public static Date getSunrise(Date now, double llat, double llong) {
-        Calendar c = newCalendar();
-        c.setTime(now);
-        TimeZone tz = TimeZone.getDefault();
-        SunriseSunsetCalculator sc = new SunriseSunsetCalculator(new Location(llat, llong,0.0), tz);
-        return sc.getOfficialSunriseCalendarForDate(c).getTime();
-    }
-
-    public static Date getSunset(Date now, double llat, double llong) {
-        Calendar c = newCalendar();
-        c.setTime(now);
-        TimeZone tz = TimeZone.getDefault();
-        SunriseSunsetCalculator sc = new SunriseSunsetCalculator(new Location(llat, llong,0.0), tz);
-        return sc.getOfficialSunsetCalendarForDate(c).getTime();
     }
 
     public static Calendar newCalendar() {

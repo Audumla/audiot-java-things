@@ -16,6 +16,7 @@ package net.audumla.climate;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
+import net.audumla.astronomical.algorithims.Sun;
 import net.audumla.bean.BeanUtils.BeanProxy;
 import net.audumla.bean.SupportedFunction;
 import net.audumla.Time;
@@ -101,12 +102,12 @@ public class DerivedClimateObserver implements ClimateDataFactory, ClimateObserv
 
         @SupportedFunction(supported = true)
         public Date getSunrise() {
-            return Time.getSunrise(getProxy().getTime(), getProxy().getDataSource().getLatitude(), getProxy().getDataSource().getLongitude());
+            return new Sun().getTransitDetails(getProxy().getTime(), getProxy().getDataSource(),Sun.CIVIL).getRiseTime();
         }
 
         @SupportedFunction(supported = true)
         public Date getSunset() {
-            return Time.getSunset(getProxy().getTime(), getProxy().getDataSource().getLatitude(), getProxy().getDataSource().getLongitude());
+            return new Sun().getTransitDetails(getProxy().getTime(), getProxy().getDataSource(),Sun.CIVIL).getSetTime();
         }
 
         @SupportedFunction(supported = false)
