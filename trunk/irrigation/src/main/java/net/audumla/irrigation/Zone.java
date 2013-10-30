@@ -73,6 +73,6 @@ public interface Zone extends EventHandler {
      */
     List<Event> getIrrigationEventsForDay(Date day);
 
-//    void addIrrigationEvent(Date when, int seconds);
+//    void addIrrigationEvent(JulianDate when, int seconds);
 
 }

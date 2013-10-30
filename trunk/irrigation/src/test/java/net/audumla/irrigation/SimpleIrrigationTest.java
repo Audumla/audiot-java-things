@@ -26,7 +26,7 @@ import java.util.Date;
 
 /**
  * User: audumla
- * Date: 22/07/13
+ * JulianDate: 22/07/13
  * Time: 10:50 PM
  */
 public class SimpleIrrigationTest {

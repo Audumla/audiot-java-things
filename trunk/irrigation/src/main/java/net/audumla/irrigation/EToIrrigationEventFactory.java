@@ -15,7 +15,7 @@ import java.util.Date;
 
 /**
  * User: audumla
- * Date: 21/07/13
+ * JulianDate: 21/07/13
  * Time: 6:54 PM
  */
 public class EToIrrigationEventFactory implements EventFactory {

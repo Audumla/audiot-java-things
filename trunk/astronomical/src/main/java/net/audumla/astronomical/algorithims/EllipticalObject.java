@@ -16,23 +16,65 @@ package net.audumla.astronomical.algorithims;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-public enum EllipticalObject {
-        SUN,
-        MERCURY,
-        VENUS,
-        MARS,
-        JUPITER,
-        SATURN,
-        URANUS,
-        NEPTUNE,
-        PLUTO,
-        EARTH;
+import net.audumla.astronomical.Geolocation;
+import net.audumla.astronomical.Location;
+import net.audumla.astronomical.OrbitingObject;
+import net.audumla.astronomical.TransitDetails;
+import org.apache.commons.lang3.time.DateUtils;
 
-        public int getValue() {
-            return this.ordinal();
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
+
+public abstract class EllipticalObject implements OrbitingObject {
+
+    private final int type;
+
+    protected EllipticalObject(int type) {
+        this.type = type;
+    }
+
+    public abstract double eclipticLongitude(double JD);
+
+    public abstract double eclipticLatitude(double JD);
+
+    public abstract double radiusVector(double JD);
+
+    @Override
+    public int getType() {
+        return type;
+    }
+
+    @Override
+    public TransitDetails getTransitDetails(Date date, Geolocation location, double altitude) {
+        JulianTransitDetails details = calcTransitDetails(date,location,altitude);
+        JulianTransitDetails detailsAdj = null;
+        if (!DateUtils.isSameDay(date,details.getRiseTime())) {
+            detailsAdj = calcTransitDetails(DateUtils.addHours(date,date.after(details.getRiseTime()) ? 24 : -24),location,altitude);
+            details.setRise((detailsAdj.getJulianRise().julian() - details.getReferenceTime().julian())*24);
         }
 
-        public static EllipticalObject getEnum(int intValue) {
-            return EllipticalObject.values()[intValue];
+        if (!DateUtils.isSameDay(date,details.getSetTime())) {
+            detailsAdj = calcTransitDetails(DateUtils.addHours(date,date.after(details.getSetTime()) ? 24 : -24),location,altitude);
+            details.setSet((detailsAdj.getJulianSet().julian() - details.getReferenceTime().julian())*24);
         }
+
+        return details;
+    }
+
+    protected JulianTransitDetails calcTransitDetails(Date date, Geolocation location, double altitude) {
+        JulianDate jd = new JulianDate(date);
+        EllipticalPlanetaryDetails aoDetails = Elliptical.calculate(jd.julian() - 1, this);
+        double Alpha1 = aoDetails.ApparentGeocentricRA;
+        double Delta1 = aoDetails.ApparentGeocentricDeclination;
+        aoDetails = Elliptical.calculate(jd.julian(), this);
+        double Alpha2 = aoDetails.ApparentGeocentricRA;
+        double Delta2 = aoDetails.ApparentGeocentricDeclination;
+        aoDetails = Elliptical.calculate(jd.julian() + 1, this);
+        double Alpha3 = aoDetails.ApparentGeocentricRA;
+        double Delta3 = aoDetails.ApparentGeocentricDeclination;
+
+        return RiseTransitSet.calculate(jd.julian(), Alpha1, Delta1, Alpha2, Delta2, Alpha3, Delta3, location.getLongitude(Geolocation.Direction.WEST), location.getLatitude(Geolocation.Direction.NORTH), altitude);
+
+    }
 }

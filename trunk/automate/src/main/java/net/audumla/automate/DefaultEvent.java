@@ -6,7 +6,7 @@
 package net.audumla.automate;
 /**
  * User: audumla
- * Date: 23/07/13
+ * JulianDate: 23/07/13
  * Time: 10:20 AM
  */
 

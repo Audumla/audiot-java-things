@@ -1,7 +1,7 @@
 package net.audumla.automate.scheduler;
 /**
  * User: audumla
- * Date: 2/08/13
+ * JulianDate: 2/08/13
  * Time: 12:28 PM
  */
 

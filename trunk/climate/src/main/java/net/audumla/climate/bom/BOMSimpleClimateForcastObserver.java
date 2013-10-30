@@ -130,7 +130,7 @@ public class BOMSimpleClimateForcastObserver implements ClimateDataFactory, Clim
 
     synchronized public ClimateData getClimateData(Date date) {
         if (date.before(Time.getToday())) {
-            throw new UnsupportedOperationException("Date requested is in the past and cannot be forecast");
+            throw new UnsupportedOperationException("JulianDate requested is in the past and cannot be forecast");
         }
         Date newDate;
         try {
@@ -141,7 +141,7 @@ public class BOMSimpleClimateForcastObserver implements ClimateDataFactory, Clim
                 forcast = forcastData.get(newDate);
             }
             if (forcast == null) {
-                throw new UnsupportedOperationException("Date is not in forecast data");
+                throw new UnsupportedOperationException("JulianDate is not in forecast data");
             } else {
                 return forcast;
             }

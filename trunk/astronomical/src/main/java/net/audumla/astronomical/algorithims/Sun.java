@@ -1,4 +1,5 @@
 package net.audumla.astronomical.algorithims;
+
 /*
  * *********************************************************************
  *  ORGANIZATION : audumla.net
@@ -14,9 +15,29 @@ package net.audumla.astronomical.algorithims;
  *  "AS IS BASIS", WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and limitations under the License.
  */
-public class Sun implements AstronomicalObject {
+public class Sun extends EllipticalObject {
 
-    Earth earth = new Earth();
+    /**
+     * Astronomical sunrise/set is when the sun is 18 degrees below the horizon.
+     */
+    public static final double ASTRONOMICAL = -18;
+    /**
+     * Nautical sunrise/set is when the sun is 12 degrees below the horizon.
+     */
+    public static final double NAUTICAL = -12;
+    /**
+     * Civil sunrise/set (dawn/dusk) is when the sun is 6 degrees below the horizon.
+     */
+    public static final double CIVIL = -6;
+    /**
+     * Official sunrise/set is when the sun is 50' below the horizon.
+     */
+    public static final double OFFICIAL = 0.83333;
+    protected Earth earth = new Earth();
+
+    protected Sun() {
+        super(SUN);
+    }
 
     public double geometricEclipticLongitude(double JD) {
         return CoordinateTransformation.MapTo0To360Range(earth.eclipticLongitude(JD) + 180);
@@ -78,7 +99,7 @@ public class Sun implements AstronomicalObject {
 
         Coordinate3D value = new Coordinate3D();
         value.X = R * Math.cos(Latitude) * Math.cos(Longitude);
-        value.Y = R * (Math.cos(Latitude) * Math.sin(Longitude) * Math.cos(epsilon) -Math.sin(Latitude) * Math.sin(epsilon));
+        value.Y = R * (Math.cos(Latitude) * Math.sin(Longitude) * Math.cos(epsilon) - Math.sin(Latitude) * Math.sin(epsilon));
         value.Z = R * (Math.cos(Latitude) * Math.sin(Longitude) * Math.sin(epsilon) + Math.sin(Latitude) * Math.cos(epsilon));
 
         return value;
@@ -137,7 +158,7 @@ public class Sun implements AstronomicalObject {
     }
 
     @Override
-    public EllipticalObject getType() {
-        return EllipticalObject.SUN;
+    public int getType() {
+        return SUN;
     }
 }

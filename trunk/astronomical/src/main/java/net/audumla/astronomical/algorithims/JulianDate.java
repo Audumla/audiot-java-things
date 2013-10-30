@@ -47,11 +47,10 @@ public class JulianDate {
      * @param date
      */
     public JulianDate(java.util.Date date) {
-        Calendar c = Calendar.getInstance();
-
+        Calendar c = Calendar.getInstance(TimeZone.getDefault());
         c.setTime(date);
         c.setTimeZone(TimeZone.getTimeZone("UTC"));
-        set(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH), c.get(Calendar.HOUR), c.get(Calendar.MINUTE),
+        set(c.get(Calendar.YEAR), c.get(Calendar.MONTH)+1, c.get(Calendar.DAY_OF_MONTH), c.get(Calendar.HOUR), c.get(Calendar.MINUTE),
             c.get(Calendar.SECOND), true);
     }
 
@@ -583,6 +582,8 @@ public class JulianDate {
     public java.util.Date toDate() {
         return get().toDate();
     }
+
+
 }
 
 

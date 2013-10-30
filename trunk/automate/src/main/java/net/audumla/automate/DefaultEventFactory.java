@@ -9,7 +9,7 @@ import java.util.Date;
 
 /**
  * User: audumla
- * Date: 23/07/13
+ * JulianDate: 23/07/13
  * Time: 8:42 AM
  */
 public class DefaultEventFactory implements EventFactory {

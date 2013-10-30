@@ -200,7 +200,7 @@ public class CalculationTest {
      *
      * c.set(Calendar.DAY_OF_MONTH, 6); c.set(Calendar.MONTH, Calendar.JULY); c.set(Calendar.YEAR, 2012);
      *
-     * Date now = c.getTime();
+     * JulianDate now = c.getTime();
      *
      * source.setLatitude(-50.8); source.setLongitude(145.05); source.setElevation(100.0);
      *
@@ -552,7 +552,7 @@ public class CalculationTest {
             double error = 0;
             for (int i = 0; i < 100; ++i) {
                 c.add(Calendar.DAY_OF_YEAR, 1);
-                Date now = c.getTime();
+                JulianDate now = c.getTime();
                 ClimateData data = station.newWritableClimateData(now);
                 double v1 = data.getEvaporation();
                 double v2 = data.getSolarRadiation();
@@ -588,7 +588,7 @@ public class CalculationTest {
     /*
      * @Test public void testEvaporationToRadiation() { ClimateDataSource source = ClimateDataSourceFactory.newInstance(); source.setId("086351"); ClimateObserver
 	 * station = BOMClimateObserverCatalogue.buildClimateObserver(source); ClimateCalculations cc = new ClimateCalculations(); ClimateData data =
-	 * station.newWritableClimateData(new Date()); Assert.assertEquals(ClimateCalculations.getSolarRadiationFromSunlightHours(data, now,
+	 * station.newWritableClimateData(new JulianDate()); Assert.assertEquals(ClimateCalculations.getSolarRadiationFromSunlightHours(data, now,
 	 * durationLength)(data.getEvaporation()), data.getSolarRadiation(), 0.1); }
 	 */
 

@@ -1,7 +1,7 @@
 package net.audumla.irrigation.controller;
 /**
  * User: audumla
- * Date: 23/08/13
+ * JulianDate: 23/08/13
  * Time: 9:30 AM
  */
 
