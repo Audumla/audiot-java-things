@@ -16,6 +16,7 @@ package net.audumla.astronomical;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
+import org.apache.commons.lang.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,7 +61,7 @@ public class ObjectSetEvent implements AstronomicEvent {
     }
 
     @Override
-    public Date getTimeOfEvent() {
+    public Date getCalculatedEventTime() {
         if (eventTime == null) {
             calculateEventFrom(new Date());
         }
@@ -68,8 +69,23 @@ public class ObjectSetEvent implements AstronomicEvent {
     }
 
     @Override
-    public void calculateEventFrom(Date date) {
+    public Date calculateEventFrom(Date date) {
         eventTime = object.getTransitDetails(date,getLocation(),getInclination()).getSetTime();
+        return eventTime;
 
+    }
+
+    @Override
+    public AstronomicEvent getNextEvent() {
+        AstronomicEvent event = new ObjectRiseEvent(object,location,inclination);
+        event.calculateEventFrom(DateUtils.addDays(getCalculatedEventTime(), 1));
+        return event;
+    }
+
+    @Override
+    public AstronomicEvent getPreviousEvent() {
+        AstronomicEvent event = new ObjectRiseEvent(object,location,inclination);
+        event.calculateEventFrom(DateUtils.addDays(getCalculatedEventTime(),-1));
+        return event;
     }
 }

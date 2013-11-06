@@ -22,7 +22,9 @@ import org.slf4j.LoggerFactory;
 import java.util.Date;
 
 public interface AstronomicEvent {
-    Date getTimeOfEvent();
-    void calculateEventFrom(Date date);
+    Date getCalculatedEventTime();
+    Date calculateEventFrom(Date date);
+    AstronomicEvent getNextEvent();
+    AstronomicEvent getPreviousEvent();
 
 }
