@@ -1,6 +1,6 @@
 package net.audumla.automate.scheduler;
 
-import net.audumla.automate.scheduler.quartz.AstronomicalScheduleBuilder;
+import net.audumla.automate.scheduler.quartz.AstronomicScheduleBuilder;
 import net.audumla.astronomical.Geolocation;
 import org.apache.log4j.Logger;
 import org.quartz.ScheduleBuilder;
@@ -9,7 +9,7 @@ import java.text.ParseException;
 
 public class AstrologicalSchedule extends ScheduleAdaptor {
     private static Logger logger = Logger.getLogger(AstrologicalSchedule.class);
-    private AstronomicalScheduleBuilder builder = new AstronomicalScheduleBuilder();
+    private AstronomicScheduleBuilder builder = new AstronomicScheduleBuilder();
 
     public AstrologicalSchedule(Scheduler scheduler) {
         super(scheduler);
