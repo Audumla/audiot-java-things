@@ -350,7 +350,7 @@ public class ClimateCalculations {
     protected static Date subHoursFromDate(Date now, int hours) {
         Calendar c = Calendar.getInstance();
         c.setTime(now);
-        c.add(Calendar.HOUR, hours * -1);
+        c.add(Calendar.HOUR_OF_DAY, hours * -1);
         return c.getTime();
     }
 

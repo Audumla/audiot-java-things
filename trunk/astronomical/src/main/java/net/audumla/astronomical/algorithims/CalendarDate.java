@@ -47,7 +47,7 @@ public class CalendarDate {
         c.set(Calendar.HOUR_OF_DAY, hour);
         c.set(Calendar.MINUTE, minute);
         c.set(Calendar.SECOND, (int) second);
-        //c.setTimeZone(TimeZone.getDefault());
+//        c.setTimeZone(TimeZone.getDefault());
         return c.getTime();
     }
 }

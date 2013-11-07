@@ -24,7 +24,7 @@ package net.audumla.astronomical;
 public interface Geolocation {
 
     static Geolocation newGeoLocation(double lat, double lng, double elevation) {
-        return new Location();
+        return new Location(lat,lng,elevation);
 
     }
 
