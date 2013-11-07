@@ -48,12 +48,12 @@ public class ObserverTest {
         ClimateData data = forcaster.getClimateData(now);
         Assert.assertEquals(now, data.getTime());
         // Assert.assertNotNull(data.getMinimumTemperature());
-        c.set(Calendar.HOUR, 12);
+        c.set(Calendar.HOUR_OF_DAY, 12);
         Date obTime1 = c.getTime();
         ClimateObservation obs1 = data.getObservation(obTime1, ClimateData.ObservationMatch.CLOSEST);
         Assert.assertNotNull(obs1);
         Assert.assertNotNull(obs1.getTemperature());
-        c.set(Calendar.HOUR, 11);
+        c.set(Calendar.HOUR_OF_DAY, 11);
         Date obTime2 = c.getTime();
         ClimateObservation obs2 = data.getObservation(obTime2, ClimateData.ObservationMatch.CLOSEST);
         Assert.assertNotNull(obs2);

@@ -35,7 +35,7 @@ public class Time {
         Calendar c1 = newCalendar();
         c1.setTime(date);
         c1.add(Calendar.SECOND, sec);
-        c1.add(Calendar.HOUR, hour);
+        c1.add(Calendar.HOUR_OF_DAY, hour);
         c1.add(Calendar.MINUTE, minute);
         return c1.getTime();
     }
@@ -46,7 +46,7 @@ public class Time {
         Calendar c2 = newCalendar();
         c2.setTime(offset);
         c1.add(Calendar.SECOND, c2.get(Calendar.SECOND));
-        c1.add(Calendar.HOUR, c2.get(Calendar.HOUR));
+        c1.add(Calendar.HOUR_OF_DAY, c2.get(Calendar.HOUR_OF_DAY));
         c1.add(Calendar.MINUTE, c2.get(Calendar.MINUTE));
         return c1.getTime();
     }
@@ -58,7 +58,7 @@ public class Time {
         c2.setTime(date);
         c1.set(Calendar.YEAR, c2.get(Calendar.YEAR));
         c1.set(Calendar.DAY_OF_YEAR, c2.get(Calendar.DAY_OF_YEAR));
-        c1.set(Calendar.HOUR, 0);
+        c1.set(Calendar.HOUR_OF_DAY, 0);
         return c1.getTime();
     }
 
@@ -69,7 +69,7 @@ public class Time {
         c2.setTime(date);
         c1.set(Calendar.YEAR, c2.get(Calendar.YEAR));
         c1.set(Calendar.MONTH, c2.get(Calendar.MONTH));
-        c1.set(Calendar.HOUR, 0);
+        c1.set(Calendar.HOUR_OF_DAY, 0);
         return c1.getTime();
     }
 
@@ -86,7 +86,7 @@ public class Time {
         Calendar c1 = newCalendar();
         c1.set(Calendar.MILLISECOND, 0);
         c1.set(Calendar.SECOND, 0);
-        c1.set(Calendar.HOUR, 0);
+        c1.set(Calendar.HOUR_OF_DAY, 0);
         c1.set(Calendar.MINUTE, 0);
         c1.set(Calendar.DAY_OF_YEAR, 1);
 //		c1.set(Calendar.YEAR, 0);

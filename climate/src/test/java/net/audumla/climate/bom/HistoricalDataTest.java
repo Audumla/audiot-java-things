@@ -98,7 +98,7 @@ public class HistoricalDataTest {
         c.set(Calendar.DAY_OF_YEAR, 200);
         c.set(Calendar.YEAR, 2013);
         Date now = c.getTime();
-        c.set(Calendar.HOUR, 10);
+        c.set(Calendar.HOUR_OF_DAY, 10);
         Date time1 = c.getTime();
         ClimateDataSource source = ClimateDataSourceFactory.getInstance().newInstance();
         source.setId("086351");
@@ -108,7 +108,7 @@ public class HistoricalDataTest {
         Assert.assertNotNull(obs1.getTemperature());
         Assert.assertNotNull(obs1.getHumidity());
 
-        c.set(Calendar.HOUR, 11);
+        c.set(Calendar.HOUR_OF_DAY, 11);
         Date time2 = c.getTime();
         ClimateObservation obs2 = data.getObservation(time2, ClimateData.ObservationMatch.CLOSEST);
         Assert.assertNotNull(obs2);
@@ -116,7 +116,7 @@ public class HistoricalDataTest {
         Assert.assertSame(obs1.getTime(), obs2.getTime());
 
 
-        c.set(Calendar.HOUR, 9);
+        c.set(Calendar.HOUR_OF_DAY, 9);
         time1 = c.getTime();
         Assert.assertEquals(time1, obs1.getTime());
         Assert.assertEquals(time1, obs2.getTime());

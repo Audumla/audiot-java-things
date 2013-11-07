@@ -16,10 +16,12 @@ package net.audumla.astronomical.algorithims;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
+import net.audumla.Time;
 import net.audumla.astronomical.Geolocation;
 import net.audumla.astronomical.Location;
 import net.audumla.astronomical.OrbitingObject;
 import net.audumla.astronomical.TransitDetails;
+import org.apache.commons.lang.time.DateUtils;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -85,6 +87,24 @@ public class AstronomicalTest {
     public void testDateConversion() throws Exception {
         TimeZone.setDefault(TimeZone.getTimeZone("Australia/Melbourne"));
         java.util.Date date = new java.util.Date();
+        JulianDate cDate = new JulianDate(date);
+        logger.debug("Algorithms: " + cDate.toDate() + " : " +cDate.toDate().getTime() );
+        logger.debug("Algorithms: " + date + " : " + date.getTime());
+        Assert.assertEquals(cDate.toDate().getTime(),date.getTime(),1100);
+
+    }
+
+    @Test
+    public void testDateConversion2() throws Exception {
+        TimeZone.setDefault(TimeZone.getTimeZone("Australia/Melbourne"));
+        java.util.Date date = new Date();
+        date = DateUtils.setYears(date,2013);
+        date = DateUtils.setMinutes(date, 0);
+        date = DateUtils.setMonths(date, 0);
+        date = DateUtils.setMilliseconds(date, 0);
+        date = DateUtils.setSeconds(date, 0);
+        date = DateUtils.setDays(date, 1);
+        date = DateUtils.setHours(date, 0);
         JulianDate cDate = new JulianDate(date);
         logger.debug("Algorithms: " + cDate.toDate() + " : " +cDate.toDate().getTime() );
         logger.debug("Algorithms: " + date + " : " + date.getTime());

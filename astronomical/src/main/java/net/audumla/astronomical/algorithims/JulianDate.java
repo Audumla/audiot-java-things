@@ -50,8 +50,8 @@ public class JulianDate {
         Calendar c = Calendar.getInstance(TimeZone.getDefault());
         c.setTime(date);
         c.setTimeZone(TimeZone.getTimeZone("UTC"));
-        set(c.get(Calendar.YEAR), c.get(Calendar.MONTH)+1, c.get(Calendar.DAY_OF_MONTH), c.get(Calendar.HOUR), c.get(Calendar.MINUTE),
-            c.get(Calendar.SECOND), true);
+        set(c.get(Calendar.YEAR), c.get(Calendar.MONTH)+1, c.get(Calendar.DAY_OF_MONTH), c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE),
+            c.get(Calendar.SECOND)+1 /*seems to drop a second during conversion*/, true);
     }
 
     /**

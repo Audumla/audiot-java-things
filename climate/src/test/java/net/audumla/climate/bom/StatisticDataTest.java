@@ -59,7 +59,7 @@ public class StatisticDataTest {
         source.setId("086351");
         ClimateObserver station = new BOMStatisticalClimateDataObserver(source);
         ClimateData data = station.getClimateData(now);
-        c.set(Calendar.HOUR, 10);
+        c.set(Calendar.HOUR_OF_DAY, 10);
         ClimateObservation obs = data.getObservation(c.getTime(), ClimateData.ObservationMatch.CLOSEST);
         Assert.assertEquals(14.7, obs.getTemperature(), 0.01);
         Assert.assertEquals(73, obs.getHumidity(), 0.01);
