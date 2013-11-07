@@ -48,7 +48,7 @@ public class AstronomicScheduleTest {
         JobDetail job = JobBuilder.newJob(TestJob.class).withIdentity(jobName, jobGroup).build();
 
 //        Trigger trigger = TriggerBuilder.newTrigger().withIdentity("trigger-" + jobName, jobGroup).startNow()
-//                .withSchedule(AstronomicScheduleBuilder.astronomicalSchedule().startEventOffset(offset).offsetEndFromSet(60 * 60 * 5).withCount(repeatCount).withSecondInterval(interval).atLocation(-38, 145)).build();
+//                .withSchedule(AstronomicScheduleBuilder.astronomicalSchedule().startEventOffset(offset).offsetEndFromSet(60 * 60 * 5).withRepeatCount(repeatCount).withIntervalInSeconds(interval).atLocation(-38, 145)).build();
 
 //        scheduler.scheduleJob(job, trigger);
 

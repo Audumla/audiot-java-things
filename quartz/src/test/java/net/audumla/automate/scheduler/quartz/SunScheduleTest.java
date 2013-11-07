@@ -16,19 +16,19 @@ package net.audumla.automate.scheduler.quartz;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import junit.framework.Assert;
 import net.audumla.astronomical.AstronomicEvent;
 import net.audumla.astronomical.Location;
 import net.audumla.astronomical.ObjectRiseEvent;
 import net.audumla.astronomical.OrbitingObject;
 import net.audumla.astronomical.algorithims.Sun;
+import org.apache.commons.lang.time.DateUtils;
 import org.apache.log4j.Logger;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
-import org.quartz.spi.MutableTrigger;
 
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -39,13 +39,14 @@ public class SunScheduleTest {
     @Before
     public void setUp() throws Exception {
         StdSchedulerFactory.getDefaultScheduler().clear();
-        StdSchedulerFactory.getDefaultScheduler().start();
 
     }
 
     @After
     public void tearDown() throws Exception {
-        StdSchedulerFactory.getDefaultScheduler().shutdown();
+        if (StdSchedulerFactory.getDefaultScheduler().isStarted()) {
+            StdSchedulerFactory.getDefaultScheduler().shutdown();
+        }
 
     }
 
@@ -54,9 +55,13 @@ public class SunScheduleTest {
         JobDetail job = JobBuilder.newJob(TestJob.class).withIdentity("testJob", "testJobGroup").storeDurably().build();
         job.getJobDataMap().put(TestJob.EXECUTION_COUNT, ai);
         StdSchedulerFactory.getDefaultScheduler().scheduleJob(job, trigger);
+        if (!StdSchedulerFactory.getDefaultScheduler().isStarted()) {
+            StdSchedulerFactory.getDefaultScheduler().start();
+
+        }
         synchronized (ai) {
             try {
-                ai.wait(maxWait*1000);
+                ai.wait(maxWait * 1000);
             } catch (Exception ex) {
                 logger.error(ex);
             }
@@ -83,10 +88,10 @@ public class SunScheduleTest {
     @Test
     public void testSingleRiseOnly() throws Exception {
         AstronomicEvent event = getSunRiseEvent();
-        Trigger trigger = AstronomicScheduleBuilder.astronomicalSchedule().startEvent(event).startEventOffset(getOffsetFromEvent(event)+1).withEventCount(1).build();
-        AtomicInteger ai = scheduleJob(trigger,1,5);
+        Trigger trigger = AstronomicScheduleBuilder.astronomicalSchedule().startEvent(event).startEventOffset(getOffsetFromEvent(event) + 2).withEventCount(1).build();
+        AtomicInteger ai = scheduleJob(trigger, 1, 5);
         assert ai.get() == 0;
-        assert StdSchedulerFactory.getDefaultScheduler().getTrigger(trigger.getKey()).getNextFireTime() == null;
+        assert StdSchedulerFactory.getDefaultScheduler().getTrigger(trigger.getKey()) == null;
 
     }
 
@@ -95,21 +100,89 @@ public class SunScheduleTest {
         AstronomicEvent event = getSunRiseEvent();
         long offset = getOffsetFromEvent(event) + 1;
         Trigger trigger = AstronomicScheduleBuilder.astronomicalSchedule().startEvent(event).startEventOffset(offset).forEveryEvent().build();
-        AtomicInteger ai = scheduleJob(trigger,1,5);
+        AtomicInteger ai = scheduleJob(trigger, 1, 5);
         assert ai.get() == 0;
-        Assert.assertEquals(StdSchedulerFactory.getDefaultScheduler().getTrigger(trigger.getKey()).getNextFireTime().getTime() , event.getNextEvent().getCalculatedEventTime().getTime()+(offset*1000),100);
+        Assert.assertEquals(StdSchedulerFactory.getDefaultScheduler().getTrigger(trigger.getKey()).getNextFireTime().getTime(), event.getNextEvent().getCalculatedEventTime().getTime() + (offset * 1000), 100);
 
     }
 
     @Test
     public void testRise3Times() throws Exception {
-        AstronomicScheduleBuilder.astronomicalSchedule().startEvent(new ObjectRiseEvent(OrbitingObject.Sun, new Location(-38, 145, 0), Sun.CIVIL)).startEventOffset(0).withEventCount(3);
+        AstronomicEvent event = getSunRiseEvent();
+        Date now = new Date();
+        if (event.getCalculatedEventTime().before(now)) {
+            now = DateUtils.addDays(now, 1);
+        }
+        AstronomicTriggerImpl trigger = (AstronomicTriggerImpl) AstronomicScheduleBuilder.astronomicalSchedule().startEvent(event).startEventOffset(0).withEventCount(3).build();
+        trigger.computeFirstFireTime(null);
+        Date fire = trigger.getNextFireTime();
+        assert DateUtils.isSameDay(fire, now);
+        trigger.triggered(null);
+        fire = trigger.getNextFireTime();
+        assert DateUtils.isSameDay(fire, DateUtils.addDays(now, 1));
+        trigger.triggered(null);
+        fire = trigger.getNextFireTime();
+        assert DateUtils.isSameDay(fire, DateUtils.addDays(now, 2));
+        trigger.triggered(null);
+        fire = trigger.getNextFireTime();
+        assert fire == null;
 
     }
 
     @Test
-    public void test1SecondInterval3TimesEveryRise() throws Exception {
-        AstronomicScheduleBuilder.astronomicalSchedule().startEvent(new ObjectRiseEvent(OrbitingObject.Sun, new Location(-38, 145, 0), Sun.CIVIL)).startEventOffset(0).withCount(3).withSecondInterval(1).forEveryEvent();
+    public void testStartAndEndEvent() throws Exception {
+        AstronomicEvent startEvent = getSunRiseEvent();
+        AstronomicEvent endEvent = getSunRiseEvent();
+        Date now = new Date();
+        if (startEvent.getCalculatedEventTime().before(now)) {
+            now = DateUtils.addDays(now, 1);
+        }
+        AstronomicTriggerImpl trigger = (AstronomicTriggerImpl) AstronomicScheduleBuilder.astronomicalSchedule().startEvent(startEvent).startEventOffset(-3).endEvent(endEvent).forEveryEvent().withIntervalInSeconds(1).repeatForever().build();
+        trigger.computeFirstFireTime(null);
+        Date fire = trigger.getNextFireTime();
+        assert DateUtils.isSameDay(fire, now);
+        Assert.assertEquals(trigger.getNextFireTime().getTime(), fire.getTime());
+        trigger.triggered(null);
+        Assert.assertEquals(trigger.getNextFireTime().getTime(), fire.getTime() + 1000);
+        trigger.triggered(null);
+        Assert.assertEquals(trigger.getNextFireTime().getTime(), fire.getTime() + 2000);
+        trigger.triggered(null);
+        Assert.assertEquals(trigger.getNextFireTime().getTime(), fire.getTime() + 3000);
+        trigger.triggered(null);
+        fire = trigger.getNextFireTime();
+        assert DateUtils.isSameDay(fire, DateUtils.addDays(now, 1));
+        Assert.assertEquals(trigger.getNextFireTime().getTime(), fire.getTime(), 10);
+        trigger.triggered(null);
+        Assert.assertEquals(trigger.getNextFireTime().getTime(), fire.getTime() + 1000, 10);
+    }
+
+    @Test
+    public void test2SecondInterval3TimesEveryRise() throws Exception {
+        AstronomicEvent event = getSunRiseEvent();
+        Date now = new Date();
+        if (event.getCalculatedEventTime().before(now)) {
+            now = DateUtils.addDays(now, 1);
+        }
+        AstronomicTriggerImpl trigger = (AstronomicTriggerImpl) AstronomicScheduleBuilder.astronomicalSchedule().startEvent(event).startEventOffset(0).forEveryEvent().withRepeatCount(3).withIntervalInSeconds(2).build();
+        trigger.computeFirstFireTime(null);
+        Date fire = trigger.getNextFireTime();
+        assert DateUtils.isSameDay(fire, now);
+        trigger.triggered(null);
+        Assert.assertEquals(trigger.getNextFireTime().getTime(), fire.getTime() + 2000, 10);
+        trigger.triggered(null);
+        Assert.assertEquals(trigger.getNextFireTime().getTime(), fire.getTime() + 4000, 10);
+        trigger.triggered(null);
+        Assert.assertEquals(trigger.getNextFireTime().getTime(), fire.getTime() + 6000, 10);
+
+        trigger.triggered(null);
+        fire = trigger.getNextFireTime();
+        assert DateUtils.isSameDay(fire, DateUtils.addDays(now, 1));
+        trigger.triggered(null);
+        Assert.assertEquals(trigger.getNextFireTime().getTime(), fire.getTime() + 2000, 10);
+        trigger.triggered(null);
+        Assert.assertEquals(trigger.getNextFireTime().getTime(), fire.getTime() + 4000, 10);
+        trigger.triggered(null);
+        Assert.assertEquals(trigger.getNextFireTime().getTime(), fire.getTime() + 6000, 10);
 
     }
 

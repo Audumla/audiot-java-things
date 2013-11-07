@@ -32,7 +32,7 @@ public class AstrologicalSchedule extends ScheduleAdaptor {
     }
 
     public void setInterval(int seconds) {
-        builder.withSecondInterval(seconds);
+        builder.withIntervalInSeconds(seconds);
     }
 
     public void setLocation(Geolocation source) {
