@@ -28,10 +28,10 @@ public class AstronomicScheduleBuilder extends ScheduleBuilder<AstronomicalTrigg
     public static class AstronomicSchedule {
         public AstronomicEvent startTime;
         public AstronomicEvent endTime;
-        public int interval = 1;
-        public int repeat = 0;
-        public int eventCount = Integer.MIN_VALUE;
-        public long startOffset = 0;
+        public int interval = 0; // only relevant if repeat is > 0
+        public int repeat = 0; // default is only one triggered job per start event
+        public int eventCount = Integer.MIN_VALUE; // repeat for every event
+        public long startOffset = 0; // no offset
     }
 
 
@@ -60,12 +60,20 @@ public class AstronomicScheduleBuilder extends ScheduleBuilder<AstronomicalTrigg
         return this;
     }
 
-    public AstronomicScheduleBuilder withSecondInterval(int seconds) {
+    public AstronomicScheduleBuilder withIntervalInSeconds(int seconds) {
         schedule.interval = seconds;
+        if (schedule.repeat == 0) {
+            repeatForever();
+        }
         return this;
     }
 
-    public AstronomicScheduleBuilder withCount(int count) {
+    public AstronomicScheduleBuilder repeatForever() {
+        schedule.repeat = Integer.MIN_VALUE;
+        return this;
+    }
+
+    public AstronomicScheduleBuilder withRepeatCount(int count) {
         schedule.repeat = count;
         return this;
     }

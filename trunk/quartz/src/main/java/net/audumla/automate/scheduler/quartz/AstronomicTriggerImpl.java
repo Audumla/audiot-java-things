@@ -33,6 +33,7 @@ public class AstronomicTriggerImpl extends AbstractTrigger<AstronomicalTrigger> 
     protected int count = 0;
     protected int eventCount = 0;
     protected Calendar calendar;
+    private boolean mayFireAgain = true;
 
     public AstronomicTriggerImpl(AstronomicScheduleBuilder.AstronomicSchedule schedule) {
         this.schedule = schedule;
@@ -43,7 +44,12 @@ public class AstronomicTriggerImpl extends AbstractTrigger<AstronomicalTrigger> 
     public Date computeFirstFireTime(Calendar cal) {
         // seed the start event
         calendar = cal;
-        setNextFireTime(getFireTimeAfter(getStartTime()));
+        Date fireTime = org.apache.commons.lang3.time.DateUtils.addSeconds(schedule.startTime.getCalculatedEventTime(), (int) schedule.startOffset);
+        while (fireTime.before(getStartTime())) {
+            schedule.startTime = schedule.startTime.getNextEvent();
+            fireTime = org.apache.commons.lang3.time.DateUtils.addSeconds(schedule.startTime.getCalculatedEventTime(), (int) schedule.startOffset);
+        }
+        setNextFireTime(fireTime);
         ++eventCount; // set the event count as the first trigger will not increment this
         return getNextFireTime();
     }
@@ -73,18 +79,21 @@ public class AstronomicTriggerImpl extends AbstractTrigger<AstronomicalTrigger> 
             // Ensure that we only execute a number of times equal to the repeat count during start and end events
             boolean nextEvent = false;
             if (schedule.repeat == Integer.MIN_VALUE || count <= schedule.repeat) {
-                fireTime = org.apache.commons.lang3.time.DateUtils.addSeconds(now, (int) schedule.interval);
-                // if there is no end time then use the next start event instead so that we dont overlap with recurring events
-                Date end = schedule.endTime == null ? schedule.startTime.getNextEvent().getCalculatedEventTime() : schedule.endTime.calculateEventFrom(now);
-                // make sure that the next interval is not passed the end event time
-                if (end.after(fireTime)) {
-                    // get the event time that has been calculated using the initial seed time
-                    Date start = org.apache.commons.lang3.time.DateUtils.addSeconds(schedule.startTime.getCalculatedEventTime(), (int) schedule.startOffset);
-                    if (start.after(fireTime)) {
-                        //return the calculated start time if it is after now plus the interval
-                        fireTime = start;
-                    }
+                fireTime = org.apache.commons.lang3.time.DateUtils.addSeconds(now, schedule.interval);
+                Date end = null;
+                if (schedule.endTime == null) {
+                    // if there is no end event then use the next start event instead so that we dont overlap with recurring events
+                    end = org.apache.commons.lang3.time.DateUtils.addSeconds(schedule.startTime.getNextEvent().getCalculatedEventTime(), (int) schedule.startOffset);
                 } else {
+                    // if an end event has been set then use it, but ensure that the event we use is after the current start event
+                    end = schedule.endTime.calculateEventFrom(now);
+                    while (end.before(org.apache.commons.lang3.time.DateUtils.addSeconds(schedule.startTime.getCalculatedEventTime(), (int) schedule.startOffset))) {
+                        schedule.endTime = schedule.endTime.getNextEvent();
+                        end = schedule.endTime.getCalculatedEventTime();
+                    }
+                }
+                // make sure that the next fire is not passed the end event time
+                if (end.before(fireTime)) {
                     nextEvent = true;
                 }
             } else {
@@ -99,10 +108,14 @@ public class AstronomicTriggerImpl extends AbstractTrigger<AstronomicalTrigger> 
                 count = 0;
                 fireTime = org.apache.commons.lang3.time.DateUtils.addSeconds(schedule.startTime.getCalculatedEventTime(), (int) schedule.startOffset);
             }
+            // adjust the fire time based on the calendar
+            if (fireTime != null && calendar != null && !calendar.isTimeIncluded(fireTime.getTime())) {
+                Date nextValid = new Date(calendar.getNextIncludedTime(fireTime.getTime()));
+                fireTime = getFireTimeAfter(nextValid);
+            }
         }
-        if (fireTime != null && calendar != null && !calendar.isTimeIncluded(fireTime.getTime())) {
-            Date nextValid = new Date(calendar.getNextIncludedTime(fireTime.getTime()));
-            fireTime = getFireTimeAfter(nextValid);
+        else {
+            mayFireAgain = false;
         }
         return fireTime;
 
@@ -134,7 +147,7 @@ public class AstronomicTriggerImpl extends AbstractTrigger<AstronomicalTrigger> 
     @Override
     public Date getStartTime() {
         if (startTime == null) {
-            startTime = schedule.startTime.getCalculatedEventTime();
+            setStartTime(new Date());
         }
         return startTime;
     }
@@ -146,7 +159,7 @@ public class AstronomicTriggerImpl extends AbstractTrigger<AstronomicalTrigger> 
 
     @Override
     public boolean mayFireAgain() {
-        return true;
+        return mayFireAgain;
     }
 
     @Override
