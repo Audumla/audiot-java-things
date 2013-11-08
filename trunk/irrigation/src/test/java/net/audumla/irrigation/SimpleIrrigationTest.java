@@ -136,7 +136,7 @@ public class SimpleIrrigationTest {
             Assert.assertNotEquals(data1.getMaximumHumidity(), data2.getMaximumHumidity());
         }
         Assert.assertEquals(data1.getDaylightHours(), data2.getDaylightHours(), 0.1);
-        Assert.assertEquals(data1.getSunrise(), data2.getSunrise());
+        Assert.assertEquals(data1.getSunrise().getTime(), data2.getSunrise().getTime(),1000);
     }
 
     @Test
