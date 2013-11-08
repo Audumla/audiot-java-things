@@ -25,9 +25,9 @@ import org.slf4j.LoggerFactory;
  */
 public class Location implements Geolocation {
     private static final Logger logger = LoggerFactory.getLogger(Location.class);
-    private double latitude;
-    private double longitude;
-    private double elevation;
+    private Double latitude;
+    private Double longitude;
+    private Double elevation;
 
     /**
      * Constructs ...
