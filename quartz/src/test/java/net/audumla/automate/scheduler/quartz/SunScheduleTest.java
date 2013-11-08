@@ -147,8 +147,10 @@ public class SunScheduleTest {
         trigger.triggered(null);
         Assert.assertEquals(trigger.getNextFireTime().getTime(), fire.getTime() + 2000);
         trigger.triggered(null);
-        Assert.assertEquals(trigger.getNextFireTime().getTime(), fire.getTime() + 3000);
-        trigger.triggered(null);
+        if (DateUtils.isSameDay(trigger.getNextFireTime(),fire)) {
+            Assert.assertEquals(trigger.getNextFireTime().getTime(), fire.getTime() + 3000);
+            trigger.triggered(null);
+        }
         fire = trigger.getNextFireTime();
         assert DateUtils.isSameDay(fire, DateUtils.addDays(now, 1));
         Assert.assertEquals(trigger.getNextFireTime().getTime(), fire.getTime(), 10);
