@@ -39,18 +39,28 @@ public abstract class EllipticalObject implements OrbitingObject {
 
     @Override
     public TransitDetails getTransitDetails(Date date, Geolocation location, double altitude) {
+        // to make sure that the dates for rise and set are for the correct day this code checks the resultant rise and set days.
+        // as all times are calculated using UTC there is a chance that they may not be for the requested local day.
+        // I have attempted to adjust the passed in time using the local time offset however this has not worked, so a
+        // brute force method has been applied to recalculate using either the next or previous day.
+        // this method has also run into problems when adjusting by +/- 24 hours. It appears that borderline cases may actually
+        // cause the calculation to jump another whole day and therefore result in a calculation that is another full day in the
+        // desired direction. Currently it appears that using +/- 23 hours will fix this as the borderline cases are as result
+        // of the few seconds/minutes difference in rise times each day. This needs to be monitored however and more thorough testing applied.
         JulianTransitDetails details = calcTransitDetails(date,location,altitude);
         JulianTransitDetails detailsAdj = null;
         if (!DateUtils.isSameDay(date,details.getRiseTime())) {
-            detailsAdj = calcTransitDetails(DateUtils.addHours(date,date.after(details.getRiseTime()) ? 24 : -24),location,altitude);
+            detailsAdj = calcTransitDetails(DateUtils.addHours(date,date.after(date) ? 23 : -23),location,altitude);
             details.setRise((detailsAdj.getJulianRise().julian() - details.getReferenceTime().julian())*24);
         }
 
+
         if (!DateUtils.isSameDay(date,details.getSetTime())) {
-            detailsAdj = calcTransitDetails(DateUtils.addHours(date,date.after(details.getSetTime()) ? 24 : -24),location,altitude);
+            detailsAdj = calcTransitDetails(DateUtils.addHours(date,date.after(date) ? 23 : -23),location,altitude);
             details.setSet((detailsAdj.getJulianSet().julian() - details.getReferenceTime().julian())*24);
         }
 
+        assert DateUtils.isSameDay(details.getRiseTime(),details.getSetTime());
         return details;
     }
 
