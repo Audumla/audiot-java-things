@@ -20,23 +20,23 @@ public class AstrologicalSchedule extends ScheduleAdaptor {
     }
 
     public void setStartFromSunset(int seconds) {
-        builder.offsetStartFromSet(seconds);
+       // builder.offsetStartFromSet(seconds);
     }
 
     public void setEndFromSunrise(int seconds) {
-        builder.offsetEndFromRise(seconds);
+      //  builder.offsetEndFromRise(seconds);
     }
 
     public void setEndFromSunset(int seconds) {
-        builder.offsetEndFromSet(seconds);
+      //  builder.offsetEndFromSet(seconds);
     }
 
     public void setInterval(int seconds) {
-        builder.withIntervalInSeconds(seconds);
+     //   builder.withIntervalInSeconds(seconds);
     }
 
     public void setLocation(Geolocation source) {
-        builder.atLocation(source.getLatitude(), source.getLongitude());
+     //   builder.atLocation(source.getLatitude(), source.getLongitude());
     }
 
     @Override
