@@ -184,11 +184,16 @@ public class ClimateDataSourceFactory {
 
             // need to move this out to a seperate observer
             try {
-                return source.getElevation();
-            } catch (Exception ex) {
+
+                Double e = super.getElevation();
+                if (e == null) {
+                    throw new UnsupportedOperationException();
+                }
+                return e;
+            } catch (Throwable ex) {
                 try {
                     double elevation = Double.MAX_VALUE;
-                    String url = "/maps/api/elevation/json?locations=" + source.getLatitude() + "," + source.getLongitude()
+                    String url = "/maps/api/elevation/json?locations=" + super.getLatitude() + "," + super.getLongitude()
                                  + "&sensor=false";
                     Reader reader = BOMDataLoader.instance().getData(BOMDataLoader.HTTP, "maps.googleapis.com", url);
                     JSONObject json = new JSONObject(IOUtils.toString(reader));
