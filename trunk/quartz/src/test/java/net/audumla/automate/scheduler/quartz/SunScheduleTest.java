@@ -16,10 +16,7 @@ package net.audumla.automate.scheduler.quartz;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import net.audumla.astronomy.AstronomicEvent;
-import net.audumla.astronomy.Location;
-import net.audumla.astronomy.ObjectRiseEvent;
-import net.audumla.astronomy.OrbitingObject;
+import net.audumla.astronomy.*;
 import net.audumla.astronomy.algorithims.Sun;
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.log4j.Logger;
@@ -71,7 +68,7 @@ public class SunScheduleTest {
     }
 
     public AstronomicEvent getSunRiseEvent() {
-        AstronomicEvent event = new ObjectRiseEvent(OrbitingObject.Sun, new Location(-38, 145, 0), Sun.CIVIL);
+        AstronomicEvent event = new CelestialObjectRiseEvent(CelestialObject.Sun, new Geolocation.Location(-38, 145, 0), Sun.CIVIL);
         if (event.getCalculatedEventTime().after(new Date())) {
             event = event.getPreviousEvent();
         }

@@ -15,7 +15,7 @@ package net.audumla.climate;
 *  "AS I BASIS", WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 *  See the License for the specific language governing permissions and limitations under the License.
  */
-import net.audumla.astronomy.Location;
+import net.audumla.astronomy.Geolocation;
 import net.audumla.bean.BeanUtils;
 import net.audumla.bean.SafeParse;
 import net.audumla.climate.bom.BOMDataLoader;
@@ -119,7 +119,7 @@ public class ClimateDataSourceFactory {
      *
      * @author         Marius Gleeson
      */
-    static public class ClimateDataSourceDecorator extends Location implements Comparable<ClimateDataSource> {
+    static public class ClimateDataSourceDecorator extends Geolocation.Location implements Comparable<ClimateDataSource> {
         protected ClimateDataSource source;
 
         protected ClimateDataSourceDecorator(ClimateDataSource source) {

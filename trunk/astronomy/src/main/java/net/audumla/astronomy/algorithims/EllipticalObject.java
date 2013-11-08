@@ -16,14 +16,14 @@ package net.audumla.astronomy.algorithims;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
+import net.audumla.astronomy.CelestialObject;
 import net.audumla.astronomy.Geolocation;
-import net.audumla.astronomy.OrbitingObject;
 import net.audumla.astronomy.TransitDetails;
 import org.apache.commons.lang3.time.DateUtils;
 
 import java.util.Date;
 
-public abstract class EllipticalObject implements OrbitingObject {
+public abstract class EllipticalObject implements CelestialObject {
 
     protected EllipticalObject() {
     }
