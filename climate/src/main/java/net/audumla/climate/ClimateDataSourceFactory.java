@@ -15,7 +15,7 @@ package net.audumla.climate;
 *  "AS I BASIS", WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 *  See the License for the specific language governing permissions and limitations under the License.
  */
-import net.audumla.astronomical.Location;
+import net.audumla.astronomy.Location;
 import net.audumla.bean.BeanUtils;
 import net.audumla.bean.SafeParse;
 import net.audumla.climate.bom.BOMDataLoader;

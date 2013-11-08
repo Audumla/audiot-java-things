@@ -62,7 +62,7 @@
         </dependency>
         <dependency>
             <groupId>net.audumla</groupId>
-            <artifactId>astronomical</artifactId>
+            <artifactId>astronomy</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>

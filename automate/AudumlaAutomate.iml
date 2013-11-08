@@ -41,7 +41,7 @@
     <orderEntry type="library" name="Maven: c3p0:c3p0:0.9.1.1" level="project" />
     <orderEntry type="module" module-name="AudumlaFTD2xxj" />
     <orderEntry type="module" module-name="AudumlaQuartz" />
-    <orderEntry type="module" module-name="AudumlaAstronomical" />
+    <orderEntry type="module" module-name="AudumlaAstronomy" />
     <orderEntry type="library" name="Maven: org.osgi:org.osgi.core:4.3.1" level="project" />
     <orderEntry type="module" module-name="AudumlaDevices" scope="TEST" production-on-test="" />
     <orderEntry type="library" scope="TEST" name="Maven: org.springframework:spring-context-support:3.1.4.RELEASE" level="project" />

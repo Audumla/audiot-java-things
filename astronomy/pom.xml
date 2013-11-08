@@ -15,8 +15,8 @@
   ~  See the License for the specific language governing permissions and limitations under the License.
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>core</artifactId>
@@ -24,29 +24,25 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <version>1.0-SNAPSHOT</version>
-    <name>Audumla&#160;Quartz</name>
-    <description>Extensions to Quartz timer library. Includes schedulers based on Astrological events as well as sequence coordination mechanisms</description>
     <packaging>bundle</packaging>
-    <artifactId>quartz</artifactId>
+
+    <name>Audumla&#160;Astronomy</name>
+    <description>A collection of functions and methods for calculating astronomical events and occurances</description>
+    <artifactId>astronomy</artifactId>
+    <version>1.0-SNAPSHOT</version>
 
     <dependencies>
         <dependency>
-            <groupId>org.quartz-scheduler</groupId>
-            <artifactId>quartz</artifactId>
-            <version>2.2.1</version>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.1</version>
         </dependency>
         <dependency>
             <groupId>net.audumla</groupId>
             <artifactId>utils</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
-        <dependency>
-            <groupId>net.audumla</groupId>
-            <artifactId>astronomy</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-
     </dependencies>
+
 
 </project>
