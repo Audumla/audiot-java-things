@@ -16,7 +16,9 @@ package net.audumla.integrate.camel;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
+import net.audumla.integrate.camel.scheduler.CronSchedulerEndpoint;
 import net.audumla.integrate.camel.scheduler.SchedulerComponent;
+import org.apache.camel.Component;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.mock.MockEndpoint;
@@ -34,26 +36,28 @@ public class QuartzTest extends CamelTestBase {
     @Before
     public void setUp() throws Exception {
         context = new DefaultCamelContext();
-        context.addComponent("scheduler", new SchedulerComponent(context));
+        SchedulerComponent schComponent = new SchedulerComponent(context);
+        context.addComponent("scheduler", schComponent);
         context.start();
-        context.getComponent("scheduler");
+        schComponent.registerScheduler(CronSchedulerEndpoint.class,"cron");
+
     }
 
 
     @Test
     public void testAudumlaAstro() throws Exception {
 
-//        context.addRoutes(new RouteBuilder() {
-//            public void configure() {
-//                from("scheduler://group/timer?fromSunset=*/10+*+*+*+*+?").to("mock:out");
-//            }
-//        });
-//        MockEndpoint resultEndpoint = context.getEndpoint("mock:out", MockEndpoint.class);
-//
-//        resultEndpoint.setAssertPeriod(4000);
-//        resultEndpoint.expectedMessageCount(1);
-//
-//        resultEndpoint.assertIsSatisfied();
+        context.addRoutes(new RouteBuilder() {
+            public void configure() {
+                from("scheduler://group/timer?").to("mock:out");
+            }
+        });
+        MockEndpoint resultEndpoint = context.getEndpoint("mock:out", MockEndpoint.class);
+
+        resultEndpoint.setAssertPeriod(4000);
+        resultEndpoint.expectedMessageCount(1);
+
+        resultEndpoint.assertIsSatisfied();
 
     }
 

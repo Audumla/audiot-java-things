@@ -16,7 +16,7 @@ package net.audumla.climate;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import net.audumla.astronomical.Geolocation;
+import net.audumla.astronomy.Geolocation;
 
 import java.util.Date;
 

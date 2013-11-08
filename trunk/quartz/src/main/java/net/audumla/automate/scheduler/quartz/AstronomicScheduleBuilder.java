@@ -16,8 +16,7 @@ package net.audumla.automate.scheduler.quartz;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import net.audumla.astronomical.AstronomicEvent;
-import net.audumla.astronomical.Geolocation;
+import net.audumla.astronomy.AstronomicEvent;
 import org.quartz.ScheduleBuilder;
 import org.quartz.spi.MutableTrigger;
 

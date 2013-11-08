@@ -47,10 +47,10 @@ public class SchedulerComponent extends QuartzComponent {
     }
 
     public void registerScheduler(Class<? extends DefaultSchedulerEndpoint> clazz, String... params) {
-        // if we have a new mapping that matches a previous entry, then remove the existing one to ensure that it is replaced by the new entry.
+        // if we have a new mapping that is a superset of a previous entries params, then remove the existing one to ensure that it is replaced by the new entry.
         List<String> lparams = asList(params);
         for (Map.Entry<Class<? extends DefaultSchedulerEndpoint>, Collection<String>> ps : registeredSchedulers.entrySet()) {
-            if (ps.getValue().equals(lparams)) {
+            if (lparams.containsAll(ps.getValue())) {
                 registeredSchedulers.remove(ps.getKey());
             }
         }

@@ -16,11 +16,11 @@ package net.audumla.automate.scheduler.quartz;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import net.audumla.astronomical.AstronomicEvent;
-import net.audumla.astronomical.Location;
-import net.audumla.astronomical.ObjectRiseEvent;
-import net.audumla.astronomical.OrbitingObject;
-import net.audumla.astronomical.algorithims.Sun;
+import net.audumla.astronomy.AstronomicEvent;
+import net.audumla.astronomy.Location;
+import net.audumla.astronomy.ObjectRiseEvent;
+import net.audumla.astronomy.OrbitingObject;
+import net.audumla.astronomy.algorithims.Sun;
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.log4j.Logger;
 import org.junit.After;

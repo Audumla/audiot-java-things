@@ -84,7 +84,7 @@
         <module>quartz</module>
         <module>integrate</module>
         <module>raspberry</module>
-        <module>astronomical</module>
+        <module>astronomy</module>
     </modules>
     <build>
         <plugins>
