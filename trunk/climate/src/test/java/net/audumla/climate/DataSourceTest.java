@@ -115,8 +115,15 @@ public class DataSourceTest {
         Assert.assertEquals(cd.getDataSource().getType(), ClimateDataSource.ClimateDataSourceType.DAILY_FORECAST);
         cd.getRainfall();
         Assert.assertEquals(cd.getDataSource().getType(), ClimateDataSource.ClimateDataSourceType.DAILY_FORECAST);
-        cd = getData(DateUtils.addDays(now, -1));
+    }
+
+    @Test
+    public void testYesterdaysRainfall() throws Exception {
+        Date now = new Date();
+        ClimateData cd = getData(DateUtils.addDays(now, -1));
         cd.getRainfall();
         Assert.assertEquals(cd.getDataSource().getType(), ClimateDataSource.ClimateDataSourceType.DAILY_OBSERVATION);
+
     }
+
 }
