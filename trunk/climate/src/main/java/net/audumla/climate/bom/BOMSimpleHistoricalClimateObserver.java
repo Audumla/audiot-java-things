@@ -200,7 +200,7 @@ public class BOMSimpleHistoricalClimateObserver implements ClimateDataFactory, C
                         LOG.error("Unable to parse date for historical record [" + getSource().toString() + "] - " + Arrays.toString(data), e);
                     }
                 } else {
-                    if (data.length > 1 && data[1].contains("JulianDate")) {
+                    if (data.length > 1 && data[1].contains("Date")) {
                         pastHeader = true;
                     }
                 }
