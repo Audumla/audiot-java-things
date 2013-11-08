@@ -4,6 +4,9 @@
     <facet type="Osmorc" name="OSGi">
       <configuration manifestGenerationMode="OsmorcControlled" manifestLocation="" jarfileLocation="ftd2xxj-1.0-SNAPSHOT.jar" outputPathType="CompilerOutputPath" bndFileLocation="" bundlorFileLocation="" bundleActivator="" bundleSymbolicName="net.audumla.ftd2xxj" bundleVersion="1.0.0" ignoreFilePattern="" useProjectDefaultManifestFileLocation="true" alwaysRebuildBundleJAR="false" doNotSynchronizeWithMaven="false">
         <additionalProperties>
+          <property key="Bundle-Description" value="A customized implementation of the FTD2xxj libraries that work and deploy within an OSGI environment. All resource files have been disabled pending a rework of how to load these correctly in an OSGI environment." />
+          <property key="Bundle-Vendor" value="Audumla.net" />
+          <property key="Bundle-DocURL" value="http://www.audumla.net" />
           <property key="Bundle-NativeCode" value="lib/ftd2xxj.dll ; osname=Win32 ; processor=x86" />
           <property key="Bundle-Name" value="Audumla FTD2xxj" />
           <property key="Include-Resource" value="lib/ftd2xxj.dll=$MODULE_DIR$/libraries/lib/ftd2xxj.dll,lib/libftd2xxj.so=$MODULE_DIR$/libraries/lib/libftd2xxj.so" />
