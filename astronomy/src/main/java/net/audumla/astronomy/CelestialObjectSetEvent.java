@@ -22,15 +22,15 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Date;
 
-public class ObjectSetEvent implements AstronomicEvent {
-    private static final Logger logger = LoggerFactory.getLogger(ObjectSetEvent.class);
-    private OrbitingObject object;
+public class CelestialObjectSetEvent implements AstronomicEvent {
+    private static final Logger logger = LoggerFactory.getLogger(CelestialObjectSetEvent.class);
+    private CelestialObject object;
     private Geolocation location;
     private double inclination;
     private Date eventTime;
 
 
-    public ObjectSetEvent(OrbitingObject object, Geolocation location, double inclination) {
+    public CelestialObjectSetEvent(CelestialObject object, Geolocation location, double inclination) {
         setObject(object);
         setInclination(inclination);
         setLocation(location);
@@ -52,11 +52,11 @@ public class ObjectSetEvent implements AstronomicEvent {
         this.inclination = inclination;
     }
 
-    public OrbitingObject getObject() {
+    public CelestialObject getObject() {
         return object;
     }
 
-    protected void setObject(OrbitingObject object) {
+    protected void setObject(CelestialObject object) {
         this.object = object;
     }
 
@@ -77,14 +77,14 @@ public class ObjectSetEvent implements AstronomicEvent {
 
     @Override
     public AstronomicEvent getNextEvent() {
-        AstronomicEvent event = new ObjectRiseEvent(object,location,inclination);
+        AstronomicEvent event = new CelestialObjectRiseEvent(object,location,inclination);
         event.calculateEventFrom(DateUtils.addDays(getCalculatedEventTime(), 1));
         return event;
     }
 
     @Override
     public AstronomicEvent getPreviousEvent() {
-        AstronomicEvent event = new ObjectRiseEvent(object,location,inclination);
+        AstronomicEvent event = new CelestialObjectRiseEvent(object,location,inclination);
         event.calculateEventFrom(DateUtils.addDays(getCalculatedEventTime(),-1));
         return event;
     }

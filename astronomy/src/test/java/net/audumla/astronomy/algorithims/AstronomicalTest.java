@@ -16,9 +16,8 @@ package net.audumla.astronomy.algorithims;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
+import net.audumla.astronomy.CelestialObject;
 import net.audumla.astronomy.Geolocation;
-import net.audumla.astronomy.Location;
-import net.audumla.astronomy.OrbitingObject;
 import net.audumla.astronomy.TransitDetails;
 import org.apache.commons.lang.time.DateUtils;
 import org.junit.After;
@@ -63,7 +62,7 @@ public class AstronomicalTest {
         double Alpha3 = aoDetails.ApparentGeocentricRA;
         double Delta3 = aoDetails.ApparentGeocentricDeclination;
 
-        Location loc = new Location(-37.70461920, 145.1030275, 0.0);
+        Geolocation.Location loc = new Geolocation.Location(-37.70461920, 145.1030275, 0.0);
 
         JulianTransitDetails RiseTransitSetTime = RiseTransitSet.calculate(JD, Alpha1, Delta1, Alpha2, Delta2, Alpha3, Delta3, loc.getLongitude(Geolocation.Direction.WEST), loc.getLatitude(Geolocation.Direction.NORTH), -6);
 
@@ -114,7 +113,7 @@ public class AstronomicalTest {
     @Test
     public void testWrapperMethodsMelbourne() throws Exception {
         TimeZone.setDefault(TimeZone.getTimeZone("Australia/Melbourne"));
-        OrbitingObject sun = OrbitingObject.Sun;
+        CelestialObject sun = CelestialObject.Sun;
         Calendar c = Calendar.getInstance(TimeZone.getDefault());
         c.setTimeInMillis(0);
         c.set(Calendar.YEAR, 2009);
@@ -122,7 +121,7 @@ public class AstronomicalTest {
         c.set(Calendar.DAY_OF_MONTH, 8);
 
         Date date = c.getTime();
-        Location location = new Location(-37.70461920, 145.1030275, 0.0);
+        Geolocation.Location location = new Geolocation.Location(-37.70461920, 145.1030275, 0.0);
         TransitDetails details = sun.getTransitDetails(date,location,Sun.CIVIL);
         logger.debug("Melbourne");
         logger.debug("Date    : " + date);
@@ -136,7 +135,7 @@ public class AstronomicalTest {
     @Test
     public void testWrapperMethodsMexico() throws Exception {
         TimeZone.setDefault(TimeZone.getTimeZone("America/Mexico_City"));
-        OrbitingObject sun = new Sun();
+        CelestialObject sun = new Sun();
         Calendar c = Calendar.getInstance(TimeZone.getDefault());
         c.setTimeInMillis(0);
         c.set(Calendar.YEAR, 2009);
@@ -144,7 +143,7 @@ public class AstronomicalTest {
         c.set(Calendar.DAY_OF_MONTH, 8);
 
         Date date = c.getTime();
-        Location location = new Location();
+        Geolocation.Location location = new Geolocation.Location();
         location.setLatitude(19.4328, Geolocation.Direction.NORTH);
         location.setLongitude(99.1333, Geolocation.Direction.WEST);
         TransitDetails details = sun.getTransitDetails(date,location,Sun.CIVIL);
@@ -160,7 +159,7 @@ public class AstronomicalTest {
     @Test
     public void testWrapperMethodsRome() throws Exception {
         TimeZone.setDefault(TimeZone.getTimeZone("Europe/Rome"));
-        OrbitingObject sun = new Sun();
+        CelestialObject sun = new Sun();
         Calendar c = Calendar.getInstance(TimeZone.getDefault());
         c.setTimeInMillis(0);
         c.set(Calendar.YEAR, 2009);
@@ -168,7 +167,7 @@ public class AstronomicalTest {
         c.set(Calendar.DAY_OF_MONTH, 8);
 
         Date date = c.getTime();
-        Location location = new Location();
+        Geolocation.Location location = new Geolocation.Location();
         location.setLatitude(41.9000, Geolocation.Direction.NORTH);
         location.setLongitude(12.5000, Geolocation.Direction.EAST);
         TransitDetails details = sun.getTransitDetails(date,location,Sun.CIVIL);

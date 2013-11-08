@@ -23,9 +23,9 @@ import java.util.Date;
  *
  * @author         Marius Gleeson
  */
-public interface OrbitingObject {
-    OrbitingObject Sun = new net.audumla.astronomy.algorithims.Sun();
-    OrbitingObject Earth = new net.audumla.astronomy.algorithims.Earth();
+public interface CelestialObject {
+    CelestialObject Sun = new net.audumla.astronomy.algorithims.Sun();
+    CelestialObject Earth = new net.audumla.astronomy.algorithims.Earth();
 
     /**
      *
