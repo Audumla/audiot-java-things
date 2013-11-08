@@ -91,7 +91,10 @@ public class SunScheduleTest {
         Trigger trigger = AstronomicScheduleBuilder.astronomicalSchedule().startEvent(event).startEventOffset(getOffsetFromEvent(event) + 2).withEventCount(1).build();
         AtomicInteger ai = scheduleJob(trigger, 1, 5);
         assert ai.get() == 0;
-        assert StdSchedulerFactory.getDefaultScheduler().getTrigger(trigger.getKey()) == null;
+        trigger = StdSchedulerFactory.getDefaultScheduler().getTrigger(trigger.getKey());
+        if (trigger != null) {
+            assert trigger.getNextFireTime() == null;
+        }
 
     }
 
