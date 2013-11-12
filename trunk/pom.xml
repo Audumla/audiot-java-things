@@ -24,10 +24,8 @@
     <artifactId>core</artifactId>
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
-    <name>EyeAutomate</name>
-    <description>EyeAutomate is a collection of modules that have been developed to provide automation functionality
-        that can be combined in various ways and deployed on multiple platforms to create customized automated solutions
-        within domestic and commercial environments
+    <name>Audumla.net</name>
+    <description>Audumla.net provides a collection of modules that can be combined in various ways and deployed on multiple platforms to create customized automation and integration solutions within domestic and commercial environments
     </description>
     <licenses>
         <license>
@@ -116,13 +114,14 @@
                     <artifactId>maven-site-plugin</artifactId>
                     <version>3.3</version>
                     <executions>
+
                         <execution>
                             <id>attach-descriptor</id>
                             <goals>
                                 <goal>attach-descriptor</goal>
                             </goals>
                         </execution>
-                    </executions>
+                        </executions>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.wagon</groupId>

@@ -1,13 +1,10 @@
-package net.audumla.integrate.camel;
+package net.audumla.camel;
 
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.log4j.Logger;
 import org.junit.Test;
-
-import java.io.IOException;
-import java.io.OutputStream;
 
 public class IntegrationTest extends CamelTestBase{
     protected static final Logger logger = Logger.getLogger(IntegrationTest.class);

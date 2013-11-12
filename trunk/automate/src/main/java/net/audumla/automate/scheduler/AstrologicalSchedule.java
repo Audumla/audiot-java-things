@@ -1,6 +1,6 @@
 package net.audumla.automate.scheduler;
 
-import net.audumla.automate.scheduler.quartz.AstronomicScheduleBuilder;
+import net.audumla.scheduler.quartz.AstronomicScheduleBuilder;
 import net.audumla.astronomy.Geolocation;
 import org.apache.log4j.Logger;
 import org.quartz.ScheduleBuilder;
