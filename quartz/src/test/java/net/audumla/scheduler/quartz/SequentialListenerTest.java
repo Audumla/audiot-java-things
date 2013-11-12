@@ -1,4 +1,4 @@
-package net.audumla.automate.scheduler.quartz;
+package net.audumla.scheduler.quartz;
 
 import org.apache.log4j.Logger;
 import org.junit.Test;

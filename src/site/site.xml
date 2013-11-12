@@ -23,7 +23,7 @@
     </skin>
     <bannerLeft>
         <name>Audumla.net</name>
-        <src>/images/Eye_of_Horus_Logo.png</src>
+        <src>/images/audumla.net.png</src>
         <href>http://www.audumla.net/</href>
     </bannerLeft>
     <!--<bannerRight>
@@ -45,7 +45,7 @@
             <META NAME="DESCRIPTION" CONTENT="A collection of reusable modules built by and for Audumla.net"/>
             <META NAME="AUTHOR" CONTENT="Marius Gleeson"/>
 
-            <!-- GOOGLE ANALYTICS SCRIPT -->
+            <!-- GOOGLE ANALYTICS SCRIPT
             <script type="text/javascript">
 
                 var _gaq = _gaq || [];
@@ -61,23 +61,23 @@
                 var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
                 })();
 
-            </script>
+            </script>      -->
         </head>
         <links>
             <item name="Home" href="http://www.audumla.net/" />
             <item name="source" href="https://code.google.com/p/audumla/source/browse/"  />
         </links>
-        <menu name="Audumla.net">
+        <menu name="Modules.Audumla.net" inherit="top">
             <item name="Welcome" href="index.html" />
-            <item name="Contact" href="contact.html" />
+<!--            <item name="Contact" href="contact.html" />-->
             <item name="License" href="license.html" />
-            <item name="Release Notes" href="release-notes.html" />
+<!--            <item name="Release Notes" href="release-notes.html" />-->
             <item name="Download" href="download.html" />
             <item name="JavaDoc" href="apidocs/index.html"/>
         </menu>
         <menu name="Examples">
         </menu>
-        <menu name="Project Development">
+        <menu name="Project Development" inherit="top">
             <item name="Project Information" href="project-info.html" />
             <item name="Project Reports" href="project-reports.html" />
         </menu>

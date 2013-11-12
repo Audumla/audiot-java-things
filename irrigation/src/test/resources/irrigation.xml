@@ -46,7 +46,7 @@
         <constructor-arg index="2" ref="irrigation.Zone1.EToDurationFactory"/>
     </bean>
 
-    <bean id="irrigation.ZoneGroup1" class="net.audumla.automate.scheduler.quartz.SequentialTriggerListener">
+    <bean id="irrigation.ZoneGroup1" class="net.audumla.scheduler.quartz.SequentialTriggerListener">
         <property name="group" value="ZoneGroup1"/>
     </bean>
 

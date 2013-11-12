@@ -1,4 +1,4 @@
-package net.audumla.integrate.camel;
+package net.audumla.camel;
 
 /*
  * *********************************************************************
@@ -16,19 +16,14 @@ package net.audumla.integrate.camel;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import net.audumla.integrate.camel.scheduler.CronSchedulerEndpoint;
-import net.audumla.integrate.camel.scheduler.SchedulerComponent;
-import org.apache.camel.Component;
-import org.apache.camel.ProducerTemplate;
+import net.audumla.camel.scheduler.CronSchedulerEndpoint;
+import net.audumla.camel.scheduler.SchedulerComponent;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
-import org.quartz.Scheduler;
-import org.quartz.SchedulerFactory;
-import org.quartz.impl.StdSchedulerFactory;
 
 public class QuartzTest extends CamelTestBase {
     protected static final Logger logger = Logger.getLogger(QuartzTest.class);
@@ -49,7 +44,7 @@ public class QuartzTest extends CamelTestBase {
 
         context.addRoutes(new RouteBuilder() {
             public void configure() {
-                from("scheduler://group/timer?").to("mock:out");
+                from("scheduler://group/timer?event=objectrise&object=sun&trigger.repeatInterval=1&trigger.repeatCount=2").to("mock:out");
             }
         });
         MockEndpoint resultEndpoint = context.getEndpoint("mock:out", MockEndpoint.class);
