@@ -62,6 +62,8 @@
                 })();
 
             </script>      -->
+            <script src="/syntaxhighlighter\src\shCore.js" type="text/javascript"> </script>
+            <script src="/syntaxhighlighter\src\shAutoloader.js" type="text/javascript"> </script>
         </head>
         <links>
             <item name="Home" href="http://www.audumla.net/" />
@@ -75,11 +77,9 @@
             <item name="Download" href="download.html" />
             <item name="JavaDoc" href="apidocs/index.html"/>
         </menu>
+        <menu ref="modules" />
         <menu name="Examples">
         </menu>
-        <menu name="Project Development" inherit="top">
-            <item name="Project Information" href="project-info.html" />
-            <item name="Project Reports" href="project-reports.html" />
-        </menu>
+        <menu ref="reports" />
     </body>
 </project>

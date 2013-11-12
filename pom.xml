@@ -25,7 +25,9 @@
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
     <name>Audumla.net</name>
-    <description>Audumla.net provides a collection of modules that can be combined in various ways and deployed on multiple platforms to create customized automation and integration solutions within domestic and commercial environments
+    <description>Audumla.net provides a collection of modules that can be combined in various ways and deployed on
+        multiple platforms to create customized automation and integration solutions within domestic and commercial
+        environments
     </description>
     <licenses>
         <license>
@@ -113,15 +115,22 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-site-plugin</artifactId>
                     <version>3.3</version>
-                    <executions>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.apache.maven.doxia</groupId>
+                            <artifactId>doxia-module-xhtml</artifactId>
+                            <version>1.4</version>
+                        </dependency>
+                    </dependencies>
 
+                    <executions>
                         <execution>
                             <id>attach-descriptor</id>
                             <goals>
                                 <goal>attach-descriptor</goal>
                             </goals>
                         </execution>
-                        </executions>
+                    </executions>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.wagon</groupId>
