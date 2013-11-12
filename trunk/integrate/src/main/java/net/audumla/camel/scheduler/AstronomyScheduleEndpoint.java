@@ -1,4 +1,4 @@
-package net.audumla.integrate.camel.scheduler;
+package net.audumla.camel.scheduler;
 
 /*
  * *********************************************************************
@@ -17,36 +17,20 @@ package net.audumla.integrate.camel.scheduler;
  */
 
 import org.quartz.Trigger;
-import org.quartz.TriggerBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Date;
-import static org.quartz.CronScheduleBuilder.cronSchedule;
 
-public class CronSchedulerEndpoint extends DefaultSchedulerEndpoint {
-    private static final Logger logger = LoggerFactory.getLogger(CronSchedulerEndpoint.class);
-    private String cron;
+public class AstronomyScheduleEndpoint extends DefaultSchedulerEndpoint {
+    private static final Logger logger = LoggerFactory.getLogger(AstronomyScheduleEndpoint.class);
 
-    public String getCron() {
-        return cron;
-    }
-
-    public void setCron(String cron) {
-        this.cron = cron;
-    }
-
-    public CronSchedulerEndpoint(String uri, SchedulerComponent component) {
+    public AstronomyScheduleEndpoint(String uri, SchedulerComponent component) {
         super(uri, component);
     }
 
     @Override
     protected Trigger createTrigger(Date startTime) {
-        logger.debug("Creating CronTrigger: {}", cron);
-        return TriggerBuilder.newTrigger()
-                .withIdentity(getTriggerKey())
-                .startAt(startTime)
-                .withSchedule(cronSchedule(cron).withMisfireHandlingInstructionFireAndProceed())
-                .build();
+        return null;
     }
 }
