@@ -29,44 +29,44 @@ public class SeasonTest {
 
     @Test
     public void testWinterStart() throws Exception {
-        SeasonalEvent event = new SeasonalEvent(SeasonalEvent.WINTER_START, Geolocation.newGeoLocation(30, 0, 0));
+        SeasonalEvent event = new SeasonalEvent(SeasonalEvent.WINTERSTART, Geolocation.newGeoLocation(30, 0, 0));
         Date et = event.calculateEventFrom(new Date());
         assert DateUtils.toCalendar(et).get(Calendar.MONTH) == Calendar.DECEMBER;
 
-        event = new SeasonalEvent(SeasonalEvent.WINTER_START, Geolocation.newGeoLocation(-30, 0, 0));
+        event = new SeasonalEvent(SeasonalEvent.WINTERSTART, Geolocation.newGeoLocation(-30, 0, 0));
         et = event.calculateEventFrom(new Date());
         assert DateUtils.toCalendar(et).get(Calendar.MONTH) == Calendar.JUNE;
     }
 
     @Test
     public void testSummerStart() throws Exception {
-        SeasonalEvent event = new SeasonalEvent(SeasonalEvent.SUMMER_START, Geolocation.newGeoLocation(30, 0, 0));
+        SeasonalEvent event = new SeasonalEvent(SeasonalEvent.SUMMERSTART, Geolocation.newGeoLocation(30, 0, 0));
         Date et = event.calculateEventFrom(new Date());
         assert DateUtils.toCalendar(et).get(Calendar.MONTH) == Calendar.JUNE;
 
-        event = new SeasonalEvent(SeasonalEvent.SUMMER_START, Geolocation.newGeoLocation(-30, 0, 0));
+        event = new SeasonalEvent(SeasonalEvent.SUMMERSTART, Geolocation.newGeoLocation(-30, 0, 0));
         et = event.calculateEventFrom(new Date());
         assert DateUtils.toCalendar(et).get(Calendar.MONTH) == Calendar.DECEMBER;
     }
 
     @Test
     public void testAutumnStart() throws Exception {
-        SeasonalEvent event = new SeasonalEvent(SeasonalEvent.AUTUMN_START, Geolocation.newGeoLocation(30, 0, 0));
+        SeasonalEvent event = new SeasonalEvent(SeasonalEvent.AUTUMNSTART, Geolocation.newGeoLocation(30, 0, 0));
         Date et = event.calculateEventFrom(new Date());
         assert DateUtils.toCalendar(et).get(Calendar.MONTH) == Calendar.SEPTEMBER;
 
-        event = new SeasonalEvent(SeasonalEvent.AUTUMN_START, Geolocation.newGeoLocation(-30, 0, 0));
+        event = new SeasonalEvent(SeasonalEvent.AUTUMNSTART, Geolocation.newGeoLocation(-30, 0, 0));
         et = event.calculateEventFrom(new Date());
         assert DateUtils.toCalendar(et).get(Calendar.MONTH) == Calendar.MARCH;
     }
 
     @Test
     public void testSpringStart() throws Exception {
-        SeasonalEvent event = new SeasonalEvent(SeasonalEvent.SPRING_START, Geolocation.newGeoLocation(30, 0, 0));
+        SeasonalEvent event = new SeasonalEvent(SeasonalEvent.SPRINGSTART, Geolocation.newGeoLocation(30, 0, 0));
         Date et = event.calculateEventFrom(new Date());
         assert DateUtils.toCalendar(et).get(Calendar.MONTH) == Calendar.MARCH;
 
-        event = new SeasonalEvent(SeasonalEvent.SPRING_START, Geolocation.newGeoLocation(-30, 0, 0));
+        event = new SeasonalEvent(SeasonalEvent.SPRINGSTART, Geolocation.newGeoLocation(-30, 0, 0));
         et = event.calculateEventFrom(new Date());
         assert DateUtils.toCalendar(et).get(Calendar.MONTH) == Calendar.SEPTEMBER;
     }

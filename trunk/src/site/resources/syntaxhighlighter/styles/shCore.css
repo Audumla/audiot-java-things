@@ -224,3 +224,15 @@
 .syntaxhighlighter.printing .break, .syntaxhighlighter.printing .break a {
   color: black !important;
 }
+.syntaxhighlighter table td.gutter .line {
+    padding: 0 5px !important;
+}
+.syntaxhighlighter table td.code .line {
+    padding: 0 !important;
+}
+.syntaxhighlighter .gutter {
+    padding-right: 1em !important;
+}
+.syntaxhighlighter table {
+    padding-bottom: 1px !important;
+}

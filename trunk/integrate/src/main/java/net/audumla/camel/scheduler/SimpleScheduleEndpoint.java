@@ -16,6 +16,7 @@ package net.audumla.camel.scheduler;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
+import net.audumla.bean.SafeParse;
 import org.quartz.SimpleTrigger;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
@@ -24,10 +25,9 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Date;
 
-import static org.quartz.CronScheduleBuilder.cronSchedule;
 import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
 
-public class SimpleScheduleEndpoint extends  DefaultSchedulerEndpoint {
+public class SimpleScheduleEndpoint extends DefaultSchedulerEndpoint {
     private static final Logger logger = LoggerFactory.getLogger(SimpleScheduleEndpoint.class);
     private boolean fireNow;
 
@@ -46,20 +46,33 @@ public class SimpleScheduleEndpoint extends  DefaultSchedulerEndpoint {
     @Override
     protected Trigger createTrigger(Date startTime) {
         logger.debug("Creating SimpleTrigger.");
+        long interval = SafeParse.parseLong((String) getTriggerParameters().get("repeatInterval"));
+        int count = SafeParse.parseInteger((String) getTriggerParameters().get("repeatCount"));
+        if (interval == 0) {
+            count = 0;
+        }
+
         TriggerBuilder<SimpleTrigger> triggerBuilder = TriggerBuilder.newTrigger()
                 .withIdentity(getTriggerKey())
                 .startAt(startTime)
-                .withSchedule(simpleSchedule().withMisfireHandlingInstructionFireNow());
+                .withSchedule(simpleSchedule().withRepeatCount(count).withIntervalInMilliseconds(interval).withMisfireHandlingInstructionFireNow());
 
         // Enable trigger to fire now by setting startTime in the past.
         if (fireNow) {
-            String intervalString = (String) getTriggerParameters().get("repeatInterval");
-            if (intervalString != null) {
-                long interval = Long.valueOf(intervalString);
-                triggerBuilder.startAt(new Date(System.currentTimeMillis() - interval));
-            }
+            triggerBuilder.startAt(new Date(System.currentTimeMillis() - interval));
         }
+
 
         return triggerBuilder.build();
     }
+
+    @Override
+    public String getParameterPrefix() {
+        return "trigger";
+    }
+
+    public static String[] getParameters() {
+        return new String[] {"trigger.repeatCount","trigger.repeatInterval"};
+    }
+
 }

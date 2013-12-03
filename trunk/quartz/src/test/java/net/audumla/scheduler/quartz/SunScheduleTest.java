@@ -68,7 +68,7 @@ public class SunScheduleTest {
     }
 
     public AstronomicEvent getSunRiseEvent() {
-        AstronomicEvent event = new CelestialObjectRiseEvent(CelestialObject.Sun, new Geolocation.Location(-38, 145, 0), Sun.CIVIL);
+        AstronomicEvent event = new CelestialObjectRiseEvent(CelestialObject.SUN, new Geolocation.Location(-38, 145, 0), Sun.CIVIL);
         if (event.getCalculatedEventTime().after(new Date())) {
             event = event.getPreviousEvent();
         }

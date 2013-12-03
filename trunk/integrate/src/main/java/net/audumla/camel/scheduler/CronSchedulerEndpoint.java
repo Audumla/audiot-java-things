@@ -42,11 +42,25 @@ public class CronSchedulerEndpoint extends DefaultSchedulerEndpoint {
 
     @Override
     protected Trigger createTrigger(Date startTime) {
+        String cronexpr = (String) getTriggerParameters().get("expression");
+        if (cronexpr == null) {
+            cronexpr = cron;
+        }
         logger.debug("Creating CronTrigger: {}", cron);
         return TriggerBuilder.newTrigger()
                 .withIdentity(getTriggerKey())
                 .startAt(startTime)
-                .withSchedule(cronSchedule(cron).withMisfireHandlingInstructionFireAndProceed())
+                .withSchedule(cronSchedule(cronexpr).withMisfireHandlingInstructionFireAndProceed())
                 .build();
     }
+
+    @Override
+    public String getParameterPrefix() {
+        return "cron";
+    }
+
+    public static String[] getParameters() {
+        return new String[] {"cron","cron.expression"};
+    }
+
 }

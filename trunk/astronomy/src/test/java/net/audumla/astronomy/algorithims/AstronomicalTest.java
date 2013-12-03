@@ -113,7 +113,7 @@ public class AstronomicalTest {
     @Test
     public void testWrapperMethodsMelbourne() throws Exception {
         TimeZone.setDefault(TimeZone.getTimeZone("Australia/Melbourne"));
-        CelestialObject sun = CelestialObject.Sun;
+        CelestialObject sun = CelestialObject.SUN;
         Calendar c = Calendar.getInstance(TimeZone.getDefault());
         c.setTimeInMillis(0);
         c.set(Calendar.YEAR, 2009);

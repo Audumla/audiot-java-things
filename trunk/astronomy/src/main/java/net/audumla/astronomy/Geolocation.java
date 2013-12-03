@@ -16,29 +16,24 @@ package net.audumla.astronomy;
 *  See the License for the specific language governing permissions and limitations under the License.
  */
 
+import net.audumla.bean.SafeParse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Representation of a location on the globe
  *
- * @author         Marius Gleeson
+ * @author Marius Gleeson
  */
 public interface Geolocation {
 
     static Geolocation newGeoLocation(double lat, double lng, double elevation) {
-        return new Location(lat,lng,elevation);
-
+        return new Location(lat, lng, elevation);
     }
 
-    /**
-     * Direction settings for Latitude and Longitude values
-     * Default is
-     *  Latitude North ( +ve for North -ve for South)
-     *  Longitude East ( +ve for East -ve for West)
-     *
-     */
-    public enum Direction { NORTH, SOUTH, EAST, WEST }
+    static Geolocation newGeoLocation(String repr) {
+        return new Location(repr);
+    }
 
     Double getLatitude();
 
@@ -61,9 +56,19 @@ public interface Geolocation {
     void setLongitude(Double longitude, Direction direction);
 
     /**
+     * Direction settings for Latitude and Longitude values
+     * Default is
+     * Latitude North ( +ve for North -ve for South)
+     * Longitude East ( +ve for East -ve for West)
+     */
+    public enum Direction {
+        NORTH, SOUTH, EAST, WEST
+    }
+
+    /**
      * Class description
      *
-     * @author         Marius Gleeson
+     * @author Marius Gleeson
      */
     class Location implements Geolocation {
         private static final Logger logger = LoggerFactory.getLogger(Location.class);
@@ -73,13 +78,43 @@ public interface Geolocation {
 
         /**
          * Constructs ...
-         *
          */
-        public Location() {}
+        public Location(String repr) {
+            try {
+                String[] values = repr.split(",");
+                String[] slat = values[0].split(" ");
+                String[] slon = values[1].split(" ");
+
+                double lat = SafeParse.parseDouble(slat[0]);
+                double lon = SafeParse.parseDouble(slon[0]);
+
+                Direction latDir = "S".equals(slat[1]) ? Direction.SOUTH : Direction.NORTH;
+                Direction longDir = "W".equals(slon[1]) ? Direction.WEST : Direction.EAST;
+
+                setLatitude(lat, latDir);
+                setLongitude(lon, longDir);
+
+                if (values.length == 3) {
+                    String[] selevation = values[2].split(" ");
+                    double elevation = SafeParse.parseDouble(selevation[0]);
+                    // convert from feet to meters
+                    elevation = "f".equals(selevation[1]) ? 0.3048 * elevation : elevation;
+                    setElevation(elevation);
+                }
+            } catch (Exception ex) {
+                logger.error("Cannot parse location [" + repr + "]");
+            }
+        }
+
 
         /**
-         * Constructs ...
-         *
+         * Constructs an empty location
+         */
+        public Location() {
+        }
+
+        /**
+         * Constructs a location based on the supplied coordinates using North for latitude and East for longitude
          *
          * @param latitude
          * @param longitude
@@ -91,9 +126,13 @@ public interface Geolocation {
             this.elevation = elevation;
         }
 
+        @Override
+        public String toString() {
+            return getLatitude() + " N," + getLongitude() + " E," + getElevation() + " m";
+        }
+
         /**
          * Method description
-         *
          *
          * @return
          */
@@ -105,7 +144,6 @@ public interface Geolocation {
         /**
          * Method description
          *
-         *
          * @param latitude
          */
         @Override
@@ -115,7 +153,6 @@ public interface Geolocation {
 
         /**
          * Method description
-         *
          *
          * @return
          */
@@ -127,7 +164,6 @@ public interface Geolocation {
         /**
          * Method description
          *
-         *
          * @param longitude
          */
         @Override
@@ -137,7 +173,6 @@ public interface Geolocation {
 
         /**
          * Method description
-         *
          *
          * @return
          */
@@ -149,7 +184,6 @@ public interface Geolocation {
         /**
          * Method description
          *
-         *
          * @param elevation
          */
         @Override
@@ -160,21 +194,18 @@ public interface Geolocation {
         /**
          * Method description
          *
-         *
          * @param direction
-         *
          * @return
          */
         @Override
         public Double getLatitude(Direction direction) {
             return (direction == Direction.NORTH)
-                   ? latitude
-                   : -1 * latitude;
+                    ? latitude
+                    : -1 * latitude;
         }
 
         /**
          * Method description
-         *
          *
          * @param latitude
          * @param direction
@@ -182,28 +213,25 @@ public interface Geolocation {
         @Override
         public void setLatitude(Double latitude, Direction direction) {
             this.latitude = (direction == Direction.NORTH)
-                            ? latitude
-                            : -1 * latitude;
+                    ? latitude
+                    : -1 * latitude;
         }
 
         /**
          * Method description
          *
-         *
          * @param direction
-         *
          * @return
          */
         @Override
         public Double getLongitude(Direction direction) {
             return (direction == Direction.EAST)
-                   ? longitude
-                   : -1 * longitude;
+                    ? longitude
+                    : -1 * longitude;
         }
 
         /**
          * Method description
-         *
          *
          * @param longitude
          * @param direction
@@ -211,8 +239,8 @@ public interface Geolocation {
         @Override
         public void setLongitude(Double longitude, Direction direction) {
             this.longitude = (direction == Direction.EAST)
-                             ? longitude
-                             : -1 * longitude;
+                    ? longitude
+                    : -1 * longitude;
         }
     }
 }

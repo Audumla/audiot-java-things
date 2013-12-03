@@ -24,15 +24,9 @@ public class AstronomicScheduleBuilder extends ScheduleBuilder<AstronomicalTrigg
 
     private AstronomicSchedule schedule = new AstronomicSchedule();
 
-    public static class AstronomicSchedule {
-        public AstronomicEvent startTime;
-        public AstronomicEvent endTime;
-        public int interval = 0; // only relevant if repeat is > 0
-        public int repeat = 0; // default is only one triggered job per start event
-        public int eventCount = Integer.MIN_VALUE; // repeat for every event
-        public long startOffset = 0; // no offset
+    public static AstronomicScheduleBuilder astronomicalSchedule() {
+        return new AstronomicScheduleBuilder();
     }
-
 
     public AstronomicScheduleBuilder startEvent(AstronomicEvent objectEvent) {
         schedule.startTime = objectEvent;
@@ -45,12 +39,21 @@ public class AstronomicScheduleBuilder extends ScheduleBuilder<AstronomicalTrigg
     }
 
     public AstronomicScheduleBuilder withEventCount(int i) {
-        schedule.eventCount = i;
+        if (i <= 0) {
+            forEveryEvent();
+        } else {
+            schedule.eventCount = i;
+        }
         return this;
     }
 
     public AstronomicScheduleBuilder startEventOffset(long i) {
         schedule.startOffset = i;
+        return this;
+    }
+
+    public AstronomicScheduleBuilder endEventOffset(long i) {
+        schedule.endOffset = i;
         return this;
     }
 
@@ -61,7 +64,7 @@ public class AstronomicScheduleBuilder extends ScheduleBuilder<AstronomicalTrigg
 
     public AstronomicScheduleBuilder withIntervalInSeconds(int seconds) {
         schedule.interval = seconds;
-        if (schedule.repeat == 0) {
+        if (seconds > 0 && schedule.repeat == 0) {
             repeatForever();
         }
         return this;
@@ -77,13 +80,19 @@ public class AstronomicScheduleBuilder extends ScheduleBuilder<AstronomicalTrigg
         return this;
     }
 
-    public static AstronomicScheduleBuilder astronomicalSchedule() {
-        return new AstronomicScheduleBuilder();
-    }
-
     @Override
     protected MutableTrigger build() {
         return new AstronomicTriggerImpl(schedule);
+    }
+
+    public static class AstronomicSchedule {
+        public AstronomicEvent startTime;
+        public AstronomicEvent endTime;
+        public int interval = 0; // only relevant if repeat is > 0
+        public int repeat = 0; // default is only one triggered job per start event
+        public int eventCount = Integer.MIN_VALUE; // repeat for every event
+        public long startOffset = 0; // no offset
+        public long endOffset = 0; // no offset
     }
 
 }
