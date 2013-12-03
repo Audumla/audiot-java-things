@@ -16,8 +16,10 @@ package net.audumla.camel;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
+import net.audumla.camel.scheduler.CelestialScheduleEndpoint;
 import net.audumla.camel.scheduler.CronSchedulerEndpoint;
 import net.audumla.camel.scheduler.SchedulerComponent;
+import net.audumla.camel.scheduler.SeasonalScheduleEndpoint;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.impl.DefaultCamelContext;
@@ -34,25 +36,27 @@ public class QuartzTest extends CamelTestBase {
         SchedulerComponent schComponent = new SchedulerComponent(context);
         context.addComponent("scheduler", schComponent);
         context.start();
-        schComponent.registerScheduler(CronSchedulerEndpoint.class,"cron");
+        schComponent.registerScheduler(CronSchedulerEndpoint.class);
+        schComponent.registerScheduler(CelestialScheduleEndpoint.class);
+        schComponent.registerScheduler(SeasonalScheduleEndpoint.class);
 
     }
 
 
     @Test
-    public void testAudumlaAstro() throws Exception {
+    public void testFailedAudumlaAstro() throws Exception {
 
         context.addRoutes(new RouteBuilder() {
             public void configure() {
-                from("scheduler://group/timer?event=objectrise&object=sun&trigger.repeatInterval=1&trigger.repeatCount=2").to("mock:out");
+                from("scheduler://group/timer?celestial.object=sun&celestial.event=rise&celestial.repeatInterval=1&celestial.repeatCount=2").to("mock:out");
             }
         });
         MockEndpoint resultEndpoint = context.getEndpoint("mock:out", MockEndpoint.class);
 
 //        resultEndpoint.setAssertPeriod(4000);
-//        resultEndpoint.expectedMessageCount(1);
+        resultEndpoint.expectedMessageCount(0);
 //
-//        resultEndpoint.assertIsSatisfied();
+        resultEndpoint.assertIsSatisfied();
 
     }
 
@@ -77,6 +81,22 @@ public class QuartzTest extends CamelTestBase {
         context.addRoutes(new RouteBuilder() {
             public void configure() {
                 from("scheduler://group/timer12?trigger.repeatInterval=1&trigger.repeatCount=1").to("mock:out");
+            }
+        });
+        MockEndpoint resultEndpoint = context.getEndpoint("mock:out", MockEndpoint.class);
+
+        resultEndpoint.setAssertPeriod(4000);
+        resultEndpoint.expectedMessageCount(2);
+
+        resultEndpoint.assertIsSatisfied();
+
+    }
+
+    @Test
+    public void testQuartz2Simple() throws Exception {
+        context.addRoutes(new RouteBuilder() {
+            public void configure() {
+                from("quartz2://group/timer12?trigger.repeatInterval=1&trigger.repeatCount=3").to("mock:out");
             }
         });
         MockEndpoint resultEndpoint = context.getEndpoint("mock:out", MockEndpoint.class);

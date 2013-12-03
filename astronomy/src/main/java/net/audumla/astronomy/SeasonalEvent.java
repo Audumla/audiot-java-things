@@ -30,22 +30,22 @@ public class SeasonalEvent implements AstronomicEvent {
     private static final Logger logger = LoggerFactory.getLogger(SeasonalEvent.class);
     private Date time;
 
-    interface SeasonalFunction {
+    public interface SeasonalFunction {
         double time(int year,double latitude);
     }
 
-    public static final SeasonalFunction WINTER_SOLSTICE = EquinoxesAndSolstices::winterSolstice;
-    public static final SeasonalFunction SUMMER_SOLSTICE = EquinoxesAndSolstices::summerSolstice;
-    public static final SeasonalFunction JUNE_SOLSTICE = EquinoxesAndSolstices::juneSolstice;
-    public static final SeasonalFunction DECEMBER_SOLSTICE = EquinoxesAndSolstices::decemberSolstice;
-    public static final SeasonalFunction AUTUMN_EQUINOX = EquinoxesAndSolstices::autumnEquinox;
-    public static final SeasonalFunction SPRING_EQUINOX = EquinoxesAndSolstices::springEquinox;
-    public static final SeasonalFunction SEPTEMBER_EQUINOX = EquinoxesAndSolstices::septemberEquinox;
-    public static final SeasonalFunction MARCH_EQUINOX = EquinoxesAndSolstices::marchEquinox;
-    public static final SeasonalFunction SUMMER_START = SeasonalEvent::summerStart;
-    public static final SeasonalFunction WINTER_START = SeasonalEvent::winterStart;
-    public static final SeasonalFunction SPRING_START = SeasonalEvent::springStart;
-    public static final SeasonalFunction AUTUMN_START = SeasonalEvent::autumnStart;
+    public static final SeasonalFunction WINTERSOLSTICE = EquinoxesAndSolstices::winterSolstice;
+    public static final SeasonalFunction SUMMERSOLSTICE = EquinoxesAndSolstices::summerSolstice;
+    public static final SeasonalFunction JUNESOLSTICE = EquinoxesAndSolstices::juneSolstice;
+    public static final SeasonalFunction DECEMBERSOLSTICE = EquinoxesAndSolstices::decemberSolstice;
+    public static final SeasonalFunction AUTUMNEQUINOX = EquinoxesAndSolstices::autumnEquinox;
+    public static final SeasonalFunction SPRINGEQUINOX = EquinoxesAndSolstices::springEquinox;
+    public static final SeasonalFunction SEPTEMBEREQUINOX = EquinoxesAndSolstices::septemberEquinox;
+    public static final SeasonalFunction MARCHEQUINOX = EquinoxesAndSolstices::marchEquinox;
+    public static final SeasonalFunction SUMMERSTART = SeasonalEvent::summerStart;
+    public static final SeasonalFunction WINTERSTART = SeasonalEvent::winterStart;
+    public static final SeasonalFunction SPRINGSTART = SeasonalEvent::springStart;
+    public static final SeasonalFunction AUTUMNSTART = SeasonalEvent::autumnStart;
 
     protected SeasonalFunction event;
     protected Geolocation location;

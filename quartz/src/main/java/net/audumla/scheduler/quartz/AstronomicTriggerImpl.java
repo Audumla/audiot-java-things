@@ -78,7 +78,7 @@ public class AstronomicTriggerImpl extends AbstractTrigger<AstronomicalTrigger> 
         if (schedule.eventCount == Integer.MIN_VALUE || eventCount < schedule.eventCount) {
             // Ensure that we only execute a number of times equal to the repeat count during start and end events
             boolean nextEvent = false;
-            if (schedule.repeat == Integer.MIN_VALUE || count <= schedule.repeat) {
+            if ( schedule.interval > 0 && (schedule.repeat == Integer.MIN_VALUE || count <= schedule.repeat)) {
                 fireTime = org.apache.commons.lang3.time.DateUtils.addSeconds(now, schedule.interval);
                 Date end = null;
                 if (schedule.endTime == null) {
@@ -89,7 +89,7 @@ public class AstronomicTriggerImpl extends AbstractTrigger<AstronomicalTrigger> 
                     end = schedule.endTime.calculateEventFrom(now);
                     while (end.before(org.apache.commons.lang3.time.DateUtils.addSeconds(schedule.startTime.getCalculatedEventTime(), (int) schedule.startOffset))) {
                         schedule.endTime = schedule.endTime.getNextEvent();
-                        end = schedule.endTime.getCalculatedEventTime();
+                        end = org.apache.commons.lang3.time.DateUtils.addSeconds(schedule.endTime.getCalculatedEventTime(), (int) schedule.endOffset);
                     }
                 }
                 // make sure that the next fire is not passed the end event time

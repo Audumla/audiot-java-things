@@ -67,6 +67,10 @@ public abstract class DefaultSchedulerEndpoint extends QuartzEndpoint {
             }
             jobDetail = createJobDetail();
             trigger = createTrigger(startTime);
+            if (trigger == null) {
+                logger.error("Failed to create trigger - {}",getEndpointUri());
+                return;
+            }
 
             if (getTriggerParameters() != null && getTriggerParameters().size() > 0) {
                 logger.debug("Setting user extra triggerParameters {}", getTriggerParameters());
@@ -208,4 +212,7 @@ public abstract class DefaultSchedulerEndpoint extends QuartzEndpoint {
             number.decrementAndGet();
         }
     }
+
+    abstract String getParameterPrefix();
+
 }

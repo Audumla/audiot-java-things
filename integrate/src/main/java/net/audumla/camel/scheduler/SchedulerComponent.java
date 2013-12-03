@@ -25,11 +25,10 @@ import org.apache.commons.lang.reflect.ConstructorUtils;
 import org.quartz.TriggerKey;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.URI;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static java.util.Arrays.asList;
 
@@ -48,7 +47,12 @@ public class SchedulerComponent extends QuartzComponent {
 
     public void registerScheduler(Class<? extends DefaultSchedulerEndpoint> clazz, String... params) {
         // if we have a new mapping that is a superset of a previous entries params, then remove the existing one to ensure that it is replaced by the new entry.
-        List<String> lparams = asList(params);
+        List<String> lparams = new ArrayList<String>(asList(params));
+        try {
+            Method m = clazz.getDeclaredMethod("getParameters");
+            lparams.addAll(asList((String[])m.invoke(null)));
+        } catch (Exception ignored) {
+        }
         for (Map.Entry<Class<? extends DefaultSchedulerEndpoint>, Collection<String>> ps : registeredSchedulers.entrySet()) {
             if (lparams.containsAll(ps.getValue())) {
                 registeredSchedulers.remove(ps.getKey());
@@ -82,25 +86,30 @@ public class SchedulerComponent extends QuartzComponent {
             this.prefixJobNameWithEndpointId = prefixJobNameWithEndpointId;
         }
 
-        // Extract trigger.XXX and job.XXX properties to be set on endpoint below
-        Map<String, Object> triggerParameters = IntrospectionSupport.extractProperties(parameters, "trigger.");
-        Map<String, Object> jobParameters = IntrospectionSupport.extractProperties(parameters, "job.");
 
         DefaultSchedulerEndpoint result = null;
         // Create quartz endpoint
         for (Class<? extends DefaultSchedulerEndpoint> clazz : registeredSchedulers.keySet()) {
             Collection<String> params = registeredSchedulers.get(clazz);
-            if (parameters.keySet().containsAll(params)) {
+            Set<String> subset = new TreeSet<String>(parameters.keySet());
+            // see if any of the parameters match with a scheduler.
+            subset.retainAll(params);
+            if (subset.size() > 0) {
                 try {
                     result = (DefaultSchedulerEndpoint) ConstructorUtils.invokeConstructor(clazz, new Object[]{uri, this});
                 } catch (Exception ex) {
-                    logger.error("Failed to create Scheduler", ex);
+                    logger.error("Failed to create Scheduler - {}",uri, ex);
+                    return null;
                 }
             }
         }
         if (result == null) {
             result = new SimpleScheduleEndpoint(uri,this);
         }
+         // Extract [trigger].XXX and job.XXX properties to be set on endpoint below
+         Map<String, Object> triggerParameters = IntrospectionSupport.extractProperties(parameters, result.getParameterPrefix()+".");
+         Map<String, Object> jobParameters = IntrospectionSupport.extractProperties(parameters, "job.");
+
         TriggerKey triggerKey = createTriggerKey(uri, remaining, result);
         result.setTriggerKey(triggerKey);
         result.setTriggerParameters(triggerParameters);
