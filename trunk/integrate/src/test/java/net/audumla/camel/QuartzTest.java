@@ -101,8 +101,8 @@ public class QuartzTest extends CamelTestBase {
         });
         MockEndpoint resultEndpoint = context.getEndpoint("mock:out", MockEndpoint.class);
 
-        resultEndpoint.setAssertPeriod(4000);
-        resultEndpoint.expectedMessageCount(2);
+        resultEndpoint.setAssertPeriod(4500);
+        resultEndpoint.expectedMessageCount(4);
 
         resultEndpoint.assertIsSatisfied();
 
