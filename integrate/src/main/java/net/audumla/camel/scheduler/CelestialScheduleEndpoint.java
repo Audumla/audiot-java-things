@@ -129,7 +129,7 @@ public class CelestialScheduleEndpoint extends DefaultSchedulerEndpoint {
     }
 
     public int getInterval() {
-        return SafeParse.parseInteger(getTriggerParameters().get("interval"), 0);
+        return SafeParse.parseInteger(getTriggerParameters().get("repeatInterval"), 0);
     }
 
     public double getInclination() {

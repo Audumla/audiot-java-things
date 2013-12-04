@@ -16,6 +16,9 @@ package net.audumla.camel;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
+import net.audumla.astronomy.CelestialObject;
+import net.audumla.astronomy.CelestialObjectRiseEvent;
+import net.audumla.astronomy.Geolocation;
 import net.audumla.camel.scheduler.CelestialScheduleEndpoint;
 import net.audumla.camel.scheduler.CronSchedulerEndpoint;
 import net.audumla.camel.scheduler.SchedulerComponent;
@@ -26,6 +29,8 @@ import org.apache.camel.impl.DefaultCamelContext;
 import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.Date;
 
 public class QuartzTest extends CamelTestBase {
     protected static final Logger logger = Logger.getLogger(QuartzTest.class);
@@ -55,6 +60,27 @@ public class QuartzTest extends CamelTestBase {
 
 //        resultEndpoint.setAssertPeriod(4000);
         resultEndpoint.expectedMessageCount(0);
+//
+        resultEndpoint.assertIsSatisfied();
+
+    }
+
+    @Test
+    public void testAudumlaSunrise() throws Exception {
+        Geolocation loc = Geolocation.newGeoLocation(37.7, 145.1, 0);
+        CelestialObjectRiseEvent ev = new CelestialObjectRiseEvent(CelestialObject.SUN, loc, CelestialObject.Inclination.CIVIL.getAngle());
+        Date rise = ev.calculateEventFrom(new Date());
+        long offset = (new Date().getTime() - rise.getTime()+2000)/1000;
+
+        context.addRoutes(new RouteBuilder() {
+            public void configure() {
+                from("scheduler://group/timer?celestial.object=sun&celestial.event=rise&celestial.repeatInterval=1&celestial.repeatCount=2&location="+loc.toString()+"&celestial.eventOffset="+offset).to("mock:out");
+            }
+        });
+        MockEndpoint resultEndpoint = context.getEndpoint("mock:out", MockEndpoint.class);
+
+        resultEndpoint.setAssertPeriod(8000);
+        resultEndpoint.expectedMessageCount(3);
 //
         resultEndpoint.assertIsSatisfied();
 
