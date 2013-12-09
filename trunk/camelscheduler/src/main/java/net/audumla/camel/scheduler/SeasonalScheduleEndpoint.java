@@ -26,6 +26,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SeasonalScheduleEndpoint extends DefaultSchedulerEndpoint {
     private static final Logger logger = LoggerFactory.getLogger(SeasonalScheduleEndpoint.class);
@@ -36,8 +38,11 @@ public class SeasonalScheduleEndpoint extends DefaultSchedulerEndpoint {
         super(uri, component);
     }
 
-    public static String[] getParameters() {
-        return new String[]{"seasonal.event"};
+    public static Map<String,String> getParameters() {
+        Map<String,String> params = new HashMap<String,String>();
+        // add the parameters that will identify that this scheduler is to be used. When the trigger.event parameter is 'seasonal' then this scheduler will be used
+        params.put("trigger.event",".*solstice|.*equinox|.*start");
+        return params;
     }
 
     @Override
