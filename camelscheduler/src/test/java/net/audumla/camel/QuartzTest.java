@@ -51,7 +51,7 @@ public class QuartzTest extends CamelTestBase {
 
         context.addRoutes(new RouteBuilder() {
             public void configure() {
-                from("scheduler://group/timer?celestial.object=sun&celestial.event=rise&celestial.repeatInterval=1&celestial.repeatCount=2").to("mock:out");
+                from("scheduler://group/timer?trigger.object=sun&trigger.event=rise&trigger.repeatInterval=1&trigger.repeatCount=2").to("mock:out");
             }
         });
         MockEndpoint resultEndpoint = context.getEndpoint("mock:out", MockEndpoint.class);
@@ -72,7 +72,7 @@ public class QuartzTest extends CamelTestBase {
 
         context.addRoutes(new RouteBuilder() {
             public void configure() {
-                from("scheduler://group/timer?celestial.object=sun&celestial.event=rise&celestial.repeatInterval=1&celestial.repeatCount=2&location="+loc.toString()+"&celestial.eventOffset="+offset).to("mock:out");
+                from("scheduler://group/timer?trigger.object=sun&trigger.event=rise&trigger.repeatInterval=1&trigger.repeatCount=2&location="+loc.toString()+"&trigger.eventOffset="+offset).to("mock:out");
             }
         });
         MockEndpoint resultEndpoint = context.getEndpoint("mock:out", MockEndpoint.class);
@@ -94,7 +94,7 @@ public class QuartzTest extends CamelTestBase {
         assert new Date(set.getTime()+(offset*1000)).before(new Date(new Date().getTime()+3000));
         context.addRoutes(new RouteBuilder() {
             public void configure() {
-                from("scheduler://group/timer?celestial.object=sun&celestial.event=set&celestial.repeatCount=2&location="+loc.toString()+"&celestial.eventOffset="+offset).to("mock:out");
+                from("scheduler://group/timer?trigger.object=sun&trigger.event=set&trigger.repeatCount=2&location="+loc.toString()+"&trigger.eventOffset="+offset).to("mock:out");
             }
         });
         MockEndpoint resultEndpoint = context.getEndpoint("mock:out", MockEndpoint.class);
@@ -159,7 +159,7 @@ public class QuartzTest extends CamelTestBase {
     public void testStandardCron() throws Exception {
         context.addRoutes(new RouteBuilder() {
             public void configure() {
-                from("quartz2://group/timer?cron=*/10+*+*+*+*+?").to("mock:out");
+                from("quartz2://group/timer?trigger.cron=*/10+*+*+*+*+?").to("mock:out");
             }
         });
         MockEndpoint resultEndpoint = context.getEndpoint("mock:out", MockEndpoint.class);

@@ -22,6 +22,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.quartz.CronScheduleBuilder.cronSchedule;
 
 public class CronSchedulerEndpoint extends DefaultSchedulerEndpoint {
@@ -56,11 +59,15 @@ public class CronSchedulerEndpoint extends DefaultSchedulerEndpoint {
 
     @Override
     public String getParameterPrefix() {
-        return "cron";
+        return "trigger";
     }
 
-    public static String[] getParameters() {
-        return new String[] {"cron","cron.expression"};
+    public static Map<String,String> getParameters() {
+        Map<String,String> params = new HashMap<String,String>();
+        // add the parameters that will identify that a cron scheduler is to be used. Null values imply that the value is a wildcard for identification purposes.
+        params.put("cron",null);
+        params.put("trigger.cron",null);
+        return params;
     }
 
 }

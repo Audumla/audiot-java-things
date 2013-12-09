@@ -71,8 +71,5 @@ public class SimpleScheduleEndpoint extends DefaultSchedulerEndpoint {
         return "trigger";
     }
 
-    public static String[] getParameters() {
-        return new String[] {"trigger.repeatCount","trigger.repeatInterval"};
-    }
 
 }

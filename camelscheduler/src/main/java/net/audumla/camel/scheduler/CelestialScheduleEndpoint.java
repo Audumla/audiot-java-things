@@ -25,6 +25,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class CelestialScheduleEndpoint extends DefaultSchedulerEndpoint {
     private static final Logger logger = LoggerFactory.getLogger(CelestialScheduleEndpoint.class);
@@ -34,9 +36,13 @@ public class CelestialScheduleEndpoint extends DefaultSchedulerEndpoint {
         super(uri, component);
     }
 
-    public static String[] getParameters() {
-        return new String[]{"celestial.object", "celestial.event", "celestial.eventOffset", "celestial.inclination", "celestial.interval", "celestial.repeatCount"};
+    public static Map<String,String> getParameters() {
+        Map<String,String> params = new HashMap<String,String>();
+        // add the parameters that will identify that this scheduler is to be used. When the trigger.event parameter is 'celestial' then this scheduler will be used
+        params.put("trigger.event","rise|set");
+        return params;
     }
+
 
     @Override
     protected Trigger createTrigger(Date startTime) {
@@ -160,7 +166,7 @@ public class CelestialScheduleEndpoint extends DefaultSchedulerEndpoint {
 
     @Override
     public String getParameterPrefix() {
-        return "celestial";
+        return "trigger";
     }
 
     public String getLocation() {
