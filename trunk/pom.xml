@@ -220,7 +220,7 @@
         <site>
             <id>site.audumla.net</id>
             <name>Audumla.net</name>
-            <url>dav:http://192.168.60.60:8081/nexus/content/sites/SiteRepository/</url>
+            <url>dav:http://www.audumla.net/nexus/content/sites/SiteRepository/</url>
         </site>
         <snapshotRepository>
             <id>audumla-snapshot-repository</id>
@@ -289,29 +289,6 @@
             </plugin>
         </plugins>
     </reporting>
-    <!-- START SNIPPET: maven-repository-snippet -->
-    <repositories>
-        <repository>
-            <id>audumla-snapshot-repository</id>
-            <url>http://maven.audumla.net/snapshots</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>audumla-release-repository</id>
-            <url>http://maven.audumla.net/releases</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
-    <!-- END SNIPPET: maven-repository-snippet -->
+
 
 </project>
