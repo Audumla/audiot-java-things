@@ -6,14 +6,14 @@
             href="http://camel.apache.org/quartz2.html"
             rel="nofollow">Quartz2 scheduler</a>. 
 	It offers an extensible model for adding customized Triggers and Quartz schedulers and provides functions 
-	to schedule based on astonomical and seasonal events.</p> <br/>
+	to schedule based on astonomical and trigger.events.</p> <br/>
 
 <p>The following functionality is available on top of the standard Camel Quartz2 component</p>
 <ul>
     <li>Extension points for adding custom Quartz Trigger implementations</li>
     <li>Dynamic identification of Quartz Trigger implementations based on URI parameters</li>
     <li>Support for Astronomical event triggering such as Sun rise &amp; Sun set</li>
-    <li>Support for seasonal event triggering such as the start of Summer and Winter Equinox</li>
+    <li>Support for trigger.event triggering such as the start of Summer and Winter Equinox</li>
 
 </ul>
 <p>Maven users will need to add the following dependency to their pom.xml for this component:</p>
@@ -89,7 +89,7 @@ scheduler://groupName/timerName?options
         <th colspan="1" rowspan="1"> Description</th>
     </tr>
     <tr>
-        <td colspan="1" rowspan="1">cron.expression</td>
+        <td colspan="1" rowspan="1">trigger.cron</td>
         <td colspan="1" rowspan="1"><em>None</em></td>
         <td colspan="1" rowspan="1"> Specifies a cron expression. Can also be set by specifying a value for the parameter 'cron' as in the default Quartz2 camel component
         </td>
@@ -98,8 +98,8 @@ scheduler://groupName/timerName?options
 </table>
     <p><b>URI Format</b></p>
 <pre class="prettyprint"><![CDATA[
-scheduler://groupName/timerName?cron.expression=expression
-scheduler://timerName?cron.expression=expression
+scheduler://groupName/timerName?trigger.cron=expression
+scheduler://timerName?trigger.cron=expression
 scheduler://timerName?cron=expression (Camel Quartz2 style)
 ]]></pre>
 
@@ -141,7 +141,7 @@ scheduler://timerName?trigger.repeatInterval=3600000
 
 <h4>Celestial Scheduler Options</h4>
 
-<p>The celestial scheduler allows triggering based on celestial object events such as sun rise and sun set</p>
+<p>The trigger.scheduler allows triggering based on trigger.object events such as sun rise and sun set</p>
 <table>
     <tbody>
     <tr>
@@ -150,49 +150,49 @@ scheduler://timerName?trigger.repeatInterval=3600000
         <th colspan="1" rowspan="1"> Description</th>
     </tr>
     <tr>
-        <td colspan="1" rowspan="1">celestial.object</td>
+        <td colspan="1" rowspan="1">trigger.object</td>
         <td colspan="1" rowspan="1">sun</td>
-        <td colspan="1" rowspan="1">The object that will be used to track the celestial event. Allowed values are currently restricted to 'sun'</td>
+        <td colspan="1" rowspan="1">The object that will be used to track the trigger.event. Allowed values are currently restricted to 'sun'</td>
     </tr>
     <tr>
-        <td colspan="1" rowspan="1">celestial.event</td>
+        <td colspan="1" rowspan="1">trigger.event</td>
         <td colspan="1" rowspan="1">rise</td>
-        <td colspan="1" rowspan="1">The celestial event that will cause the trigger to fire. Allowed values are currently restricted to 'rise' and 'set'</td>
+        <td colspan="1" rowspan="1">The trigger.event that will cause the trigger to fire. Allowed values are currently restricted to 'rise' and 'set'</td>
     </tr>
     <tr>
-        <td colspan="1" rowspan="1">celestial.eventOffset</td>
+        <td colspan="1" rowspan="1">trigger.eventOffset</td>
         <td colspan="1" rowspan="1">0</td>
         <td colspan="1" rowspan="1">The offset in seconds from the given event. This can be negative or positive to allow times to be set that are relative to a given event, such as half an hour before sun rise</td>
     </tr>
     <tr>
-        <td colspan="1" rowspan="1">celestial.repeatInterval</td>
+        <td colspan="1" rowspan="1">trigger.repeatInterval</td>
         <td colspan="1" rowspan="1">0</td>
         <td colspan="1" rowspan="1">The interval in seconds between each repeated trigger fired after the initial event has occurred. When this parameter is set without a value provided for 'repeatCount' then the trigger will repeat continuously with the given interval until the next event occurs </td>
     </tr>
     <tr>
-        <td colspan="1" rowspan="1">celestial.repeatCount</td>
+        <td colspan="1" rowspan="1">trigger.repeatCount</td>
         <td colspan="1" rowspan="1">forever</td>
-        <td colspan="1" rowspan="1">The number of times the trigger will repeat after the initial event has occurred. Repeats will only occur if 'celestial.interval' is greater than 0</td>
+        <td colspan="1" rowspan="1">The number of times the trigger will repeat after the initial event has occurred. Repeats will only occur if 'trigger.interval' is greater than 0</td>
     </tr>
     <tr>
-        <td colspan="1" rowspan="1">celestial.endEvent</td>
+        <td colspan="1" rowspan="1">trigger.endEvent</td>
         <td colspan="1" rowspan="1">none</td>
-        <td colspan="1" rowspan="1">An optional parameter that specifies an event that will signal the end of repeat triggering. The trigger will still fire again on the next 'celestial.event' occurrence and repeat again with the specified interval until the next 'celestial.endEvent' is encountered</td>
+        <td colspan="1" rowspan="1">An optional parameter that specifies an event that will signal the end of repeat triggering. The trigger will still fire again on the next 'trigger.event' occurrence and repeat again with the specified interval until the next 'trigger.endEvent' is encountered</td>
     </tr>
     <tr>
-        <td colspan="1" rowspan="1">celestial.endEventOffset</td>
+        <td colspan="1" rowspan="1">trigger.endEventOffset</td>
         <td colspan="1" rowspan="1">0</td>
         <td colspan="1" rowspan="1">The offset in seconds from the specified end event. This can be negative or positive to allow times to be set that are relative to a given event, such as half an hour after sun set</td>
     </tr>
     <tr>
-        <td colspan="1" rowspan="1">celestial.eventCount</td>
+        <td colspan="1" rowspan="1">trigger.eventCount</td>
         <td colspan="1" rowspan="1">forever</td>
         <td colspan="1" rowspan="1">The number of events that will trigger for this schedule</td>
     </tr>
     <tr>
-        <td colspan="1" rowspan="1">celestial.inclination</td>
+        <td colspan="1" rowspan="1">trigger.inclination</td>
         <td colspan="1" rowspan="1">civil</td>
-        <td colspan="1" rowspan="1">The inclination of the celestial object relative to the horizon. A decimal value can be assigned or any of the following set inclinations,
+        <td colspan="1" rowspan="1">The inclination of the trigger.object relative to the horizon. A decimal value can be assigned or any of the following set inclinations,
 		<table>
 			<tr>
 				<td>civil</td>
@@ -216,7 +216,7 @@ scheduler://timerName?trigger.repeatInterval=3600000
     <tr>
         <td colspan="1" rowspan="1">location</td>
         <td colspan="1" rowspan="1">none</td>
-        <td colspan="1" rowspan="1">The latitude and longitude location on the earth to be used as the reference point to calculate the celestial events. The default latitude direction is North, the default longitude direction is E.
+        <td colspan="1" rowspan="1">The latitude and longitude location on the earth to be used as the reference point to calculate the trigger.events. The default latitude direction is North, the default longitude direction is E.
 		<br/>
 		<b>Format:</b>
 		<p>
@@ -233,7 +233,7 @@ scheduler://groupName/timerName?options
 ]]></pre>
 <h4>Seasonal Scheduler Options</h4>
 
-<p>The seasonal scheduler allows triggering based on seasonal events such as Winter Solstice and the start of Summer</p>
+<p>The trigger.scheduler allows triggering based on trigger.events such as Winter Solstice and the start of Summer</p>
 <table>
     <tbody>
     <tr>
@@ -242,9 +242,9 @@ scheduler://groupName/timerName?options
         <th colspan="1" rowspan="1"> Description</th>
     </tr>
     <tr>
-        <td colspan="1" rowspan="1">seasonal.event</td>
+        <td colspan="1" rowspan="1">trigger.event</td>
         <td colspan="1" rowspan="1">none</td>
-        <td colspan="1" rowspan="1">The seasonal event to trigger on. Allowed values are
+        <td colspan="1" rowspan="1">The trigger.event to trigger on. Allowed values are
 		<ul>
 			<li>wintersolstice</li> 
 			<li>summersolstice</li> 
@@ -262,14 +262,14 @@ scheduler://groupName/timerName?options
 		</td>
     </tr>
     <tr>
-        <td colspan="1" rowspan="1">seasonal.eventCount</td>
+        <td colspan="1" rowspan="1">trigger.eventCount</td>
         <td colspan="1" rowspan="1">forever</td>
         <td colspan="1" rowspan="1">The number of events that will trigger for this schedule</td>
     </tr>
     <tr>
         <td colspan="1" rowspan="1">location</td>
         <td colspan="1" rowspan="1">none</td>
-        <td colspan="1" rowspan="1">The latitude and longitude location on the earth to be used as the reference point to calculate the celestial events. The default latitude direction is North, the default longitude direction is E.
+        <td colspan="1" rowspan="1">The latitude and longitude location on the earth to be used as the reference point to calculate the trigger.events. The default latitude direction is North, the default longitude direction is E.
 		<br/>
 		<b>Format:</b>
 		<p>
