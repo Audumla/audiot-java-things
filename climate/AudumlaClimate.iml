@@ -4,6 +4,9 @@
     <facet type="Osmorc" name="OSGi">
       <configuration manifestGenerationMode="OsmorcControlled" manifestLocation="" jarfileLocation="climate-1.0-SNAPSHOT.jar" outputPathType="CompilerOutputPath" bndFileLocation="" bundlorFileLocation="" bundleActivator="" bundleSymbolicName="net.audumla.climate" bundleVersion="1.0.0" ignoreFilePattern="" useProjectDefaultManifestFileLocation="true" alwaysRebuildBundleJAR="false" doNotSynchronizeWithMaven="false">
         <additionalProperties>
+          <property key="Bundle-Description" value="Generic climate monitoring and historical information querying framework" />
+          <property key="Bundle-Vendor" value="Audumla.net" />
+          <property key="Bundle-DocURL" value="http://www.audumla.net" />
           <property key="Bundle-Name" value="Audumla Climate" />
           <property key="Include-Resource" value="bomdatacache.properties=$MODULE_DIR$/src/main/resources/bomdatacache.properties" />
         </additionalProperties>
@@ -30,7 +33,7 @@
     <orderEntry type="library" name="Maven: commons-configuration:commons-configuration:1.9" level="project" />
     <orderEntry type="library" name="Maven: commons-lang:commons-lang:2.6" level="project" />
     <orderEntry type="library" name="Maven: commons-logging:commons-logging:1.1.1" level="project" />
-    <orderEntry type="module" module-name="AudumlaUtils" />
+    <orderEntry type="module" module-name="AudumlaCommons" />
     <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.1" level="project" />
     <orderEntry type="library" name="Maven: log4j:log4j:1.2.14" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-log4j12:1.7.2" level="project" />
