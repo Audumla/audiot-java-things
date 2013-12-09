@@ -4,6 +4,9 @@
     <facet type="Osmorc" name="OSGi">
       <configuration manifestGenerationMode="OsmorcControlled" manifestLocation="" jarfileLocation="automate-1.0-SNAPSHOT.jar" outputPathType="CompilerOutputPath" bndFileLocation="" bundlorFileLocation="" bundleActivator="" bundleSymbolicName="net.audumla.automate" bundleVersion="1.0.0" ignoreFilePattern="" useProjectDefaultManifestFileLocation="true" alwaysRebuildBundleJAR="false" doNotSynchronizeWithMaven="false">
         <additionalProperties>
+          <property key="Bundle-Description" value="An automation framework to allow triggering and handling of events" />
+          <property key="Bundle-Vendor" value="Audumla.net" />
+          <property key="Bundle-DocURL" value="http://www.audumla.net" />
           <property key="Bundle-Name" value="Audumla Automate" />
         </additionalProperties>
         <additionalJARContents />
@@ -23,7 +26,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="AudumlaDevices" />
-    <orderEntry type="module" module-name="AudumlaUtils" />
+    <orderEntry type="module" module-name="AudumlaCommons" />
     <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.1" level="project" />
     <orderEntry type="library" name="Maven: commons-configuration:commons-configuration:1.9" level="project" />
     <orderEntry type="library" name="Maven: commons-lang:commons-lang:2.6" level="project" />

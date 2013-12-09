@@ -78,7 +78,7 @@
         <module>devices</module>
         <module>climate</module>
         <module>irrigation</module>
-        <module>utils</module>
+        <module>commons</module>
         <module>automate</module>
         <module>ftd2xxj</module>
         <module>quartz</module>
