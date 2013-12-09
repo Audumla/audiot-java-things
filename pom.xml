@@ -82,7 +82,7 @@
         <module>automate</module>
         <module>ftd2xxj</module>
         <module>quartz</module>
-        <module>integrate</module>
+        <module>camelscheduler</module>
         <module>raspberry</module>
         <module>astronomy</module>
     </modules>
