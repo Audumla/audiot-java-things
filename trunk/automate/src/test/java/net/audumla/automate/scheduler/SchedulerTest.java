@@ -17,6 +17,8 @@ package net.audumla.automate.scheduler;
  */
 
 import net.audumla.automate.Event;
+import net.audumla.automate.scheduler.quartz.AtomicSchedule;
+import net.audumla.automate.scheduler.quartz.QuartzScheduler;
 import org.junit.Before;
 import org.junit.Test;
 import org.quartz.SchedulerException;
@@ -35,7 +37,7 @@ public class SchedulerTest {
 
     @Test
     public void testAtomicSchedules() throws Exception {
-        Scheduler scheduler = new Scheduler();
+        QuartzScheduler scheduler = new QuartzScheduler();
         final AtomicReference<Boolean> active = new AtomicReference<Boolean>(false);
 
         AtomicSchedule timer1 = new AtomicSchedule(scheduler);
@@ -89,7 +91,7 @@ public class SchedulerTest {
 
     @Test
     public void testAtomicSchedule() throws Exception {
-        Scheduler scheduler = new Scheduler();
+        QuartzScheduler scheduler = new QuartzScheduler();
         final AtomicReference<Boolean> active = new AtomicReference<Boolean>(false);
 
         AtomicSchedule timer = new AtomicSchedule(scheduler);

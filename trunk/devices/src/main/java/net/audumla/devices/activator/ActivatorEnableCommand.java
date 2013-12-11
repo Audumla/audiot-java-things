@@ -1,4 +1,4 @@
-package net.audumla.camel;
+package net.audumla.devices.activator;
 
 /*
  * *********************************************************************
@@ -16,20 +16,24 @@ package net.audumla.camel;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import org.apache.camel.Exchange;
-import org.apache.camel.support.TypeConverterSupport;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.concurrent.Callable;
 
-public class StringToMapTypeConverter extends TypeConverterSupport {
-    private static final Logger logger = Logger.getLogger(StringToMapTypeConverter.class);
+public class ActivatorEnableCommand implements Callable<Activator> {
+    private static final Logger logger = LoggerFactory.getLogger(ActivatorEnableCommand.class);
+    protected final Activator activator;
+    protected final ActivatorListener[] listeners;
 
-    @SuppressWarnings("unchecked")
-    public <T> T convertTo(Class<T> type, Exchange exchange, Object value) {
-        Map<Object,Object> map = new HashMap<Object,Object>();
-        map.put("Message",value.toString());
-        return (T) map;
+    public ActivatorEnableCommand(Activator activator, ActivatorListener ... listeners ) {
+        this.activator = activator;
+        this.listeners = listeners;
+    }
+
+    @Override
+    public Activator call() throws Exception {
+        activator.activate(listeners);
+        return activator;
     }
 }

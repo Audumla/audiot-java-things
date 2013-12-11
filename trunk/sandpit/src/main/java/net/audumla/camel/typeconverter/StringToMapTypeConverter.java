@@ -1,4 +1,5 @@
-package net.audumla.devices.activator;
+package net.audumla.camel.typeconverter;
+
 /*
  * *********************************************************************
  *  ORGANIZATION : audumla.net
@@ -15,28 +16,20 @@ package net.audumla.devices.activator;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-/**
- * User: audumla
- * Date: 23/08/13
- * Time: 9:30 AM
- */
+import org.apache.camel.Exchange;
+import org.apache.camel.support.TypeConverterSupport;
+import org.apache.log4j.Logger;
 
-import org.junit.After;
-import org.junit.Test;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import java.util.HashMap;
+import java.util.Map;
 
-public class RelayTest {
-    ClassPathXmlApplicationContext context;
+public class StringToMapTypeConverter extends TypeConverterSupport {
+    private static final Logger logger = Logger.getLogger(StringToMapTypeConverter.class);
 
-    @After
-    public void tearDown() throws Exception {
-        if (context != null) {
-            context.close();
-        }
-
+    @SuppressWarnings("unchecked")
+    public <T> T convertTo(Class<T> type, Exchange exchange, Object value) {
+        Map<Object,Object> map = new HashMap<Object,Object>();
+        map.put("Message",value.toString());
+        return (T) map;
     }
-
-
 }
-
-

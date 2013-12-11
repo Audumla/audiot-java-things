@@ -1,4 +1,4 @@
-package net.audumla.automate.scheduler;
+package net.audumla.automate.scheduler.quartz;
 
 import net.audumla.automate.DefaultEventFactory;
 import net.audumla.automate.FixedDurationFactory;
@@ -10,11 +10,11 @@ import org.quartz.ScheduleBuilder;
 import java.text.ParseException;
 
 
-public class FixedSchedule extends ScheduleAdaptor {
+public class FixedSchedule extends QuartzScheduleAdaptor {
     private static Logger logger = Logger.getLogger(FixedSchedule.class);
     private String cronExpression;
 
-    public FixedSchedule(Scheduler scheduler) {
+    public FixedSchedule(QuartzScheduler scheduler) {
         super(scheduler);
     }
 

@@ -65,7 +65,7 @@ public interface Activator {
      * @param seconds   specified the amount of time to leave the Activator in an ACTIVATED state before automatically calling deactivate
      * @return returns true if the activation was successful otherwise false is returned
      */
-    boolean activate(long seconds, boolean block, ActivatorListener... listeners);
+//    boolean activate(long seconds, boolean block, ActivatorListener... listeners);
 
     /**
      * Attempts to activate the Activator.

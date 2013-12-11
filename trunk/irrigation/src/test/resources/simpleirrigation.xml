@@ -39,7 +39,7 @@
         <property name="durationFactory" ref="irrigation.Zone1.DurationFactory"/>
     </bean>
 
-    <bean id="job.Zone1Timer" class="net.audumla.automate.scheduler.FixedSchedule">
+    <bean id="job.Zone1Timer" class="net.audumla.automate.scheduler.quartz.FixedSchedule">
         <!-- run every morning at 6 AM -->
         <property name="cronExpression" value="0 0 6 * * ?"/>
         <property name="group" value="ZoneGroup1"/>

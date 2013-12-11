@@ -2,13 +2,15 @@ package net.audumla.devices.activator;
 
 import net.audumla.bean.BeanUtils;
 import org.apache.log4j.Logger;
-import org.quartz.*;
-import org.quartz.impl.StdSchedulerFactory;
+//import org.quartz.*;
+//import org.quartz.impl.StdSchedulerFactory;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.LinkedList;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import static org.quartz.DateBuilder.futureDate;
 
@@ -98,58 +100,44 @@ public abstract class ActivatorAdaptor implements Activator {
 
     protected abstract boolean doDeactivate(Collection<ActivatorListener> listeners);
 
-    @Override
-    public boolean activate(long seconds, boolean block, ActivatorListener... listeners) {
-        if (getCurrentState() != ActivateState.ACTIVATED) {
-            if (block) {
-                try {
-                    if (activate(listeners)) {
-                        synchronized (this) {
-                            this.wait(seconds * 1000);
-                        }
-                        deactivate(listeners);
-                    } else {
-                        return false;
-                    }
-                } catch (Exception e) {
-                    logger.error(e);
-                    return false;
-                }
-            } else {
-                try {
-                    if (activate(listeners)) {
-                        addDeactivateTimeout(seconds > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) seconds, listeners);
-                    }
-                    else {
-                        return false;
-                    }
-                } catch (Exception e) {
-                    logger.error(e);
-                    deactivate(listeners);
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
+//    @Override
+//    public boolean activate(long seconds, boolean block, ActivatorListener... listeners) {
+//        if (getCurrentState() != ActivateState.ACTIVATED) {
+//            if (block) {
+//                try {
+//                    if (activate(listeners)) {
+//                        synchronized (this) {
+//                            this.wait(seconds);
+//                        }
+//                        deactivate(listeners);
+//                    } else {
+//                        return false;
+//                    }
+//                } catch (Exception e) {
+//                    logger.error(e);
+//                    return false;
+//                }
+//            } else {
+//                try {
+//                    if (activate(listeners)) {
+//                        addDeactivateTimeout(seconds > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) seconds, listeners);
+//                    }
+//                    else {
+//                        return false;
+//                    }
+//                } catch (Exception e) {
+//                    logger.error(e);
+//                    deactivate(listeners);
+//                    return false;
+//                }
+//            }
+//        }
+//        return true;
+//    }
 
-    protected void addDeactivateTimeout(int seconds, ActivatorListener... listeners) {
-        try {
-            JobDetail job = JobBuilder.newJob(ActivatorTimeoutJob.class).withIdentity(getName(), "Group:" + getName()).build();
-
-            job.getJobDataMap().put(ActivatorTimeoutJob.ACTIVATOR_PROPERTY, this);
-            job.getJobDataMap().put(ActivatorTimeoutJob.ACTIVATOR_LISTENER_PROPERTY, listeners);
-            ScheduleBuilder builder = SimpleScheduleBuilder.repeatSecondlyForTotalCount(1).withMisfireHandlingInstructionFireNow();
-
-            Trigger trigger = TriggerBuilder.newTrigger().withIdentity("Deactivate -" + job.getKey().getName(), job.getKey().getGroup()).startAt(futureDate(seconds, DateBuilder.IntervalUnit.SECOND))
-                    .withSchedule(builder).build();
-
-            StdSchedulerFactory.getDefaultScheduler().scheduleJob(job, trigger);
-        } catch (SchedulerException e) {
-            deactivate();
-            logger.error(e);
-        }
-    }
+//    protected void addDeactivateTimeout(int seconds, ScheduledExecutorService service, ActivatorListener... listeners) {
+//        service.schedule(new DeactivateCall(this,listeners),seconds, TimeUnit.SECONDS);
+//    }
 
     @Override
     public void addListener(ActivatorListener listener) {
@@ -161,18 +149,34 @@ public abstract class ActivatorAdaptor implements Activator {
         registeredListeners.remove(listener);
     }
 
-    public static class ActivatorTimeoutJob implements Job {
+    public static class DeactivateCall implements Runnable {
 
-        public static final String ACTIVATOR_PROPERTY = "activator";
-        public static final String ACTIVATOR_LISTENER_PROPERTY = "listener";
+        protected Activator activator;
+        protected ActivatorListener listener[];
+
+        public DeactivateCall(Activator activator, ActivatorListener[] listener) {
+            this.activator = activator;
+            this.listener = listener;
+        }
 
         @Override
-        public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-            Activator activator = (Activator) jobExecutionContext.getMergedJobDataMap().get(ACTIVATOR_PROPERTY);
-            ActivatorListener listener[] = (ActivatorListener[]) jobExecutionContext.getMergedJobDataMap().get(ACTIVATOR_LISTENER_PROPERTY);
+        public void run() {
             activator.deactivate(listener);
         }
     }
+
+//    public static class ActivatorTimeoutJob implements Job {
+//
+//        public static final String ACTIVATOR_PROPERTY = "activator";
+//        public static final String ACTIVATOR_LISTENER_PROPERTY = "listener";
+//
+//        @Override
+//        public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
+//            Activator activator = (Activator) jobExecutionContext.getMergedJobDataMap().get(ACTIVATOR_PROPERTY);
+//            ActivatorListener listener[] = (ActivatorListener[]) jobExecutionContext.getMergedJobDataMap().get(ACTIVATOR_LISTENER_PROPERTY);
+//            activator.deactivate(listener);
+//        }
+//    }
 
     public static class ActivatorStateListener implements ActivatorListener {
         private static final Logger logger = Logger.getLogger(Activator.class);

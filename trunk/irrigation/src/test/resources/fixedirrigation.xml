@@ -141,7 +141,7 @@
     </bean>
 
     <!-- Timer for Zone 1 -->
-    <bean id="automate.zone1Timer" class="net.audumla.automate.scheduler.FixedSchedule" init-method="enable">
+    <bean id="automate.zone1Timer" class="net.audumla.automate.scheduler.quartz.FixedSchedule" init-method="enable">
         <constructor-arg ref="automate.scheduler"/>
         <property name="cronExpression" value="0 0 6 * * ?"/> <!-- run every morning at 6 AM -->
         <property name="factory" ref="irrigation.eventFactory.5Minutes"/>
@@ -149,7 +149,7 @@
     </bean>
 
     <!-- Timer for Zone 2 -->
-    <bean id="automate.zone2Timer" class="net.audumla.automate.scheduler.FixedSchedule" init-method="enable">
+    <bean id="automate.zone2Timer" class="net.audumla.automate.scheduler.quartz.FixedSchedule" init-method="enable">
         <constructor-arg ref="automate.scheduler"/>
         <property name="cronExpression" value="0 15 6 * * ?"/> <!-- run every morning at 6 AM -->
         <property name="factory" ref="irrigation.eventFactory.5Minutes"/>
@@ -157,7 +157,7 @@
     </bean>
 
     <!-- Timer for Zone 3 -->
-    <bean id="automate.zone3Timer" class="net.audumla.automate.scheduler.FixedSchedule" init-method="enable">
+    <bean id="automate.zone3Timer" class="net.audumla.automate.scheduler.quartz.FixedSchedule" init-method="enable">
         <constructor-arg ref="automate.scheduler"/>
         <property name="cronExpression" value="0 30 6 * * ?"/> <!-- run every morning at 6 AM -->
         <property name="factory" ref="irrigation.eventFactory.5Minutes"/>
@@ -165,7 +165,7 @@
     </bean>
 
     <!-- Timer for Zone 4 -->
-    <bean id="automate.zone4Timer" class="net.audumla.automate.scheduler.FixedSchedule" init-method="enable">
+    <bean id="automate.zone4Timer" class="net.audumla.automate.scheduler.quartz.FixedSchedule" init-method="enable">
         <constructor-arg ref="automate.scheduler"/>
         <property name="cronExpression" value="0 45 6 * * ?"/> <!-- run every morning at 6 AM -->
         <property name="factory" ref="irrigation.eventFactory.5Minutes"/>
@@ -173,7 +173,7 @@
     </bean>
 
     <!-- Timer for Zone 5 -->
-    <bean id="automate.zone5Timer" class="net.audumla.automate.scheduler.FixedSchedule" init-method="enable">
+    <bean id="automate.zone5Timer" class="net.audumla.automate.scheduler.quartz.FixedSchedule" init-method="enable">
         <constructor-arg ref="automate.scheduler"/>
         <property name="cronExpression" value="0 0 7 * * ?"/> <!-- run every morning at 6 AM -->
         <property name="factory" ref="irrigation.eventFactory.5Minutes"/>
@@ -181,7 +181,7 @@
     </bean>
 
     <!-- Timer for Zone 6 -->
-    <bean id="automate.zone6Timer" class="net.audumla.automate.scheduler.FixedSchedule" init-method="enable">
+    <bean id="automate.zone6Timer" class="net.audumla.automate.scheduler.quartz.FixedSchedule" init-method="enable">
         <constructor-arg ref="automate.scheduler"/>
         <property name="cronExpression" value="0 15 7 * * ?"/> <!-- run every morning at 6 AM -->
         <property name="factory" ref="irrigation.eventFactory.5Minutes"/>
@@ -189,7 +189,7 @@
     </bean>
 
     <!-- Timer for Zone 7 -->
-    <bean id="automate.zone7Timer" class="net.audumla.automate.scheduler.FixedSchedule" init-method="enable">
+    <bean id="automate.zone7Timer" class="net.audumla.automate.scheduler.quartz.FixedSchedule" init-method="enable">
         <constructor-arg ref="automate.scheduler"/>
         <property name="cronExpression" value="0 30 7 * * ?"/> <!-- run every morning at 6 AM -->
         <property name="factory" ref="irrigation.eventFactory.5Minutes"/>
@@ -197,14 +197,14 @@
     </bean>
 
     <!-- Timer for Zone 8 -->
-    <bean id="automate.zone8Timer" class="net.audumla.automate.scheduler.FixedSchedule" init-method="enable">
+    <bean id="automate.zone8Timer" class="net.audumla.automate.scheduler.quartz.FixedSchedule" init-method="enable">
         <constructor-arg ref="automate.scheduler"/>
         <property name="cronExpression" value="0 45 7 * * ?"/> <!-- run every morning at 6 AM -->
         <property name="factory" ref="irrigation.eventFactory.5Minutes"/>
         <property name="handler" ref="irrigation.zone8"/>
     </bean>
 
-    <bean id="automate.scheduler" class="net.audumla.automate.scheduler.Scheduler">
+    <bean id="automate.scheduler" class="net.audumla.automate.scheduler.quartz.QuartzScheduler">
     </bean>
 
 

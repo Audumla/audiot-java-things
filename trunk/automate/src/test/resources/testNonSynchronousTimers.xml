@@ -34,37 +34,37 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
         <constructor-arg index="1" value="true"/>
     </bean>
 
-    <bean id="timer1" class="net.audumla.automate.scheduler.AtomicSchedule" init-method="enable">
+    <bean id="timer1" class="net.audumla.automate.scheduler.quartz.AtomicSchedule" init-method="enable">
         <constructor-arg ref="scheduler"/>
         <property name="handler" ref="eventHandler"/>
         <property name="factory" ref="eventFactory"/>
     </bean>
 
-    <bean id="timer2" class="net.audumla.automate.scheduler.AtomicSchedule" init-method="enable">
+    <bean id="timer2" class="net.audumla.automate.scheduler.quartz.AtomicSchedule" init-method="enable">
         <constructor-arg ref="scheduler"/>
         <property name="handler" ref="eventHandler"/>
         <property name="factory" ref="eventFactory"/>
     </bean>
 
-    <bean id="timer3" class="net.audumla.automate.scheduler.AtomicSchedule" init-method="enable">
+    <bean id="timer3" class="net.audumla.automate.scheduler.quartz.AtomicSchedule" init-method="enable">
         <constructor-arg ref="scheduler"/>
         <property name="handler" ref="eventHandler"/>
         <property name="factory" ref="eventFactory"/>
     </bean>
 
-    <bean id="timer4" class="net.audumla.automate.scheduler.AtomicSchedule" init-method="enable">
+    <bean id="timer4" class="net.audumla.automate.scheduler.quartz.AtomicSchedule" init-method="enable">
         <constructor-arg ref="scheduler"/>
         <property name="handler" ref="eventHandler"/>
         <property name="factory" ref="eventFactory"/>
     </bean>
 
-    <bean id="timer5" class="net.audumla.automate.scheduler.AtomicSchedule" init-method="enable">
+    <bean id="timer5" class="net.audumla.automate.scheduler.quartz.AtomicSchedule" init-method="enable">
         <constructor-arg ref="scheduler"/>
         <property name="handler" ref="eventHandler"/>
         <property name="factory" ref="eventFactory"/>
     </bean>
 
-    <bean id="scheduler" class="net.audumla.automate.scheduler.Scheduler" init-method="initialize" destroy-method="shutdown">
+    <bean id="scheduler" class="net.audumla.automate.scheduler.quartz.QuartzScheduler" init-method="initialize" destroy-method="shutdown">
     </bean>
 
 

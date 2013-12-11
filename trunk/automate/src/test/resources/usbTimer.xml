@@ -37,13 +37,13 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
         <property name="device" value="1" />
     </bean>
 
-    <bean id="schedule" class="net.audumla.automate.scheduler.AtomicSchedule" init-method="enable">
+    <bean id="schedule" class="net.audumla.automate.scheduler.quartz.AtomicSchedule" init-method="enable">
         <constructor-arg ref="scheduler"/>
         <property name="handler" ref="eventHandler"/>
         <property name="factory" ref="eventFactory"/>
     </bean>
 
-    <bean id="scheduler" class="net.audumla.automate.scheduler.Scheduler" init-method="initialize" destroy-method="shutdown">
+    <bean id="scheduler" class="net.audumla.automate.scheduler.quartz.QuartzScheduler" init-method="initialize" destroy-method="shutdown">
     </bean>
 
 

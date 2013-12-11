@@ -1,5 +1,6 @@
 package net.audumla.devices.activator;
 
+import net.audumla.scheduler.quartz.QuartzScheduledExecutorService;
 import org.junit.Before;
 import org.junit.Test;
 import org.quartz.Scheduler;
@@ -24,12 +25,12 @@ public class NonBlockingActivatorTest {
     }
 
     @Test
-    public void testStateChange() {
+    public void testStateChange() throws Exception {
         ActivatorMock activator = new ActivatorMock(true, true);
         assert activator.getCurrentState() == Activator.ActivateState.UNKNOWN;
         activator.deactivate();
         assert activator.getCurrentState() == Activator.ActivateState.DEACTIVATED;
-        activator.activate(2, false);
+        new ActivatorToggleCommand(activator,2,new QuartzScheduledExecutorService()).call();
         assert activator.getCurrentState() == Activator.ActivateState.ACTIVATED;
         synchronized (this) {
             try {
@@ -44,7 +45,7 @@ public class NonBlockingActivatorTest {
     }
 
     @Test
-    public void testStateChangeListener() {
+    public void testStateChangeListener() throws Exception {
         final ActivatorMock activator = new ActivatorMock(true, true);
         final Collection<Activator.ActivateState> states = new ArrayList<Activator.ActivateState>();
 
@@ -76,15 +77,14 @@ public class NonBlockingActivatorTest {
 
         assert activator.getCurrentState() == Activator.ActivateState.UNKNOWN;
         assert states.isEmpty();
-        activator.activate(2, false, listener);
-        assert states.contains(Activator.ActivateState.ACTIVATING);
-        assert states.contains(Activator.ActivateState.ACTIVATED);
-        assert activator.getCurrentState() == Activator.ActivateState.ACTIVATED;
-        assert states.size() == 2;
+        new ActivatorToggleCommand(activator,2,new QuartzScheduledExecutorService(),listener).call();
         synchronized (this) {
             try {
                 this.wait(1000);
+                assert states.contains(Activator.ActivateState.ACTIVATING);
+                assert states.contains(Activator.ActivateState.ACTIVATED);
                 assert activator.getCurrentState() == Activator.ActivateState.ACTIVATED;
+                assert states.size() == 2;
                 this.wait(2100);
             } catch (InterruptedException e) {
                 assert false;

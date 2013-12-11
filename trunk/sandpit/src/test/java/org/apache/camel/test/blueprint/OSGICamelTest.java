@@ -17,7 +17,7 @@ package org.apache.camel.test.blueprint;
  */
 
 import net.audumla.camel.CamelTestBase;
-import net.audumla.camel.StringToMapTypeConverter;
+import net.audumla.camel.typeconverter.StringToMapTypeConverter;
 import org.apache.camel.Exchange;
 import org.apache.camel.model.ProcessorDefinition;
 import org.apache.camel.util.KeyValueHolder;

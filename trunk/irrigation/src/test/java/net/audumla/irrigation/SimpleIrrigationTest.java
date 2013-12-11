@@ -8,14 +8,14 @@ package net.audumla.irrigation;
 
 import net.audumla.automate.EventFactory;
 import net.audumla.automate.EventHandler;
-import net.audumla.automate.scheduler.ScheduleAdaptor;
-import net.audumla.automate.scheduler.AutomateJob;
+import net.audumla.automate.scheduler.quartz.*;
 import net.audumla.climate.*;
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
 import org.quartz.*;
+import org.quartz.Scheduler;
 import org.quartz.impl.StdSchedulerFactory;
 import org.quartz.impl.matchers.GroupMatcher;
 import org.quartz.listeners.JobListenerSupport;
@@ -35,7 +35,7 @@ public class SimpleIrrigationTest {
 
     protected void scheduleJob(Scheduler scheduler, String jobName, String jobGroup, int repeat, EventHandler handler, EventFactory factory) throws SchedulerException {
         JobDetail job = JobBuilder.newJob(AutomateJob.class).withIdentity(jobName, jobGroup).build();
-        ScheduleAdaptor schedule = new ScheduleAdaptor(new net.audumla.automate.scheduler.Scheduler()) {
+        QuartzScheduleAdaptor schedule = new QuartzScheduleAdaptor(new QuartzScheduler()) {
             @Override
             protected ScheduleBuilder getScheduleBuilder() throws ParseException {
                 return null;

@@ -1,4 +1,4 @@
-package net.audumla.automate.scheduler;
+package net.audumla.automate.scheduler.quartz;
 
 /*
  * *********************************************************************
@@ -16,14 +16,15 @@ package net.audumla.automate.scheduler;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
+import net.audumla.automate.scheduler.Schedule;
 import org.apache.log4j.Logger;
 import org.quartz.impl.StdSchedulerFactory;
 
 import java.util.Collection;
 import java.util.HashSet;
 
-public class Scheduler {
-    private static final Logger logger = Logger.getLogger(Scheduler.class);
+public class QuartzScheduler {
+    private static final Logger logger = Logger.getLogger(QuartzScheduler.class);
     private org.quartz.Scheduler scheduler;
     private Collection<Schedule> schedules = new HashSet<Schedule>();
     private boolean autoStartSchedules = false;

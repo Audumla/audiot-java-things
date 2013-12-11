@@ -1,4 +1,4 @@
-package net.audumla.automate.scheduler;
+package net.audumla.automate.scheduler.quartz;
 /**
  * User: audumla
  * JulianDate: 2/08/13
@@ -7,6 +7,7 @@ package net.audumla.automate.scheduler;
 
 import net.audumla.automate.Event;
 import net.audumla.automate.EventFactory;
+import net.audumla.automate.scheduler.Schedule;
 import org.apache.log4j.Logger;
 import org.quartz.JobExecutionContext;
 import org.quartz.SchedulerException;

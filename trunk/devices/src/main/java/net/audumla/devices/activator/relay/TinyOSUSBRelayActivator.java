@@ -19,7 +19,7 @@ public class TinyOSUSBRelayActivator extends ActivatorAdaptor {
     private int device = 0;
     private int relay = 0;
 
-    //
+
     public TinyOSUSBRelayActivator() {
     }
 

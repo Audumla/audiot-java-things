@@ -1,5 +1,6 @@
 package net.audumla.devices.activator;
 
+import net.audumla.scheduler.quartz.QuartzScheduledExecutorService;
 import org.junit.Before;
 import org.junit.Test;
 import org.quartz.Scheduler;
@@ -24,20 +25,20 @@ public class FailingNonBlockingActivatorTest {
     }
 
     @Test
-    public void testStateChangeAllFailure() {
+    public void testStateChangeAllFailure() throws Exception {
         Activator activator = new ActivatorMock(false, false);
         stateChangeAllFailure(activator);
     }
 
     @Test
-    public void testStateChangeAllFailureException() {
+    public void testStateChangeAllFailureException() throws Exception {
         Activator activator = new ExceptionActivatorMock(false, false);
         stateChangeAllFailure(activator);
     }
 
-    public void stateChangeAllFailure(Activator activator) {
+    public void stateChangeAllFailure(Activator activator) throws Exception {
         assert activator.getCurrentState() == Activator.ActivateState.UNKNOWN;
-        activator.activate(1, false);
+        new ActivatorToggleCommand(activator,1,new QuartzScheduledExecutorService()).call();
         assert activator.getCurrentState() == Activator.ActivateState.UNKNOWN;
         synchronized (this) {
             try {
@@ -51,20 +52,20 @@ public class FailingNonBlockingActivatorTest {
     }
 
     @Test
-    public void testStateChangeActivateFailure() {
+    public void testStateChangeActivateFailure() throws Exception {
         Activator activator = new ActivatorMock(false, true);
         stateChangeActivateFailure(activator);
     }
 
     @Test
-    public void testStateChangeActivateFailureException() {
+    public void testStateChangeActivateFailureException() throws Exception {
         Activator activator = new ExceptionActivatorMock(false, true);
         stateChangeActivateFailure(activator);
     }
 
-    public void stateChangeActivateFailure(Activator activator) {
+    public void stateChangeActivateFailure(Activator activator) throws Exception {
         assert activator.getCurrentState() == Activator.ActivateState.UNKNOWN;
-        activator.activate(1, false);
+        new ActivatorToggleCommand(activator,1,new QuartzScheduledExecutorService()).call();
         assert activator.getCurrentState() == Activator.ActivateState.DEACTIVATED;
         synchronized (this) {
             try {
@@ -78,18 +79,18 @@ public class FailingNonBlockingActivatorTest {
     }
 
     @Test
-    public void testStateChangeListener() {
+    public void testStateChangeListener() throws Exception {
         final Activator activator = new ActivatorMock(false, false);
         stateChangeListener(activator);
     }
 
     @Test
-    public void testStateChangeListenerException() {
+    public void testStateChangeListenerException() throws Exception {
         final Activator activator = new ExceptionActivatorMock(false, false);
         stateChangeListener(activator);
     }
 
-    public void stateChangeListener(Activator activator) {
+    public void stateChangeListener(Activator activator) throws Exception {
         final Collection<Activator.ActivateState> states = new ArrayList<Activator.ActivateState>();
 
         final ActivatorListener listener = new ActivatorListener() {
@@ -132,7 +133,7 @@ public class FailingNonBlockingActivatorTest {
 
         assert activator.getCurrentState() == Activator.ActivateState.UNKNOWN;
         assert states.isEmpty();
-        activator.activate(2, false, listener);
+        new ActivatorToggleCommand(activator,3,new QuartzScheduledExecutorService(),listener).call();
         assert states.contains(Activator.ActivateState.ACTIVATING);
         assert states.contains(Activator.ActivateState.ACTIVATED);
         assert states.contains(Activator.ActivateState.DEACTIVATED);

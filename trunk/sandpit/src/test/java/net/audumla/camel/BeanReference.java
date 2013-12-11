@@ -1,4 +1,5 @@
-package net.audumla.devices.activator;
+package net.audumla.camel;
+
 /*
  * *********************************************************************
  *  ORGANIZATION : audumla.net
@@ -15,28 +16,22 @@ package net.audumla.devices.activator;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-/**
- * User: audumla
- * Date: 23/08/13
- * Time: 9:30 AM
- */
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.BeanFactoryAware;
 
-import org.junit.After;
-import org.junit.Test;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+public class BeanReference implements BeanFactoryAware {
+    private static final Logger logger = LoggerFactory.getLogger(BeanReference.class);
+    private BeanFactory beanFactory;
 
-public class RelayTest {
-    ClassPathXmlApplicationContext context;
-
-    @After
-    public void tearDown() throws Exception {
-        if (context != null) {
-            context.close();
-        }
-
+    public Object instance(String refName) {
+        return beanFactory.getBean(refName);
     }
 
-
+    @Override
+    public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
+        this.beanFactory = beanFactory;
+    }
 }
-
-
