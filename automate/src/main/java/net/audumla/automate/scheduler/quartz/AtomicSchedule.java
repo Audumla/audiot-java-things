@@ -1,4 +1,4 @@
-package net.audumla.automate.scheduler;
+package net.audumla.automate.scheduler.quartz;
 /**
  * User: audumla
  * JulianDate: 11/09/13
@@ -15,10 +15,10 @@ import org.quartz.SimpleScheduleBuilder;
 
 import java.text.ParseException;
 
-public class AtomicSchedule extends ScheduleAdaptor {
+public class AtomicSchedule extends QuartzScheduleAdaptor {
     private static final Logger logger = Logger.getLogger(AtomicSchedule.class);
 
-    public AtomicSchedule(Scheduler scheduler) {
+    public AtomicSchedule(QuartzScheduler scheduler) {
         super(scheduler);
     }
 

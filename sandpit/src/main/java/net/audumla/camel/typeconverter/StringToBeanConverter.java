@@ -1,4 +1,5 @@
-package net.audumla.devices.activator;
+package net.audumla.camel.typeconverter;
+
 /*
  * *********************************************************************
  *  ORGANIZATION : audumla.net
@@ -15,28 +16,20 @@ package net.audumla.devices.activator;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-/**
- * User: audumla
- * Date: 23/08/13
- * Time: 9:30 AM
- */
+import org.apache.camel.Exchange;
+import org.apache.camel.TypeConversionException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import org.junit.After;
-import org.junit.Test;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+public class StringToBeanConverter extends JSONBeanConverter {
+    private static final Logger logger = LoggerFactory.getLogger(StringToBeanConverter.class);
 
-public class RelayTest {
-    ClassPathXmlApplicationContext context;
-
-    @After
-    public void tearDown() throws Exception {
-        if (context != null) {
-            context.close();
+    @Override
+    public <T> T convertTo(Class<T> tClass, Exchange exchange, Object o) throws TypeConversionException {
+        try {
+            return mapper.readValue(o.toString(), tClass);
+        } catch (Exception e) {
+            throw new TypeConversionException(o,tClass,e);
         }
-
     }
-
-
 }
-
-

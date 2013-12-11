@@ -1,4 +1,4 @@
-package net.audumla.automate.scheduler;
+package net.audumla.automate.scheduler.quartz;
 
 /*
  * *********************************************************************
@@ -18,6 +18,7 @@ package net.audumla.automate.scheduler;
 
 import net.audumla.automate.EventFactory;
 import net.audumla.automate.EventHandler;
+import net.audumla.automate.scheduler.Schedule;
 import net.audumla.scheduler.quartz.SequentialTriggerListener;
 import net.audumla.bean.BeanUtils;
 import org.apache.log4j.Logger;
@@ -28,9 +29,9 @@ import org.quartz.impl.matchers.GroupMatcher;
 import java.text.ParseException;
 import java.util.Date;
 
-public abstract class ScheduleAdaptor implements Schedule {
-    private static Logger logger = Logger.getLogger(ScheduleAdaptor.class);
-    private final Scheduler scheduler;
+public abstract class QuartzScheduleAdaptor implements Schedule {
+    private static Logger logger = Logger.getLogger(QuartzScheduleAdaptor.class);
+    private final QuartzScheduler scheduler;
 
     private String group;
     private String name = BeanUtils.generateName(Schedule.class);
@@ -42,7 +43,7 @@ public abstract class ScheduleAdaptor implements Schedule {
 
     protected abstract ScheduleBuilder getScheduleBuilder() throws ParseException;
 
-    protected ScheduleAdaptor(Scheduler scheduler) {
+    protected QuartzScheduleAdaptor(QuartzScheduler scheduler) {
         scheduler.addSchedule(this);
         this.scheduler = scheduler;
     }
@@ -55,7 +56,7 @@ public abstract class ScheduleAdaptor implements Schedule {
         this.startTime = startTime;
     }
 
-    public Scheduler getScheduler() {
+    public QuartzScheduler getScheduler() {
         return scheduler;
     }
 

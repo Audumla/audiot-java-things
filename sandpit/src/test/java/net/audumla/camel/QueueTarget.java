@@ -1,4 +1,4 @@
-package net.audumla.generate;
+package net.audumla.camel;
 
 /*
  * *********************************************************************
@@ -16,22 +16,34 @@ package net.audumla.generate;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import net.audumla.bean.BeanUtils;
+import org.apache.camel.Body;
+import org.apache.camel.Consume;
+import org.apache.camel.Header;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
+public class QueueTarget {
+    private static final Logger logger = LoggerFactory.getLogger(QueueTarget.class);
 
-@XmlType(factoryClass = BeanUtils.class, factoryMethod = "newInstance" )
-public abstract class TestBeanImpl implements TestBean {
-    private static final Logger logger = LoggerFactory.getLogger(TestBeanImpl.class);
-    @XmlElement(name="prop")
-    public abstract String getProperty();
-    public abstract void setProperty(String p);
+    public String getName() {
+        return name;
+    }
 
-    @XmlElement(name="name")
-    public abstract String getTheName();
-    public abstract void setTheName(String p);
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    String name = "Test";
+
+    @Consume(uri="activemq:queue:test")
+    public void getMessageDoSomething(@Header("JMSCorrelationID") String correlationID, @Body Object body) {
+        logger.debug("Output Queue Message - {}",body);
+    }
+
+    public Object enrich(Object body) {
+        logger.debug("Enrich Queue Message - {}",body);
+//        return "Duration 5";
+        return "Enriched - "+body;
+    }
 
 }

@@ -1,4 +1,5 @@
-package net.audumla.devices.activator;
+package net.audumla.camel.typeconverter;
+
 /*
  * *********************************************************************
  *  ORGANIZATION : audumla.net
@@ -15,28 +16,19 @@ package net.audumla.devices.activator;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-/**
- * User: audumla
- * Date: 23/08/13
- * Time: 9:30 AM
- */
+import org.apache.camel.support.TypeConverterSupport;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.SerializationConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import org.junit.After;
-import org.junit.Test;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+public abstract class JSONBeanConverter extends TypeConverterSupport {
+    private static final Logger logger = LoggerFactory.getLogger(JSONBeanConverter.class);
+    static protected ObjectMapper mapper = new ObjectMapper();
 
-public class RelayTest {
-    ClassPathXmlApplicationContext context;
-
-    @After
-    public void tearDown() throws Exception {
-        if (context != null) {
-            context.close();
-        }
-
+    static {
+        mapper.enable(SerializationConfig.Feature.INDENT_OUTPUT);
+        mapper.disable(SerializationConfig.Feature.WRITE_NULL_MAP_VALUES);
     }
 
-
 }
-
-

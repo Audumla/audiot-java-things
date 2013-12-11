@@ -1,4 +1,4 @@
-package net.audumla.generate;
+package net.audumla.devices.activator;
 
 /*
  * *********************************************************************
@@ -16,16 +16,24 @@ package net.audumla.generate;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import net.audumla.bean.BeanUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.XmlType;
+import java.util.concurrent.Callable;
 
-@XmlType(factoryClass = BeanUtils.class, factoryMethod = "newInstance" )
-public interface TestBean {
-    abstract String getProperty();
-    abstract void setProperty(String p);
-    abstract String getTheName();
-    abstract void setTheName(String p);
+public class ActivatorDisableCommand implements Callable<Activator> {
+    private static final Logger logger = LoggerFactory.getLogger(ActivatorDisableCommand.class);
+    protected final Activator activator;
+    protected final ActivatorListener[] listeners;
+
+    public ActivatorDisableCommand(Activator activator, ActivatorListener... listeners) {
+        this.activator = activator;
+        this.listeners = listeners;
+    }
+
+    @Override
+    public Activator call() throws Exception {
+        activator.deactivate(listeners);
+        return activator;
+    }
 }

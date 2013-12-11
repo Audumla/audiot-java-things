@@ -74,20 +74,20 @@ public class BlockingActivatorTest {
     }
 
     @Test
-    public void testDelayedStateChange() {
+    public void testDelayedStateChange() throws Exception {
         ActivatorMock activator = new ActivatorMock(true, true);
         assert activator.getCurrentState() == Activator.ActivateState.UNKNOWN;
         activator.deactivate();
         assert activator.getCurrentState() == Activator.ActivateState.DEACTIVATED;
         Date start = new Date();
-        activator.activate(3, true);
+        new ActivatorToggleCommand(activator,3).call();
         Date end = new Date();
         Assert.assertEquals((double) (end.getTime() - start.getTime()), 3000, 100);
         assert activator.getCurrentState() == Activator.ActivateState.DEACTIVATED;
     }
 
     @Test
-    public void testDelayedStateChangeListener() {
+    public void testDelayedStateChangeListener() throws Exception {
         final ActivatorMock activator = new ActivatorMock(true, true);
         final Collection<Activator.ActivateState> states = new ArrayList<Activator.ActivateState>();
 
@@ -120,7 +120,7 @@ public class BlockingActivatorTest {
         assert activator.getCurrentState() == Activator.ActivateState.UNKNOWN;
         assert states.isEmpty();
         Date start = new Date();
-        activator.activate(3, true, listener);
+        new ActivatorToggleCommand(activator,3,listener).call();
         Date end = new Date();
         Assert.assertEquals((double) (end.getTime() - start.getTime()), 3000, 100);
         assert states.contains(Activator.ActivateState.ACTIVATING);

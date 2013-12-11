@@ -34,14 +34,14 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
         <constructor-arg index="1" value="true"/>
     </bean>
 
-    <bean id="schedule" class="net.audumla.automate.scheduler.FixedSchedule" init-method="enable">
+    <bean id="schedule" class="net.audumla.automate.scheduler.quartz.FixedSchedule" init-method="enable">
         <constructor-arg ref="scheduler"/>
         <property name="handler" ref="eventHandler"/>
         <property name="factory" ref="eventFactory"/>
         <property name="cronExpression" value="*/2 * * * * ?" />
     </bean>
 
-    <bean id="scheduler" class="net.audumla.automate.scheduler.Scheduler" init-method="initialize" destroy-method="shutdown">
+    <bean id="scheduler" class="net.audumla.automate.scheduler.quartz.QuartzScheduler" init-method="initialize" destroy-method="shutdown">
     </bean>
 
 

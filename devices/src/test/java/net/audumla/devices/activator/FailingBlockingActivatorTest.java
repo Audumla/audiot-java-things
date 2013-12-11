@@ -38,7 +38,7 @@ public class FailingBlockingActivatorTest {
     }
 
     @Test
-    public void testFailDelayedExceptionActivate() {
+    public void testFailDelayedExceptionActivate() throws Exception {
         Date start = new Date();
         failDelayActivate(new ExceptionActivatorMock(false, false));
         Date end = new Date();
@@ -46,7 +46,7 @@ public class FailingBlockingActivatorTest {
     }
 
     @Test
-    public void testFailDelayedSimpleActivate() {
+    public void testFailDelayedSimpleActivate() throws Exception {
         Date start = new Date();
         failDelayActivate(new ActivatorMock(false, false));
         Date end = new Date();
@@ -107,7 +107,7 @@ public class FailingBlockingActivatorTest {
         assert activator.getCurrentState() == Activator.ActivateState.UNKNOWN;
     }
 
-    public void failDelayActivate(Activator activator) {
+    public void failDelayActivate(Activator activator) throws Exception {
         final Collection<Activator.ActivateState> states = new ArrayList<Activator.ActivateState>();
 
         final ActivatorListener listener = new ActivatorListener() {
@@ -152,7 +152,7 @@ public class FailingBlockingActivatorTest {
 
         assert activator.getCurrentState() == Activator.ActivateState.UNKNOWN;
         assert states.isEmpty();
-        activator.activate(2, true, listener);
+        new ActivatorToggleCommand(activator,2,listener).call();
         assert states.contains(Activator.ActivateState.ACTIVATING);
         assert states.contains(Activator.ActivateState.ACTIVATED);
         assert states.contains(Activator.ActivateState.DEACTIVATED);

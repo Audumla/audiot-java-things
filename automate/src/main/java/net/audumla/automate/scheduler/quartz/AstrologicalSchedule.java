@@ -1,4 +1,4 @@
-package net.audumla.automate.scheduler;
+package net.audumla.automate.scheduler.quartz;
 
 import net.audumla.scheduler.quartz.AstronomicScheduleBuilder;
 import net.audumla.astronomy.Geolocation;
@@ -7,11 +7,11 @@ import org.quartz.ScheduleBuilder;
 
 import java.text.ParseException;
 
-public class AstrologicalSchedule extends ScheduleAdaptor {
+public class AstrologicalSchedule extends QuartzScheduleAdaptor {
     private static Logger logger = Logger.getLogger(AstrologicalSchedule.class);
     private AstronomicScheduleBuilder builder = new AstronomicScheduleBuilder();
 
-    public AstrologicalSchedule(Scheduler scheduler) {
+    public AstrologicalSchedule(QuartzScheduler scheduler) {
         super(scheduler);
     }
 
