@@ -17,6 +17,7 @@ package net.audumla.automate;
  */
 
 import net.audumla.devices.activator.ActivatorMock;
+import net.audumla.scheduler.quartz.QuartzScheduledExecutorService;
 import org.junit.Before;
 import org.junit.Test;
 import org.quartz.Scheduler;
@@ -35,6 +36,7 @@ public class ActivatorEventHandlerTest {
     @Test
     public void testSuccessfulEvent() throws Exception {
         ActivatorEventHandler handler = new ActivatorEventHandler();
+        handler.setScheduler(new QuartzScheduledExecutorService());
         handler.setActivator(new ActivatorMock(true, true));
 
         DefaultEventFactory eventFactory = new DefaultEventFactory();
