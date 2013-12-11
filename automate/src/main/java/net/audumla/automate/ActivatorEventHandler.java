@@ -19,12 +19,20 @@ import net.audumla.bean.BeanUtils;
 import net.audumla.devices.activator.Activator;
 import net.audumla.devices.activator.ActivatorListener;
 import net.audumla.devices.activator.ActivatorStateChangeEvent;
+import net.audumla.devices.activator.ActivatorToggleCommand;
 import org.apache.log4j.Logger;
+
+import java.util.concurrent.ScheduledExecutorService;
 
 public class ActivatorEventHandler implements EventHandler {
     private static final Logger logger = Logger.getLogger(ActivatorEventHandler.class);
     private Activator activator;
     private String name = BeanUtils.generateName(EventHandler.class);
+    private ScheduledExecutorService scheduler;
+
+    public void setScheduler(ScheduledExecutorService scheduler) {
+        this.scheduler = scheduler;
+    }
 
     public ActivatorEventHandler(Activator activator) {
         this.activator = activator;
@@ -45,7 +53,12 @@ public class ActivatorEventHandler implements EventHandler {
     @Override
     public boolean handleEvent(Event event) {
         //attempts to activate the irrigationEvent and then monitors its progress using a specific listener.
-        return activator.activate(event.getEventDuration(), false, new EventActivatorListener(event));
+        try {
+            new ActivatorToggleCommand(activator,event.getEventDuration(),scheduler,new EventActivatorListener(event)).call();
+        } catch (Exception e) {
+            logger.error("Error handling event",e);
+        }
+        return true;
     }
 
     protected static class EventActivatorListener implements ActivatorListener {
