@@ -22,6 +22,8 @@ import org.apache.camel.component.quartz2.QuartzComponent;
 import org.apache.camel.util.IntrospectionSupport;
 import org.apache.camel.util.ObjectHelper;
 import org.apache.commons.lang.reflect.ConstructorUtils;
+import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
 import org.quartz.TriggerKey;
 import org.slf4j.LoggerFactory;
 
@@ -40,10 +42,20 @@ public class SchedulerComponent extends QuartzComponent {
     private boolean prefixJobNameWithEndpointId;
 
     public SchedulerComponent() {
+        registerScheduler(CronSchedulerEndpoint.class);
+        registerScheduler(CelestialScheduleEndpoint.class);
+        registerScheduler(SeasonalScheduleEndpoint.class);
     }
 
     public SchedulerComponent(CamelContext camelContext) {
         super(camelContext);
+        registerScheduler(CronSchedulerEndpoint.class);
+        registerScheduler(CelestialScheduleEndpoint.class);
+        registerScheduler(SeasonalScheduleEndpoint.class);
+    }
+
+    public void setCamelContext(CamelContext context) {
+        super.setCamelContext(context);
     }
 
     public void registerScheduler(Class<? extends DefaultSchedulerEndpoint> clazz) {
@@ -157,6 +169,18 @@ public class SchedulerComponent extends QuartzComponent {
         return new TriggerKey(name, group);
     }
 
+    @Override
+    public Scheduler getScheduler() {
+        Scheduler scheduler = super.getScheduler();
+        if (scheduler == null) {
+            try {
+                doStart();
+            } catch (Exception e) {
+                logger.error("Failed to start scheduler",e);
+            }
+        }
+        return super.getScheduler();
+    }
 
 }
 

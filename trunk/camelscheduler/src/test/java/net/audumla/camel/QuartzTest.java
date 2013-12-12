@@ -39,9 +39,6 @@ public class QuartzTest extends CamelTestBase {
         SchedulerComponent schComponent = new SchedulerComponent(context);
         context.addComponent("scheduler", schComponent);
         context.start();
-        schComponent.registerScheduler(CronSchedulerEndpoint.class);
-        schComponent.registerScheduler(CelestialScheduleEndpoint.class);
-        schComponent.registerScheduler(SeasonalScheduleEndpoint.class);
 
     }
 

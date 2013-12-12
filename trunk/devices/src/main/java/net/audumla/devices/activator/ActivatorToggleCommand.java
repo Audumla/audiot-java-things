@@ -24,24 +24,37 @@ import java.util.concurrent.TimeUnit;
 
 public class ActivatorToggleCommand extends ActivatorEnableCommand {
     private static final Logger logger = LoggerFactory.getLogger(ActivatorToggleCommand.class);
-    private final long delay;
+    private long delay;
     private ScheduledExecutorService executor = null;
-//    private ScheduledFuture<Activator> disableFuture;
 
-    public ActivatorToggleCommand(Activator activator, long delay, ActivatorListener... listeners) {
-        super(activator, listeners);
-        this.delay = delay;
+    public ActivatorToggleCommand() {
     }
 
-    public ActivatorToggleCommand(Activator activator, long delay, ScheduledExecutorService executor, ActivatorListener... listeners) {
+    public ActivatorToggleCommand(ScheduledExecutorService executor, Activator activator, long delay, ActivatorListener... listeners) {
         super(activator, listeners);
         this.executor = executor;
         this.delay = delay;
     }
 
+    public long getDelay() {
+        return delay;
+    }
+
+    public void setDelay(long delay) {
+        this.delay = delay;
+    }
+
+    public ScheduledExecutorService getExecutor() {
+        return executor;
+    }
+
+    public void setExecutor(ScheduledExecutorService executor) {
+        this.executor = executor;
+    }
+
     @Override
     public Activator call() throws Exception {
-        if (super.call().getCurrentState().equals(Activator.ActivateState.ACTIVATED)) {
+        if (delay > 0 && super.call().getCurrentState().equals(Activator.ActivateState.ACTIVATED)) {
             if (executor != null) {
                 executor.schedule(new ActivatorDisableCommand(activator, listeners), delay, TimeUnit.SECONDS);
             } else {

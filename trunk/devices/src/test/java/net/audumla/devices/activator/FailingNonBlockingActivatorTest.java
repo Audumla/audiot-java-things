@@ -38,7 +38,7 @@ public class FailingNonBlockingActivatorTest {
 
     public void stateChangeAllFailure(Activator activator) throws Exception {
         assert activator.getCurrentState() == Activator.ActivateState.UNKNOWN;
-        new ActivatorToggleCommand(activator,1,new QuartzScheduledExecutorService()).call();
+        new ActivatorToggleCommand(new QuartzScheduledExecutorService(),activator,1).call();
         assert activator.getCurrentState() == Activator.ActivateState.UNKNOWN;
         synchronized (this) {
             try {
@@ -65,7 +65,7 @@ public class FailingNonBlockingActivatorTest {
 
     public void stateChangeActivateFailure(Activator activator) throws Exception {
         assert activator.getCurrentState() == Activator.ActivateState.UNKNOWN;
-        new ActivatorToggleCommand(activator,1,new QuartzScheduledExecutorService()).call();
+        new ActivatorToggleCommand(new QuartzScheduledExecutorService(),activator,1).call();
         assert activator.getCurrentState() == Activator.ActivateState.DEACTIVATED;
         synchronized (this) {
             try {
@@ -133,7 +133,7 @@ public class FailingNonBlockingActivatorTest {
 
         assert activator.getCurrentState() == Activator.ActivateState.UNKNOWN;
         assert states.isEmpty();
-        new ActivatorToggleCommand(activator,3,new QuartzScheduledExecutorService(),listener).call();
+        new ActivatorToggleCommand(new QuartzScheduledExecutorService(),activator,3,listener).call();
         assert states.contains(Activator.ActivateState.ACTIVATING);
         assert states.contains(Activator.ActivateState.ACTIVATED);
         assert states.contains(Activator.ActivateState.DEACTIVATED);

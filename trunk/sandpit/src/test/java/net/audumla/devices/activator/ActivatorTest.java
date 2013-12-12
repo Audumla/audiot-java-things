@@ -16,21 +16,35 @@ package net.audumla.devices.activator;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
+import net.audumla.camel.scheduler.SchedulerComponent;
+import org.apache.camel.CamelContext;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.concurrent.Callable;
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration
+public class ActivatorTest {
+    private static final Logger logger = LoggerFactory.getLogger(ActivatorTest.class);
 
-public class ActivatorDisableCommand extends AbstractActivatorCommand {
-    private static final Logger logger = LoggerFactory.getLogger(ActivatorDisableCommand.class);
+    @Autowired
+    protected CamelContext camelContext;
 
-    public ActivatorDisableCommand(Activator activator, ActivatorListener... listeners) {
-        super(activator,listeners);
+    @Before
+    public void setUp() throws Exception {
     }
 
-    @Override
-    public Activator call() throws Exception {
-        getActivator().deactivate(getListeners());
-        return getActivator();
+    @Test
+    public void testActivator() throws Exception {
+
+        synchronized (this) {
+            this.wait(20000);
+        }
+
     }
 }

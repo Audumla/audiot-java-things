@@ -21,16 +21,29 @@ import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.Callable;
 
-public class ActivatorDisableCommand extends AbstractActivatorCommand {
-    private static final Logger logger = LoggerFactory.getLogger(ActivatorDisableCommand.class);
+public abstract class AbstractActivatorCommand implements Callable<Activator> {
+    private static final Logger logger = LoggerFactory.getLogger(AbstractActivatorCommand.class);
+    protected Activator activator;
+    protected ActivatorListener[] listeners;
 
-    public ActivatorDisableCommand(Activator activator, ActivatorListener... listeners) {
-        super(activator,listeners);
+    public AbstractActivatorCommand() {
     }
 
-    @Override
-    public Activator call() throws Exception {
-        getActivator().deactivate(getListeners());
-        return getActivator();
+    public AbstractActivatorCommand(Activator activator, ActivatorListener... listeners) {
+        this.activator = activator;
+        this.listeners = listeners;
     }
+
+    public void setActivator(Activator activator) {
+        this.activator = activator;
+    }
+
+    public Activator getActivator() {
+        return activator;
+    }
+
+    public ActivatorListener[] getListeners() {
+        return listeners;
+    }
+
 }
