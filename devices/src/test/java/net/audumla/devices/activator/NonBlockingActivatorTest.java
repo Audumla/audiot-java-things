@@ -30,7 +30,7 @@ public class NonBlockingActivatorTest {
         assert activator.getCurrentState() == Activator.ActivateState.UNKNOWN;
         activator.deactivate();
         assert activator.getCurrentState() == Activator.ActivateState.DEACTIVATED;
-        new ActivatorToggleCommand(activator,2,new QuartzScheduledExecutorService()).call();
+        new ActivatorToggleCommand(new QuartzScheduledExecutorService(),activator,2).call();
         assert activator.getCurrentState() == Activator.ActivateState.ACTIVATED;
         synchronized (this) {
             try {
@@ -77,7 +77,7 @@ public class NonBlockingActivatorTest {
 
         assert activator.getCurrentState() == Activator.ActivateState.UNKNOWN;
         assert states.isEmpty();
-        new ActivatorToggleCommand(activator,2,new QuartzScheduledExecutorService(),listener).call();
+        new ActivatorToggleCommand(new QuartzScheduledExecutorService(),activator,2,listener).call();
         synchronized (this) {
             try {
                 this.wait(1000);

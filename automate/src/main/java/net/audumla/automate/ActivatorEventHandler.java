@@ -54,7 +54,7 @@ public class ActivatorEventHandler implements EventHandler {
     public boolean handleEvent(Event event) {
         //attempts to activate the irrigationEvent and then monitors its progress using a specific listener.
         try {
-            new ActivatorToggleCommand(activator,event.getEventDuration(),scheduler,new EventActivatorListener(event)).call();
+            new ActivatorToggleCommand(scheduler,activator,event.getEventDuration(),new EventActivatorListener(event)).call();
         } catch (Exception e) {
             logger.error("Error handling event",e);
         }

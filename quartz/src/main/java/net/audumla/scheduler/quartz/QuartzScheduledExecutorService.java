@@ -22,59 +22,72 @@ import org.quartz.impl.StdSchedulerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.*;
 
 public class QuartzScheduledExecutorService extends AbstractExecutorService implements ScheduledExecutorService {
     private static final Logger logger = LoggerFactory.getLogger(QuartzScheduledExecutorService.class);
-    private Scheduler scheduler;
     private static long jobCount = 0;
+    private Scheduler scheduler;
 
-    public QuartzScheduledExecutorService() {
-        try {
-            scheduler = StdSchedulerFactory.getDefaultScheduler();
-            scheduler.start();
-        } catch (SchedulerException e) {
-            logger.error("Instantiation error",e);
-        }
+    public QuartzScheduledExecutorService(Scheduler scheduler) {
+        this.scheduler = scheduler;
     }
 
+    public QuartzScheduledExecutorService() {
+    }
+
+    public void setScheduler(Scheduler scheduler) {
+        this.scheduler = scheduler;
+    }
+
+    public Scheduler getScheduler() {
+        if (scheduler == null) {
+            try {
+                scheduler = StdSchedulerFactory.getDefaultScheduler();
+                scheduler.start();
+            } catch (SchedulerException e) {
+                logger.error("Instantiation error", e);
+            }
+        }
+        return scheduler;
+
+    }
 
     @Override
     protected <T> RunnableFuture<T> newTaskFor(Runnable runnable, T value) {
-        return new QuartzRunnableFuture<T>(runnable,value,this.scheduler,generateName());
+        return new QuartzRunnableFuture<T>(runnable, value, this.scheduler, generateName());
     }
 
     @Override
     protected <T> RunnableFuture<T> newTaskFor(Callable<T> callable) {
-        return new QuartzRunnableFuture<T>(callable,this.scheduler,generateName());
+        return new QuartzRunnableFuture<T>(callable, this.scheduler, generateName());
     }
 
     @Override
     public ScheduledFuture<?> schedule(Runnable command, long delay, TimeUnit unit) {
-        QuartzRunnableFuture<Object> rf = new QuartzRunnableFuture<Object>(command,null,this.scheduler,delay,unit,generateName());
+        QuartzRunnableFuture<Object> rf = new QuartzRunnableFuture<Object>(command, null, this.scheduler, delay, unit, generateName());
         rf.run();
         return rf;
     }
 
     @Override
     public <V> ScheduledFuture<V> schedule(Callable<V> callable, long delay, TimeUnit unit) {
-        RunnableScheduledFuture<V> rf = new QuartzRunnableFuture<V>(callable,this.scheduler,delay,unit,generateName());
+        RunnableScheduledFuture<V> rf = new QuartzRunnableFuture<V>(callable, this.scheduler, delay, unit, generateName());
         rf.run();
         return rf;
     }
 
     @Override
     public ScheduledFuture<?> scheduleAtFixedRate(Runnable command, long initialDelay, long period, TimeUnit unit) {
-        RunnableScheduledFuture<Object> rf = new QuartzRunnableFuture<Object>(command,null,this.scheduler,initialDelay,unit,generateName());
+        RunnableScheduledFuture<Object> rf = new QuartzRunnableFuture<Object>(command, null, this.scheduler, initialDelay, unit, generateName());
         rf.run();
         return rf;
     }
 
     @Override
     public ScheduledFuture<?> scheduleWithFixedDelay(Runnable command, long initialDelay, long delay, TimeUnit unit) {
-        RunnableScheduledFuture<Object> rf = new QuartzRunnableFuture<Object>(command,null,this.scheduler,delay,unit,generateName());
+        RunnableScheduledFuture<Object> rf = new QuartzRunnableFuture<Object>(command, null, this.scheduler, delay, unit, generateName());
         rf.run();
         return rf;
     }
@@ -84,7 +97,7 @@ public class QuartzScheduledExecutorService extends AbstractExecutorService impl
         try {
             scheduler.shutdown(true);
         } catch (SchedulerException e) {
-            logger.error("Error shutting down",e);
+            logger.error("Error shutting down", e);
         }
     }
 
@@ -93,7 +106,7 @@ public class QuartzScheduledExecutorService extends AbstractExecutorService impl
         try {
             scheduler.shutdown(false);
         } catch (SchedulerException e) {
-            logger.error("Error shutting down",e);
+            logger.error("Error shutting down", e);
         }
         return null;
     }
@@ -124,7 +137,7 @@ public class QuartzScheduledExecutorService extends AbstractExecutorService impl
     }
 
     protected String generateName() {
-        return "job"+(jobCount++);
+        return "job" + (jobCount++);
 
     }
 }
