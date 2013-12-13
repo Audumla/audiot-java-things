@@ -16,7 +16,9 @@ package net.audumla.devices.activator;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import net.audumla.camel.scheduler.SchedulerComponent;
+import net.audumla.camel.TestBean;
+import net.audumla.camel.typeconverter.BeanToStringConverter;
+import net.audumla.camel.typeconverter.StringToBeanConverter;
 import org.apache.camel.CamelContext;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,6 +28,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import java.util.concurrent.Callable;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration
@@ -37,6 +41,8 @@ public class ActivatorTest {
 
     @Before
     public void setUp() throws Exception {
+//        camelContext.getTypeConverterRegistry().addTypeConverter(Callable.class, String.class, new StringToBeanConverter());
+//        camelContext.getTypeConverterRegistry().addTypeConverter(String.class, Callable.class, new BeanToStringConverter());
     }
 
     @Test

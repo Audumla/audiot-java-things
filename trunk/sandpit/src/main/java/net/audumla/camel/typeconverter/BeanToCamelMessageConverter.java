@@ -18,6 +18,7 @@ package net.audumla.camel.typeconverter;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.TypeConversionException;
+import org.apache.camel.support.TypeConverterSupport;
 import org.codehaus.jackson.map.util.BeanUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,17 +28,17 @@ import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 
-public class BeanToCamelMessageConverter extends JSONBeanConverter {
+public class BeanToCamelMessageConverter extends TypeConverterSupport {
     private static final Logger logger = LoggerFactory.getLogger(BeanToCamelMessageConverter.class);
 
-    @Override
+
     public <T> T convertTo(Class<T> tClass, Exchange exchange, Object o) throws TypeConversionException {
         try {
             BeanInfo info = Introspector.getBeanInfo(o.getClass());
             for (PropertyDescriptor desc : info.getPropertyDescriptors()) {
                 exchange.getIn().setHeader("bean:"+desc.getName(),desc.getReadMethod().invoke(o).toString());
             }
-            return (T) mapper.writeValueAsString(o);
+            return (T) JSONBeanConverter.mapper.writeValueAsString(o);
         } catch (Exception e) {
             throw new TypeConversionException(o,tClass,e);
         }

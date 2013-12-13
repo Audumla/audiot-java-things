@@ -16,19 +16,39 @@ package net.audumla.camel.typeconverter;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import org.apache.camel.support.TypeConverterSupport;
+import org.apache.camel.Converter;
+import org.codehaus.jackson.annotate.JsonTypeInfo;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;
+import org.codehaus.jackson.type.TypeReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class JSONBeanConverter extends TypeConverterSupport {
+import java.io.IOException;
+import java.util.concurrent.Callable;
+
+@Converter
+public class JSONBeanConverter {
     private static final Logger logger = LoggerFactory.getLogger(JSONBeanConverter.class);
     static protected ObjectMapper mapper = new ObjectMapper();
 
     static {
         mapper.enable(SerializationConfig.Feature.INDENT_OUTPUT);
         mapper.disable(SerializationConfig.Feature.WRITE_NULL_MAP_VALUES);
+        mapper.enableDefaultTyping(); // defaults for defaults (see below); include as wrapper-array, non-concrete types
+        mapper.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL, JsonTypeInfo.As.WRAPPER_OBJECT); // all non-final types
+    }
+
+    @Converter
+    public static String convertCallableToString(Callable o) throws IOException {
+        return JSONBeanConverter.mapper.writeValueAsString(o);
+    }
+
+    @Converter
+    public static Callable convertStringToObject(String string) throws IOException {
+        TypeReference<Callable> type = new TypeReference<Callable>() {
+        };
+        return JSONBeanConverter.mapper.readValue(string, type);
     }
 
 }

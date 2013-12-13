@@ -1,4 +1,4 @@
-package net.audumla.camel.typeconverter;
+package net.audumla.bean;
 
 /*
  * *********************************************************************
@@ -16,22 +16,26 @@ package net.audumla.camel.typeconverter;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import org.apache.camel.Exchange;
-import org.apache.camel.TypeConversionException;
-import org.apache.camel.support.TypeConverterSupport;
-import org.codehaus.jackson.type.TypeReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class BeanToStringConverter extends TypeConverterSupport {
-    private static final Logger logger = LoggerFactory.getLogger(BeanToStringConverter.class);
+public class BeanWrapper<T> {
+    private static final Logger logger = LoggerFactory.getLogger(BeanWrapper.class);
 
-    @Override
-    public <T> T convertTo(Class<T> tClass, Exchange exchange, Object o) throws TypeConversionException {
-        try {
-            return (T) JSONBeanConverter.mapper.writeValueAsString(o);
-        } catch (Exception e) {
-            throw new TypeConversionException(o,tClass,e);
-        }
+    T bean;
+
+    public BeanWrapper(T bean) {
+        this.bean = bean;
+    }
+
+    public BeanWrapper() {
+    }
+
+    public T getBean() {
+        return bean;
+    }
+
+    public void setBean(T bean) {
+        this.bean = bean;
     }
 }
