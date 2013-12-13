@@ -73,6 +73,7 @@ public abstract class ActivatorAdaptor implements Activator {
 
     @Override
     public boolean deactivate(ActivatorListener... listeners) {
+
         if (getCurrentState() != ActivateState.DEACTIVATED && getCurrentState() != ActivateState.DEACTIVATING) {
             Deque<ActivatorListener> ls = new LinkedList<ActivatorListener>(registeredListeners);
             if (listeners != null) {

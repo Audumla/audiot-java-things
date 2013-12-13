@@ -18,16 +18,19 @@ package net.audumla.camel.typeconverter;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.TypeConversionException;
+import org.apache.camel.support.TypeConverterSupport;
+import org.codehaus.jackson.type.TypeReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class StringToBeanConverter extends JSONBeanConverter {
+public class StringToBeanConverter extends TypeConverterSupport {
     private static final Logger logger = LoggerFactory.getLogger(StringToBeanConverter.class);
 
     @Override
     public <T> T convertTo(Class<T> tClass, Exchange exchange, Object o) throws TypeConversionException {
         try {
-            return mapper.readValue(o.toString(), tClass);
+            TypeReference<T> type = new TypeReference<T>() {};
+            return JSONBeanConverter.mapper.readValue(o.toString(), type);
         } catch (Exception e) {
             throw new TypeConversionException(o,tClass,e);
         }
