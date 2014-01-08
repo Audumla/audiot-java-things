@@ -1,4 +1,4 @@
-package net.audumla.camel.scheduler;
+package net.audumla.scheduler.camel;
 
 /*
  * *********************************************************************

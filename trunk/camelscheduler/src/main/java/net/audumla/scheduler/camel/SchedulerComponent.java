@@ -1,4 +1,4 @@
-package net.audumla.camel.scheduler;
+package net.audumla.scheduler.camel;
 
 /*
  * *********************************************************************
@@ -23,7 +23,6 @@ import org.apache.camel.util.IntrospectionSupport;
 import org.apache.camel.util.ObjectHelper;
 import org.apache.commons.lang.reflect.ConstructorUtils;
 import org.quartz.Scheduler;
-import org.quartz.SchedulerException;
 import org.quartz.TriggerKey;
 import org.slf4j.LoggerFactory;
 
