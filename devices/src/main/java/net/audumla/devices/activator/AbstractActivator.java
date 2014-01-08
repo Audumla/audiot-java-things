@@ -16,13 +16,13 @@ import java.util.LinkedList;
  * Date: 10/09/13
  * Time: 3:13 PM
  */
-public abstract class ActivatorAdaptor implements Activator {
+public abstract class AbstractActivator implements Activator {
     private static final Logger logger = Logger.getLogger(Activator.class);
     private ActivateState state = ActivateState.UNKNOWN;
     private Deque<ActivatorListener> registeredListeners = new LinkedList<ActivatorListener>();
     private String name = BeanUtils.generateName(Activator.class);
 
-    protected ActivatorAdaptor() {
+    protected AbstractActivator() {
         registeredListeners.add(new ActivatorStateListener(this));
     }
 
@@ -100,44 +100,6 @@ public abstract class ActivatorAdaptor implements Activator {
 
     protected abstract boolean doDeactivate(Collection<ActivatorListener> listeners);
 
-//    @Override
-//    public boolean activate(long seconds, boolean block, ActivatorListener... listeners) {
-//        if (getCurrentState() != ActivateState.ACTIVATED) {
-//            if (block) {
-//                try {
-//                    if (activate(listeners)) {
-//                        synchronized (this) {
-//                            this.wait(seconds);
-//                        }
-//                        deactivate(listeners);
-//                    } else {
-//                        return false;
-//                    }
-//                } catch (Exception e) {
-//                    logger.error(e);
-//                    return false;
-//                }
-//            } else {
-//                try {
-//                    if (activate(listeners)) {
-//                        addDeactivateTimeout(seconds > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) seconds, listeners);
-//                    }
-//                    else {
-//                        return false;
-//                    }
-//                } catch (Exception e) {
-//                    logger.error(e);
-//                    deactivate(listeners);
-//                    return false;
-//                }
-//            }
-//        }
-//        return true;
-//    }
-
-//    protected void addDeactivateTimeout(int seconds, ScheduledExecutorService service, ActivatorListener... listeners) {
-//        service.schedule(new DeactivateCall(this,listeners),seconds, TimeUnit.SECONDS);
-//    }
 
     @Override
     public void addListener(ActivatorListener listener) {
@@ -149,40 +111,22 @@ public abstract class ActivatorAdaptor implements Activator {
         registeredListeners.remove(listener);
     }
 
-    public static class DeactivateCall implements Runnable {
-
-        protected Activator activator;
-        protected ActivatorListener listener[];
-
-        public DeactivateCall(Activator activator, ActivatorListener[] listener) {
-            this.activator = activator;
-            this.listener = listener;
-        }
-
-        @Override
-        public void run() {
-            activator.deactivate(listener);
-        }
+    @Override
+    public void execute(ActivatorCommand command) throws Exception {
+        command.setActivator(this);
+        command.call();
     }
 
-//    public static class ActivatorTimeoutJob implements Job {
-//
-//        public static final String ACTIVATOR_PROPERTY = "activator";
-//        public static final String ACTIVATOR_LISTENER_PROPERTY = "listener";
-//
-//        @Override
-//        public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-//            Activator activator = (Activator) jobExecutionContext.getMergedJobDataMap().get(ACTIVATOR_PROPERTY);
-//            ActivatorListener listener[] = (ActivatorListener[]) jobExecutionContext.getMergedJobDataMap().get(ACTIVATOR_LISTENER_PROPERTY);
-//            activator.deactivate(listener);
-//        }
-//    }
+    @Override
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public static class ActivatorStateListener implements ActivatorListener {
         private static final Logger logger = Logger.getLogger(Activator.class);
-        private final ActivatorAdaptor activator;
+        private final AbstractActivator activator;
 
-        public ActivatorStateListener(ActivatorAdaptor activatorAdaptor) {
+        public ActivatorStateListener(AbstractActivator activatorAdaptor) {
             activator = activatorAdaptor;
         }
 

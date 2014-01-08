@@ -1,6 +1,6 @@
 package net.audumla.devices.activator.rasperrypi;
 
-import net.audumla.devices.activator.ActivatorAdaptor;
+import net.audumla.devices.activator.AbstractActivator;
 import net.audumla.devices.activator.ActivatorListener;
 
 import java.util.Collection;
@@ -12,7 +12,7 @@ import java.util.Collection;
  * Time: 1:23 PM
  * To change this template use File | Settings | File Templates.
  */
-public class GPIOActivator extends ActivatorAdaptor {
+public class GPIOActivator extends AbstractActivator {
 
 
     @Override

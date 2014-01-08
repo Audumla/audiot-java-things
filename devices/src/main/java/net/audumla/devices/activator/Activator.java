@@ -97,10 +97,23 @@ public interface Activator {
     String getName();
 
     /**
+     * Set the name of the activator
+     *
+     * @param name the name of the activator
+     */
+    void setName(String name);
+
+    /**
      * The current state of the activator. Upon initialization the state should be UNKNOWN until a successful call to either activate or deactivate has been made
      *
      * @return the current state of the activator.
      */
     ActivateState getCurrentState();
+
+    /**
+     * Executes the given command on this activator. The implementation of the command logic can be stored within the command class or explicitly coded in the activator
+     *
+     */
+    void execute(ActivatorCommand command) throws Exception;
 
 }

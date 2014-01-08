@@ -9,7 +9,7 @@ import java.util.Collection;
  * Date: 10/09/13
  * Time: 4:27 PM
  */
-public class ActivatorMock extends ActivatorAdaptor {
+public class ActivatorMock extends AbstractActivator {
     private static final Logger logger = Logger.getLogger(Activator.class);
     private boolean activate;
     private boolean deactivate;

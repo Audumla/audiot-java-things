@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit;
 
 public class ActivatorToggleCommand extends ActivatorEnableCommand {
     private static final Logger logger = LoggerFactory.getLogger(ActivatorToggleCommand.class);
-    private long delay;
+    private Long delay;
     private ScheduledExecutorService executor = null;
 
     public ActivatorToggleCommand() {
@@ -36,11 +36,11 @@ public class ActivatorToggleCommand extends ActivatorEnableCommand {
         this.delay = delay;
     }
 
-    public long getDelay() {
+    public Long getDelay() {
         return delay;
     }
 
-    public void setDelay(long delay) {
+    public void setDelay(Long delay) {
         this.delay = delay;
     }
 
@@ -54,18 +54,18 @@ public class ActivatorToggleCommand extends ActivatorEnableCommand {
 
     @Override
     public Activator call() throws Exception {
+        // ensure that the result of the call to ativate results in the activator now being in the correct state.
         if (delay > 0 && super.call().getCurrentState().equals(Activator.ActivateState.ACTIVATED)) {
             if (executor != null) {
-                executor.schedule(new ActivatorDisableCommand(activator, listeners), delay, TimeUnit.SECONDS);
+                executor.schedule(new ActivatorDisableCommand(getActivator(), getListeners()), delay, TimeUnit.SECONDS);
             } else {
                 synchronized (this) {
                     this.wait(delay * 1000);
                 }
-                new ActivatorDisableCommand(activator, listeners).call();
+                new ActivatorDisableCommand(getActivator(), getListeners()).call();
             }
         }
         return activator;
     }
-
 
 }

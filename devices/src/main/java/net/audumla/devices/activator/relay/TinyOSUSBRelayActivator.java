@@ -1,7 +1,7 @@
 package net.audumla.devices.activator.relay;
 
+import net.audumla.devices.activator.AbstractActivator;
 import net.audumla.devices.activator.Activator;
-import net.audumla.devices.activator.ActivatorAdaptor;
 import net.audumla.devices.activator.ActivatorListener;
 import net.audumla.devices.activator.ActivatorStateChangeEvent;
 import org.apache.log4j.Logger;
@@ -13,7 +13,7 @@ import java.util.Collection;
  * Date: 10/09/13
  * Time: 3:51 PM
  */
-public class TinyOSUSBRelayActivator extends ActivatorAdaptor {
+public class TinyOSUSBRelayActivator extends AbstractActivator {
     private static final Logger logger = Logger.getLogger(Activator.class);
     private TinyOSUSBRelayController controller;
     private int device = 0;
