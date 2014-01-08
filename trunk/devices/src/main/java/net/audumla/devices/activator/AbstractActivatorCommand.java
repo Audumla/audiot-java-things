@@ -16,34 +16,66 @@ package net.audumla.devices.activator;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Array;
+import java.lang.reflect.InvocationTargetException;
+import java.util.*;
 import java.util.concurrent.Callable;
 
-public abstract class AbstractActivatorCommand implements Callable<Activator> {
+public abstract class AbstractActivatorCommand implements ActivatorCommand {
     private static final Logger logger = LoggerFactory.getLogger(AbstractActivatorCommand.class);
     protected Activator activator;
-    protected ActivatorListener[] listeners;
+    protected Set<ActivatorListener> alisteners = new HashSet<ActivatorListener>();
 
     public AbstractActivatorCommand() {
     }
 
     public AbstractActivatorCommand(Activator activator, ActivatorListener... listeners) {
         this.activator = activator;
-        this.listeners = listeners;
+        this.alisteners.addAll(Arrays.asList(listeners));
     }
 
+    @Override
     public void setActivator(Activator activator) {
         this.activator = activator;
     }
 
+    @Override
     public Activator getActivator() {
         return activator;
     }
 
+    @Override
     public ActivatorListener[] getListeners() {
-        return listeners;
+        return alisteners.toArray(new ActivatorListener[alisteners.size()]);
     }
 
+    @Override
+    public void setListeners(ActivatorListener[] listeners) {
+        alisteners.addAll(Arrays.asList(listeners));
+    }
+
+    @Override
+    public void addListener(ActivatorListener listener) {
+        alisteners.add(listener);
+    }
+
+    @Override
+    public void removeListener(ActivatorListener listener) {
+        alisteners.remove(listener);
+
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        try {
+            return BeanUtils.cloneBean(this);
+        } catch (Exception e) {
+            logger.error("Unable to clone Activator Command {}",this.getClass().getName(),e);
+            throw new CloneNotSupportedException("Failed to clone Activator Command");
+        }
+    }
 }

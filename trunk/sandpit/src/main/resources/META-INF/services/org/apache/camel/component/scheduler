@@ -1,1 +1,1 @@
-class=net.audumla.camel.scheduler.SchedulerComponent
+class=net.audumla.scheduler.camel.SchedulerComponent

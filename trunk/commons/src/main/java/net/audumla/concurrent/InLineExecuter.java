@@ -22,13 +22,9 @@ import org.slf4j.LoggerFactory;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executor;
 
-public class InLineExecuter implements Executor{
+public class InLineExecuter {
     private static final Logger logger = LoggerFactory.getLogger(InLineExecuter.class);
 
-    @Override
-    public void execute(Runnable command) {
-        command.run();
-    }
 
     public Object execute(Callable command) throws Exception {
         return command.call();

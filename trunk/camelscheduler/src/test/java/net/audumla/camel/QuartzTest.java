@@ -17,10 +17,7 @@ package net.audumla.camel;
  */
 
 import net.audumla.astronomy.*;
-import net.audumla.camel.scheduler.CelestialScheduleEndpoint;
-import net.audumla.camel.scheduler.CronSchedulerEndpoint;
-import net.audumla.camel.scheduler.SchedulerComponent;
-import net.audumla.camel.scheduler.SeasonalScheduleEndpoint;
+import net.audumla.scheduler.camel.SchedulerComponent;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.impl.DefaultCamelContext;
