@@ -16,23 +16,23 @@ package net.audumla.devices.activator;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
+import net.audumla.devices.event.SimpleEventSchedule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Instant;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class ActivatorToggleCommand extends ActivatorEnableCommand {
     private static final Logger logger = LoggerFactory.getLogger(ActivatorToggleCommand.class);
     private Long delay;
-    private ScheduledExecutorService executor = null;
 
     public ActivatorToggleCommand() {
     }
 
-    public ActivatorToggleCommand(ScheduledExecutorService executor, Activator activator, long delay, ActivatorListener... listeners) {
-        super(activator, listeners);
-        this.executor = executor;
+    public ActivatorToggleCommand(long delay, ActivatorListener... listeners) {
+        super(listeners);
         this.delay = delay;
     }
 
@@ -44,28 +44,25 @@ public class ActivatorToggleCommand extends ActivatorEnableCommand {
         this.delay = delay;
     }
 
-    public ScheduledExecutorService getExecutor() {
-        return executor;
-    }
-
-    public void setExecutor(ScheduledExecutorService executor) {
-        this.executor = executor;
-    }
-
     @Override
-    public Activator call() throws Exception {
+    public boolean execute(Activator activator) {
         // ensure that the result of the call to ativate results in the activator now being in the correct state.
-        if (delay > 0 && super.call().getCurrentState().equals(Activator.ActivateState.ACTIVATED)) {
-            if (executor != null) {
-                executor.schedule(new ActivatorDisableCommand(getActivator(), getListeners()), delay, TimeUnit.SECONDS);
+        if (delay > 0 && super.execute(activator)) {
+            if (getScheduler() != null) {
+                return getScheduler().scheduleEvent(activator, new SimpleEventSchedule(Instant.now().plusSeconds(delay)),new ActivatorDisableCommand(getListeners()));
             } else {
                 synchronized (this) {
-                    this.wait(delay * 1000);
+                    try {
+                        this.wait(delay * 1000);
+                    } catch (InterruptedException e) {
+                        logger.error("Failed to execute blocking deactivate",e);
+                    }
                 }
-                new ActivatorDisableCommand(getActivator(), getListeners()).call();
+                return new ActivatorDisableCommand(getListeners()).execute(activator);
             }
         }
-        return activator;
+        return false;
     }
+
 
 }

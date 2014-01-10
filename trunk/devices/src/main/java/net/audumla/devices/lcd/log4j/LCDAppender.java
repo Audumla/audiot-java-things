@@ -1,28 +1,32 @@
 package net.audumla.devices.lcd.log4j;
 
+import net.audumla.devices.event.CommandEvent;
+import net.audumla.devices.event.EventScheduler;
+import net.audumla.devices.event.EventTarget;
 import net.audumla.devices.lcd.*;
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.spi.LoggingEvent;
 
 public class LCDAppender extends AppenderSkeleton {
 
-    protected LCDCommandQueue lcd;
+    protected EventTarget<CommandEvent<LCD>> target;
 
-
-    protected LCDAppender(LCDCommandQueue lcd) {
-        this.lcd = lcd;
+    public LCDAppender(EventTarget<CommandEvent<LCD>> t) {
+        target = t;
     }
 
     public void append(LoggingEvent logevent) {
-        lcd.append(new LCDClearCommand());
-        lcd.append(new LCDWriteCommand(logevent.getRenderedMessage()));
-        lcd.append(new LCDPauseCommand());
+        EventScheduler.getInstance().scheduleEvent(target,
+                new LCDClearCommand(),
+                new LCDWriteCommand(logevent.getRenderedMessage()),
+                new LCDPauseCommand());
     }
 
     @Override
     public void close() {
-        lcd.append(new LCDShutdownCommand());
-        lcd.append(new LCDPauseCommand());
+        EventScheduler.getInstance().scheduleEvent(target,
+                new LCDShutdownCommand(),
+                new LCDPauseCommand());
     }
 
     @Override

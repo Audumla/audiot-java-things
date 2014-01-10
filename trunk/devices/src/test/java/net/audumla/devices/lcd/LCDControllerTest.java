@@ -1,13 +1,25 @@
 package net.audumla.devices.lcd;
 
+import net.audumla.devices.event.EventScheduler;
 import net.audumla.devices.lcd.raspberrypi.RaspberryPII2CLCD;
+import org.junit.Before;
 import org.junit.Test;
 
 public class LCDControllerTest {
 
+    EventScheduler scheduler = null;
+    LCD target = null;
+
+    @Before
+    public void setUp() throws Exception {
+
+        scheduler = EventScheduler.getInstance();
+        target = RaspberryPII2CLCD.instance("LCD",RaspberryPII2CLCD.DEFAULT_ADDRESS);
+    }
+
     @Test
     public void testLCD() throws Exception {
-        LCDCommandQueue.instance(RaspberryPII2CLCD.instance(RaspberryPII2CLCD.DEFAULT_ADDRESS)).append(new LCDWriteCommand("Hello"));
+        scheduler.scheduleEvent(target,new LCDWriteCommand("Hello"));
     }
 
     @Test
@@ -20,12 +32,11 @@ public class LCDControllerTest {
 
     @Test
     public void testController() {
-        LCDCommandQueue lcd = LCDCommandQueue.instance(RaspberryPII2CLCD.instance(RaspberryPII2CLCD.DEFAULT_ADDRESS));
-        lcd.append(new LCDClearCommand());
-        lcd.append(new LCDWriteCommand("Test Output"));
-        lcd.append(new LCDSetCursorCommand(0, 1));
-        lcd.append(new LCDWriteCommand("Moved to Line"));
-        lcd.append(new LCDPauseCommand());
+        scheduler.scheduleEvent(target,new LCDClearCommand());
+        scheduler.scheduleEvent(target,new LCDWriteCommand("Test Output"));
+        scheduler.scheduleEvent(target,new LCDSetCursorCommand(0, 1));
+        scheduler.scheduleEvent(target,new LCDWriteCommand("Moved to Line"));
+        scheduler.scheduleEvent(target,new LCDPauseCommand());
     }
 
 }

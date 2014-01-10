@@ -1,4 +1,4 @@
-package net.audumla.devices.activator;
+package net.audumla.devices.event;
 
 /*
  * *********************************************************************
@@ -19,21 +19,22 @@ package net.audumla.devices.activator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.concurrent.Callable;
+public abstract class AbstractEventTarget<T extends Event> implements EventTarget<T> {
 
-public class ActivatorDisableCommand extends AbstractActivatorCommand {
-    private static final Logger logger = LoggerFactory.getLogger(ActivatorDisableCommand.class);
+    private String name;
 
-    public ActivatorDisableCommand() {
-
+    protected AbstractEventTarget(String name) {
+        this.name = name;
     }
 
-    public ActivatorDisableCommand(ActivatorListener... listeners) {
-        super(listeners);
+    protected AbstractEventTarget() {
     }
 
-    @Override
-    public boolean execute(Activator activator) {
-        return activator.deactivate(getListeners());
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

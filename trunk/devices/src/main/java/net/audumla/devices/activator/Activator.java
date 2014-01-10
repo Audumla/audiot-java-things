@@ -16,7 +16,10 @@ package net.audumla.devices.activator;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-public interface Activator {
+import net.audumla.devices.event.CommandEvent;
+import net.audumla.devices.event.EventTarget;
+
+public interface Activator extends EventTarget<CommandEvent<Activator>> {
     /**
      * The Activator interface models a device that can be switched on or off either independently or for a given amount of time.
      * When a time is specified a choice can be made to determine whether the calling thread will be blocked or asynchronously deactivated.
@@ -110,10 +113,5 @@ public interface Activator {
      */
     ActivateState getCurrentState();
 
-    /**
-     * Executes the given command on this activator. The implementation of the command logic can be stored within the command class or explicitly coded in the activator
-     *
-     */
-    void execute(ActivatorCommand command) throws Exception;
 
 }

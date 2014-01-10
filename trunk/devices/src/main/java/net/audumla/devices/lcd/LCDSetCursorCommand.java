@@ -1,6 +1,9 @@
 package net.audumla.devices.lcd;
 
-public class LCDSetCursorCommand implements LCDCommand {
+import net.audumla.devices.event.AbstractEvent;
+import net.audumla.devices.event.CommandEvent;
+
+public class LCDSetCursorCommand extends AbstractEvent implements CommandEvent<LCD> {
 
     protected int col;
     protected int row;
@@ -10,8 +13,9 @@ public class LCDSetCursorCommand implements LCDCommand {
         row = r;
     }
 
-    public void execute(LCD lcd) {
+    public boolean execute(LCD lcd) {
         lcd.setCursor(col, row);
+        return true;
     }
 
 }

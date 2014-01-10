@@ -1,5 +1,8 @@
 package net.audumla.devices.lcd;
 
+import net.audumla.devices.event.CommandEvent;
+import net.audumla.devices.event.EventTarget;
+
 /**
  * Created with IntelliJ IDEA.
  * User: mgleeson
@@ -7,7 +10,7 @@ package net.audumla.devices.lcd;
  * Time: 2:29 PM
  * To change this template use File | Settings | File Templates.
  */
-public interface LCD {
+public interface LCD extends EventTarget<CommandEvent<LCD>> {
     void write(String s);
 
     void clear();

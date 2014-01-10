@@ -1,6 +1,9 @@
 package net.audumla.devices.lcd;
 
-public class LCDBlinkCommand implements LCDCommand {
+import net.audumla.devices.event.AbstractEvent;
+import net.audumla.devices.event.CommandEvent;
+
+public class LCDBlinkCommand extends AbstractEvent implements CommandEvent<LCD> {
 
     protected boolean blink;
 
@@ -8,11 +11,12 @@ public class LCDBlinkCommand implements LCDCommand {
         blink = b;
     }
 
-    public void execute(LCD lcd) {
+    public boolean execute(LCD lcd) {
         if (blink)
             lcd.blink();
         else
             lcd.noBlink();
+        return true;
     }
 
 }

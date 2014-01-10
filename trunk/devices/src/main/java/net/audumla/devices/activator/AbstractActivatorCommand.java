@@ -16,36 +16,23 @@ package net.audumla.devices.activator;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import org.apache.commons.beanutils.BeanUtils;
+import net.audumla.devices.event.AbstractEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.Array;
-import java.lang.reflect.InvocationTargetException;
-import java.util.*;
-import java.util.concurrent.Callable;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
-public abstract class AbstractActivatorCommand implements ActivatorCommand {
+public abstract class AbstractActivatorCommand extends AbstractEvent implements ActivatorCommand {
     private static final Logger logger = LoggerFactory.getLogger(AbstractActivatorCommand.class);
-    protected Activator activator;
     protected Set<ActivatorListener> alisteners = new HashSet<ActivatorListener>();
 
     public AbstractActivatorCommand() {
     }
 
-    public AbstractActivatorCommand(Activator activator, ActivatorListener... listeners) {
-        this.activator = activator;
+    public AbstractActivatorCommand(ActivatorListener... listeners) {
         this.alisteners.addAll(Arrays.asList(listeners));
-    }
-
-    @Override
-    public void setActivator(Activator activator) {
-        this.activator = activator;
-    }
-
-    @Override
-    public Activator getActivator() {
-        return activator;
     }
 
     @Override
@@ -69,13 +56,4 @@ public abstract class AbstractActivatorCommand implements ActivatorCommand {
 
     }
 
-    @Override
-    public Object clone() throws CloneNotSupportedException {
-        try {
-            return BeanUtils.cloneBean(this);
-        } catch (Exception e) {
-            logger.error("Unable to clone Activator Command {}",this.getClass().getName(),e);
-            throw new CloneNotSupportedException("Failed to clone Activator Command");
-        }
-    }
 }
