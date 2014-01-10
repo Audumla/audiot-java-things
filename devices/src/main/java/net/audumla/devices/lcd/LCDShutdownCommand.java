@@ -1,10 +1,14 @@
 package net.audumla.devices.lcd;
 
-public class LCDShutdownCommand implements LCDCommand {
+import net.audumla.devices.event.AbstractEvent;
+import net.audumla.devices.event.CommandEvent;
 
-    public void execute(LCD lcd) {
+public class LCDShutdownCommand extends AbstractEvent implements CommandEvent<LCD> {
+
+    public boolean execute(LCD lcd) {
 //		lcd.clear();
 //		lcd.write("System shutdown");
+        return false;
     }
 
 }

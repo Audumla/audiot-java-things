@@ -1,6 +1,9 @@
 package net.audumla.devices.lcd;
 
-public class LCDPauseCommand implements LCDCommand {
+import net.audumla.devices.event.AbstractEvent;
+import net.audumla.devices.event.CommandEvent;
+
+public class LCDPauseCommand extends AbstractEvent implements CommandEvent<LCD> {
 
     protected int msec = 2000;
 
@@ -11,14 +14,15 @@ public class LCDPauseCommand implements LCDCommand {
         this.msec = msec;
     }
 
-    public void execute(LCD lcd) {
+    public boolean execute(LCD lcd) {
         synchronized (lcd) {
             try {
                 lcd.wait(msec);
-            } catch (Exception e) {
+            } catch (Exception ignored) {
             }
 
         }
+        return true;
     }
 
 }

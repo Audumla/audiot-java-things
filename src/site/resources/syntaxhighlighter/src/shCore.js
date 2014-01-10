@@ -196,10 +196,10 @@ var sh = {
 			};
 			
 			var highlighter = getHighlighterById(findParentElement(target, '.syntaxhighlighter').id),
-				commandName = getValue('command')
+				commandName = getValue('event')
 				;
 			
-			// execute the toolbar command
+			// execute the toolbar event
 			if (highlighter && commandName)
 				sh.toolbar.items[commandName].execute(highlighter);
 

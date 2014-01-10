@@ -1,4 +1,4 @@
-package net.audumla.devices.activator;
+package net.audumla.devices.event;
 
 /*
  * *********************************************************************
@@ -16,24 +16,20 @@ package net.audumla.devices.activator;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
+import net.audumla.astronomy.AstronomicEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.concurrent.Callable;
+public class AstronomicalEventScheduler
+{
+    private static final Logger logger = LoggerFactory.getLogger(AstronomicalEventScheduler.class);
+    private AstronomicEvent astronomicEvent;
 
-public class ActivatorDisableCommand extends AbstractActivatorCommand {
-    private static final Logger logger = LoggerFactory.getLogger(ActivatorDisableCommand.class);
-
-    public ActivatorDisableCommand() {
-
+    public AstronomicalEventScheduler(AstronomicEvent astronomicEvent) {
+        this.astronomicEvent = astronomicEvent;
     }
 
-    public ActivatorDisableCommand(ActivatorListener... listeners) {
-        super(listeners);
-    }
-
-    @Override
-    public boolean execute(Activator activator) {
-        return activator.deactivate(getListeners());
+    public AstronomicEvent getAstronomicEvent() {
+        return astronomicEvent;
     }
 }

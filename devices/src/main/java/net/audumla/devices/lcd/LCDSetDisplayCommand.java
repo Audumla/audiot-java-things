@@ -1,7 +1,10 @@
 package net.audumla.devices.lcd;
 
 
-public class LCDSetDisplayCommand implements LCDCommand {
+import net.audumla.devices.event.AbstractEvent;
+import net.audumla.devices.event.CommandEvent;
+
+public class LCDSetDisplayCommand extends AbstractEvent implements CommandEvent<LCD> {
 
     protected boolean display;
 
@@ -9,12 +12,13 @@ public class LCDSetDisplayCommand implements LCDCommand {
         this.display = d;
     }
 
-    public void execute(LCD lcd) {
+    public boolean execute(LCD lcd) {
         if (display)
             lcd.display();
         else {
             lcd.noDisplay();
         }
+        return true;
     }
 
 }

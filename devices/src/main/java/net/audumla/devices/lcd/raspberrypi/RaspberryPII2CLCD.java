@@ -2,6 +2,9 @@ package net.audumla.devices.lcd.raspberrypi;
 
 import com.pi4j.io.i2c.I2CDevice;
 import com.pi4j.io.i2c.I2CFactory;
+import net.audumla.devices.event.AbstractEventTarget;
+import net.audumla.devices.event.CommandEvent;
+import net.audumla.devices.event.EventScheduler;
 import net.audumla.devices.lcd.LCD;
 import org.apache.log4j.Logger;
 
@@ -9,7 +12,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RaspberryPII2CLCD implements net.audumla.devices.lcd.LCD {
+public class RaspberryPII2CLCD extends AbstractEventTarget<CommandEvent<LCD>> implements net.audumla.devices.lcd.LCD{
     public static final int DEFAULT_ADDRESS = 0x20;
 
     protected final static int LCD_8BITMODE = 0x10;
@@ -72,17 +75,19 @@ public class RaspberryPII2CLCD implements net.audumla.devices.lcd.LCD {
     private static Map<Integer, net.audumla.devices.lcd.LCD> instances = new HashMap<Integer, net.audumla.devices.lcd.LCD>();
     public static Logger logger = Logger.getLogger(RaspberryPII2CLCD.class);
 
-    public static LCD instance(int address) {
+    public static LCD instance(String name, int address) {
         LCD instance = instances.get(address);
         if (instance == null) {
-            instance = new RaspberryPII2CLCD(address);
+            instance = new RaspberryPII2CLCD(name,address);
         }
         return instance;
     }
 
-    private RaspberryPII2CLCD(int address) {
+    private RaspberryPII2CLCD(String name, int address) {
+        super(name);
         ext = new PortExtender(address);
         backlightStatus = LCD_BACKLIGHT;
+        EventScheduler.getInstance().registerEventTarget(this);
     }
 
     @Override
@@ -286,6 +291,11 @@ public class RaspberryPII2CLCD implements net.audumla.devices.lcd.LCD {
     public void disableBacklight() {
         backlightStatus = 0x00;
         ext.digitalWrite(backlightStatus);
+    }
+
+    @Override
+    public boolean handleEvent(CommandEvent<LCD> event) {
+        return event.execute(this);
     }
 
     protected static class PortExtender {

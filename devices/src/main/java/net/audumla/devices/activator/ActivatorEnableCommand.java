@@ -27,14 +27,12 @@ public class ActivatorEnableCommand extends AbstractActivatorCommand {
     public ActivatorEnableCommand() {
     }
 
-    public ActivatorEnableCommand(Activator activator, ActivatorListener ... listeners ) {
-        super(activator,listeners);
+    public ActivatorEnableCommand(ActivatorListener ... listeners ) {
+        super(listeners);
     }
 
     @Override
-    public Activator call() throws Exception {
-        getActivator().activate(getListeners());
-        return getActivator();
+    public boolean execute(Activator activator) {
+        return activator.activate(getListeners());
     }
-
 }

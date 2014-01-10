@@ -1,13 +1,17 @@
 package net.audumla.devices.lcd;
 
-public class LCDInitializeCommand implements LCDCommand {
+import net.audumla.devices.event.AbstractEvent;
+import net.audumla.devices.event.CommandEvent;
+
+public class LCDInitializeCommand extends AbstractEvent implements CommandEvent<LCD>{
 
     protected LCDInitializeCommand() {
 
     }
 
-    public void execute(LCD lcd) {
+    public boolean execute(LCD lcd) {
         lcd.initialize();
+        return true;
     }
 
 }

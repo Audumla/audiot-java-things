@@ -16,12 +16,9 @@ package net.audumla.devices.activator;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import java.util.concurrent.Callable;
+import net.audumla.devices.event.CommandEvent;
 
-public interface ActivatorCommand extends Callable<Activator>, Cloneable {
-    void setActivator(Activator activator);
-
-    Activator getActivator();
+public interface ActivatorCommand extends CommandEvent<Activator> {
 
     ActivatorListener[] getListeners();
 

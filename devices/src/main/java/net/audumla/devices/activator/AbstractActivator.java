@@ -1,6 +1,7 @@
 package net.audumla.devices.activator;
 
 import net.audumla.bean.BeanUtils;
+import net.audumla.devices.event.CommandEvent;
 import org.apache.log4j.Logger;
 
 import java.util.Arrays;
@@ -112,9 +113,8 @@ public abstract class AbstractActivator implements Activator {
     }
 
     @Override
-    public void execute(ActivatorCommand command) throws Exception {
-        command.setActivator(this);
-        command.call();
+    public boolean handleEvent(CommandEvent<Activator> event) {
+        return event.execute(this);
     }
 
     @Override

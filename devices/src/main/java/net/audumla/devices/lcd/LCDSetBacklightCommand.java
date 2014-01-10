@@ -1,6 +1,9 @@
 package net.audumla.devices.lcd;
 
-public class LCDSetBacklightCommand implements LCDCommand {
+import net.audumla.devices.event.AbstractEvent;
+import net.audumla.devices.event.CommandEvent;
+
+public class LCDSetBacklightCommand extends AbstractEvent implements CommandEvent<LCD> {
 
     protected boolean backlight;
 
@@ -8,11 +11,12 @@ public class LCDSetBacklightCommand implements LCDCommand {
         backlight = b;
     }
 
-    public void execute(LCD lcd) {
+    public boolean execute(LCD lcd) {
         if (backlight)
             lcd.enableBacklight();
         else
             lcd.disableBacklight();
+        return true;
     }
 
 }
