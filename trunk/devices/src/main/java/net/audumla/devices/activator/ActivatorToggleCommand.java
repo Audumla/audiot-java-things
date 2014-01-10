@@ -20,40 +20,41 @@ import net.audumla.devices.event.SimpleEventSchedule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class ActivatorToggleCommand extends ActivatorEnableCommand {
     private static final Logger logger = LoggerFactory.getLogger(ActivatorToggleCommand.class);
-    private Long delay;
+    private Duration delay;
 
     public ActivatorToggleCommand() {
     }
 
-    public ActivatorToggleCommand(long delay, ActivatorListener... listeners) {
+    public ActivatorToggleCommand(Duration delay, ActivatorListener... listeners) {
         super(listeners);
         this.delay = delay;
     }
 
-    public Long getDelay() {
+    public Duration getDelay() {
         return delay;
     }
 
-    public void setDelay(Long delay) {
+    public void setDelay(Duration delay) {
         this.delay = delay;
     }
 
     @Override
     public boolean execute(Activator activator) {
         // ensure that the result of the call to ativate results in the activator now being in the correct state.
-        if (delay > 0 && super.execute(activator)) {
+        if (super.execute(activator)) {
             if (getScheduler() != null) {
-                return getScheduler().scheduleEvent(activator, new SimpleEventSchedule(Instant.now().plusSeconds(delay)),new ActivatorDisableCommand(getListeners()));
+                return getScheduler().scheduleEvent(activator, new SimpleEventSchedule(Instant.now().plus(delay)),new ActivatorDisableCommand(getListeners()));
             } else {
                 synchronized (this) {
                     try {
-                        this.wait(delay * 1000);
+                        this.wait(delay.toMillis());
                     } catch (InterruptedException e) {
                         logger.error("Failed to execute blocking deactivate",e);
                     }

@@ -16,7 +16,7 @@ package net.audumla.devices.event;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import java.util.Date;
+import java.time.Instant;
 
 public interface Event extends Cloneable {
     /**
@@ -63,22 +63,22 @@ public interface Event extends Cloneable {
     /**
      * @return The time that the event was executed
      */
-    Date getExecutedTime();
+    Instant getExecutedTime();
 
     /**
      * @return The time that the event completed execution or failed
      */
-    Date getCompletedTime();
+    Instant getCompletedTime();
 
     /**
      * @param executedTime The time that the event started execution
      */
-    void setExecutedTime(Date executedTime);
+    void setExecutedTime(Instant executedTime);
 
     /**
      * @param completedTime The time that the event completed execution or failed
      */
-    void setCompletedTime(Date completedTime);
+    void setCompletedTime(Instant completedTime);
 
     /**
      * @return the event scheduler that this event was scheduled to.
@@ -86,4 +86,5 @@ public interface Event extends Cloneable {
      */
     EventScheduler getScheduler();
 
+    void setScheduler(EventScheduler scheduler);
 }

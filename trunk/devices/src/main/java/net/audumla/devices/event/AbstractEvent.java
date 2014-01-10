@@ -25,6 +25,7 @@ import net.audumla.bean.BeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Instant;
 import java.util.Date;
 
 public class AbstractEvent implements Event {
@@ -34,8 +35,8 @@ public class AbstractEvent implements Event {
     private String failureMessage;
     private Throwable failureException;
     private String name = BeanUtils.generateName(Event.class);
-    private Date executedTime;
-    private Date completedTime;
+    private Instant executedTime;
+    private Instant completedTime;
     private EventScheduler scheduler;
 
     @Override
@@ -71,20 +72,20 @@ public class AbstractEvent implements Event {
     }
 
     @Override
-    public Date getExecutedTime() {
+    public Instant getExecutedTime() {
         return executedTime;
     }
 
     @Override
-    public Date getCompletedTime() {
+    public Instant getCompletedTime() {
         return completedTime;
     }
 
-    public void setExecutedTime(Date executedTime) {
+    public void setExecutedTime(Instant executedTime) {
         this.executedTime = executedTime;
     }
 
-    public void setCompletedTime(Date completedTime) {
+    public void setCompletedTime(Instant completedTime) {
         this.completedTime = completedTime;
     }
 

@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.quartz.Scheduler;
 import org.quartz.impl.StdSchedulerFactory;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -39,8 +40,8 @@ public class FailingNonBlockingActivatorTest {
 
     public void stateChangeAllFailure(Activator activator) throws Exception {
         assert activator.getCurrentState() == Activator.ActivateState.UNKNOWN;
-        EventScheduler.getInstance().scheduleEvent(activator,new ActivatorToggleCommand(1));
-        assert activator.getCurrentState() == Activator.ActivateState.UNKNOWN;
+        EventScheduler.getInstance().scheduleEvent(activator,new ActivatorToggleCommand(Duration.ofSeconds(1)));
+//        assert activator.getCurrentState() == Activator.ActivateState.UNKNOWN;
         synchronized (this) {
             try {
                 this.wait(1100);
@@ -68,10 +69,12 @@ public class FailingNonBlockingActivatorTest {
 
     public void stateChangeActivateFailure(Activator activator) throws Exception {
         assert activator.getCurrentState() == Activator.ActivateState.UNKNOWN;
-        EventScheduler.getInstance().scheduleEvent(activator,new ActivatorToggleCommand(1));
-        assert activator.getCurrentState() == Activator.ActivateState.DEACTIVATED;
+        EventScheduler.getInstance().scheduleEvent(activator, new ActivatorToggleCommand(Duration.ofSeconds(1)));
+//        assert activator.getCurrentState() == Activator.ActivateState.DEACTIVATED;
         synchronized (this) {
             try {
+                this.wait(100);
+                assert activator.getCurrentState() == Activator.ActivateState.DEACTIVATED;
                 this.wait(1100);
                 assert activator.getCurrentState() == Activator.ActivateState.DEACTIVATED;
             } catch (InterruptedException e) {
@@ -138,7 +141,14 @@ public class FailingNonBlockingActivatorTest {
 
         assert activator.getCurrentState() == Activator.ActivateState.UNKNOWN;
         assert states.isEmpty();
-        EventScheduler.getInstance().scheduleEvent(activator,new ActivatorToggleCommand(3,listener));
+        EventScheduler.getInstance().scheduleEvent(activator, new ActivatorToggleCommand(Duration.ofSeconds(3), listener));
+        synchronized (this) {
+            try {
+                this.wait(3100);
+            } catch (Throwable t) {
+
+            }
+        }
         assert states.contains(Activator.ActivateState.ACTIVATING);
         assert states.contains(Activator.ActivateState.ACTIVATED);
         assert states.contains(Activator.ActivateState.DEACTIVATED);
