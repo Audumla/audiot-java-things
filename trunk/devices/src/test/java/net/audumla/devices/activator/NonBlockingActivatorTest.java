@@ -1,5 +1,6 @@
 package net.audumla.devices.activator;
 
+import net.audumla.devices.event.EventScheduler;
 import net.audumla.scheduler.quartz.QuartzScheduledExecutorService;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,10 +28,11 @@ public class NonBlockingActivatorTest {
     @Test
     public void testStateChange() throws Exception {
         ActivatorMock activator = new ActivatorMock(true, true);
+        EventScheduler.getInstance().registerEventTarget(activator);
         assert activator.getCurrentState() == Activator.ActivateState.UNKNOWN;
         activator.deactivate();
         assert activator.getCurrentState() == Activator.ActivateState.DEACTIVATED;
-        new ActivatorToggleCommand(new QuartzScheduledExecutorService(),activator,2).call();
+        EventScheduler.getInstance().scheduleEvent(activator,new ActivatorToggleCommand(2));
         assert activator.getCurrentState() == Activator.ActivateState.ACTIVATED;
         synchronized (this) {
             try {
@@ -77,7 +79,7 @@ public class NonBlockingActivatorTest {
 
         assert activator.getCurrentState() == Activator.ActivateState.UNKNOWN;
         assert states.isEmpty();
-        new ActivatorToggleCommand(new QuartzScheduledExecutorService(),activator,2,listener).call();
+        EventScheduler.getInstance().scheduleEvent(activator,new ActivatorToggleCommand(2,listener));
         synchronized (this) {
             try {
                 this.wait(1000);
