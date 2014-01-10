@@ -80,7 +80,7 @@ public class BlockingActivatorTest {
         activator.deactivate();
         assert activator.getCurrentState() == Activator.ActivateState.DEACTIVATED;
         Date start = new Date();
-        new ActivatorToggleCommand(null,activator,3).call();
+        new ActivatorToggleCommand(3).execute(activator);
         Date end = new Date();
         Assert.assertEquals((double) (end.getTime() - start.getTime()), 3000, 100);
         assert activator.getCurrentState() == Activator.ActivateState.DEACTIVATED;
@@ -120,7 +120,7 @@ public class BlockingActivatorTest {
         assert activator.getCurrentState() == Activator.ActivateState.UNKNOWN;
         assert states.isEmpty();
         Date start = new Date();
-        new ActivatorToggleCommand(null,activator,3,listener).call();
+        new ActivatorToggleCommand(3,listener).execute(activator);
         Date end = new Date();
         Assert.assertEquals((double) (end.getTime() - start.getTime()), 3000, 100);
         assert states.contains(Activator.ActivateState.ACTIVATING);
