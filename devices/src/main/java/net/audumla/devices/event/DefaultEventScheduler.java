@@ -19,11 +19,14 @@ package net.audumla.devices.event;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Duration;
+import java.time.Instant;
+import java.time.temporal.TemporalUnit;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.*;
+
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 public class DefaultEventScheduler implements EventScheduler {
     private static final Logger logger = LoggerFactory.getLogger(DefaultEventScheduler.class);
@@ -52,7 +55,17 @@ public class DefaultEventScheduler implements EventScheduler {
             public Boolean call() throws Exception {
                 boolean result = true;
                 for (Event et : events ) {
-                    result &= target.handleEvent(et);
+                    try {
+                        et.setScheduler(DefaultEventScheduler.this);
+                        et.setExecutedTime(Instant.now());
+                        et.setStatus(Event.EventStatus.EXECUTING);
+                        result &= target.handleEvent(et);
+                        et.setStatus(Event.EventStatus.COMPLETE);
+                    } catch (Throwable throwable) {
+                        et.setFailed(throwable, "Failed to execute Event");
+                        et.setStatus(Event.EventStatus.FAILED);
+                    }
+                    et.setCompletedTime(Instant.now());
                 }
                 return result;
             }
@@ -62,7 +75,28 @@ public class DefaultEventScheduler implements EventScheduler {
 
     @Override
     public boolean scheduleEvent(EventTarget target, EventSchedule schedule, Event... events) {
-        return false;
+        if (schedule instanceof SimpleEventSchedule) {
+            SimpleEventSchedule ss = (SimpleEventSchedule) schedule;
+            if (ss.getRepeatCount() > 0) {
+                throw new UnsupportedOperationException("Scheduler does not support fixed repeat counts");
+            }
+            long initialDelay = Duration.between(Instant.now(),ss.getStartTime()).toMillis();
+            initialDelay = initialDelay < 0 ? 0 : initialDelay;
+            // set up a repeating schedule. We cannot set a fixed repeat count for this scheduler
+            if (ss.getRepeatInterval() != null && !ss.getRepeatInterval().isZero() ) {
+                ScheduledFuture<?> scheduledFuture = scheduler.scheduleAtFixedRate(() -> {
+                    try {
+                        wrapEvents(target,events).call();
+                    } catch (Exception e) {
+                        logger.error("Failed to execute scheduled task",e);
+                    }
+                }, initialDelay, ss.getRepeatInterval().toMillis(), MILLISECONDS);
+            }
+            else {
+                scheduler.schedule(wrapEvents(target,events),initialDelay,MILLISECONDS);
+            }
+        }
+        throw new UnsupportedOperationException("Scheduler does not support "+schedule.getClass());
     }
 
     @Override

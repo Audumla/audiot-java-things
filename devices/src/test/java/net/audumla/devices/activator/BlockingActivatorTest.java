@@ -3,6 +3,7 @@ package net.audumla.devices.activator;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -80,7 +81,7 @@ public class BlockingActivatorTest {
         activator.deactivate();
         assert activator.getCurrentState() == Activator.ActivateState.DEACTIVATED;
         Date start = new Date();
-        new ActivatorToggleCommand(3).execute(activator);
+        new ActivatorToggleCommand(Duration.ofSeconds(3)).execute(activator);
         Date end = new Date();
         Assert.assertEquals((double) (end.getTime() - start.getTime()), 3000, 100);
         assert activator.getCurrentState() == Activator.ActivateState.DEACTIVATED;
@@ -120,7 +121,7 @@ public class BlockingActivatorTest {
         assert activator.getCurrentState() == Activator.ActivateState.UNKNOWN;
         assert states.isEmpty();
         Date start = new Date();
-        new ActivatorToggleCommand(3,listener).execute(activator);
+        new ActivatorToggleCommand(Duration.ofSeconds(3),listener).execute(activator);
         Date end = new Date();
         Assert.assertEquals((double) (end.getTime() - start.getTime()), 3000, 100);
         assert states.contains(Activator.ActivateState.ACTIVATING);

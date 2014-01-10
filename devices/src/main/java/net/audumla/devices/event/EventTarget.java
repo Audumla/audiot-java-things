@@ -19,6 +19,6 @@ package net.audumla.devices.event;
 public interface EventTarget<T extends Event> {
     String getName();
 
-    boolean handleEvent(T event);
+    boolean handleEvent(T event) throws Throwable;
 
 }
