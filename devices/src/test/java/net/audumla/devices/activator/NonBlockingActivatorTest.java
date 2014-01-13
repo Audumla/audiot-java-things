@@ -1,11 +1,9 @@
 package net.audumla.devices.activator;
 
+import net.audumla.devices.activator.event.ActivatorToggleCommand;
 import net.audumla.devices.event.EventScheduler;
-import net.audumla.scheduler.quartz.QuartzScheduledExecutorService;
 import org.junit.Before;
 import org.junit.Test;
-import org.quartz.Scheduler;
-import org.quartz.impl.StdSchedulerFactory;
 
 import java.time.Duration;
 import java.util.ArrayList;

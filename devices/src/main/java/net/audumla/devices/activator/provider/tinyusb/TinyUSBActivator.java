@@ -1,4 +1,4 @@
-package net.audumla.devices.activator.relay;
+package net.audumla.devices.activator.provider.tinyusb;
 
 import net.audumla.devices.activator.AbstractActivator;
 import net.audumla.devices.activator.Activator;
@@ -13,21 +13,27 @@ import java.util.Collection;
  * Date: 10/09/13
  * Time: 3:51 PM
  */
-public class TinyOSUSBRelayActivator extends AbstractActivator {
+public class TinyUSBActivator extends AbstractActivator {
     private static final Logger logger = Logger.getLogger(Activator.class);
-    private TinyOSUSBRelayController controller;
+    private TinyUSBActivatorProvider controller;
     private int device = 0;
     private int relay = 0;
+    private String id;
 
-
-    public TinyOSUSBRelayActivator() {
+    public TinyUSBActivator(TinyUSBActivatorProvider controller, int device, int relay, String id) {
+        this.controller = controller;
+        this.device = device;
+        this.relay = relay;
     }
 
-    public TinyOSUSBRelayActivator(TinyOSUSBRelayController controller) {
+    public TinyUSBActivator() {
+    }
+
+    public TinyUSBActivator(TinyUSBActivatorProvider controller) {
         this.controller = controller;
     }
 
-    public void setController(TinyOSUSBRelayController controller) {
+    public void setController(TinyUSBActivatorProvider controller) {
         this.controller = controller;
     }
 
@@ -60,6 +66,15 @@ public class TinyOSUSBRelayActivator extends AbstractActivator {
             setActiveState(ActivateState.UNKNOWN);
             return false;
         }
+    }
+
+    @Override
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
 }

@@ -20,7 +20,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd">
 
-    <bean id="tinyOSrelay.controller" class="net.audumla.devices.activator.relay.TinyOSUSBRelayController" init-method="startup" destroy-method="shutdown">
+    <bean id="tinyOSrelay.controller" class="net.audumla.devices.activator.provider.tinyusb.TinyUSBActivatorProvider" init-method="initialize" destroy-method="shutdown">
     </bean>
 
     <bean id="durationFactory" class="net.audumla.automate.FixedDurationFactory">
@@ -35,7 +35,7 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
         <property name="activator" ref="activator"/>
     </bean>
 
-    <bean id="activator" class="net.audumla.devices.activator.relay.TinyOSUSBRelayActivator" init-method="deactivate" destroy-method="deactivate">
+    <bean id="activator" class="net.audumla.devices.activator.provider.tinyusb.TinyUSBActivator" init-method="deactivate" destroy-method="deactivate">
         <property name="controller" ref="tinyOSrelay.controller"/>
         <property name="relay" value="0" />
         <property name="device" value="0" />

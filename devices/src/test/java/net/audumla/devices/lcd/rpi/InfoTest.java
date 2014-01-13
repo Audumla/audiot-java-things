@@ -1,4 +1,4 @@
-package net.audumla.devices.lcd.raspberrypi;
+package net.audumla.devices.lcd.rpi;
 
 import com.pi4j.system.SystemInfo;
 import org.junit.Assert;

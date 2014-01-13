@@ -1,4 +1,4 @@
-package net.audumla.devices.activator;
+package net.audumla.devices.activator.event;
 
 /*
  * *********************************************************************
@@ -16,23 +16,24 @@ package net.audumla.devices.activator;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
+import net.audumla.devices.activator.Activator;
+import net.audumla.devices.activator.ActivatorListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.concurrent.Callable;
+public class ActivatorDisableCommand extends AbstractActivatorCommand {
+    private static final Logger logger = LoggerFactory.getLogger(ActivatorDisableCommand.class);
 
-public class ActivatorEnableCommand extends AbstractActivatorCommand {
-    private static final Logger logger = LoggerFactory.getLogger(ActivatorEnableCommand.class);
+    public ActivatorDisableCommand() {
 
-    public ActivatorEnableCommand() {
     }
 
-    public ActivatorEnableCommand(ActivatorListener ... listeners ) {
+    public ActivatorDisableCommand(ActivatorListener... listeners) {
         super(listeners);
     }
 
     @Override
     public boolean execute(Activator activator) {
-        return activator.activate(getListeners());
+        return activator.deactivate(getListeners());
     }
 }

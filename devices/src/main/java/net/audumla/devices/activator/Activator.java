@@ -21,8 +21,7 @@ import net.audumla.devices.event.EventTarget;
 
 public interface Activator extends EventTarget<CommandEvent<Activator>> {
     /**
-     * The Activator interface models a device that can be switched on or off either independently or for a given amount of time.
-     * When a time is specified a choice can be made to determine whether the calling thread will be blocked or asynchronously deactivated.
+     * The Activator interface models a device that can be switched on or off.
      * The intention of the activator is to have a mechanism that is independent of the underlying device and to ensure that
      * where an error has occurred the device will always be placed back into a deactivated state.
      * Activator implementations should attempt to deactivate the activator upon instantiation to ensure a know state is applied
@@ -38,10 +37,7 @@ public interface Activator extends EventTarget<CommandEvent<Activator>> {
      *
      * 3. Deactivate
      * Success flow - State:DEACTIVATING -&gt; [Device Successfully Deactivated] -&gt; State:DEACTIVATED
-     * Failure flow - State:DEACTIVATING -&gt; [Device Unsuccessfully Activated] -&gt; State:UNKNOWN
-     *
-     * 3. Activate with timeout
-     * [Call Activate (2)] -&gt; [Wait for timeout] -&gt; [Call Deactivate (3)]
+     * Failure flow - State:DEACTIVATING -&gt; [Device Unsuccessfully Deactivated] -&gt; State:UNKNOWN
      *
      * Listeners can be attached to the activator. These will be called on each change of state and when failures occur
      * Listeners can also be passed as parameters to any of the activate or deactivate methods. This listener will only
@@ -113,5 +109,11 @@ public interface Activator extends EventTarget<CommandEvent<Activator>> {
      */
     ActivateState getCurrentState();
 
+    /**
+     * It is up to implementation classes to determine the name that will applied to an activator
+     *
+     * @return the name of the activator
+     */
+    String getId();
 
 }

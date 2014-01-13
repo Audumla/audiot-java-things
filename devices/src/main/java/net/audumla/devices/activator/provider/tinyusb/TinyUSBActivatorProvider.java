@@ -1,30 +1,33 @@
-package net.audumla.devices.activator.relay;
+package net.audumla.devices.activator.provider.tinyusb;
 
 import com.ftdichip.ftd2xx.Device;
 import com.ftdichip.ftd2xx.FTD2xxException;
 import com.ftdichip.ftd2xx.Service;
 import net.audumla.devices.activator.Activator;
+import net.audumla.devices.activator.provider.ActivatorProvider;
 import net.audumla.exception.ErrorHandler;
 import org.apache.log4j.Logger;
 
-import java.util.MissingResourceException;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * User: mgleeson
  * Date: 10/09/13
  * Time: 3:52 PM
  */
-public class TinyOSUSBRelayController {
+public class TinyUSBActivatorProvider implements ActivatorProvider {
     private static final Logger logger = Logger.getLogger(Activator.class);
     private static final int RELAY_ACTIVATE_INCREMENT = 100;
     private static final int RELAY_DEACTIVATE_INCREMENT = 110;
     private Device devices[] = new Device[0];
+    private Map<String, Activator> activatorRegistry = new HashMap<String,Activator>();
 
-
-    private TinyOSUSBRelayController() {
+    private TinyUSBActivatorProvider() {
     }
 
-    public void startup() {
+    public void initialize() {
         try {
             devices = Service.listDevices();
             if (devices == null) {
@@ -33,6 +36,10 @@ public class TinyOSUSBRelayController {
             logger.info("Found " + devices.length + " TinyOS Relay devices");
             for (Device device : devices) {
                 logger.debug("TinyOS Relay Serial Number : " + device.getDeviceDescriptor().getSerialNumber());
+            }
+            Collection<Activator> activators = getActivators();
+            for (Activator activator : activators) {
+                logger.debug("Relay identified : " + activator.getId() +" - " + activator.getName());
             }
         } catch (Throwable ex) {
             logger.info("Cannot manage TinyOS relays", ex);
@@ -54,8 +61,28 @@ public class TinyOSUSBRelayController {
         }
     }
 
-    public int getDeviceCount() {
-        return devices.length;
+    protected int getRelaysPerDevice() {
+        return 8;
+    }
+
+    @Override
+    public Activator getActivator(int id) {
+        return activatorRegistry.get(id);
+    }
+
+    @Override
+    public Collection<Activator> getActivators() {
+        int di = 0;
+        for (Device d : devices) {
+            for (int i = 0; i < getRelaysPerDevice(); ++i) {
+                String id = di+","+i;
+                Activator activator = new TinyUSBActivator(this,di,i,id);
+                activator.setName("Device["+di+"] Relay["+i+"]");
+                activatorRegistry.put(id,activator);
+            }
+            ++di;
+        }
+        return activatorRegistry.values();
     }
 
     public boolean deactivateRelay(int device, int relay, ErrorHandler handler) {
@@ -93,12 +120,12 @@ public class TinyOSUSBRelayController {
         if (relay > 0 && relay < 9) {
             try {
                 if (!writeToDevice(device, relay + offset, handler)) {
-                    handler.handleError("Failed to set TinyOS relay [Device:" + device + "][Relay:" + relay + "]", null);
+                    handler.handleError("Failed to set TinyOS tinyusb [Device:" + device + "][Relay:" + relay + "]", null);
                 } else {
                     return true;
                 }
             } catch (Throwable ex) {
-                handler.handleError("Failed to set TinyOS relay [Device:" + device + "][Relay:" + relay + "]", ex);
+                handler.handleError("Failed to set TinyOS tinyusb [Device:" + device + "][Relay:" + relay + "]", ex);
             }
         }
         return false;
@@ -109,10 +136,10 @@ public class TinyOSUSBRelayController {
         for (int i = 0; i < devices.length; ++i) {
             try {
                 if (!writeToDevice(i, RELAY_DEACTIVATE_INCREMENT, handler)) {
-                    handler.handleError("Failed to deactivate TinyOS relay [Device:" + i + "]", null);
+                    handler.handleError("Failed to deactivate TinyOS tinyusb [Device:" + i + "]", null);
                 }
             } catch (Throwable ex) {
-                handler.handleError("Failed to deactivate TinyOS relay [Device:" + i + "]", ex);
+                handler.handleError("Failed to deactivate TinyOS tinyusb [Device:" + i + "]", ex);
             }
         }
     }
@@ -124,7 +151,7 @@ public class TinyOSUSBRelayController {
                 return true;
             }
         } catch (Throwable ex) {
-            handler.handleError("Cannot write to TinyOS relay [Device:" + device + "]", ex);
+            handler.handleError("Cannot write to TinyOS tinyusb [Device:" + device + "]", ex);
         }
         return false;
     }
@@ -149,7 +176,7 @@ public class TinyOSUSBRelayController {
                     return true;
                 }
                 catch (Throwable e) {
-                    handler.handleError("Cannot open TinyOS relay [Device:" + device + "]", e);
+                    handler.handleError("Cannot open TinyOS tinyusb [Device:" + device + "]", e);
                 }
             }
         }
