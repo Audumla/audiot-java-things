@@ -16,12 +16,21 @@ package net.audumla.devices.event;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
+import java.util.Collection;
 import java.util.concurrent.atomic.AtomicReference;
 
 public interface EventScheduler {
     boolean scheduleEvent(EventTarget target, Event... events);
 
     boolean scheduleEvent(EventTarget target, EventSchedule schedule, Event... events);
+
+    boolean scheduleEvent(Event event, EventTarget ... targets);
+
+    boolean scheduleEvent(Event event, EventSchedule schedule, EventTarget ... targets);
+
+    boolean scheduleEvent(Event[] event, EventTarget[] target, EventSchedule schedule);
+
+    boolean scheduleEvent(Event[] event, EventTarget[] target);
 
     boolean registerEventTarget(EventTarget target);
 

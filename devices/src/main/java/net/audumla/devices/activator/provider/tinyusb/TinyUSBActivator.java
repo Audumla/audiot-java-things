@@ -1,9 +1,6 @@
 package net.audumla.devices.activator.provider.tinyusb;
 
-import net.audumla.devices.activator.AbstractActivator;
-import net.audumla.devices.activator.Activator;
-import net.audumla.devices.activator.ActivatorListener;
-import net.audumla.devices.activator.ActivatorStateChangeEvent;
+import net.audumla.devices.activator.*;
 import org.apache.log4j.Logger;
 
 import java.util.Collection;
@@ -18,15 +15,32 @@ public class TinyUSBActivator extends AbstractActivator {
     private TinyUSBActivatorProvider controller;
     private int device = 0;
     private int relay = 0;
-    private String id;
 
-    public TinyUSBActivator(TinyUSBActivatorProvider controller, int device, int relay, String id) {
+    public static final String DEVICE_ID = "deviceid";
+    public static final String RELAY_ID = "relayid";
+
+    public TinyUSBActivator(TinyUSBActivatorProvider controller, int device, int relay) {
         this.controller = controller;
         this.device = device;
         this.relay = relay;
+        getId().setProperty(DEVICE_ID, String.valueOf(device));
+        getId().setProperty(RELAY_ID, String.valueOf(relay));
     }
 
     public TinyUSBActivator() {
+    }
+
+    @Override
+    protected boolean executeStateChange(ActivatorState newstate, Collection<ActivatorListener> listeners) {
+        if (newstate.equals(ActivatorState.DEACTIVATED)) {
+            return controller.deactivateRelay(device, relay, (String m, Throwable e) -> {
+                listeners.forEach(l -> l.onStateChangeFailure(new ActivatorStateChangeEvent(getCurrentState(), ActivatorState.DEACTIVATED, this), e, m));
+            });
+        } else {
+            return controller.activateRelay(device, relay, (String m, Throwable e) -> {
+                listeners.forEach(l -> l.onStateChangeFailure(new ActivatorStateChangeEvent(getCurrentState(), ActivatorState.ACTIVATED, this), e, m));
+            });
+        }
     }
 
     public TinyUSBActivator(TinyUSBActivatorProvider controller) {
@@ -37,44 +51,15 @@ public class TinyUSBActivator extends AbstractActivator {
         this.controller = controller;
     }
 
-    public void deactivate() {
-        super.deactivate();
-    }
-
     public void setDevice(int device) {
         this.device = device;
+        getId().setProperty(DEVICE_ID, String.valueOf(device));
     }
 
     public void setRelay(int relay) {
         this.relay = relay;
+        getId().setProperty(RELAY_ID, String.valueOf(relay));
     }
 
-    @Override
-    protected boolean doActivate(Collection<ActivatorListener> listeners) {
-        return controller.activateRelay(device, relay, (String m, Throwable e) -> {
-            listeners.forEach(l -> l.onStateChangeFailure(new ActivatorStateChangeEvent(getCurrentState(), ActivateState.ACTIVATED, this), e, m));
-        });
-    }
-
-    @Override
-    protected boolean doDeactivate(Collection<ActivatorListener> listeners) {
-        if (controller.deactivateRelay(device, relay, (String m, Throwable e) -> {
-            listeners.forEach(l -> l.onStateChangeFailure(new ActivatorStateChangeEvent(getCurrentState(), ActivateState.DEACTIVATED, this), e, m));
-        })) {
-            return true;
-        } else {
-            setActiveState(ActivateState.UNKNOWN);
-            return false;
-        }
-    }
-
-    @Override
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
 
 }

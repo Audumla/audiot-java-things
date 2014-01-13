@@ -21,36 +21,22 @@ public class BlockingActivatorTest {
     @Test
     public void testStateChange() {
         ActivatorMock activator = new ActivatorMock(true, true);
-        assert activator.getCurrentState() == Activator.ActivateState.UNKNOWN;
-        activator.deactivate();
-        assert activator.getCurrentState() == Activator.ActivateState.DEACTIVATED;
-        activator.activate();
-        assert activator.getCurrentState() == Activator.ActivateState.ACTIVATED;
+        assert activator.getCurrentState() == ActivatorState.UNKNOWN;
+        activator.setCurrentState(ActivatorState.DEACTIVATED );
+        assert activator.getCurrentState() == ActivatorState.DEACTIVATED;
+        activator.setCurrentState(ActivatorState.ACTIVATED);
+        assert activator.getCurrentState() == ActivatorState.ACTIVATED;
     }
 
     @Test
     public void testStateChangeListener() {
         final ActivatorMock activator = new ActivatorMock(true, true);
-        final Collection<Activator.ActivateState> states = new ArrayList<Activator.ActivateState>();
+        final Collection<ActivatorState> states = new ArrayList<ActivatorState>();
 
         final ActivatorListener listener = new ActivatorListener() {
             @Override
             public void onStateChange(ActivatorStateChangeEvent event) {
                 states.add(event.getNewState());
-                switch (event.getNewState()) {
-                    case ACTIVATING:
-                        assert activator.getCurrentState() != Activator.ActivateState.ACTIVATED;
-                        break;
-                    case DEACTIVATING:
-                        assert activator.getCurrentState() != Activator.ActivateState.DEACTIVATED;
-                        break;
-                    case ACTIVATED:
-                        assert activator.getCurrentState() == Activator.ActivateState.ACTIVATING;
-                        break;
-                    case DEACTIVATED:
-                        assert activator.getCurrentState() == Activator.ActivateState.DEACTIVATING;
-                        break;
-                }
             }
 
             @Override
@@ -59,58 +45,40 @@ public class BlockingActivatorTest {
             }
         };
 
-        assert activator.getCurrentState() == Activator.ActivateState.UNKNOWN;
+        assert activator.getCurrentState() == ActivatorState.UNKNOWN;
         assert states.isEmpty();
-        activator.deactivate(listener);
-        assert !states.contains(Activator.ActivateState.ACTIVATING);
-        assert !states.contains(Activator.ActivateState.ACTIVATED);
-        assert states.contains(Activator.ActivateState.DEACTIVATING);
-        assert states.contains(Activator.ActivateState.DEACTIVATED);
+        activator.setCurrentState(ActivatorState.DEACTIVATED, listener);
+        assert !states.contains(ActivatorState.ACTIVATED);
+        assert states.contains(ActivatorState.DEACTIVATED);
+        assert states.size() == 1;
+        activator.setCurrentState(ActivatorState.ACTIVATED, listener);
+        assert states.contains(ActivatorState.ACTIVATED);
+        assert states.contains(ActivatorState.DEACTIVATED);
         assert states.size() == 2;
-        activator.activate(listener);
-        assert states.contains(Activator.ActivateState.ACTIVATING);
-        assert states.contains(Activator.ActivateState.ACTIVATED);
-        assert states.contains(Activator.ActivateState.DEACTIVATING);
-        assert states.contains(Activator.ActivateState.DEACTIVATED);
-        assert states.size() == 4;
     }
 
     @Test
     public void testDelayedStateChange() throws Exception {
         ActivatorMock activator = new ActivatorMock(true, true);
-        assert activator.getCurrentState() == Activator.ActivateState.UNKNOWN;
-        activator.deactivate();
-        assert activator.getCurrentState() == Activator.ActivateState.DEACTIVATED;
+        assert activator.getCurrentState() == ActivatorState.UNKNOWN;
+        activator.setCurrentState(ActivatorState.DEACTIVATED);
+        assert activator.getCurrentState() == ActivatorState.DEACTIVATED;
         Date start = new Date();
         new ActivatorToggleCommand(Duration.ofSeconds(3)).execute(activator);
         Date end = new Date();
         Assert.assertEquals((double) (end.getTime() - start.getTime()), 3000, 100);
-        assert activator.getCurrentState() == Activator.ActivateState.DEACTIVATED;
+        assert activator.getCurrentState() == ActivatorState.DEACTIVATED;
     }
 
     @Test
     public void testDelayedStateChangeListener() throws Exception {
         final ActivatorMock activator = new ActivatorMock(true, true);
-        final Collection<Activator.ActivateState> states = new ArrayList<Activator.ActivateState>();
+        final Collection<ActivatorState> states = new ArrayList<ActivatorState>();
 
         final ActivatorListener listener = new ActivatorListener() {
             @Override
             public void onStateChange(ActivatorStateChangeEvent event) {
                 states.add(event.getNewState());
-                switch (event.getNewState()) {
-                    case ACTIVATING:
-                        assert activator.getCurrentState() != Activator.ActivateState.ACTIVATED;
-                        break;
-                    case DEACTIVATING:
-                        assert activator.getCurrentState() != Activator.ActivateState.DEACTIVATED;
-                        break;
-                    case ACTIVATED:
-                        assert activator.getCurrentState() == Activator.ActivateState.ACTIVATING;
-                        break;
-                    case DEACTIVATED:
-                        assert activator.getCurrentState() == Activator.ActivateState.DEACTIVATING;
-                        break;
-                }
             }
 
             @Override
@@ -119,21 +87,19 @@ public class BlockingActivatorTest {
             }
         };
 
-        assert activator.getCurrentState() == Activator.ActivateState.UNKNOWN;
+        assert activator.getCurrentState() == ActivatorState.UNKNOWN;
         assert states.isEmpty();
         Date start = new Date();
-        new ActivatorToggleCommand(Duration.ofSeconds(3),listener).execute(activator);
+        new ActivatorToggleCommand(Duration.ofSeconds(3), listener).execute(activator);
         Date end = new Date();
         Assert.assertEquals((double) (end.getTime() - start.getTime()), 3000, 100);
-        assert states.contains(Activator.ActivateState.ACTIVATING);
-        assert states.contains(Activator.ActivateState.ACTIVATED);
-        assert states.contains(Activator.ActivateState.DEACTIVATING);
-        assert states.contains(Activator.ActivateState.DEACTIVATED);
+        assert states.contains(ActivatorState.ACTIVATED);
+        assert states.contains(ActivatorState.DEACTIVATED);
+        assert states.size() == 2;
+        activator.setCurrentState(ActivatorState.ACTIVATED, listener);
+        assert states.size() == 3;
+        activator.setCurrentState(ActivatorState.DEACTIVATED, listener);
         assert states.size() == 4;
-        activator.activate(listener);
-        assert states.size() == 6;
-        activator.deactivate(listener);
-        assert states.size() == 8;
     }
 }
 

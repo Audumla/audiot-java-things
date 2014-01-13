@@ -56,163 +56,77 @@ public class FailingBlockingActivatorTest {
     }
 
     public void failActivate(Activator activator) {
-        final Collection<Activator.ActivateState> states = new ArrayList<Activator.ActivateState>();
+        final Collection<ActivatorState> states = new ArrayList<ActivatorState>();
 
         final ActivatorListener listener = new ActivatorListener() {
             @Override
             public void onStateChange(ActivatorStateChangeEvent event) {
                 states.add(event.getNewState());
-                switch (event.getNewState()) {
-                    case ACTIVATING:
-                        assert activator.getCurrentState() != Activator.ActivateState.ACTIVATED;
-                        break;
-                    case DEACTIVATING:
-                        assert activator.getCurrentState() != Activator.ActivateState.DEACTIVATED;
-                        break;
-                    case ACTIVATED:
-                        assert false;
-                        break;
-                    case DEACTIVATED:
-                        assert false;
-                        break;
-                }
+                assert false;
             }
 
             @Override
             public void onStateChangeFailure(ActivatorStateChangeEvent event, Throwable ex, String message) {
                 states.add(event.getNewState());
-                switch (event.getNewState()) {
-                    case ACTIVATING:
-                        assert false;
-                        break;
-                    case DEACTIVATING:
-                        assert false;
-                        break;
-                    case ACTIVATED:
-                        assert activator.getCurrentState() == Activator.ActivateState.ACTIVATING;
-                        break;
-                    case DEACTIVATED:
-                        assert activator.getCurrentState() == Activator.ActivateState.DEACTIVATING;
-                        break;
-                }
             }
         };
 
-        assert activator.getCurrentState() == Activator.ActivateState.UNKNOWN;
+        assert activator.getCurrentState() == ActivatorState.UNKNOWN;
         assert states.isEmpty();
-        activator.activate(listener);
-        assert states.contains(Activator.ActivateState.ACTIVATING);
-        assert states.contains(Activator.ActivateState.ACTIVATED);
-        assert states.contains(Activator.ActivateState.DEACTIVATED);
-        assert states.contains(Activator.ActivateState.DEACTIVATING);
-        assert states.size() == 4;
-        assert activator.getCurrentState() == Activator.ActivateState.UNKNOWN;
+        activator.setCurrentState(ActivatorState.ACTIVATED,listener);
+        assert states.contains(ActivatorState.ACTIVATED);
+        assert states.contains(ActivatorState.DEACTIVATED);
+        assert states.size() == 2;
+        assert activator.getCurrentState() == ActivatorState.UNKNOWN;
     }
 
     public void failDelayActivate(Activator activator) throws Exception {
-        final Collection<Activator.ActivateState> states = new ArrayList<Activator.ActivateState>();
+        final Collection<ActivatorState> states = new ArrayList<ActivatorState>();
 
         final ActivatorListener listener = new ActivatorListener() {
             @Override
             public void onStateChange(ActivatorStateChangeEvent event) {
                 states.add(event.getNewState());
-                switch (event.getNewState()) {
-                    case ACTIVATING:
-                        assert activator.getCurrentState() != Activator.ActivateState.ACTIVATED;
-                        break;
-                    case DEACTIVATING:
-                        assert activator.getCurrentState() != Activator.ActivateState.ACTIVATING;
-                        break;
-                    case ACTIVATED:
-                        assert false;
-                        break;
-                    case DEACTIVATED:
-                        assert false;
-                        break;
-                }
+                assert false;
             }
 
             @Override
             public void onStateChangeFailure(ActivatorStateChangeEvent event, Throwable ex, String message) {
                 states.add(event.getNewState());
-                switch (event.getNewState()) {
-                    case ACTIVATING:
-                        assert false;
-                        break;
-                    case DEACTIVATING:
-                        assert false;
-                        break;
-                    case ACTIVATED:
-                        assert activator.getCurrentState() == Activator.ActivateState.ACTIVATING;
-                        break;
-                    case DEACTIVATED:
-                        assert activator.getCurrentState() == Activator.ActivateState.DEACTIVATING;
-                        break;
-                }
             }
         };
 
-        assert activator.getCurrentState() == Activator.ActivateState.UNKNOWN;
+        assert activator.getCurrentState() == ActivatorState.UNKNOWN;
         assert states.isEmpty();
         new ActivatorToggleCommand(Duration.ofSeconds(2), listener).execute(activator);
-        assert states.contains(Activator.ActivateState.ACTIVATING);
-        assert states.contains(Activator.ActivateState.ACTIVATED);
-        assert states.contains(Activator.ActivateState.DEACTIVATED);
-        assert states.contains(Activator.ActivateState.DEACTIVATING);
-        assert states.size() == 4;
-        assert activator.getCurrentState() == Activator.ActivateState.UNKNOWN;
+        assert states.contains(ActivatorState.ACTIVATED);
+        assert states.contains(ActivatorState.DEACTIVATED);
+        assert states.size() == 2;
+        assert activator.getCurrentState() == ActivatorState.UNKNOWN;
     }
 
     public void failDeactivate(Activator activator) {
-        final Collection<Activator.ActivateState> states = new ArrayList<Activator.ActivateState>();
+        final Collection<ActivatorState> states = new ArrayList<ActivatorState>();
 
         final ActivatorListener listener = new ActivatorListener() {
             @Override
             public void onStateChange(ActivatorStateChangeEvent event) {
                 states.add(event.getNewState());
-                switch (event.getNewState()) {
-                    case ACTIVATING:
-                        assert false;
-                        break;
-                    case DEACTIVATING:
-                        assert activator.getCurrentState() != Activator.ActivateState.DEACTIVATED;
-                        break;
-                    case ACTIVATED:
-                        assert false;
-                        break;
-                    case DEACTIVATED:
-                        assert false;
-                        break;
-                }
+                assert false;
             }
 
             @Override
             public void onStateChangeFailure(ActivatorStateChangeEvent event, Throwable ex, String message) {
                 states.add(event.getNewState());
-                switch (event.getNewState()) {
-                    case DEACTIVATING:
-                        assert false;
-                        break;
-                    case ACTIVATING:
-                        assert false;
-                        break;
-                    case DEACTIVATED:
-                        assert activator.getCurrentState() == Activator.ActivateState.DEACTIVATING;
-                        break;
-                    case ACTIVATED:
-                        assert false;
-                        break;
-                }
             }
         };
 
-        assert activator.getCurrentState() == Activator.ActivateState.UNKNOWN;
+        assert activator.getCurrentState() == ActivatorState.UNKNOWN;
         assert states.isEmpty();
-        activator.deactivate(listener);
-        assert states.contains(Activator.ActivateState.DEACTIVATING);
-        assert states.contains(Activator.ActivateState.DEACTIVATED);
-        assert states.size() == 2;
-        assert activator.getCurrentState() == Activator.ActivateState.UNKNOWN;
+        activator.setCurrentState(ActivatorState.DEACTIVATED,listener);
+        assert states.contains(ActivatorState.DEACTIVATED);
+        assert states.size() == 1;
+        assert activator.getCurrentState() == ActivatorState.UNKNOWN;
     }
 
 

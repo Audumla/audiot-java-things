@@ -21,6 +21,9 @@ import net.audumla.devices.activator.provider.ActivatorProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collection;
+import java.util.Properties;
+
 public class RPIGPIOActivatorProvider implements ActivatorProvider {
     private static final Logger logger = LoggerFactory.getLogger(RPIGPIOActivatorProvider.class);
 
@@ -35,12 +38,17 @@ public class RPIGPIOActivatorProvider implements ActivatorProvider {
     }
 
     @Override
-    public int getActivatorCount() {
-        return 0;
+    public String getId() {
+        return this.getClass().getSimpleName();
     }
 
     @Override
-    public Activator getActivator(int id) {
+    public Activator getActivator(Properties id) {
+        return null;
+    }
+
+    @Override
+    public Collection<Activator> getActivators() {
         return null;
     }
 }

@@ -22,13 +22,33 @@ import org.slf4j.LoggerFactory;
 public class ImmutableActivatorState implements ActivatorState {
     private static final Logger logger = LoggerFactory.getLogger(ImmutableActivatorState.class);
     private Long value;
+    private String name;
 
     public ImmutableActivatorState(Long value) {
         this.value = value;
     }
 
+    public ImmutableActivatorState(Long value, String name) {
+        this.value = value;
+        this.name = name;
+    }
+
     @Override
     public Long getValue() {
         return value;
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public String toString() {
+        if (getName() == null) {
+            return "Value:" + getValue();
+        } else {
+            return getName();
+        }
     }
 }

@@ -20,15 +20,13 @@ public class ActivatorMock extends AbstractActivator {
     }
 
     @Override
-    protected boolean doActivate(Collection<ActivatorListener> listeners) {
-        logger.info(activate ? "Simulator Activated - " + getName() : "Simulator Failed Activation - " + getName());
-        return activate;
+    protected boolean executeStateChange(ActivatorState newstate, Collection<ActivatorListener> listeners) {
+        if (newstate.equals(ActivatorState.DEACTIVATED)) {
+            logger.info(deactivate ? "Simulator Deactivated - " + getName() : "Simulator Failed Deactivation - " + getName());
+            return deactivate;
+        } else {
+            logger.info(activate ? "Simulator Activated - " + getName() : "Simulator Failed Activation - " + getName());
+            return activate;
+        }
     }
-
-    @Override
-    protected boolean doDeactivate(Collection<ActivatorListener> listeners) {
-        logger.info(deactivate ? "Simulator Deactivated - " + getName() : "Simulator Failed Deactivation - " + getName());
-        return deactivate;
-    }
-
 }

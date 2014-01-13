@@ -21,10 +21,14 @@ import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.time.temporal.TemporalUnit;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
@@ -34,69 +38,90 @@ public class DefaultEventScheduler implements EventScheduler {
 
     ScheduledExecutorService scheduler = new ScheduledThreadPoolExecutor(1);
 
-    @Override
-    public boolean scheduleEvent(EventTarget target, Event... events) {
-        EventTarget<Event> t = targetRegistry.get(target.getName());
-        if (t != null) {
-            scheduler.submit(wrapEvents(t, events));
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
-
-    protected Callable<Boolean> wrapEvents(EventTarget<Event> t, Event[] e) {
-        return new Callable<Boolean>() {
-            EventTarget<Event> target = t;
-            Event[] events = e;
-
-            @Override
-            public Boolean call() throws Exception {
-                boolean result = true;
-                for (Event et : events ) {
-                    try {
-                        et.setScheduler(DefaultEventScheduler.this);
-                        et.setExecutedTime(Instant.now());
-                        et.setStatus(Event.EventStatus.EXECUTING);
-                        result &= target.handleEvent(et);
-                        et.setStatus(Event.EventStatus.COMPLETE);
-                    } catch (Throwable throwable) {
-                        et.setFailed(throwable, "Failed to execute Event");
-                        et.setStatus(Event.EventStatus.FAILED);
-                    }
-                    et.setCompletedTime(Instant.now());
+    protected Callable<Boolean> wrapEvents(EventTarget<Event>[] t, Event[] e) {
+        return () -> {
+            boolean result = true;
+            // use the passed in targets as references and lookup the concrete target within the registry
+            Collection<EventTarget<Event>> targets = new ArrayList<EventTarget<Event>>();
+            for (EventTarget<Event> et : t) {
+                EventTarget<Event> target = targetRegistry.get(et.getName());
+                if (target != null) {
+                    targets.add(target);
+                } else {
+                    logger.warn("Failed to locate target [" + et.getName() + "]");
                 }
-                return result;
             }
+            for (Event ev : e) {
+                try {
+                    ev.setScheduler(DefaultEventScheduler.this);
+                    ev.setExecutedTime(Instant.now());
+                    ev.setStatus(Event.EventStatus.EXECUTING);
+                    for (EventTarget<Event> et : targets) {
+                        result &= et.handleEvent(ev);
+                    }
+                    ev.setStatus(Event.EventStatus.COMPLETE);
+                } catch (Throwable throwable) {
+                    ev.setFailed(throwable, "Failed to execute Event");
+                    ev.setStatus(Event.EventStatus.FAILED);
+                }
+                ev.setCompletedTime(Instant.now());
+            }
+            return result;
         };
 
     }
 
     @Override
     public boolean scheduleEvent(EventTarget target, EventSchedule schedule, Event... events) {
+        return scheduleEvent(events,new EventTarget[] {target},schedule);
+    }
+
+    @Override
+    public boolean scheduleEvent(EventTarget target, Event... events) {
+        return scheduleEvent(events,new EventTarget[] {target});
+    }
+
+
+    @Override
+    public boolean scheduleEvent(Event event, EventTarget... targets) {
+        return scheduleEvent(new Event[] {event},targets);
+    }
+
+    @Override
+    public boolean scheduleEvent(Event event, EventSchedule schedule, EventTarget... targets) {
+        return scheduleEvent(new Event[] {event},targets,schedule);
+    }
+
+    @Override
+    public boolean scheduleEvent(Event[] events, EventTarget[] targets, EventSchedule schedule) {
         if (schedule instanceof SimpleEventSchedule) {
             SimpleEventSchedule ss = (SimpleEventSchedule) schedule;
             if (ss.getRepeatCount() > 0) {
                 throw new UnsupportedOperationException("Scheduler does not support fixed repeat counts");
             }
-            long initialDelay = Duration.between(Instant.now(),ss.getStartTime()).toMillis();
+            long initialDelay = Duration.between(Instant.now(), ss.getStartTime()).toMillis();
             initialDelay = initialDelay < 0 ? 0 : initialDelay;
             // set up a repeating schedule. We cannot set a fixed repeat count for this scheduler
-            if (ss.getRepeatInterval() != null && !ss.getRepeatInterval().isZero() ) {
+            if (ss.getRepeatInterval() != null && !ss.getRepeatInterval().isZero()) {
                 ScheduledFuture<?> scheduledFuture = scheduler.scheduleAtFixedRate(() -> {
                     try {
-                        wrapEvents(target,events).call();
+                        wrapEvents(targets, events).call();
                     } catch (Exception e) {
-                        logger.error("Failed to execute scheduled task",e);
+                        logger.error("Failed to execute scheduled task", e);
                     }
                 }, initialDelay, ss.getRepeatInterval().toMillis(), MILLISECONDS);
+            } else {
+                scheduler.schedule(wrapEvents(targets, events), initialDelay, MILLISECONDS);
             }
-            else {
-                scheduler.schedule(wrapEvents(target,events),initialDelay,MILLISECONDS);
-            }
+            return true;
         }
-        throw new UnsupportedOperationException("Scheduler does not support "+schedule.getClass());
+        throw new UnsupportedOperationException("Scheduler does not support " + schedule.getClass());
+    }
+
+    @Override
+    public boolean scheduleEvent(Event[] events, EventTarget[] targets) {
+        scheduler.submit(wrapEvents(targets, events));
+        return true;
     }
 
     @Override

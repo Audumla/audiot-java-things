@@ -18,6 +18,7 @@ package net.audumla.devices.activator.event;
 
 import net.audumla.devices.activator.Activator;
 import net.audumla.devices.activator.ActivatorListener;
+import net.audumla.devices.activator.ActivatorState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,6 +35,6 @@ public class ActivatorDisableCommand extends AbstractActivatorCommand {
 
     @Override
     public boolean execute(Activator activator) {
-        return activator.deactivate(getListeners());
+        return activator.setCurrentState(ActivatorState.DEACTIVATED, getListeners());
     }
 }

@@ -20,24 +20,22 @@ public class ExceptionActivatorMock extends AbstractActivator {
     }
 
     @Override
-    protected boolean doActivate(Collection<ActivatorListener> listeners) {
-        logger.info(activate ? "Simulator Activated - " + getName() : "Simulator Failed Activation - " + getName());
-        if (activate) {
-            return activate;
+    protected boolean executeStateChange(ActivatorState newstate, Collection<ActivatorListener> listeners) {
+        if (newstate.equals(ActivatorState.DEACTIVATED)) {
+            logger.info(deactivate ? "Simulator Deactivated - " + getName() : "Simulator Failed Deactivation - " + getName());
+            if (deactivate) {
+                return deactivate;
+            } else {
+                throw new UnsupportedOperationException("Unsupported Failure");
+            }
         } else {
-            throw new UnsupportedOperationException("Unsupported Failure");
+            logger.info(activate ? "Simulator Activated - " + getName() : "Simulator Failed Activation - " + getName());
+            if (activate) {
+                return activate;
+            } else {
+                throw new UnsupportedOperationException("Unsupported Failure");
+            }
         }
     }
-
-    @Override
-    protected boolean doDeactivate(Collection<ActivatorListener> listeners) {
-        logger.info(deactivate ? "Simulator Deactivated - " + getName() : "Simulator Failed Deactivation - " + getName());
-        if (deactivate) {
-            return deactivate;
-        } else {
-            throw new UnsupportedOperationException("Unsupported Failure");
-        }
-    }
-
 
 }

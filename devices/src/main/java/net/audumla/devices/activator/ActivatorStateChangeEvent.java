@@ -1,21 +1,21 @@
 package net.audumla.devices.activator;
 
 public class ActivatorStateChangeEvent {
-    private Activator.ActivateState oldState;
-    private Activator.ActivateState newState;
+    private ActivatorState oldState;
+    private ActivatorState newState;
     private Activator activator;
 
-    public ActivatorStateChangeEvent(Activator.ActivateState oldState, Activator.ActivateState newState, Activator activator) {
+    public ActivatorStateChangeEvent(ActivatorState oldState, ActivatorState newState, Activator activator) {
         this.oldState = oldState;
         this.newState = newState;
         this.activator = activator;
     }
 
-    public Activator.ActivateState getOldState() {
+    public ActivatorState getOldState() {
         return oldState;
     }
 
-    public Activator.ActivateState getNewState() {
+    public ActivatorState getNewState() {
         return newState;
     }
 
