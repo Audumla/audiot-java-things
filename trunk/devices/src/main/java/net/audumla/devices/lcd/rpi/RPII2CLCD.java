@@ -1,10 +1,10 @@
-package net.audumla.devices.lcd.raspberrypi;
+package net.audumla.devices.lcd.rpi;
 
-import com.pi4j.io.i2c.I2CDevice;
-import com.pi4j.io.i2c.I2CFactory;
 import net.audumla.devices.event.AbstractEventTarget;
 import net.audumla.devices.event.CommandEvent;
 import net.audumla.devices.event.EventScheduler;
+import net.audumla.devices.i2c.I2CBus;
+import net.audumla.devices.i2c.I2CDevice;
 import net.audumla.devices.lcd.LCD;
 import org.apache.log4j.Logger;
 
@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RaspberryPII2CLCD extends AbstractEventTarget<CommandEvent<LCD>> implements net.audumla.devices.lcd.LCD{
+public class RPII2CLCD extends AbstractEventTarget<CommandEvent<LCD>> implements net.audumla.devices.lcd.LCD{
     public static final int DEFAULT_ADDRESS = 0x20;
 
     protected final static int LCD_8BITMODE = 0x10;
@@ -73,17 +73,17 @@ public class RaspberryPII2CLCD extends AbstractEventTarget<CommandEvent<LCD>> im
     private int displayMode;
 
     private static Map<Integer, net.audumla.devices.lcd.LCD> instances = new HashMap<Integer, net.audumla.devices.lcd.LCD>();
-    public static Logger logger = Logger.getLogger(RaspberryPII2CLCD.class);
+    public static Logger logger = Logger.getLogger(RPII2CLCD.class);
 
     public static LCD instance(String name, int address) {
         LCD instance = instances.get(address);
         if (instance == null) {
-            instance = new RaspberryPII2CLCD(name,address);
+            instance = new RPII2CLCD(name,address);
         }
         return instance;
     }
 
-    private RaspberryPII2CLCD(String name, int address) {
+    private RPII2CLCD(String name, int address) {
         super(name);
         ext = new PortExtender(address);
         backlightStatus = LCD_BACKLIGHT;
@@ -94,7 +94,7 @@ public class RaspberryPII2CLCD extends AbstractEventTarget<CommandEvent<LCD>> im
     public void initialize() {
         try {
             synchronized (Thread.currentThread()) {
-                // this will get the RaspberryPII2CLCD into the write state to start sending commands
+                // this will get the RPII2CLCD into the write state to start sending commands
                 Thread.sleep(50, 0);
                 ext.commandWrite(PortExtender.MCP23008_IODIR, 0x00); // all pins to outputs
                 command4bits(LCD_D4_PIN | LCD_D5_PIN);
@@ -322,7 +322,7 @@ public class RaspberryPII2CLCD extends AbstractEventTarget<CommandEvent<LCD>> im
             // create I2C communications bus instance
             for (int i = 0; i < 5; ++i) {
                 try {
-                    device = I2CFactory.getInstance(i).getDevice(address);
+                    device = I2CBus.getI2CBusFactory().getInstance(i).getDevice(address);
                     logger.trace("Found I2C device on bus " + i);
                     break;
                 } catch (IOException ex) {

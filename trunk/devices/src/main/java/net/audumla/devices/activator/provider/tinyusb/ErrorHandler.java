@@ -1,4 +1,4 @@
-package net.audumla.devices.activator.relay;
+package net.audumla.devices.activator.provider.tinyusb;
 
 /**
  * User: audumla

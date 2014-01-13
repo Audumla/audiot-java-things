@@ -1,5 +1,6 @@
 package net.audumla.devices.activator;
 
+import net.audumla.devices.activator.event.ActivatorToggleCommand;
 import org.junit.Assert;
 import org.junit.Test;
 

@@ -1,4 +1,4 @@
-package net.audumla.devices.activator;
+package net.audumla.devices.activator.event;
 
 /*
  * *********************************************************************
@@ -16,14 +16,14 @@ package net.audumla.devices.activator;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
+import net.audumla.devices.activator.Activator;
+import net.audumla.devices.activator.ActivatorListener;
 import net.audumla.devices.event.SimpleEventSchedule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 public class ActivatorToggleCommand extends ActivatorEnableCommand {
     private static final Logger logger = LoggerFactory.getLogger(ActivatorToggleCommand.class);

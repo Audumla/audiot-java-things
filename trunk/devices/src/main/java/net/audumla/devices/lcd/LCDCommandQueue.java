@@ -1,14 +1,8 @@
 package net.audumla.devices.lcd;
 
-import net.audumla.devices.lcd.raspberrypi.RaspberryPII2CLCD;
-import org.apache.log4j.Logger;
-
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-
 public class LCDCommandQueue {
 //
-//    private static final Logger logger = Logger.getLogger(RaspberryPII2CLCD.class);
+//    private static final Logger logger = Logger.getLogger(RPII2CLCD.class);
 //    private static final int DEFAULT_QUEUE_SIZE = 128;
 //    private static LCDCommandQueue instance;
 //

@@ -58,7 +58,7 @@
                             <mainClass>org.apache.log4j.core.config.plugins.PluginManager</mainClass>
                             <arguments>
                                 <argument>${project.build.outputDirectory}</argument>
-                                <argument>net.audumla.devices.raspberrypi.lcd</argument>
+                                <argument>net.audumla.devices.rpi.lcd</argument>
                             </arguments>
                         </configuration>
                     </plugin>     -->

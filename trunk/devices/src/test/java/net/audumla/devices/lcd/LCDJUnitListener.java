@@ -1,7 +1,7 @@
 package net.audumla.devices.lcd;
 
 import net.audumla.devices.event.EventScheduler;
-import net.audumla.devices.lcd.raspberrypi.RaspberryPII2CLCD;
+import net.audumla.devices.lcd.rpi.RPII2CLCD;
 import org.apache.log4j.Logger;
 import org.junit.runner.Description;
 import org.junit.runner.Result;
@@ -12,10 +12,10 @@ public class LCDJUnitListener extends RunListener {
 
     Logger logger = Logger.getLogger(LCDJUnitListener.class);
     EventScheduler scheduler = EventScheduler.getInstance();
-    LCD target = RaspberryPII2CLCD.instance("JunitLCDListener",RaspberryPII2CLCD.DEFAULT_ADDRESS);
+    LCD target = RPII2CLCD.instance("JunitLCDListener", RPII2CLCD.DEFAULT_ADDRESS);
 
     public LCDJUnitListener() {
-        logger.debug("Loaded JUnit RaspberryPII2CLCD Listener");
+        logger.debug("Loaded JUnit RPII2CLCD Listener");
     }
 
     @Override

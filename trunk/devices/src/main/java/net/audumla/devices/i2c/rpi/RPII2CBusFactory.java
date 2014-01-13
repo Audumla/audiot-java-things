@@ -1,4 +1,4 @@
-package net.audumla.devices.activator;
+package net.audumla.devices.i2c.rpi;
 
 /*
  * *********************************************************************
@@ -16,24 +16,26 @@ package net.audumla.devices.activator;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
+import net.audumla.devices.i2c.I2CBus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.concurrent.Callable;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
-public class ActivatorDisableCommand extends AbstractActivatorCommand {
-    private static final Logger logger = LoggerFactory.getLogger(ActivatorDisableCommand.class);
+public class RPII2CBusFactory implements I2CBus.I2CBusFactory{
+    private static final Logger logger = LoggerFactory.getLogger(RPII2CBusFactory.class);
 
-    public ActivatorDisableCommand() {
-
-    }
-
-    public ActivatorDisableCommand(ActivatorListener... listeners) {
-        super(listeners);
-    }
+    private Map<Integer,I2CBus> busRegistry = new HashMap<Integer,I2CBus>();
 
     @Override
-    public boolean execute(Activator activator) {
-        return activator.deactivate(getListeners());
+    public I2CBus getInstance(int busid) throws IOException {
+        I2CBus bus = busRegistry.get(busid);
+        if (bus == null) {
+            bus = new RPII2CBus(busid);
+            busRegistry.put(busid,bus);
+        }
+        return bus;
     }
 }

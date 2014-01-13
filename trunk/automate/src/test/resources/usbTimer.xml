@@ -32,7 +32,7 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
         <property name="activator" ref="activator"/>
     </bean>
 
-    <bean id="activator" class="net.audumla.devices.activator.relay.TinyOSUSBRelayActivator">
+    <bean id="activator" class="net.audumla.devices.activator.provider.tinyusb.TinyUSBActivator">
         <property name="relay" value="0" />
         <property name="device" value="1" />
     </bean>

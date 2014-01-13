@@ -1,7 +1,7 @@
 package net.audumla.devices.lcd;
 
 import net.audumla.devices.event.EventScheduler;
-import net.audumla.devices.lcd.raspberrypi.RaspberryPII2CLCD;
+import net.audumla.devices.lcd.rpi.RPII2CLCD;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -14,7 +14,7 @@ public class LCDControllerTest {
     public void setUp() throws Exception {
 
         scheduler = EventScheduler.getInstance();
-        target = RaspberryPII2CLCD.instance("LCD",RaspberryPII2CLCD.DEFAULT_ADDRESS);
+        target = RPII2CLCD.instance("LCD", RPII2CLCD.DEFAULT_ADDRESS);
     }
 
     @Test
@@ -24,10 +24,10 @@ public class LCDControllerTest {
 
     @Test
     public void testAppender() {
-        RaspberryPII2CLCD.logger.trace("Testing RaspberryPII2CLCD");
-        RaspberryPII2CLCD.logger.trace("Massive! 123412341234123412341234123412341234123412341234123412341234 Really?");
-        RaspberryPII2CLCD.logger.trace("Massive! Not Really?");
-        RaspberryPII2CLCD.logger.trace("Massive! 123412341234123412341234123412341234123412341234123412341234 Really?");
+        RPII2CLCD.logger.trace("Testing RPII2CLCD");
+        RPII2CLCD.logger.trace("Massive! 123412341234123412341234123412341234123412341234123412341234 Really?");
+        RPII2CLCD.logger.trace("Massive! Not Really?");
+        RPII2CLCD.logger.trace("Massive! 123412341234123412341234123412341234123412341234123412341234 Really?");
     }
 
     @Test
