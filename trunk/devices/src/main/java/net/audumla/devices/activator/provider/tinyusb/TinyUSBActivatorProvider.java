@@ -11,6 +11,7 @@ import org.apache.log4j.Logger;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 /**
  * User: mgleeson
@@ -61,13 +62,19 @@ public class TinyUSBActivatorProvider implements ActivatorProvider {
         }
     }
 
+    @Override
+    public String getId() {
+        return this.getClass().getSimpleName();
+    }
+
     protected int getRelaysPerDevice() {
         return 8;
     }
 
     @Override
-    public Activator getActivator(int id) {
-        return activatorRegistry.get(id);
+    public Activator getActivator(Properties id) {
+        String sid = id.getProperty(TinyUSBActivator.DEVICE_ID)+","+id.getProperty(TinyUSBActivator.RELAY_ID);
+        return activatorRegistry.get(sid);
     }
 
     @Override
@@ -76,8 +83,9 @@ public class TinyUSBActivatorProvider implements ActivatorProvider {
         for (Device d : devices) {
             for (int i = 0; i < getRelaysPerDevice(); ++i) {
                 String id = di+","+i;
-                Activator activator = new TinyUSBActivator(this,di,i,id);
+                Activator activator = new TinyUSBActivator(this,di,i);
                 activator.setName("Device["+di+"] Relay["+i+"]");
+                Properties props = activator.getId();
                 activatorRegistry.put(id,activator);
             }
             ++di;

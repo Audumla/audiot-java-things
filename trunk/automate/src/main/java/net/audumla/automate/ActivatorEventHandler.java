@@ -18,7 +18,6 @@ package net.audumla.automate;
 import net.audumla.bean.BeanUtils;
 import net.audumla.devices.activator.Activator;
 import net.audumla.devices.activator.ActivatorListener;
-import net.audumla.devices.activator.ActivatorStateChangeEvent;
 import net.audumla.devices.activator.event.ActivatorToggleCommand;
 import org.apache.log4j.Logger;
 

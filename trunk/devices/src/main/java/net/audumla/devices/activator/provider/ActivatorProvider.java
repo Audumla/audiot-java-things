@@ -20,10 +20,12 @@ import net.audumla.devices.activator.Activator;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Properties;
 
 public interface ActivatorProvider {
     void initialize() throws Exception;
     void shutdown();
-    Activator getActivator(int id);
+    String getId();
+    Activator getActivator(Properties id);
     Collection<Activator> getActivators();
 }
