@@ -1,6 +1,5 @@
 package net.audumla.devices.activator;
 
-import net.audumla.devices.activator.event.ToggleActivatorCommand;
 import net.audumla.devices.event.EventScheduler;
 import org.junit.Before;
 import org.junit.Test;

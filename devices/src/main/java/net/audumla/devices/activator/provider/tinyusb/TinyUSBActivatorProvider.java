@@ -3,6 +3,7 @@ package net.audumla.devices.activator.provider.tinyusb;
 import com.ftdichip.ftd2xx.Device;
 import com.ftdichip.ftd2xx.FTD2xxException;
 import com.ftdichip.ftd2xx.Service;
+import net.audumla.bean.BeanUtils;
 import net.audumla.devices.activator.Activator;
 import net.audumla.devices.activator.ActivatorState;
 import net.audumla.devices.activator.provider.ActivatorProvider;
@@ -25,6 +26,7 @@ public class TinyUSBActivatorProvider implements ActivatorProvider {
     private static final int RELAY_DEACTIVATE_INCREMENT = 110;
     private Device devices[] = new Device[0];
     private Map<String, Activator> activatorRegistry = new HashMap<String,Activator>();
+    private String id = BeanUtils.generateName(this);
 
     private TinyUSBActivatorProvider() {
     }
@@ -65,7 +67,7 @@ public class TinyUSBActivatorProvider implements ActivatorProvider {
 
     @Override
     public String getId() {
-        return this.getClass().getSimpleName();
+        return id;
     }
 
     protected int getRelaysPerDevice() {
@@ -85,6 +87,7 @@ public class TinyUSBActivatorProvider implements ActivatorProvider {
             for (int i = 0; i < getRelaysPerDevice(); ++i) {
                 String id = di+","+i;
                 Activator activator = new TinyUSBActivator(this,di,i);
+                activator.getId().put(PROVIDER_ID,getId());
                 activator.setName("Device["+di+"] Relay["+i+"]");
                 Properties props = activator.getId();
                 activatorRegistry.put(id,activator);

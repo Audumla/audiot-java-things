@@ -24,7 +24,7 @@ public class DefaultEvent implements Event {
     private Date endTime;
     private String failureMessage;
     private Throwable failureException;
-    private String name = BeanUtils.generateName(Event.class);
+    private String name = BeanUtils.generateName(this);
 
     public DefaultEvent(Date time, long duration) {
         this.time = time;

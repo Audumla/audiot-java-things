@@ -1,4 +1,4 @@
-package net.audumla.devices.activator.event;
+package net.audumla.devices.activator;
 
 /*
  * *********************************************************************
@@ -16,9 +16,6 @@ package net.audumla.devices.activator.event;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import net.audumla.devices.activator.Activator;
-import net.audumla.devices.activator.ActivatorListener;
-import net.audumla.devices.activator.ActivatorState;
 import net.audumla.devices.event.AbstractEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

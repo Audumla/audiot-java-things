@@ -19,19 +19,25 @@ package net.audumla.devices.event;
 import java.util.concurrent.atomic.AtomicReference;
 
 public interface EventScheduler {
-    EventTransaction scheduleEvent(EventTarget target, Event... events);
+    <EventTopic> EventTransaction scheduleEvent(EventTopic topic, Event... events);
 
-    EventTransaction scheduleEvent(EventTarget target, EventSchedule schedule, Event... events);
+    <EventTopic> EventTransaction scheduleEvent(EventTopic topic, EventSchedule schedule, Event... events);
 
-    EventTransaction scheduleEvent(Event event, EventTarget ... targets);
+    <EventTopic> EventTransaction scheduleEvent(Event event, EventTopic... topics);
 
-    EventTransaction scheduleEvent(Event event, EventSchedule schedule, EventTarget ... targets);
+    <EventTopic> EventTransaction scheduleEvent(Event event, EventSchedule schedule, EventTopic... topics);
 
-    EventTransaction scheduleEvent(Event[] event, EventTarget[] target, EventSchedule schedule);
+    <EventTopic> EventTransaction scheduleEvent(Event[] event, EventTopic[] topics, EventSchedule schedule);
 
-    EventTransaction scheduleEvent(Event[] event, EventTarget[] target);
+    <EventTopic> EventTransaction scheduleEvent(Event[] event, EventTopic[] topics);
+
+    <EventTopic> boolean registerEventTarget(EventTopic[] topics, EventTarget target);
+
+    <EventTopic> boolean registerEventTarget(EventTopic topic, EventTarget target);
 
     boolean registerEventTarget(EventTarget target);
+
+    boolean unregisterEventTarget(EventTarget target);
 
     boolean shutdown();
 

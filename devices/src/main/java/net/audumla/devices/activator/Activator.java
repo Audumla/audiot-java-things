@@ -18,9 +18,9 @@ package net.audumla.devices.activator;
 
 import net.audumla.devices.event.CommandEvent;
 import net.audumla.devices.event.CommandEventTarget;
-import net.audumla.devices.event.EventTarget;
 
 import java.util.Properties;
+import java.util.regex.Pattern;
 
 public interface Activator extends CommandEventTarget<CommandEvent<Activator>> {
 

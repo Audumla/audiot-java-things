@@ -16,8 +16,9 @@ package net.audumla.devices.event;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import net.audumla.bean.BeanUtils;
+
+import java.util.regex.Pattern;
 
 public abstract class AbstractEventTarget<T extends Event> implements EventTarget<T> {
 
@@ -28,6 +29,7 @@ public abstract class AbstractEventTarget<T extends Event> implements EventTarge
     }
 
     protected AbstractEventTarget() {
+        name = BeanUtils.generateName(this);
     }
 
     public String getName() {
@@ -36,5 +38,10 @@ public abstract class AbstractEventTarget<T extends Event> implements EventTarge
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return getName();
     }
 }

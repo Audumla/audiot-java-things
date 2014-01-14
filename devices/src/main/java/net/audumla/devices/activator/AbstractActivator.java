@@ -5,6 +5,7 @@ import net.audumla.devices.event.CommandEvent;
 import org.apache.log4j.Logger;
 
 import java.util.*;
+import java.util.regex.Pattern;
 
 //import org.quartz.*;
 //import org.quartz.impl.StdSchedulerFactory;
@@ -18,7 +19,7 @@ public abstract class AbstractActivator implements Activator {
     private static final Logger logger = Logger.getLogger(Activator.class);
     private ActivatorState state = ActivatorState.UNKNOWN;
     private Deque<ActivatorListener> registeredListeners = new LinkedList<ActivatorListener>();
-    private String name = BeanUtils.generateName(Activator.class);
+    private String name = BeanUtils.generateName(this);
     private Properties id = new Properties();
 
 
@@ -64,7 +65,7 @@ public abstract class AbstractActivator implements Activator {
                 // we should attempt to deactivate the activator if we were not already attempting to do so
                 if (!newstate.equals(ActivatorState.DEACTIVATED)) {
                     // We will attempt to deactivate the activator to bring it into a known off state.
-                    setActiveState(ActivatorState.UNKNOWN);
+                    setActiveState(ActivatorState.UNKNOWN);    // set the state to unknown as we are currently in an undefined state until we either successfully enable or disable.
                     setCurrentState(ActivatorState.DEACTIVATED, listeners);
                 }
             }
@@ -99,6 +100,11 @@ public abstract class AbstractActivator implements Activator {
     @Override
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return getName();
     }
 
     public static class ActivatorStateListener implements ActivatorListener {

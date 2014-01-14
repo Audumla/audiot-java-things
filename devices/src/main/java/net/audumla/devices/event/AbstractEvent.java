@@ -29,7 +29,7 @@ public class AbstractEvent implements Event {
     private static final Logger logger = LoggerFactory.getLogger(AbstractEvent.class);
 
     private EventStatus status = new DefaultEventStatus();
-    private String name = BeanUtils.generateName(this.getClass());
+    private String name = BeanUtils.generateName(this);
     private EventScheduler scheduler;
     private EventTransaction eventTransaction;
 
@@ -70,5 +70,10 @@ public class AbstractEvent implements Event {
     public void setEventTransaction(EventTransaction et) {
         this.eventTransaction = et;
 
+    }
+
+    @Override
+    public String toString() {
+        return getId();
     }
 }

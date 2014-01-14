@@ -18,7 +18,7 @@ package net.audumla.automate;
 import net.audumla.bean.BeanUtils;
 import net.audumla.devices.activator.Activator;
 import net.audumla.devices.activator.ActivatorListener;
-import net.audumla.devices.activator.event.ToggleActivatorCommand;
+import net.audumla.devices.activator.ToggleActivatorCommand;
 import org.apache.log4j.Logger;
 
 import java.util.concurrent.ScheduledExecutorService;
@@ -26,7 +26,7 @@ import java.util.concurrent.ScheduledExecutorService;
 public class ActivatorEventHandler implements EventHandler {
     private static final Logger logger = Logger.getLogger(ActivatorEventHandler.class);
     private Activator activator;
-    private String name = BeanUtils.generateName(EventHandler.class);
+    private String name = BeanUtils.generateName(this);
     private ScheduledExecutorService scheduler;
 
     public void setScheduler(ScheduledExecutorService scheduler) {
