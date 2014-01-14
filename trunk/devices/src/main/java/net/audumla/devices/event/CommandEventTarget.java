@@ -16,12 +16,7 @@ package net.audumla.devices.event;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+public interface CommandEventTarget<T extends Event> extends EventTarget<T> {
+    boolean rollbackEvent(T event) throws Throwable;
 
-/**
- * An enum representing each stage of an events lifecycle
- */
-public enum EventState {
-    PENDING, EXECUTING, COMPLETE, FAILED, ROLLINGBACK, ROLLEDBACK
 }

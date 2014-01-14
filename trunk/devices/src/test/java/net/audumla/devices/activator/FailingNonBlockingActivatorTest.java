@@ -1,6 +1,6 @@
 package net.audumla.devices.activator;
 
-import net.audumla.devices.activator.event.ActivatorToggleCommand;
+import net.audumla.devices.activator.event.ToggleActivatorCommand;
 import net.audumla.devices.event.EventScheduler;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,7 +38,7 @@ public class FailingNonBlockingActivatorTest {
 
     public void stateChangeAllFailure(Activator activator) throws Exception {
         assert activator.getCurrentState() == ActivatorState.UNKNOWN;
-        EventScheduler.getDefaultEventScheduler().scheduleEvent(activator, new ActivatorToggleCommand(Duration.ofSeconds(1))).begin();
+        EventScheduler.getDefaultEventScheduler().scheduleEvent(activator, new ToggleActivatorCommand(Duration.ofSeconds(1))).begin();
 //        assert activator.getCurrentState() == ActivatorState.UNKNOWN;
         synchronized (this) {
             try {
@@ -67,7 +67,7 @@ public class FailingNonBlockingActivatorTest {
 
     public void stateChangeActivateFailure(Activator activator) throws Exception {
         assert activator.getCurrentState() == ActivatorState.UNKNOWN;
-        EventScheduler.getDefaultEventScheduler().scheduleEvent(activator, new ActivatorToggleCommand(Duration.ofSeconds(1))).begin();
+        EventScheduler.getDefaultEventScheduler().scheduleEvent(activator, new ToggleActivatorCommand(Duration.ofSeconds(1))).begin();
 //        assert activator.getCurrentState() == ActivatorState.DEACTIVATED;
         synchronized (this) {
             try {
@@ -113,7 +113,7 @@ public class FailingNonBlockingActivatorTest {
 
         assert activator.getCurrentState() == ActivatorState.UNKNOWN;
         assert states.isEmpty();
-        EventScheduler.getDefaultEventScheduler().scheduleEvent(activator, new ActivatorToggleCommand(Duration.ofSeconds(3), listener)).begin();
+        EventScheduler.getDefaultEventScheduler().scheduleEvent(activator, new ToggleActivatorCommand(Duration.ofSeconds(3), listener)).begin();
         synchronized (this) {
             try {
                 this.wait(3100);

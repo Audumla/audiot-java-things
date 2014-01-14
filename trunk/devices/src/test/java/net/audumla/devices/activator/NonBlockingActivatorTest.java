@@ -1,6 +1,6 @@
 package net.audumla.devices.activator;
 
-import net.audumla.devices.activator.event.ActivatorToggleCommand;
+import net.audumla.devices.activator.event.ToggleActivatorCommand;
 import net.audumla.devices.event.EventScheduler;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,7 +29,7 @@ public class NonBlockingActivatorTest {
         assert activator.getCurrentState() == ActivatorState.UNKNOWN;
         activator.setCurrentState(ActivatorState.DEACTIVATED);
         assert activator.getCurrentState() == ActivatorState.DEACTIVATED;
-        EventScheduler.getDefaultEventScheduler().scheduleEvent(activator, new ActivatorToggleCommand(Duration.ofSeconds(2))).begin();
+        EventScheduler.getDefaultEventScheduler().scheduleEvent(activator, new ToggleActivatorCommand(Duration.ofSeconds(2))).begin();
 //        assert activator.getCurrentState() == ActivatorState.ACTIVATED;
         synchronized (this) {
             try {
@@ -63,7 +63,7 @@ public class NonBlockingActivatorTest {
 
         assert activator.getCurrentState() == ActivatorState.UNKNOWN;
         assert states.isEmpty();
-        EventScheduler.getDefaultEventScheduler().scheduleEvent(activator, new ActivatorToggleCommand(Duration.ofSeconds(2), listener)).begin();
+        EventScheduler.getDefaultEventScheduler().scheduleEvent(activator, new ToggleActivatorCommand(Duration.ofSeconds(2), listener)).begin();
         synchronized (this) {
             try {
                 this.wait(1000);

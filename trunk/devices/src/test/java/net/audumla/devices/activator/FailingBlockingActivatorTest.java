@@ -1,6 +1,6 @@
 package net.audumla.devices.activator;
 
-import net.audumla.devices.activator.event.ActivatorToggleCommand;
+import net.audumla.devices.activator.event.ToggleActivatorCommand;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -98,7 +98,7 @@ public class FailingBlockingActivatorTest {
 
         assert activator.getCurrentState() == ActivatorState.UNKNOWN;
         assert states.isEmpty();
-        new ActivatorToggleCommand(Duration.ofSeconds(2), listener).execute(activator);
+        new ToggleActivatorCommand(Duration.ofSeconds(2), listener).execute(activator);
         assert states.contains(ActivatorState.ACTIVATED);
         assert states.contains(ActivatorState.DEACTIVATED);
         assert states.size() == 2;

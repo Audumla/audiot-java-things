@@ -25,14 +25,14 @@ import org.slf4j.LoggerFactory;
 import java.time.Duration;
 import java.time.Instant;
 
-public class ActivatorToggleCommand extends ActivatorEnableCommand {
-    private static final Logger logger = LoggerFactory.getLogger(ActivatorToggleCommand.class);
+public class ToggleActivatorCommand extends EnableActivatorCommand {
+    private static final Logger logger = LoggerFactory.getLogger(ToggleActivatorCommand.class);
     private Duration delay;
 
-    public ActivatorToggleCommand() {
+    public ToggleActivatorCommand() {
     }
 
-    public ActivatorToggleCommand(Duration delay, ActivatorListener... listeners) {
+    public ToggleActivatorCommand(Duration delay, ActivatorListener... listeners) {
         super(listeners);
         this.delay = delay;
     }
@@ -50,7 +50,7 @@ public class ActivatorToggleCommand extends ActivatorEnableCommand {
         // ensure that the result of the call to ativate results in the activator now being in the correct state.
         if (super.execute(activator)) {
             if (getScheduler() != null) {
-                return getScheduler().scheduleEvent(activator, new SimpleEventSchedule(Instant.now().plus(delay)), new ActivatorDisableCommand(getListeners())).begin();
+                return getScheduler().scheduleEvent(activator, new SimpleEventSchedule(Instant.now().plus(delay)), new DisableActivatorCommand(getListeners())).begin();
             } else {
                 synchronized (this) {
                     try {
@@ -59,7 +59,7 @@ public class ActivatorToggleCommand extends ActivatorEnableCommand {
                         logger.error("Failed to execute blocking deactivate", e);
                     }
                 }
-                return new ActivatorDisableCommand(getListeners()).execute(activator);
+                return new DisableActivatorCommand(getListeners()).execute(activator);
             }
         }
         return false;
