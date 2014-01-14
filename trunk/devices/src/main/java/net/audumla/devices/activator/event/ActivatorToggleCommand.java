@@ -46,17 +46,17 @@ public class ActivatorToggleCommand extends ActivatorEnableCommand {
     }
 
     @Override
-    public boolean execute(Activator activator) {
+    public boolean execute(Activator activator) throws Exception {
         // ensure that the result of the call to ativate results in the activator now being in the correct state.
         if (super.execute(activator)) {
             if (getScheduler() != null) {
-                return getScheduler().scheduleEvent(activator, new SimpleEventSchedule(Instant.now().plus(delay)),new ActivatorDisableCommand(getListeners()));
+                return getScheduler().scheduleEvent(activator, new SimpleEventSchedule(Instant.now().plus(delay)), new ActivatorDisableCommand(getListeners())).begin();
             } else {
                 synchronized (this) {
                     try {
                         this.wait(delay.toMillis());
                     } catch (InterruptedException e) {
-                        logger.error("Failed to execute blocking deactivate",e);
+                        logger.error("Failed to execute blocking deactivate", e);
                     }
                 }
                 return new ActivatorDisableCommand(getListeners()).execute(activator);

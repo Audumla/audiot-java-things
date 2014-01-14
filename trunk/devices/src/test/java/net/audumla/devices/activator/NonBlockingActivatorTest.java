@@ -25,11 +25,11 @@ public class NonBlockingActivatorTest {
     @Test
     public void testStateChange() throws Exception {
         ActivatorMock activator = new ActivatorMock(true, true);
-        EventScheduler.getInstance().registerEventTarget(activator);
+        EventScheduler.getDefaultEventScheduler().registerEventTarget(activator);
         assert activator.getCurrentState() == ActivatorState.UNKNOWN;
         activator.setCurrentState(ActivatorState.DEACTIVATED);
         assert activator.getCurrentState() == ActivatorState.DEACTIVATED;
-        EventScheduler.getInstance().scheduleEvent(activator, new ActivatorToggleCommand(Duration.ofSeconds(2)));
+        EventScheduler.getDefaultEventScheduler().scheduleEvent(activator, new ActivatorToggleCommand(Duration.ofSeconds(2))).begin();
 //        assert activator.getCurrentState() == ActivatorState.ACTIVATED;
         synchronized (this) {
             try {
@@ -46,7 +46,7 @@ public class NonBlockingActivatorTest {
     @Test
     public void testStateChangeListener() throws Exception {
         final ActivatorMock activator = new ActivatorMock(true, true);
-        EventScheduler.getInstance().registerEventTarget(activator);
+        EventScheduler.getDefaultEventScheduler().registerEventTarget(activator);
         final Collection<ActivatorState> states = new ArrayList<ActivatorState>();
 
         final ActivatorListener listener = new ActivatorListener() {
@@ -63,7 +63,7 @@ public class NonBlockingActivatorTest {
 
         assert activator.getCurrentState() == ActivatorState.UNKNOWN;
         assert states.isEmpty();
-        EventScheduler.getInstance().scheduleEvent(activator, new ActivatorToggleCommand(Duration.ofSeconds(2), listener));
+        EventScheduler.getDefaultEventScheduler().scheduleEvent(activator, new ActivatorToggleCommand(Duration.ofSeconds(2), listener)).begin();
         synchronized (this) {
             try {
                 this.wait(1000);

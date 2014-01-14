@@ -13,5 +13,9 @@ public class LCDClearCommand extends AbstractEvent implements CommandEvent<LCD> 
         lcd.clear();
         return true;
     }
+    @Override
+    public boolean rollback(LCD lcd) throws Exception {
+        return false;
+    }
 
 }

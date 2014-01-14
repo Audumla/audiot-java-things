@@ -1,4 +1,4 @@
-package net.audumla.devices.activator.event;
+package net.audumla.devices.event;
 
 /*
  * *********************************************************************
@@ -16,24 +16,25 @@ package net.audumla.devices.activator.event;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import net.audumla.devices.activator.Activator;
-import net.audumla.devices.activator.ActivatorListener;
-import net.audumla.devices.activator.ActivatorState;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.time.Instant;
 
-public class ActivatorEnableCommand extends AbstractActivatorCommand {
-    private static final Logger logger = LoggerFactory.getLogger(ActivatorEnableCommand.class);
+public interface EventStatus extends EventTransactionStatus {
+    /**
+     * Applies a failure status to the event and stores the given failure reasons
+     *
+     * @param ex      The Exception that caused the failure if any
+     * @param message A message that describes the failure
+     */
+    void setFailed(Throwable ex, String message);
 
-    public ActivatorEnableCommand() {
-    }
+    /**
+     * @return The message associated with the event failure
+     */
+    String getFailureMessage();
 
-    public ActivatorEnableCommand(ActivatorListener... listeners ) {
-        super(listeners);
-    }
+    /**
+     * @return The Exception associated with the event failure
+     */
+    Throwable getFailureException();
 
-    @Override
-    public boolean execute(Activator activator) throws Exception {
-        return activator.setCurrentState(ActivatorState.ACTIVATED,getListeners());
-    }
 }

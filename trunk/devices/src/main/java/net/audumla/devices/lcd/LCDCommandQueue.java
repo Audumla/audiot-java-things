@@ -76,7 +76,7 @@ public class LCDCommandQueue {
 //                            shutdown();
 //                        }
 //                        s.execute(lcd);
-//                        logger.debug("LCD Command - " + s.getClass().getName());
+//                        logger.debug("LCD Command - " + s.getClass().getId());
 //                    } while (!shutdown && !queue.isEmpty());
 //                } catch (final Exception ex) {
 //                    logger.error(ex);

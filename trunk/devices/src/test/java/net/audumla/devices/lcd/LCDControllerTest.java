@@ -13,13 +13,13 @@ public class LCDControllerTest {
     @Before
     public void setUp() throws Exception {
 
-        scheduler = EventScheduler.getInstance();
+        scheduler = EventScheduler.getDefaultEventScheduler();
         target = RPII2CLCD.instance("LCD", RPII2CLCD.DEFAULT_ADDRESS);
     }
 
     @Test
     public void testLCD() throws Exception {
-        scheduler.scheduleEvent(target,new LCDWriteCommand("Hello"));
+        scheduler.scheduleEvent(target,new LCDWriteCommand("Hello")).begin();
     }
 
     @Test
@@ -31,12 +31,12 @@ public class LCDControllerTest {
     }
 
     @Test
-    public void testController() {
-        scheduler.scheduleEvent(target,new LCDClearCommand());
-        scheduler.scheduleEvent(target,new LCDWriteCommand("Test Output"));
-        scheduler.scheduleEvent(target,new LCDSetCursorCommand(0, 1));
-        scheduler.scheduleEvent(target,new LCDWriteCommand("Moved to Line"));
-        scheduler.scheduleEvent(target,new LCDPauseCommand());
+    public void testController() throws Exception {
+        scheduler.scheduleEvent(target,new LCDClearCommand()).begin();
+        scheduler.scheduleEvent(target, new LCDWriteCommand("Test Output")).begin();
+        scheduler.scheduleEvent(target,new LCDSetCursorCommand(0, 1)).begin();
+        scheduler.scheduleEvent(target,new LCDWriteCommand("Moved to Line")).begin();
+        scheduler.scheduleEvent(target,new LCDPauseCommand()).begin();
     }
 
 }

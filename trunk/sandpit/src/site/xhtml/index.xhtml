@@ -17,10 +17,10 @@
 <div class="section">
 <h2>Audumla Camel Scheduler</h2>
 
-<p>The <b>scheduler:</b> component provides a drop in replacement for the default camel <a
+<p>The <b>eventScheduler:</b> component provides a drop in replacement for the default camel <a
             class="external-link"
             href="http://camel.apache.org/quartz2.html"
-            rel="nofollow">Quartz2 scheduler</a>. 
+            rel="nofollow">Quartz2 eventScheduler</a>.
 	It offers an extensible model for adding customized Triggers and Quartz schedulers and provides functions 
 	to schedule based on astonomical and seasonal events.</p> <br/>
 
@@ -36,15 +36,15 @@
 <pre class="prettyprint"><![CDATA[
 <dependency>
     <groupId>net.audumla.camel</groupId>
-    <artifactId>scheduler</artifactId>
+    <artifactId>eventScheduler</artifactId>
     <version>x.x.x</version>
 </dependency>
 ]]></pre>
 
 
-<p>The <b>scheduler:</b> component provides a scheduled delivery of messages using the <a
+<p>The <b>eventScheduler:</b> component provides a scheduled delivery of messages using the <a
         class="external-link"
-        href="http://www.quartz-scheduler.org/"
+        href="http://www.quartz-eventScheduler.org/"
         rel="nofollow">Quartz Scheduler 2.x</a>. <br/>
     Each endpoint represents a different timer (in Quartz terms, a Trigger and JobDetail).</p>
 
@@ -72,7 +72,7 @@ The following options are available regardless of the type of trigger is chosen.
         <td colspan="1" rowspan="1">deleteJob</td>
         <td colspan="1" rowspan="1">true</td>
         <td colspan="1" rowspan="1"> If set to true, then the trigger automatically deletes when the
-            route stops. Else if set to false, it will remain in the scheduler. When set to false, it will also mean the user
+            route stops. Else if set to false, it will remain in the eventScheduler. When set to false, it will also mean the user
             may reuse the pre-configured trigger with a camel Uri, just ensure the names match. You cannot have
             both deleteJob and pauseJob set to true.
         </td>
@@ -81,7 +81,7 @@ The following options are available regardless of the type of trigger is chosen.
         <td colspan="1" rowspan="1">pauseJob</td>
         <td colspan="1" rowspan="1">false</td>
         <td colspan="1" rowspan="1"> If set to true, then the trigger automatically pauses when
-            the route stops. Else if set to false, it will remain in the scheduler. When set to false, it will also mean the user
+            the route stops. Else if set to false, it will remain in the eventScheduler. When set to false, it will also mean the user
             may reuse the pre-configured trigger with camel Uri, just ensure the names match. Notice you cannot have
             both deleteJob and pauseJob set to true.
         </td>
@@ -90,13 +90,13 @@ The following options are available regardless of the type of trigger is chosen.
 </table>
 <p><b>URI Format</b></p>
 <pre class="prettyprint"><![CDATA[
-scheduler://timerName?options
-scheduler://groupName/timerName?options
+eventScheduler://timerName?options
+eventScheduler://groupName/timerName?options
 ]]></pre>
 <h3>Scheduler Types</h3>
 <h4>Cron Scheduler Options</h4>
 
-<p>The Cron scheduler follows the same conventions utilized by the default Camel Quartz2 scheduler</p>
+<p>The Cron eventScheduler follows the same conventions utilized by the default Camel Quartz2 eventScheduler</p>
 <table>
     <tbody>
     <tr>
@@ -114,14 +114,14 @@ scheduler://groupName/timerName?options
 </table>
     <p><b>URI Format</b></p>
 <pre class="prettyprint"><![CDATA[
-scheduler://groupName/timerName?cron.expression=expression
-scheduler://timerName?cron.expression=expression
-scheduler://timerName?cron=expression (Camel Quartz2 style)
+eventScheduler://groupName/timerName?cron.expression=expression
+eventScheduler://timerName?cron.expression=expression
+eventScheduler://timerName?cron=expression (Camel Quartz2 style)
 ]]></pre>
 
 <h4>Simple Scheduler Options</h4>
 
-<p>The Simple scheduler follows the same conventions utilized by the default Camel Quartz2 scheduler</p>
+<p>The Simple eventScheduler follows the same conventions utilized by the default Camel Quartz2 eventScheduler</p>
 <table>
     <tbody>
     <tr>
@@ -150,14 +150,14 @@ scheduler://timerName?cron=expression (Camel Quartz2 style)
 </table>
 <p><b>URI Format</b></p>
 <pre class="prettyprint"><![CDATA[
-scheduler://timerName?trigger.repeatCount=2&amp;trigger.repeatInterval=2000
-scheduler://timerName?trigger.repeatInterval=3600000
+eventScheduler://timerName?trigger.repeatCount=2&amp;trigger.repeatInterval=2000
+eventScheduler://timerName?trigger.repeatInterval=3600000
 ]]></pre>
 
 
 <h4>Celestial Scheduler Options</h4>
 
-<p>The celestial scheduler allows triggering based on celestial object events such as sun rise and sun set</p>
+<p>The celestial eventScheduler allows triggering based on celestial object events such as sun rise and sun set</p>
 <table>
     <tbody>
     <tr>
@@ -244,12 +244,12 @@ scheduler://timerName?trigger.repeatInterval=3600000
 </table>
 <p><b>URI Format</b></p>
 <pre class="prettyprint"><![CDATA[
-scheduler://timerName?
-scheduler://groupName/timerName?options
+eventScheduler://timerName?
+eventScheduler://groupName/timerName?options
 ]]></pre>
 <h4>Seasonal Scheduler Options</h4>
 
-<p>The seasonal scheduler allows triggering based on seasonal events such as Winter Solstice and the start of Summer</p>
+<p>The seasonal eventScheduler allows triggering based on seasonal events such as Winter Solstice and the start of Summer</p>
 <table>
     <tbody>
     <tr>
@@ -297,8 +297,8 @@ scheduler://groupName/timerName?options
 </table>
 <p><b>URI Format</b></p>
 <pre class="prettyprint"><![CDATA[
-scheduler://timerName?
-scheduler://groupName/timerName?options
+eventScheduler://timerName?
+eventScheduler://groupName/timerName?options
 ]]></pre>
 
 </div>

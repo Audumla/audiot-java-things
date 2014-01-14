@@ -19,12 +19,6 @@ package net.audumla.devices.event;
 import java.time.Instant;
 
 public interface Event extends Cloneable {
-    /**
-     * An enum representing each stage of an events lifecycle
-     */
-    public enum EventStatus {
-        PENDING, EXECUTING, COMPLETE, FAILED
-    }
 
     /**
      * @return The current status of the event in its lifecycle
@@ -32,53 +26,9 @@ public interface Event extends Cloneable {
     EventStatus getStatus();
 
     /**
-     * @param status Sets the status of the event to the given parameter
-     */
-    void setStatus(EventStatus status);
-
-    /**
-     * Applies a failure status to the event and stores the given failure reasons
-     *
-     * @param ex      The Exception that caused the failure if any
-     * @param message A message that describes the failure
-     */
-    void setFailed(Throwable ex, String message);
-
-    /**
-     * @return The message associated with the event failure
-     */
-    String getFailureMessage();
-
-    /**
-     * @return The Exception associated with the event failure
-     */
-    Throwable getFailureException();
-
-    /**
      * @return The name of the event
      */
-    String getName();
-
-
-    /**
-     * @return The time that the event was executed
-     */
-    Instant getExecutedTime();
-
-    /**
-     * @return The time that the event completed execution or failed
-     */
-    Instant getCompletedTime();
-
-    /**
-     * @param executedTime The time that the event started execution
-     */
-    void setExecutedTime(Instant executedTime);
-
-    /**
-     * @param completedTime The time that the event completed execution or failed
-     */
-    void setCompletedTime(Instant completedTime);
+    String getId();
 
     /**
      * @return the event scheduler that this event was scheduled to.
@@ -86,5 +36,23 @@ public interface Event extends Cloneable {
      */
     EventScheduler getScheduler();
 
+    /**
+     *
+     * @param scheduler the scheduler associated with this event
+     */
     void setScheduler(EventScheduler scheduler);
+
+    /**
+     *
+      * @return the transaction associated with this event. If the event has not been submitted to a scheduler then
+     * this will return null
+     */
+    EventTransaction getEventTransaction();
+
+    /**
+     *
+     * @param et the transaction that is associated with this events execution
+     */
+    void setEventTransaction(EventTransaction et);
+
 }

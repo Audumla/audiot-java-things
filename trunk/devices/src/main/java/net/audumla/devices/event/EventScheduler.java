@@ -16,21 +16,20 @@ package net.audumla.devices.event;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import java.util.Collection;
 import java.util.concurrent.atomic.AtomicReference;
 
 public interface EventScheduler {
-    boolean scheduleEvent(EventTarget target, Event... events);
+    EventTransaction scheduleEvent(EventTarget target, Event... events);
 
-    boolean scheduleEvent(EventTarget target, EventSchedule schedule, Event... events);
+    EventTransaction scheduleEvent(EventTarget target, EventSchedule schedule, Event... events);
 
-    boolean scheduleEvent(Event event, EventTarget ... targets);
+    EventTransaction scheduleEvent(Event event, EventTarget ... targets);
 
-    boolean scheduleEvent(Event event, EventSchedule schedule, EventTarget ... targets);
+    EventTransaction scheduleEvent(Event event, EventSchedule schedule, EventTarget ... targets);
 
-    boolean scheduleEvent(Event[] event, EventTarget[] target, EventSchedule schedule);
+    EventTransaction scheduleEvent(Event[] event, EventTarget[] target, EventSchedule schedule);
 
-    boolean scheduleEvent(Event[] event, EventTarget[] target);
+    EventTransaction scheduleEvent(Event[] event, EventTarget[] target);
 
     boolean registerEventTarget(EventTarget target);
 
@@ -38,7 +37,7 @@ public interface EventScheduler {
 
     static AtomicReference<EventScheduler> scheduler = new AtomicReference<EventScheduler>();
 
-    static void setEventScheduler(EventScheduler s) {
+    static void setDefaultEventScheduler(EventScheduler s) {
         if (scheduler.get() != null) {
             // if there is already a scheduler registered then we need to swap over to the new one.
             scheduler.get().shutdown();
@@ -47,9 +46,9 @@ public interface EventScheduler {
         scheduler.set(s);
     }
 
-    static EventScheduler getInstance() {
+    static EventScheduler getDefaultEventScheduler() {
         if (scheduler.get() == null) {
-            setEventScheduler(new DefaultEventScheduler());
+            setDefaultEventScheduler(new DefaultEventScheduler());
         }
         return scheduler.get();
     }
