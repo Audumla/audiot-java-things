@@ -25,19 +25,13 @@ import net.audumla.bean.BeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.time.Instant;
-import java.util.Date;
-
 public class AbstractEvent implements Event {
     private static final Logger logger = LoggerFactory.getLogger(AbstractEvent.class);
 
-    private EventStatus status = EventStatus.PENDING;
-    private String failureMessage;
-    private Throwable failureException;
-    private String name = BeanUtils.generateName(Event.class);
-    private Instant executedTime;
-    private Instant completedTime;
+    private EventStatus status = new DefaultEventStatus();
+    private String name = BeanUtils.generateName(this.getClass());
     private EventScheduler scheduler;
+    private EventTransaction eventTransaction;
 
     @Override
     public EventStatus getStatus() {
@@ -45,48 +39,8 @@ public class AbstractEvent implements Event {
     }
 
     @Override
-    public void setStatus(EventStatus status) {
-        this.status = status;
-    }
-
-    @Override
-    public void setFailed(Throwable ex, String message) {
-        setStatus(EventStatus.FAILED);
-        failureException = ex;
-        failureMessage = message;
-    }
-
-    @Override
-    public String getFailureMessage() {
-        return failureMessage;
-    }
-
-    @Override
-    public Throwable getFailureException() {
-        return failureException;
-    }
-
-    @Override
-    public String getName() {
+    public String getId() {
         return name;
-    }
-
-    @Override
-    public Instant getExecutedTime() {
-        return executedTime;
-    }
-
-    @Override
-    public Instant getCompletedTime() {
-        return completedTime;
-    }
-
-    public void setExecutedTime(Instant executedTime) {
-        this.executedTime = executedTime;
-    }
-
-    public void setCompletedTime(Instant completedTime) {
-        this.completedTime = completedTime;
     }
 
     @Override
@@ -105,5 +59,16 @@ public class AbstractEvent implements Event {
 
     public void setScheduler(EventScheduler scheduler) {
         this.scheduler = scheduler;
+    }
+
+    @Override
+    public EventTransaction getEventTransaction() {
+        return eventTransaction;
+    }
+
+    @Override
+    public void setEventTransaction(EventTransaction et) {
+        this.eventTransaction = et;
+
     }
 }

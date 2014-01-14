@@ -25,20 +25,20 @@ public class FailingNonBlockingActivatorTest {
     @Test
     public void testStateChangeAllFailure() throws Exception {
         Activator activator = new ActivatorMock(false, false);
-        EventScheduler.getInstance().registerEventTarget(activator);
+        EventScheduler.getDefaultEventScheduler().registerEventTarget(activator);
         stateChangeAllFailure(activator);
     }
 
     @Test
     public void testStateChangeAllFailureException() throws Exception {
         Activator activator = new ExceptionActivatorMock(false, false);
-        EventScheduler.getInstance().registerEventTarget(activator);
+        EventScheduler.getDefaultEventScheduler().registerEventTarget(activator);
         stateChangeAllFailure(activator);
     }
 
     public void stateChangeAllFailure(Activator activator) throws Exception {
         assert activator.getCurrentState() == ActivatorState.UNKNOWN;
-        EventScheduler.getInstance().scheduleEvent(activator, new ActivatorToggleCommand(Duration.ofSeconds(1)));
+        EventScheduler.getDefaultEventScheduler().scheduleEvent(activator, new ActivatorToggleCommand(Duration.ofSeconds(1))).begin();
 //        assert activator.getCurrentState() == ActivatorState.UNKNOWN;
         synchronized (this) {
             try {
@@ -54,24 +54,24 @@ public class FailingNonBlockingActivatorTest {
     @Test
     public void testStateChangeActivateFailure() throws Exception {
         Activator activator = new ActivatorMock(false, true);
-        EventScheduler.getInstance().registerEventTarget(activator);
+        EventScheduler.getDefaultEventScheduler().registerEventTarget(activator);
         stateChangeActivateFailure(activator);
     }
 
     @Test
     public void testStateChangeActivateFailureException() throws Exception {
         Activator activator = new ExceptionActivatorMock(false, true);
-        EventScheduler.getInstance().registerEventTarget(activator);
+        EventScheduler.getDefaultEventScheduler().registerEventTarget(activator);
         stateChangeActivateFailure(activator);
     }
 
     public void stateChangeActivateFailure(Activator activator) throws Exception {
         assert activator.getCurrentState() == ActivatorState.UNKNOWN;
-        EventScheduler.getInstance().scheduleEvent(activator, new ActivatorToggleCommand(Duration.ofSeconds(1)));
+        EventScheduler.getDefaultEventScheduler().scheduleEvent(activator, new ActivatorToggleCommand(Duration.ofSeconds(1))).begin();
 //        assert activator.getCurrentState() == ActivatorState.DEACTIVATED;
         synchronized (this) {
             try {
-                this.wait(100);
+                this.wait(500);
                 assert activator.getCurrentState() == ActivatorState.DEACTIVATED;
                 this.wait(1100);
                 assert activator.getCurrentState() == ActivatorState.DEACTIVATED;
@@ -85,14 +85,14 @@ public class FailingNonBlockingActivatorTest {
     @Test
     public void testStateChangeListener() throws Exception {
         final Activator activator = new ActivatorMock(false, false);
-        EventScheduler.getInstance().registerEventTarget(activator);
+        EventScheduler.getDefaultEventScheduler().registerEventTarget(activator);
         stateChangeListener(activator);
     }
 
     @Test
     public void testStateChangeListenerException() throws Exception {
         final Activator activator = new ExceptionActivatorMock(false, false);
-        EventScheduler.getInstance().registerEventTarget(activator);
+        EventScheduler.getDefaultEventScheduler().registerEventTarget(activator);
         stateChangeListener(activator);
     }
 
@@ -113,7 +113,7 @@ public class FailingNonBlockingActivatorTest {
 
         assert activator.getCurrentState() == ActivatorState.UNKNOWN;
         assert states.isEmpty();
-        EventScheduler.getInstance().scheduleEvent(activator, new ActivatorToggleCommand(Duration.ofSeconds(3), listener));
+        EventScheduler.getDefaultEventScheduler().scheduleEvent(activator, new ActivatorToggleCommand(Duration.ofSeconds(3), listener)).begin();
         synchronized (this) {
             try {
                 this.wait(3100);

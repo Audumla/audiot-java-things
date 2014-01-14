@@ -1,4 +1,4 @@
-package net.audumla.devices.activator.event;
+package net.audumla.devices.event;
 
 /*
  * *********************************************************************
@@ -16,24 +16,12 @@ package net.audumla.devices.activator.event;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import net.audumla.devices.activator.Activator;
-import net.audumla.devices.activator.ActivatorListener;
-import net.audumla.devices.activator.ActivatorState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ActivatorEnableCommand extends AbstractActivatorCommand {
-    private static final Logger logger = LoggerFactory.getLogger(ActivatorEnableCommand.class);
-
-    public ActivatorEnableCommand() {
-    }
-
-    public ActivatorEnableCommand(ActivatorListener... listeners ) {
-        super(listeners);
-    }
-
-    @Override
-    public boolean execute(Activator activator) throws Exception {
-        return activator.setCurrentState(ActivatorState.ACTIVATED,getListeners());
-    }
+/**
+ * An enum representing each stage of an events lifecycle
+ */
+public enum EventState {
+    PENDING, EXECUTING, COMPLETE, FAILED, ROLLBACK
 }

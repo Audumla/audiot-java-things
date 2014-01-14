@@ -21,4 +21,10 @@ public class LCDSetDisplayCommand extends AbstractEvent implements CommandEvent<
         return true;
     }
 
+    @Override
+    public boolean rollback(LCD lcd) throws Exception {
+        return false;
+    }
+
+
 }

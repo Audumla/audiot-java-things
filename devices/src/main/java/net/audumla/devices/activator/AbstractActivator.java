@@ -87,7 +87,7 @@ public abstract class AbstractActivator implements Activator {
     }
 
     @Override
-    public boolean handleEvent(CommandEvent<Activator> event) {
+    public boolean handleEvent(CommandEvent<Activator> event) throws Exception {
         return event.execute(this);
     }
 

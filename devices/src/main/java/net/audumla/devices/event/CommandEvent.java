@@ -19,5 +19,6 @@ package net.audumla.devices.event;
 import java.util.concurrent.Callable;
 
 public interface CommandEvent<T> extends Event {
-    boolean execute(T t);
+    boolean execute(T t) throws Exception;
+    boolean rollback(T t) throws Exception;
 }

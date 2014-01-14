@@ -19,4 +19,10 @@ public class LCDSetBacklightCommand extends AbstractEvent implements CommandEven
         return true;
     }
 
+    @Override
+    public boolean rollback(LCD lcd) throws Exception {
+        return false;
+    }
+
+
 }

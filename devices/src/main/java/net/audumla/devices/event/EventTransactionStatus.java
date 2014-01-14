@@ -1,4 +1,4 @@
-package net.audumla.devices.activator.event;
+package net.audumla.devices.event;
 
 /*
  * *********************************************************************
@@ -16,24 +16,38 @@ package net.audumla.devices.activator.event;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import net.audumla.devices.activator.Activator;
-import net.audumla.devices.activator.ActivatorListener;
-import net.audumla.devices.activator.ActivatorState;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.time.Instant;
 
-public class ActivatorEnableCommand extends AbstractActivatorCommand {
-    private static final Logger logger = LoggerFactory.getLogger(ActivatorEnableCommand.class);
+public interface EventTransactionStatus extends Cloneable {
 
-    public ActivatorEnableCommand() {
-    }
+    /**
+     * @return The current status of the event in its lifecycle
+     */
+    EventState getState();
 
-    public ActivatorEnableCommand(ActivatorListener... listeners ) {
-        super(listeners);
-    }
+    /**
+     * @param status Sets the status of the event to the given parameter
+     */
+    void setState(EventState status);
 
-    @Override
-    public boolean execute(Activator activator) throws Exception {
-        return activator.setCurrentState(ActivatorState.ACTIVATED,getListeners());
-    }
+    /**
+     * @return The time that the event was executed
+     */
+    Instant getExecutedTime();
+
+    /**
+     * @return The time that the event completed execution or failed
+     */
+    Instant getCompletedTime();
+
+    /**
+     * @param executedTime The time that the event started execution
+     */
+    void setExecutedTime(Instant executedTime);
+
+    /**
+     * @param completedTime The time that the event completed execution or failed
+     */
+    void setCompletedTime(Instant completedTime);
+
 }

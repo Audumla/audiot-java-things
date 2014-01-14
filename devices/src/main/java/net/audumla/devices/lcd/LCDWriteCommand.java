@@ -14,4 +14,10 @@ public class LCDWriteCommand extends AbstractEvent implements CommandEvent<LCD> 
         lcd.write(value);
         return true;
     }
+
+    @Override
+    public boolean rollback(LCD lcd) throws Exception {
+        return false;
+    }
+
 }

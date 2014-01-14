@@ -16,17 +16,25 @@ public class LCDAppender extends AppenderSkeleton {
     }
 
     public void append(LoggingEvent logevent) {
-        EventScheduler.getInstance().scheduleEvent(target,
-                new LCDClearCommand(),
-                new LCDWriteCommand(logevent.getRenderedMessage()),
-                new LCDPauseCommand());
+        try {
+            EventScheduler.getDefaultEventScheduler().scheduleEvent(target,
+                    new LCDClearCommand(),
+                    new LCDWriteCommand(logevent.getRenderedMessage()),
+                    new LCDPauseCommand()).begin();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void close() {
-        EventScheduler.getInstance().scheduleEvent(target,
-                new LCDShutdownCommand(),
-                new LCDPauseCommand());
+        try {
+            EventScheduler.getDefaultEventScheduler().scheduleEvent(target,
+                    new LCDShutdownCommand(),
+                    new LCDPauseCommand()).begin();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
