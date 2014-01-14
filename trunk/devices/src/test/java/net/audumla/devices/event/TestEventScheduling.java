@@ -29,11 +29,19 @@ public class TestEventScheduling {
     public void testWildCardTopic() throws Exception {
         AtomicReference<Integer> count = new AtomicReference<Integer>(0);
 
-        EventScheduler.getDefaultEventScheduler().registerEventTarget(event -> {
+        EventScheduler.getDefaultEventScheduler().registerEventTarget("event.*",event -> {
             count.set(count.get()+1);
             return true;
         });
+        EventScheduler.getDefaultEventScheduler().scheduleEvent("event.1", new AbstractEvent()).begin();
+        EventScheduler.getDefaultEventScheduler().scheduleEvent("event.2", new AbstractEvent()).begin();
+        EventScheduler.getDefaultEventScheduler().scheduleEvent("event1", new AbstractEvent()).begin();
 
+        synchronized (this) {
+            this.wait(1000);
+        }
+
+        assert count.get() == 2;
 
 
     }
