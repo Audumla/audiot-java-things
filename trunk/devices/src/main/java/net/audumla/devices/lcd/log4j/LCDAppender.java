@@ -1,8 +1,8 @@
 package net.audumla.devices.lcd.log4j;
 
-import net.audumla.devices.event.CommandEvent;
-import net.audumla.devices.event.EventScheduler;
-import net.audumla.devices.event.EventTarget;
+import net.audumla.automate.event.CommandEvent;
+import net.audumla.automate.event.EventScheduler;
+import net.audumla.automate.event.EventTarget;
 import net.audumla.devices.lcd.*;
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.spi.LoggingEvent;

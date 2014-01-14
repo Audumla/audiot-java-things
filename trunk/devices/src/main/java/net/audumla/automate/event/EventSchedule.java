@@ -1,4 +1,4 @@
-package net.audumla.devices.activator;
+package net.audumla.automate.event;
 
 /*
  * *********************************************************************
@@ -16,17 +16,6 @@ package net.audumla.devices.activator;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import net.audumla.automate.event.CommandEvent;
-
-public interface ActivatorCommand extends CommandEvent<Activator> {
-
-    ActivatorListener[] getListeners();
-
-    void setListeners(ActivatorListener[] listeners);
-
-    void addListener(ActivatorListener listener);
-
-    void removeListener(ActivatorListener listener);
-
+public interface EventSchedule {
 
 }

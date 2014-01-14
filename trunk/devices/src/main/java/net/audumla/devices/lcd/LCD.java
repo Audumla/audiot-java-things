@@ -1,7 +1,7 @@
 package net.audumla.devices.lcd;
 
-import net.audumla.devices.event.CommandEvent;
-import net.audumla.devices.event.EventTarget;
+import net.audumla.automate.event.CommandEvent;
+import net.audumla.automate.event.EventTarget;
 
 /**
  * Created with IntelliJ IDEA.

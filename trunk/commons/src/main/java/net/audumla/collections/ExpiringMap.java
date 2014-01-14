@@ -24,10 +24,9 @@ public class ExpiringMap {
         this.defaultOffset = offset;
     }
 
-    @SuppressWarnings("unchecked")
     public void loadProperties(PropertiesConfiguration props) {
-        for (Iterator<String> it = props.getKeys(); it.hasNext(); ) {
-            String key = it.next();
+        for (Iterator it = props.getKeys(); it.hasNext(); ) {
+            String key = it.next().toString();
             List<String> o = (List<String>) props.getProperty(key);
             if (o.size() == 3) {
                 Date offsetTime = Time.offset(Time.getZeroDate(), Integer.parseInt(o.get(0)), Integer.parseInt(o.get(1)), Integer.parseInt(o.get(2)));

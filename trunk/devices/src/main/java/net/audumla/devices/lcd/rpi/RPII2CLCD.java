@@ -1,8 +1,8 @@
 package net.audumla.devices.lcd.rpi;
 
-import net.audumla.devices.event.AbstractEventTarget;
-import net.audumla.devices.event.CommandEvent;
-import net.audumla.devices.event.EventScheduler;
+import net.audumla.automate.event.AbstractEventTarget;
+import net.audumla.automate.event.CommandEvent;
+import net.audumla.automate.event.EventScheduler;
 import net.audumla.devices.i2c.I2CBus;
 import net.audumla.devices.i2c.I2CDevice;
 import net.audumla.devices.lcd.LCD;
@@ -11,7 +11,6 @@ import org.apache.log4j.Logger;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 public class RPII2CLCD extends AbstractEventTarget<CommandEvent<LCD>> implements net.audumla.devices.lcd.LCD{
     public static final int DEFAULT_ADDRESS = 0x20;

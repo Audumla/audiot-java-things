@@ -1,4 +1,4 @@
-package net.audumla.devices.activator;
+package net.audumla.automate.event;
 
 /*
  * *********************************************************************
@@ -16,17 +16,23 @@ package net.audumla.devices.activator;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import net.audumla.automate.event.CommandEvent;
+public interface EventStatus extends EventTransactionStatus {
+    /**
+     * Applies a failure status to the event and stores the given failure reasons
+     *
+     * @param ex      The Exception that caused the failure if any
+     * @param message A message that describes the failure
+     */
+    void setFailed(Throwable ex, String message);
 
-public interface ActivatorCommand extends CommandEvent<Activator> {
+    /**
+     * @return The message associated with the event failure
+     */
+    String getFailureMessage();
 
-    ActivatorListener[] getListeners();
-
-    void setListeners(ActivatorListener[] listeners);
-
-    void addListener(ActivatorListener listener);
-
-    void removeListener(ActivatorListener listener);
-
+    /**
+     * @return The Exception associated with the event failure
+     */
+    Throwable getFailureException();
 
 }

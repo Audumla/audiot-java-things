@@ -1,4 +1,4 @@
-package net.audumla.devices.activator;
+package net.audumla.automate.event;
 
 /*
  * *********************************************************************
@@ -16,17 +16,38 @@ package net.audumla.devices.activator;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import net.audumla.automate.event.CommandEvent;
+import java.time.Instant;
 
-public interface ActivatorCommand extends CommandEvent<Activator> {
+public interface EventTransactionStatus extends Cloneable {
 
-    ActivatorListener[] getListeners();
+    /**
+     * @return The current status of the event in its lifecycle
+     */
+    EventState getState();
 
-    void setListeners(ActivatorListener[] listeners);
+    /**
+     * @param status Sets the status of the event to the given parameter
+     */
+    void setState(EventState status);
 
-    void addListener(ActivatorListener listener);
+    /**
+     * @return The time that the event was executed
+     */
+    Instant getExecutedTime();
 
-    void removeListener(ActivatorListener listener);
+    /**
+     * @return The time that the event completed execution or failed
+     */
+    Instant getCompletedTime();
 
+    /**
+     * @param executedTime The time that the event started execution
+     */
+    void setExecutedTime(Instant executedTime);
+
+    /**
+     * @param completedTime The time that the event completed execution or failed
+     */
+    void setCompletedTime(Instant completedTime);
 
 }

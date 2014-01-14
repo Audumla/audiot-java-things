@@ -1,6 +1,6 @@
 package net.audumla.devices.activator;
 
-import net.audumla.devices.event.EventScheduler;
+import net.audumla.automate.event.EventScheduler;
 import org.junit.Before;
 import org.junit.Test;
 

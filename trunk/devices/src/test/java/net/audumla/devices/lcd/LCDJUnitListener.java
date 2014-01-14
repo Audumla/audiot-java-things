@@ -1,6 +1,6 @@
 package net.audumla.devices.lcd;
 
-import net.audumla.devices.event.EventScheduler;
+import net.audumla.automate.event.EventScheduler;
 import net.audumla.devices.lcd.rpi.RPII2CLCD;
 import org.apache.log4j.Logger;
 import org.junit.runner.Description;

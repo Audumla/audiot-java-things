@@ -1,11 +1,10 @@
 package net.audumla.devices.activator;
 
 import net.audumla.bean.BeanUtils;
-import net.audumla.devices.event.CommandEvent;
+import net.audumla.automate.event.CommandEvent;
 import org.apache.log4j.Logger;
 
 import java.util.*;
-import java.util.regex.Pattern;
 
 //import org.quartz.*;
 //import org.quartz.impl.StdSchedulerFactory;

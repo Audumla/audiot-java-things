@@ -16,11 +16,10 @@ package net.audumla.devices.activator;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import net.audumla.devices.event.CommandEvent;
-import net.audumla.devices.event.CommandEventTarget;
+import net.audumla.automate.event.CommandEvent;
+import net.audumla.automate.event.CommandEventTarget;
 
 import java.util.Properties;
-import java.util.regex.Pattern;
 
 public interface Activator extends CommandEventTarget<CommandEvent<Activator>> {
 

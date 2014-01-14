@@ -1,6 +1,6 @@
 package net.audumla.devices.activator;
 
-import net.audumla.devices.event.AbstractEvent;
+import net.audumla.automate.event.AbstractEvent;
 
 public class ActivatorStateChangeEvent extends AbstractEvent{
     private ActivatorState oldState;
