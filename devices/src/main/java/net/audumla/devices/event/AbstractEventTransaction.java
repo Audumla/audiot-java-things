@@ -28,7 +28,8 @@ public abstract class AbstractEventTransaction implements EventTransaction {
     private static final Logger logger = LoggerFactory.getLogger(AbstractEventTransaction.class);
     protected EventTransactionStatus status = new DefaultEventStatus();
     private EventScheduler eventScheduler;
-    private boolean rollbackOnError;
+    private boolean rollbackOnError = true;
+    private boolean autoCommit = true;
     private String id = BeanUtils.generateName(this.getClass());
     protected EventTarget<Event>[] targets;
     protected Event[] events;
@@ -87,6 +88,10 @@ public abstract class AbstractEventTransaction implements EventTransaction {
 
     public Collection<EventTarget<Event>> getTargets() {
         return Arrays.asList(targets);
+    }
+
+    public boolean isAutoCommit() {
+        return autoCommit;
     }
 
 }

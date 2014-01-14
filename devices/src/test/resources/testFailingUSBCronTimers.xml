@@ -36,7 +36,7 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
     </bean>
 
     <bean id="activator" class="net.audumla.devices.activator.provider.tinyusb.TinyUSBActivator" init-method="deactivate" destroy-method="deactivate">
-        <property name="controller" ref="tinyOSrelay.controller"/>
+        <property name="provider" ref="tinyOSrelay.controller"/>
         <property name="relay" value="0" />
         <property name="device" value="0" />
     </bean>

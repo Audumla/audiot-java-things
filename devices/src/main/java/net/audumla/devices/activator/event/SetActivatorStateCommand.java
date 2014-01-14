@@ -18,6 +18,7 @@ package net.audumla.devices.activator.event;
 
 import net.audumla.devices.activator.Activator;
 import net.audumla.devices.activator.ActivatorListener;
+import net.audumla.devices.activator.ActivatorState;
 import net.audumla.devices.event.AbstractEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,15 +27,19 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-public abstract class AbstractActivatorCommand extends AbstractEvent implements ActivatorCommand {
-    private static final Logger logger = LoggerFactory.getLogger(AbstractActivatorCommand.class);
+public class SetActivatorStateCommand extends AbstractEvent implements ActivatorCommand {
+    private static final Logger logger = LoggerFactory.getLogger(SetActivatorStateCommand.class);
     protected Set<ActivatorListener> alisteners = new HashSet<ActivatorListener>();
+    protected ActivatorState previousState;
+    protected ActivatorState newState;
 
-    public AbstractActivatorCommand() {
+    protected SetActivatorStateCommand(ActivatorState newState) {
+        this.newState = newState;
     }
 
-    public AbstractActivatorCommand(ActivatorListener... listeners) {
+    public SetActivatorStateCommand(ActivatorState newState, ActivatorListener... listeners) {
         this.alisteners.addAll(Arrays.asList(listeners));
+        this.newState = newState;
     }
 
     @Override
@@ -55,11 +60,16 @@ public abstract class AbstractActivatorCommand extends AbstractEvent implements 
     @Override
     public void removeListener(ActivatorListener listener) {
         alisteners.remove(listener);
+    }
 
+    @Override
+    public boolean execute(Activator activator) throws Exception {
+        previousState = activator.getCurrentState();
+        return activator.setCurrentState(newState, getListeners());
     }
 
     @Override
     public boolean rollback(Activator activator) {
-        return false;
+        return activator.setCurrentState(previousState, getListeners());
     }
 }

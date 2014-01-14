@@ -17,11 +17,13 @@ package net.audumla.devices.activator.provider.rpi;
  */
 
 import net.audumla.devices.activator.Activator;
+import net.audumla.devices.activator.ActivatorState;
 import net.audumla.devices.activator.provider.ActivatorProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.Properties;
 
 public class RPIGPIOActivatorProvider implements ActivatorProvider {
@@ -50,5 +52,10 @@ public class RPIGPIOActivatorProvider implements ActivatorProvider {
     @Override
     public Collection<Activator> getActivators() {
         return null;
+    }
+
+    @Override
+    public boolean setCurrentStates(Map<Activator, ActivatorState> newStates) throws Exception {
+        return false;
     }
 }

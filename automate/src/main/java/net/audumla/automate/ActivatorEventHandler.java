@@ -18,7 +18,7 @@ package net.audumla.automate;
 import net.audumla.bean.BeanUtils;
 import net.audumla.devices.activator.Activator;
 import net.audumla.devices.activator.ActivatorListener;
-import net.audumla.devices.activator.event.ActivatorToggleCommand;
+import net.audumla.devices.activator.event.ToggleActivatorCommand;
 import org.apache.log4j.Logger;
 
 import java.util.concurrent.ScheduledExecutorService;
@@ -53,7 +53,7 @@ public class ActivatorEventHandler implements EventHandler {
     public boolean handleEvent(Event event) {
         //attempts to activate the irrigationEvent and then monitors its progress using a specific listener.
         try {
-            new ActivatorToggleCommand(scheduler,activator,event.getEventDuration(),new EventActivatorListener(event)).call();
+            new ToggleActivatorCommand(scheduler,activator,event.getEventDuration(),new EventActivatorListener(event)).call();
         } catch (Exception e) {
             logger.error("Error handling event",e);
         }

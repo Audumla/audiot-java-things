@@ -17,11 +17,12 @@ package net.audumla.devices.activator;
  */
 
 import net.audumla.devices.event.CommandEvent;
+import net.audumla.devices.event.CommandEventTarget;
 import net.audumla.devices.event.EventTarget;
 
 import java.util.Properties;
 
-public interface Activator extends EventTarget<CommandEvent<Activator>> {
+public interface Activator extends CommandEventTarget<CommandEvent<Activator>> {
 
     /**
      * Adds a list to the global listener list that will be notified of all state changes and errors applied to this activator

@@ -4,6 +4,7 @@ import com.ftdichip.ftd2xx.Device;
 import com.ftdichip.ftd2xx.FTD2xxException;
 import com.ftdichip.ftd2xx.Service;
 import net.audumla.devices.activator.Activator;
+import net.audumla.devices.activator.ActivatorState;
 import net.audumla.devices.activator.provider.ActivatorProvider;
 import net.audumla.exception.ErrorHandler;
 import org.apache.log4j.Logger;
@@ -91,6 +92,11 @@ public class TinyUSBActivatorProvider implements ActivatorProvider {
             ++di;
         }
         return activatorRegistry.values();
+    }
+
+    @Override
+    public boolean setCurrentStates(Map<Activator, ActivatorState> newStates) throws Exception {
+        return false;
     }
 
     public boolean deactivateRelay(int device, int relay, ErrorHandler handler) {

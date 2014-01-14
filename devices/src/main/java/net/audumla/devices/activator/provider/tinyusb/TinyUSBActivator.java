@@ -12,15 +12,15 @@ import java.util.Collection;
  */
 public class TinyUSBActivator extends AbstractActivator {
     private static final Logger logger = Logger.getLogger(Activator.class);
-    private TinyUSBActivatorProvider controller;
+    private TinyUSBActivatorProvider provider;
     private int device = 0;
     private int relay = 0;
 
     public static final String DEVICE_ID = "deviceid";
     public static final String RELAY_ID = "relayid";
 
-    public TinyUSBActivator(TinyUSBActivatorProvider controller, int device, int relay) {
-        this.controller = controller;
+    public TinyUSBActivator(TinyUSBActivatorProvider provider, int device, int relay) {
+        this.provider = provider;
         this.device = device;
         this.relay = relay;
         getId().setProperty(DEVICE_ID, String.valueOf(device));
@@ -33,22 +33,22 @@ public class TinyUSBActivator extends AbstractActivator {
     @Override
     protected boolean executeStateChange(ActivatorState newstate, Collection<ActivatorListener> listeners) {
         if (newstate.equals(ActivatorState.DEACTIVATED)) {
-            return controller.deactivateRelay(device, relay, (String m, Throwable e) -> {
+            return provider.deactivateRelay(device, relay, (String m, Throwable e) -> {
                 listeners.forEach(l -> l.onStateChangeFailure(new ActivatorStateChangeEvent(getCurrentState(), ActivatorState.DEACTIVATED, this), e, m));
             });
         } else {
-            return controller.activateRelay(device, relay, (String m, Throwable e) -> {
+            return provider.activateRelay(device, relay, (String m, Throwable e) -> {
                 listeners.forEach(l -> l.onStateChangeFailure(new ActivatorStateChangeEvent(getCurrentState(), ActivatorState.ACTIVATED, this), e, m));
             });
         }
     }
 
-    public TinyUSBActivator(TinyUSBActivatorProvider controller) {
-        this.controller = controller;
+    public TinyUSBActivator(TinyUSBActivatorProvider provider) {
+        this.provider = provider;
     }
 
-    public void setController(TinyUSBActivatorProvider controller) {
-        this.controller = controller;
+    public void setProvider(TinyUSBActivatorProvider provider) {
+        this.provider = provider;
     }
 
     public void setDevice(int device) {

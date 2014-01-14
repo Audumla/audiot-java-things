@@ -87,6 +87,11 @@ public abstract class AbstractActivator implements Activator {
     }
 
     @Override
+    public boolean rollbackEvent(CommandEvent<Activator> event) throws Throwable {
+        return event.rollback(this);
+    }
+
+    @Override
     public boolean handleEvent(CommandEvent<Activator> event) throws Exception {
         return event.execute(this);
     }

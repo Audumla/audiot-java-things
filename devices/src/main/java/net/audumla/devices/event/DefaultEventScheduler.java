@@ -21,11 +21,8 @@ import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -73,8 +70,35 @@ public class DefaultEventScheduler implements EventScheduler {
         }
 
         @Override
-        public void commit() throws Exception {
+        public void commit() {
+            // call all listeners or committers and manage rollback if the commit fails
+        }
 
+        @Override
+        public boolean rollback() {
+            getStatus().setState(EventState.ROLLINGBACK);
+            boolean result = true;
+            for (Event ev : getEvents()) {
+                // only role back command events and events that actually completed there execution
+                if (ev.getStatus().getState().equals(EventState.COMPLETE) && ev instanceof CommandEvent) {
+                    CommandEvent cev = (CommandEvent) ev;
+                    cev.getStatus().setState(EventState.ROLLINGBACK);
+                    try {
+                        for (EventTarget<Event> et : getTargets()) {
+                            if (et instanceof CommandEventTarget<?>) {
+                                CommandEventTarget cet = (CommandEventTarget) et;
+                                cet.rollbackEvent(cev);
+                            }
+                        }
+                        cev.getStatus().setState(EventState.ROLLEDBACK);
+                    } catch (Throwable throwable) {
+                        logger.error("Failed to roll back Event [" + ev.getId() + "]", throwable);
+                        result = false;
+                    }
+                }
+            }
+            getStatus().setState(EventState.ROLLEDBACK);
+            return result;
         }
 
         protected Runnable toRunnable() {
@@ -98,12 +122,22 @@ public class DefaultEventScheduler implements EventScheduler {
                     ev.getStatus().setCompletedTime(Instant.now());
                 }
                 getStatus().setCompletedTime(Instant.now());
-                getStatus().setState(result ? EventState.COMPLETE : EventState.FAILED);
+                if (result) {
+                    getStatus().setState(EventState.COMPLETE);
+                    if (isAutoCommit()) {
+                        commit();
+                    }
+                } else {
+                    if (getRollBackOnError()) {
+                        rollback();
+                    } else {
+                        getStatus().setState(EventState.FAILED);
+                    }
+                }
             };
 
         }
     }
-
 
 
     @Override

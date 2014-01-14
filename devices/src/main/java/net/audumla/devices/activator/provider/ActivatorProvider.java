@@ -17,15 +17,55 @@ package net.audumla.devices.activator.provider;
  */
 
 import net.audumla.devices.activator.Activator;
+import net.audumla.devices.activator.ActivatorState;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 public interface ActivatorProvider {
+
+    /**
+     * The key that is used within the id property bundle for each activator to associate it back to its provider
+     */
+    static String PROVIDER_ID = "providerid";
+
+    /**
+     * Performs any initialization that is required to startup the activitors
+     * @throws Exception if the activiators cannot be started
+     */
     void initialize() throws Exception;
+
+    /**
+     * performs any shut down activities. Generally this should deactivate all associated activators
+     */
     void shutdown();
+
+    /**
+     *
+     * @return the unique identifier for this provider
+     */
     String getId();
+
+    /**
+     * Retrieves an activator using the id that has been generated for it during initialization
+     * @param id the id property bundle
+     * @return the activator associated with the id or null if it cannot be found
+     */
     Activator getActivator(Properties id);
+
+    /**
+     *
+     * @return all the activators associated with this provider
+     */
     Collection<Activator> getActivators();
+
+    /**
+     * Performs an atomic update if possible to all activators to the associated state.
+     * All the activators in the map can be assumed to have originated from this provider
+     * @param newStates a Map containing the activator as the key and the new state that should be assigned to that activator
+     * @return true if the assignment of the activators completed successfully
+     */
+    boolean setCurrentStates(Map<Activator,ActivatorState> newStates) throws Exception;
 }
