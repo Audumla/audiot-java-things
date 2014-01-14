@@ -19,6 +19,8 @@ package net.audumla.devices.event;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.regex.Pattern;
+
 public class EventTargetReference implements EventTarget {
     private static final Logger logger = LoggerFactory.getLogger(EventTargetReference.class);
 
@@ -51,4 +53,10 @@ public class EventTargetReference implements EventTarget {
     public boolean handleEvent(Event event) throws Throwable {
         return target != null && target.handleEvent(event);
     }
+
+    @Override
+    public String toString() {
+        return getName();
+    }
+
 }

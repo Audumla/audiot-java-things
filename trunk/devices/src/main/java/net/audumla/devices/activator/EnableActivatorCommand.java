@@ -1,4 +1,4 @@
-package net.audumla.devices.activator.event;
+package net.audumla.devices.activator;
 
 /*
  * *********************************************************************
@@ -16,19 +16,18 @@ package net.audumla.devices.activator.event;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import net.audumla.devices.activator.Activator;
-import net.audumla.devices.activator.ActivatorListener;
-import net.audumla.devices.event.CommandEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public interface ActivatorCommand extends CommandEvent<Activator> {
+public class EnableActivatorCommand extends SetActivatorStateCommand {
+    private static final Logger logger = LoggerFactory.getLogger(EnableActivatorCommand.class);
 
-    ActivatorListener[] getListeners();
+    public EnableActivatorCommand() {
+        super(ActivatorState.ACTIVATED);
+    }
 
-    void setListeners(ActivatorListener[] listeners);
-
-    void addListener(ActivatorListener listener);
-
-    void removeListener(ActivatorListener listener);
-
+    public EnableActivatorCommand(ActivatorListener... listeners) {
+        super(ActivatorState.ACTIVATED,listeners);
+    }
 
 }

@@ -16,14 +16,25 @@ package net.audumla.devices.event;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import net.audumla.bean.BeanUtils;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public interface EventTarget<T extends Event> {
+import java.util.concurrent.atomic.AtomicReference;
 
-    default String getName() {
-        return BeanUtils.generateName(this);
+public class TestEventScheduling {
+    private static final Logger logger = LoggerFactory.getLogger(TestEventScheduling.class);
+
+    @Test
+    public void testWildCardTopic() throws Exception {
+        AtomicReference<Integer> count = new AtomicReference<Integer>(0);
+
+        EventScheduler.getDefaultEventScheduler().registerEventTarget(event -> {
+            count.set(count.get()+1);
+            return true;
+        });
+
+
+
     }
-
-    boolean handleEvent(T event) throws Throwable;
-
 }

@@ -79,7 +79,7 @@ public interface EventTransaction {
 
     /**
      *
-     * @return the targets associated with this transaction
+     * @return the topics associated with this transaction
      */
-    Collection<EventTarget<Event>> getTargets();
+    Collection<String> getTopics();
 }

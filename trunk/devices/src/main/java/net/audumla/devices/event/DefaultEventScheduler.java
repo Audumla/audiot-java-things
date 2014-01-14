@@ -21,18 +21,21 @@ import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.function.BinaryOperator;
+import java.util.regex.Pattern;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 public class DefaultEventScheduler implements EventScheduler {
     private static final Logger logger = LoggerFactory.getLogger(DefaultEventScheduler.class);
 
-    protected Map<String, EventTarget<Event>> targetRegistry = new HashMap<String, EventTarget<Event>>();
+    protected Map<Pattern, EventTarget> targetRegistry = new HashMap<>();
     protected ScheduledExecutorService scheduler = new ScheduledThreadPoolExecutor(1);
 
     public class DefaultEventTransaction extends AbstractEventTransaction {
@@ -40,8 +43,13 @@ public class DefaultEventScheduler implements EventScheduler {
         private EventSchedule schedule;
         private Future<?> future;
 
-        private DefaultEventTransaction(EventTarget[] targets, Event[] events, EventSchedule schedule) {
+        private DefaultEventTransaction(String[] targets, Event[] events, EventSchedule schedule) {
             super(targets, events, DefaultEventScheduler.this);
+            this.schedule = schedule;
+        }
+
+        private <EventTopic> DefaultEventTransaction(EventTopic[] topics, Event[] events, EventSchedule schedule) {
+            super(Arrays.asList(topics).stream().map(Object::toString).collect(Collectors.toList()).toArray(new String[topics.length]), events, DefaultEventScheduler.this);
             this.schedule = schedule;
         }
 
@@ -79,16 +87,13 @@ public class DefaultEventScheduler implements EventScheduler {
             getStatus().setState(EventState.ROLLINGBACK);
             boolean result = true;
             for (Event ev : getEvents()) {
-                // only role back command events and events that actually completed there execution
+                // only role back command events and events that actually completed their execution
                 if (ev.getStatus().getState().equals(EventState.COMPLETE) && ev instanceof CommandEvent) {
                     CommandEvent cev = (CommandEvent) ev;
                     cev.getStatus().setState(EventState.ROLLINGBACK);
                     try {
-                        for (EventTarget<Event> et : getTargets()) {
-                            if (et instanceof CommandEventTarget<?>) {
-                                CommandEventTarget cet = (CommandEventTarget) et;
-                                cet.rollbackEvent(cev);
-                            }
+                        for (CommandEventTarget cet : getMappedTargets(topics, CommandEventTarget.class)) {
+                            cet.rollbackEvent(cev);
                         }
                         cev.getStatus().setState(EventState.ROLLEDBACK);
                     } catch (Throwable throwable) {
@@ -111,7 +116,7 @@ public class DefaultEventScheduler implements EventScheduler {
                         ev.setScheduler(DefaultEventScheduler.this);
                         ev.getStatus().setExecutedTime(Instant.now());
                         ev.getStatus().setState(EventState.EXECUTING);
-                        for (EventTarget<Event> et : getTargets()) {
+                        for (EventTarget et : getMappedTargets(topics, EventTarget.class)) {
                             result &= et.handleEvent(ev);
                         }
                         ev.getStatus().setState(EventState.COMPLETE);
@@ -141,39 +146,63 @@ public class DefaultEventScheduler implements EventScheduler {
 
 
     @Override
-    public EventTransaction scheduleEvent(EventTarget target, EventSchedule schedule, Event... events) {
-        return scheduleEvent(events, new EventTarget[]{target}, schedule);
+    public <EventTopic> EventTransaction scheduleEvent(EventTopic topic, EventSchedule schedule, Event... events) {
+        return scheduleEvent(events, new String[]{topic.toString()}, schedule);
     }
 
     @Override
-    public EventTransaction scheduleEvent(EventTarget target, Event... events) {
-        return scheduleEvent(events, new EventTarget[]{target});
-    }
-
-
-    @Override
-    public EventTransaction scheduleEvent(Event event, EventTarget... targets) {
-        return scheduleEvent(new Event[]{event}, targets);
+    public <EventTopic> EventTransaction scheduleEvent(EventTopic topic, Event... events) {
+        return scheduleEvent(events, new String[]{topic.toString()});
     }
 
     @Override
-    public EventTransaction scheduleEvent(Event event, EventSchedule schedule, EventTarget... targets) {
-        return scheduleEvent(new Event[]{event}, targets, schedule);
+    public <EventTopic> EventTransaction scheduleEvent(Event event, EventTopic... topics) {
+        return scheduleEvent(new Event[]{event}, topics);
     }
 
     @Override
-    public EventTransaction scheduleEvent(Event[] events, EventTarget[] targets, EventSchedule schedule) {
-        return new DefaultEventTransaction(targets, events, schedule);
+    public <EventTopic> EventTransaction scheduleEvent(Event event, EventSchedule schedule, EventTopic... topics) {
+        return scheduleEvent(new Event[]{event}, topics, schedule);
     }
 
     @Override
-    public EventTransaction scheduleEvent(Event[] events, EventTarget[] targets) {
-        return new DefaultEventTransaction(targets, events, null);
+    public <EventTopic> EventTransaction scheduleEvent(Event[] events, EventTopic[] topics, EventSchedule schedule) {
+        return new DefaultEventTransaction(topics, events, schedule);
+    }
+
+    @Override
+    public <EventTopic> EventTransaction scheduleEvent(Event[] events, EventTopic[] topics) {
+        return new DefaultEventTransaction(topics, events, null);
     }
 
     @Override
     public boolean registerEventTarget(EventTarget target) {
-        targetRegistry.put(target.getName(), target);
+        registerEventTarget(target.getName(), target);
+        return true;
+    }
+
+    @Override
+    public <Topic> boolean registerEventTarget(Topic[] topics, EventTarget target) {
+        for (Topic topic : topics) {
+            registerEventTarget(topic, target);
+        }
+        return true;
+    }
+
+    @Override
+    public <EventTopic> boolean registerEventTarget(EventTopic topic, EventTarget target) {
+        Pattern pattern = Pattern.compile(topic.toString().replaceAll("\\.", "\\\\.").replaceAll("\\*", "[^.]+"));
+        targetRegistry.put(pattern, target);
+        return true;
+    }
+
+    @Override
+    public boolean unregisterEventTarget(EventTarget target) {
+        for (Map.Entry<Pattern, EventTarget> e : targetRegistry.entrySet()) {
+            if (e.getValue().getName().equals(target.getName())) {
+                targetRegistry.remove(e.getKey());
+            }
+        }
         return true;
     }
 
@@ -181,5 +210,17 @@ public class DefaultEventScheduler implements EventScheduler {
     public boolean shutdown() {
         scheduler.shutdown();
         return true;
+    }
+
+    protected <T extends EventTarget, EventTopic> Collection<T> getMappedTargets(EventTopic[] topics, Class<T> targetBase) {
+        Collection<T> targets = new HashSet<T>();
+        for (EventTopic topic : topics) {
+            for (Map.Entry<Pattern, EventTarget> e : targetRegistry.entrySet()) {
+                if (targetBase.isAssignableFrom(e.getValue().getClass()) && e.getKey().matcher(topic.toString()).matches()) {
+                    targets.add((T) e.getValue());
+                }
+            }
+        }
+        return targets;
     }
 }

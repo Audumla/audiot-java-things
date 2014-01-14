@@ -20,7 +20,6 @@ import net.audumla.bean.BeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.annotation.Target;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -30,15 +29,15 @@ public abstract class AbstractEventTransaction implements EventTransaction {
     private EventScheduler eventScheduler;
     private boolean rollbackOnError = true;
     private boolean autoCommit = true;
-    private String id = BeanUtils.generateName(this.getClass());
-    protected EventTarget<Event>[] targets;
+    private String id = BeanUtils.generateName(this);
+    protected String[] topics;
     protected Event[] events;
 
     protected AbstractEventTransaction() {
     }
 
-    protected AbstractEventTransaction(EventTarget<Event>[] targets, Event[] events, EventScheduler scheduler) {
-        this.targets = targets;
+    protected AbstractEventTransaction(String[] topics, Event[] events, EventScheduler scheduler) {
+        this.topics = topics;
         this.events = events;
         this.eventScheduler = scheduler;
         for (Event ev : events) {
@@ -86,8 +85,9 @@ public abstract class AbstractEventTransaction implements EventTransaction {
         return Arrays.asList(events);
     }
 
-    public Collection<EventTarget<Event>> getTargets() {
-        return Arrays.asList(targets);
+    @Override
+    public Collection<String> getTopics() {
+        return Arrays.asList(topics);
     }
 
     public boolean isAutoCommit() {

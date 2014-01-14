@@ -34,7 +34,7 @@ public abstract class QuartzScheduleAdaptor implements Schedule {
     private final QuartzScheduler scheduler;
 
     private String group;
-    private String name = BeanUtils.generateName(Schedule.class);
+    private String name = BeanUtils.generateName(this);
     private JobDetail job;
     private EventFactory factory;
     private EventHandler handler;

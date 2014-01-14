@@ -30,7 +30,7 @@ public class SequentialTriggerListener extends TriggerListenerSupport {
     private JobKey activeJob;
     private Scheduler activeScheduler;
     private Queue<JobDetail> queuedJobs = new ConcurrentLinkedQueue<JobDetail>();
-    private String name = BeanUtils.generateName(TriggerListener.class);
+    private String name = BeanUtils.generateName(this);
 
     public SequentialTriggerListener() {
     }
@@ -48,7 +48,7 @@ public class SequentialTriggerListener extends TriggerListenerSupport {
             getLog().debug("Queueing Sequential Job - " + context.getJobDetail().getKey().getName());
             JobDetail jd = context.getJobDetail();
             activeScheduler = context.getScheduler();
-            jd = JobBuilder.newJob().usingJobData(jd.getJobDataMap()).withIdentity(BeanUtils.generateName(this.getClass()) + ":" + jd.getKey().getName(), jd.getKey().getGroup())
+            jd = JobBuilder.newJob().usingJobData(jd.getJobDataMap()).withIdentity(BeanUtils.generateName(this) + ":" + jd.getKey().getName(), jd.getKey().getGroup())
                     .ofType(jd.getJobClass()).build();
             queuedJobs.add(jd);
             return true;

@@ -142,7 +142,7 @@ public class CamelScheduledExecutorService extends AbstractExecutorService imple
 
         @Override
         public String generateURI(long delayInMilliSeconds) {
-            return componentName+="://+"+BeanUtils.generateName(getClass())+"?trigger.repeatInterval="+delayInMilliSeconds;
+            return componentName+="://+"+BeanUtils.generateName(this)+"?trigger.repeatInterval="+delayInMilliSeconds;
 
         }
     }

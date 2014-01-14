@@ -10,7 +10,7 @@ import net.audumla.bean.BeanUtils;
 public interface EventHandler {
 
     default String getName() {
-        return BeanUtils.generateName(EventHandler.class);
+        return BeanUtils.generateName(this);
     }
 
     boolean handleEvent(Event event);

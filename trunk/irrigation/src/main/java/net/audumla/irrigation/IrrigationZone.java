@@ -29,7 +29,7 @@ public class IrrigationZone implements Zone {
     private ClimateObserver observer;
     private EventHandler eventHandler;
     private Double depthRate;
-    private String name = BeanUtils.generateName(Zone.class);
+    private String name = BeanUtils.generateName(this);
 
     public IrrigationZone(ClimateObserver observer) {
         if (observer instanceof ClimateObserverCollection) {
