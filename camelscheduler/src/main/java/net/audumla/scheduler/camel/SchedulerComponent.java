@@ -94,7 +94,7 @@ public class SchedulerComponent extends QuartzComponent {
         // Create quartz endpoint
         for (Class<? extends DefaultSchedulerEndpoint> clazz : registeredSchedulers.keySet()) {
             Map<String, String> params = registeredSchedulers.get(clazz);
-            Set<String> subset = new TreeSet<String>(parameters.keySet());
+            Set subset = new TreeSet(parameters.keySet());
             // see if any of the parameters match with a scheduler.
             subset.retainAll(params.keySet());
             if (subset.size() > 0) {

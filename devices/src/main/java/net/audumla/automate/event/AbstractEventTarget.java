@@ -1,4 +1,4 @@
-package net.audumla.devices.activator;
+package net.audumla.automate.event;
 
 /*
  * *********************************************************************
@@ -16,17 +16,30 @@ package net.audumla.devices.activator;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import net.audumla.automate.event.CommandEvent;
+import net.audumla.bean.BeanUtils;
 
-public interface ActivatorCommand extends CommandEvent<Activator> {
+public abstract class AbstractEventTarget<T extends Event> implements EventTarget<T> {
 
-    ActivatorListener[] getListeners();
+    private String name;
 
-    void setListeners(ActivatorListener[] listeners);
+    protected AbstractEventTarget(String name) {
+        this.name = name;
+    }
 
-    void addListener(ActivatorListener listener);
+    protected AbstractEventTarget() {
+        name = BeanUtils.generateName(this);
+    }
 
-    void removeListener(ActivatorListener listener);
+    public String getName() {
+        return name;
+    }
 
+    public void setName(String name) {
+        this.name = name;
+    }
 
+    @Override
+    public String toString() {
+        return getName();
+    }
 }

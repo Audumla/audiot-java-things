@@ -1,7 +1,7 @@
 package net.audumla.devices.lcd;
 
-import net.audumla.devices.event.AbstractEvent;
-import net.audumla.devices.event.CommandEvent;
+import net.audumla.automate.event.AbstractEvent;
+import net.audumla.automate.event.CommandEvent;
 
 public class LCDClearCommand extends AbstractEvent implements CommandEvent<LCD> {
 
