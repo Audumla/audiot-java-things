@@ -84,27 +84,25 @@ public class DefaultEventScheduler implements EventScheduler {
             Collection<EventState> transactionStates = new HashSet<>();
             for (Map.Entry<Event, EventTarget> ev : getHandledEventMap().entrySet()) {
                 // only role back command events and events that actually completed their execution
-                if (ev.getKey().getStatus().getState().equals(EventState.COMPLETE) && ev.getKey() instanceof RollbackEvent) {
-                    RollbackEvent cev = (RollbackEvent) ev.getKey();
-                    cev.getStatus().setState(EventState.ROLLINGBACK);
-                    try {
-                        if (ev.getValue() instanceof RollbackEventTarget) {
-                            RollbackEventTarget ret = (RollbackEventTarget) ev.getValue();
-                            if (!ret.rollbackEvent(cev)) {
-                                cev.getStatus().setFailed(null, "Event Handler Failed to roll back");
-                            } else {
-                                cev.getStatus().setState(EventState.FAILEDROLLBACK);
-                            }
+                ev.getKey().getStatus().setState(EventState.ROLLINGBACK);
+                try {
+                    if (ev.getValue() instanceof RollbackEventTarget) {
+                        RollbackEventTarget ret = (RollbackEventTarget) ev.getValue();
+                        if (!ret.rollbackEvent(ev.getKey())) {
+                            ev.getKey().getStatus().setFailed(null, "Event Handler Failed to roll back");
+                            ev.getKey().getStatus().setState(EventState.FAILEDROLLBACK);
                         } else {
-                            cev.getStatus().setFailed(null, "Event target does not handle roll back");
-                            cev.getStatus().setState(EventState.FAILEDROLLBACK);
+                            ev.getKey().getStatus().setState(EventState.ROLLEDBACK);
                         }
-                    } catch (Throwable th) {
-                        cev.getStatus().setFailed(th, "Failed to roll back event");
-                        cev.getStatus().setState(EventState.FAILEDROLLBACK);
-                    } finally {
-                        transactionStates.add(cev.getStatus().getState());
+                    } else {
+                        ev.getKey().getStatus().setFailed(null, "Event target does not handle roll back");
+                        ev.getKey().getStatus().setState(EventState.FAILEDROLLBACK);
                     }
+                } catch (Throwable th) {
+                    ev.getKey().getStatus().setFailed(th, "Failed to roll back event");
+                    ev.getKey().getStatus().setState(EventState.FAILEDROLLBACK);
+                } finally {
+                    transactionStates.add(ev.getKey().getStatus().getState());
                 }
             }
             getStatus().setState(getRollbackStatus(transactionStates));
@@ -149,7 +147,7 @@ public class DefaultEventScheduler implements EventScheduler {
                         } catch (CloneNotSupportedException ex) {
                             nev.getStatus().setFailed(ex, "Failed to clone Event");
                             // add the event to the handled list as this would not have been called otherwise
-                            addHandledEvent(et,nev);
+                            addHandledEvent(et, nev);
                         } catch (Throwable th) {
                             nev.getStatus().setFailed(th, "Failed to execute Event");
                         } finally {
