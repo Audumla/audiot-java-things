@@ -36,11 +36,6 @@ public interface EventTransaction {
     EventScheduler getEventScheduler();
 
     /**
-     * @param scheduler the event scheduler that this event was scheduled to.
-     */
-    void setEventScheduler(EventScheduler scheduler);
-
-    /**
      * begins the transaction
      */
     boolean begin() throws Exception;
@@ -72,10 +67,25 @@ public interface EventTransaction {
     boolean getRollBackOnError();
 
     /**
+     * This original list of events passed into this transaction may not represent the actual executed events as
+     * each event handler will be given its own instance. This may result in more events being handled than actually
+     * passed into the transaction initially. To get the list of events that were actually handled by the transaction
+     * use getHandledEvents
      *
-     * @return the events associated with this transaction
+     * @return the events originally associated with this transaction
      */
     Collection<Event> getEvents();
+
+    /**
+     * The handled events represents the list of events that have been passed to an event handler. This list
+     * may include multiple copies of the original events depending on how many handlers were matched to handle
+     * the event. Each instance may have a different status and error messages. It is therefore preferable to
+     * use this method to get the actual state of the events executed by this transaction
+     *
+     * @return the events that have been handled by this transaction
+     */
+    Collection<Event> getHandledEvents();
+
 
     /**
      *

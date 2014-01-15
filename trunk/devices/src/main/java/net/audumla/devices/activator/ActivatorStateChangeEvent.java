@@ -1,8 +1,9 @@
 package net.audumla.devices.activator;
 
 import net.audumla.automate.event.AbstractEvent;
+import net.audumla.automate.event.RollbackEvent;
 
-public class ActivatorStateChangeEvent extends AbstractEvent{
+public class ActivatorStateChangeEvent extends AbstractEvent {
     private ActivatorState oldState;
     private ActivatorState newState;
     private Activator activator;
@@ -24,4 +25,5 @@ public class ActivatorStateChangeEvent extends AbstractEvent{
     public Activator getActivator() {
         return activator;
     }
+
 }

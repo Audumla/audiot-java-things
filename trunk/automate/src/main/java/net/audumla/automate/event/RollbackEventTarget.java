@@ -16,7 +16,7 @@ package net.audumla.automate.event;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-public interface CommandEventTarget<T extends Event> extends EventTarget<T> {
+public interface RollbackEventTarget<T extends Event> {
     boolean rollbackEvent(T event) throws Throwable;
 
 }

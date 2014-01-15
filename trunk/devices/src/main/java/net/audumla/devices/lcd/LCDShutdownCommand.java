@@ -11,10 +11,4 @@ public class LCDShutdownCommand extends AbstractEvent implements CommandEvent<LC
         return false;
     }
 
-    @Override
-    public boolean rollback(LCD lcd) throws Exception {
-        return false;
-    }
-
-
 }

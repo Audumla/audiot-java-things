@@ -1,5 +1,6 @@
 package net.audumla.devices.activator;
 
+import net.audumla.automate.event.RollbackEvent;
 import net.audumla.bean.BeanUtils;
 import net.audumla.automate.event.CommandEvent;
 import org.apache.log4j.Logger;
@@ -87,7 +88,7 @@ public abstract class AbstractActivator implements Activator {
     }
 
     @Override
-    public boolean rollbackEvent(CommandEvent<Activator> event) throws Throwable {
+    public boolean rollbackEvent(RollbackEvent<Activator> event) throws Throwable {
         return event.rollback(this);
     }
 

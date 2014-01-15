@@ -16,25 +16,9 @@ package net.audumla.automate.event;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import java.time.Instant;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public interface EventStatus extends EventTransactionStatus {
-    /**
-     * Applies a failure status to the event and stores the given failure reasons
-     *
-     * @param ex      The Exception that caused the failure if any
-     * @param message A message that describes the failure
-     */
-    void setFailed(Throwable ex, String message);
-
-    /**
-     * @return The message associated with the event failure
-     */
-    String getFailureMessage();
-
-    /**
-     * @return The Exception associated with the event failure
-     */
-    Throwable getFailureException();
-
+public interface EventTransationCommitter {
+    boolean commitEventTransaction(EventTransaction transaction) throws Exception;
 }

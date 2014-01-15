@@ -17,6 +17,7 @@ package net.audumla.devices.activator;
  */
 
 import net.audumla.automate.event.AbstractEvent;
+import net.audumla.automate.event.RollbackEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,7 +25,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-public class SetActivatorStateCommand extends AbstractEvent implements ActivatorCommand {
+public class SetActivatorStateCommand extends AbstractEvent implements ActivatorCommand, RollbackEvent<Activator> {
     private static final Logger logger = LoggerFactory.getLogger(SetActivatorStateCommand.class);
     protected Set<ActivatorListener> alisteners = new HashSet<ActivatorListener>();
     protected ActivatorState previousState;

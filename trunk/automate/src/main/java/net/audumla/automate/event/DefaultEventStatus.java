@@ -66,7 +66,7 @@ public class DefaultEventStatus implements EventStatus {
     @Override
     public void setExecutedTime(Instant executedTime) {
         this.executedTime = executedTime;
-
+        setState(EventState.EXECUTING);
     }
 
     @Override

@@ -25,9 +25,4 @@ public class LCDPauseCommand extends AbstractEvent implements CommandEvent<LCD> 
         return true;
     }
 
-    @Override
-    public boolean rollback(LCD lcd) throws Exception {
-        return false;
-    }
-
 }
