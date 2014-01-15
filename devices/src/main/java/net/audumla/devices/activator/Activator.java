@@ -17,11 +17,13 @@ package net.audumla.devices.activator;
  */
 
 import net.audumla.automate.event.CommandEvent;
-import net.audumla.automate.event.CommandEventTarget;
+import net.audumla.automate.event.EventTarget;
+import net.audumla.automate.event.RollbackEvent;
+import net.audumla.automate.event.RollbackEventTarget;
 
 import java.util.Properties;
 
-public interface Activator extends CommandEventTarget<CommandEvent<Activator>> {
+public interface Activator extends RollbackEventTarget<RollbackEvent<Activator>>, EventTarget<CommandEvent<Activator>> {
 
     /**
      * Adds a list to the global listener list that will be notified of all state changes and errors applied to this activator

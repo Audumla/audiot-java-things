@@ -18,10 +18,6 @@ public class LCDSetCursorCommand extends AbstractEvent implements CommandEvent<L
         return true;
     }
 
-    @Override
-    public boolean rollback(LCD lcd) throws Exception {
-        return false;
-    }
 
 
 }

@@ -44,12 +44,12 @@ public class AbstractEvent implements Event {
     }
 
     @Override
-    public Object clone() throws CloneNotSupportedException {
+    public Event clone() throws CloneNotSupportedException{
         try {
-            return org.apache.commons.beanutils.BeanUtils.cloneBean(this);
+            return (Event) org.apache.commons.beanutils.BeanUtils.cloneBean(this);
         } catch (Exception e) {
             logger.error("Unable to clone Event ",this.getClass().getName(),e);
-            throw new CloneNotSupportedException("Failed to clone Activator Command");
+            throw new CloneNotSupportedException("Failed to clone Event");
         }
     }
 

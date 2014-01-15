@@ -19,29 +19,27 @@ package net.audumla.automate.event;
 import net.audumla.bean.BeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sun.tools.jar.resources.jar;
 
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.*;
 
 public abstract class AbstractEventTransaction implements EventTransaction {
     private static final Logger logger = LoggerFactory.getLogger(AbstractEventTransaction.class);
     protected EventTransactionStatus status = new DefaultEventStatus();
-    private EventScheduler eventScheduler;
+    private final EventScheduler eventScheduler;
     private boolean rollbackOnError = true;
     private boolean autoCommit = true;
     private String id = BeanUtils.generateName(this);
-    protected String[] topics;
-    protected Event[] events;
-
-    protected AbstractEventTransaction() {
-    }
+    protected final String[] topics;
+    protected final Event[] events;
+    protected Map<Event,EventTarget> handledEvents = new HashMap<>();
 
     protected AbstractEventTransaction(String[] topics, Event[] events, EventScheduler scheduler) {
         this.topics = topics;
         this.events = events;
         this.eventScheduler = scheduler;
-        for (Event ev : events) {
-            ev.setEventTransaction(this);
+        for (Event event : events) {
+            event.setEventTransaction(this);
         }
     }
 
@@ -58,11 +56,6 @@ public abstract class AbstractEventTransaction implements EventTransaction {
     @Override
     public EventScheduler getEventScheduler() {
         return eventScheduler;
-    }
-
-    @Override
-    public void setEventScheduler(EventScheduler eventScheduler) {
-        this.eventScheduler = eventScheduler;
     }
 
     @Override
@@ -90,8 +83,24 @@ public abstract class AbstractEventTransaction implements EventTransaction {
         return Arrays.asList(topics);
     }
 
-    public boolean isAutoCommit() {
+    protected boolean isAutoCommit() {
         return autoCommit;
     }
 
+    protected void setAutoCommit(boolean autoCommit) {
+        this.autoCommit = autoCommit;
+    }
+
+    protected void addHandledEvent(EventTarget target, Event event) {
+        handledEvents.put(event, target);
+    }
+
+    protected Map<Event, EventTarget> getHandledEventMap() {
+        return handledEvents;
+    }
+
+    @Override
+    public Collection<Event> getHandledEvents() {
+        return handledEvents.keySet();
+    }
 }

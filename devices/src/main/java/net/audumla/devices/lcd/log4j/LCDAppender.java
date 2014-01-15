@@ -17,7 +17,7 @@ public class LCDAppender extends AppenderSkeleton {
 
     public void append(LoggingEvent logevent) {
         try {
-            EventScheduler.getDefaultEventScheduler().scheduleEvent(target,
+            EventScheduler.getDefaultEventScheduler().scheduleEvent(target.getName(),
                     new LCDClearCommand(),
                     new LCDWriteCommand(logevent.getRenderedMessage()),
                     new LCDPauseCommand()).begin();
@@ -29,7 +29,7 @@ public class LCDAppender extends AppenderSkeleton {
     @Override
     public void close() {
         try {
-            EventScheduler.getDefaultEventScheduler().scheduleEvent(target,
+            EventScheduler.getDefaultEventScheduler().scheduleEvent(target.getName(),
                     new LCDShutdownCommand(),
                     new LCDPauseCommand()).begin();
         } catch (Exception e) {

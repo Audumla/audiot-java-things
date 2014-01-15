@@ -13,9 +13,5 @@ public class LCDInitializeCommand extends AbstractEvent implements CommandEvent<
         lcd.initialize();
         return true;
     }
-    @Override
-    public boolean rollback(LCD lcd) throws Exception {
-        return false;
-    }
 
 }

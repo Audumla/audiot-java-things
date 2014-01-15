@@ -18,5 +18,4 @@ package net.audumla.automate.event;
 
 public interface CommandEvent<T> extends Event {
     boolean execute(T t) throws Exception;
-    boolean rollback(T t) throws Exception;
 }

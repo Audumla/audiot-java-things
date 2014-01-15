@@ -53,4 +53,10 @@ public interface Event extends Cloneable {
      */
     void setEventTransaction(EventTransaction et);
 
+    /**
+     * Override protected clone method
+     * @return a clone of the event
+     */
+    Event clone() throws CloneNotSupportedException;
+
 }
