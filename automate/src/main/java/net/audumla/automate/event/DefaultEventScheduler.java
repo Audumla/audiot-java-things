@@ -36,7 +36,7 @@ public class DefaultEventScheduler implements EventScheduler {
     private static final Logger logger = LoggerFactory.getLogger(DefaultEventScheduler.class);
 
     protected Map<Pattern, EventTarget> targetRegistry = new HashMap<>();
-    protected ScheduledExecutorService scheduler = new ScheduledThreadPoolExecutor(1);
+    protected ScheduledExecutorService scheduler;
 
     public class DefaultEventTransaction extends AbstractEventTransaction {
 
@@ -66,8 +66,9 @@ public class DefaultEventScheduler implements EventScheduler {
                     } else {
                         future = scheduler.schedule(toRunnable(), initialDelay, MILLISECONDS);
                     }
+                } else {
+                     throw new UnsupportedOperationException("Scheduler does not support " + schedule.getClass());
                 }
-                throw new UnsupportedOperationException("Scheduler does not support " + schedule.getClass());
             }
             return true;
         }
@@ -179,6 +180,9 @@ public class DefaultEventScheduler implements EventScheduler {
 
     }
 
+    public DefaultEventScheduler() {
+        initialize();
+    }
 
     @Override
     public EventTransaction scheduleEvent(String topic, EventSchedule schedule, Event... events) {
@@ -226,7 +230,14 @@ public class DefaultEventScheduler implements EventScheduler {
 
     @Override
     public boolean registerEventTarget(String topic, EventTarget target) {
-        Pattern pattern = Pattern.compile(topic.toString().replaceAll("\\.", "\\\\.").replaceAll("\\*", "[^.]+"));
+        topic = topic.replaceAll("\\.", "\\\\.");
+        if (topic.endsWith("*")) {
+            topic = topic.substring(0, topic.length() - 1).replaceAll("\\*", "[^.]+") + ".*";
+        } else {
+            topic = topic.replaceAll("\\*", "[^.]+");
+        }
+
+        Pattern pattern = Pattern.compile(topic);
         targetRegistry.put(pattern, target);
         return true;
     }
@@ -242,7 +253,14 @@ public class DefaultEventScheduler implements EventScheduler {
     }
 
     @Override
+    public boolean initialize() {
+        scheduler = new ScheduledThreadPoolExecutor(1);
+        return true;
+    }
+
+    @Override
     public boolean shutdown() {
+        targetRegistry.clear();
         scheduler.shutdown();
         return true;
     }

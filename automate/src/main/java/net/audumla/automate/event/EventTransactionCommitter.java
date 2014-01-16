@@ -19,6 +19,8 @@ package net.audumla.automate.event;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public interface EventTransationCommitter {
-    boolean commitEventTransaction(EventTransaction transaction) throws Exception;
+import java.util.Map;
+
+public interface EventTransactionCommitter {
+    boolean commitEventTransaction(EventTransaction transaction, Map<Event,EventTarget> eventTargetMap) throws Exception;
 }

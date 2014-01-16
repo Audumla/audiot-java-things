@@ -39,6 +39,8 @@ public interface EventScheduler {
 
     boolean unregisterEventTarget(EventTarget target);
 
+    boolean initialize();
+
     boolean shutdown();
 
     static AtomicReference<EventScheduler> scheduler = new AtomicReference<EventScheduler>();
