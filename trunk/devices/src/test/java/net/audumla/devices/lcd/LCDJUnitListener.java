@@ -20,7 +20,7 @@ public class LCDJUnitListener extends RunListener {
 
     @Override
     public void testFinished(Description description) throws Exception {
-        scheduler.scheduleEvent(target.getName(),
+        scheduler.publishEvent(target.getName(),
                 new LCDClearCommand(),
                 new LCDWriteCommand("Test: " + description.getMethodName()),
                 new LCDSetCursorCommand(0, 1),
@@ -30,7 +30,7 @@ public class LCDJUnitListener extends RunListener {
 
     @Override
     public void testFailure(Failure failure) throws Exception {
-        scheduler.scheduleEvent(target.getName(),
+        scheduler.publishEvent(target.getName(),
                 new LCDClearCommand(),
                 new LCDWriteCommand("Test: " + failure.getDescription().getMethodName()),
                 new LCDSetCursorCommand(0, 1),
@@ -41,7 +41,7 @@ public class LCDJUnitListener extends RunListener {
     @Override
     public void testAssumptionFailure(Failure failure) {
         try {
-            scheduler.scheduleEvent(target.getName(),
+            scheduler.publishEvent(target.getName(),
                     new LCDClearCommand(),
                     new LCDWriteCommand("Test: " + failure.getDescription().getMethodName()),
                     new LCDSetCursorCommand(0, 1),
@@ -54,7 +54,7 @@ public class LCDJUnitListener extends RunListener {
 
     @Override
     public void testStarted(Description description) throws Exception {
-        scheduler.scheduleEvent(target.getName(),
+        scheduler.publishEvent(target.getName(),
                 new LCDClearCommand(),
                 new LCDWriteCommand("Test: " + description.getMethodName()),
                 new LCDSetCursorCommand(0, 1),
@@ -64,7 +64,7 @@ public class LCDJUnitListener extends RunListener {
 
     @Override
     public void testRunFinished(Result result) throws Exception {
-        scheduler.scheduleEvent(target.getName(),
+        scheduler.publishEvent(target.getName(),
                 new LCDClearCommand(),
                 new LCDWriteCommand("Tests run: " + result.getRunCount()),
                 new LCDSetCursorCommand(0, 1),

@@ -39,7 +39,7 @@ public class AbstractEvent implements Event {
     }
 
     @Override
-    public String getId() {
+    public String getName() {
         return name;
     }
 
@@ -74,6 +74,10 @@ public class AbstractEvent implements Event {
 
     @Override
     public String toString() {
-        return getId();
+        return getName();
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

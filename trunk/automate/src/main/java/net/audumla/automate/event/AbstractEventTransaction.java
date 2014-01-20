@@ -19,28 +19,31 @@ package net.audumla.automate.event;
 import net.audumla.bean.BeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sun.tools.jar.resources.jar;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 
 public abstract class AbstractEventTransaction implements EventTransaction {
     private static final Logger logger = LoggerFactory.getLogger(AbstractEventTransaction.class);
-    protected EventTransactionStatus status = new DefaultEventStatus();
+    private EventTransactionStatus status = new DefaultEventStatus();
     private final EventScheduler eventScheduler;
     private boolean rollbackOnError = true;
     private boolean autoCommit = true;
     private String id = BeanUtils.generateName(this);
-    protected final String[] topics;
-    protected final Event[] events;
-    protected Map<Event,EventTarget> handledEvents = new HashMap<>();
+    private Map<Event, EventTarget> handledEvents = new HashMap<>();
+    private Collection<EventTransactionListener> listeners = new HashSet<EventTransactionListener>();
+    private Map<String[], Event[]> topicEventMap = new HashMap<>();
+    private EventSchedule schedule;
 
-    protected AbstractEventTransaction(String[] topics, Event[] events, EventScheduler scheduler) {
-        this.topics = topics;
-        this.events = events;
+    protected AbstractEventTransaction(EventScheduler scheduler, EventSchedule schedule) {
         this.eventScheduler = scheduler;
-        for (Event event : events) {
-            event.setEventTransaction(this);
-        }
+        this.schedule = schedule;
+    }
+
+    protected AbstractEventTransaction(EventScheduler scheduler) {
+        this.eventScheduler = scheduler;
     }
 
     @Override
@@ -73,14 +76,50 @@ public abstract class AbstractEventTransaction implements EventTransaction {
         return rollbackOnError;
     }
 
+
     @Override
-    public Collection<Event> getEvents() {
-        return Arrays.asList(events);
+    public void addTransactionListener(EventTransactionListener listener) {
+        listeners.add(listener);
     }
 
     @Override
-    public Collection getTopics() {
-        return Arrays.asList(topics);
+    public void removeTransactionListener(EventTransactionListener listener) {
+        listeners.remove(listener);
+    }
+
+    @Override
+    public void publishEvent(String topic, Event... events) throws Exception {
+        validateState(EventState.PENDING);
+        publishEvent(events, new String[]{topic});
+    }
+
+    @Override
+    public void publishEvent(Event event, String... topics) throws Exception {
+        validateState(EventState.PENDING);
+        publishEvent(new Event[]{event}, topics);
+    }
+
+    @Override
+    public void publishEvent(Event[] events, String[] topics) throws Exception {
+        validateState(EventState.PENDING);
+        topicEventMap.put(topics, events);
+    }
+
+    @Override
+    public void setSchedule(EventSchedule schedule) throws Exception {
+        validateState(EventState.PENDING);
+        this.schedule = schedule;
+    }
+
+    @Override
+    public EventSchedule getSchedule() {
+        return schedule;
+    }
+
+    protected void commit() throws Exception {
+        for (EventTransactionListener etl : listeners) {
+            etl.onTransactionCommit(this,this.getHandledEvents() );
+        }
     }
 
     protected boolean isAutoCommit() {
@@ -95,12 +134,22 @@ public abstract class AbstractEventTransaction implements EventTransaction {
         handledEvents.put(event, target);
     }
 
-    protected Map<Event, EventTarget> getHandledEventMap() {
+    protected Collection<EventTransactionListener> getListeners() {
+        return listeners;
+    }
+
+    protected Map<String[], Event[]> getTopicEventMap() {
+        return topicEventMap;
+    }
+
+    protected void validateState(EventState state) throws Exception {
+        if (getStatus().getState() != state) {
+            throw new Exception("Operation cannot be performed when Transaction is "+getStatus().getState());
+        }
+    }
+
+    public Map<? extends Event, ? extends EventTarget> getHandledEvents() {
         return handledEvents;
     }
 
-    @Override
-    public Collection<Event> getHandledEvents() {
-        return handledEvents.keySet();
-    }
 }

@@ -26,8 +26,4 @@ public class EnableActivatorCommand extends SetActivatorStateCommand {
         super(ActivatorState.ACTIVATED);
     }
 
-    public EnableActivatorCommand(ActivatorListener... listeners) {
-        super(ActivatorState.ACTIVATED,listeners);
-    }
-
 }

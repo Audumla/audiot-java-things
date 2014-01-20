@@ -26,8 +26,5 @@ public class DisableActivatorCommand extends SetActivatorStateCommand {
         super(ActivatorState.DEACTIVATED);
     }
 
-    public DisableActivatorCommand(ActivatorListener... listeners) {
-        super(ActivatorState.DEACTIVATED,listeners);
-    }
 
 }

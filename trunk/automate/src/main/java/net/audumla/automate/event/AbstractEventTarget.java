@@ -21,6 +21,7 @@ import net.audumla.bean.BeanUtils;
 public abstract class AbstractEventTarget<T extends Event> implements EventTarget<T> {
 
     private String name;
+    private EventScheduler scheduler;
 
     protected AbstractEventTarget(String name) {
         this.name = name;
@@ -42,4 +43,17 @@ public abstract class AbstractEventTarget<T extends Event> implements EventTarge
     public String toString() {
         return getName();
     }
+
+    @Override
+    public EventScheduler getScheduler() {
+        return scheduler;
+    }
+
+
+    @Override
+    public void setScheduler(EventScheduler scheduler) {
+        assert this.scheduler == null || this.scheduler == scheduler;
+        this.scheduler = scheduler;
+    }
+
 }

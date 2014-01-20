@@ -1,12 +1,10 @@
 package net.audumla.devices.activator;
 
-import net.audumla.automate.event.EventScheduler;
+import net.audumla.automate.event.ThreadPoolEventScheduler;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Collection;
 
 /**
  * Created with IntelliJ IDEA.
@@ -24,11 +22,11 @@ public class NonBlockingActivatorTest {
     @Test
     public void testStateChange() throws Exception {
         ActivatorMock activator = new ActivatorMock(true, true);
-        EventScheduler.getDefaultEventScheduler().registerEventTarget(activator);
+        new ThreadPoolEventScheduler().registerEventTarget(activator);
         assert activator.getCurrentState() == ActivatorState.UNKNOWN;
         activator.setCurrentState(ActivatorState.DEACTIVATED);
         assert activator.getCurrentState() == ActivatorState.DEACTIVATED;
-        EventScheduler.getDefaultEventScheduler().scheduleEvent(activator.getName(), new ToggleActivatorCommand(Duration.ofSeconds(2))).begin();
+        activator.getScheduler().publishEvent(activator.getName(), new ToggleActivatorCommand(Duration.ofSeconds(2))).begin();
 //        assert activator.getCurrentState() == ActivatorState.ACTIVATED;
         synchronized (this) {
             try {
@@ -45,38 +43,27 @@ public class NonBlockingActivatorTest {
     @Test
     public void testStateChangeListener() throws Exception {
         final ActivatorMock activator = new ActivatorMock(true, true);
-        EventScheduler.getDefaultEventScheduler().registerEventTarget(activator);
-        final Collection<ActivatorState> states = new ArrayList<ActivatorState>();
-
-        final ActivatorListener listener = new ActivatorListener() {
-            @Override
-            public void onStateChange(ActivatorStateChangeEvent event) {
-                states.add(event.getNewState());
-            }
-
-            @Override
-            public void onStateChangeFailure(ActivatorStateChangeEvent event, Throwable ex, String message) {
-                assert false;
-            }
-        };
+        new ThreadPoolEventScheduler().registerEventTarget(activator);
+        ActivatorStateChangeEventTarget target = new ActivatorStateChangeEventTarget(activator);
+        activator.getScheduler().registerEventTarget(target);
 
         assert activator.getCurrentState() == ActivatorState.UNKNOWN;
-        assert states.isEmpty();
-        EventScheduler.getDefaultEventScheduler().scheduleEvent(activator.getName(), new ToggleActivatorCommand(Duration.ofSeconds(2), listener)).begin();
+        assert target.states.isEmpty();
+        activator.getScheduler().publishEvent(activator.getName(), new ToggleActivatorCommand(Duration.ofSeconds(2))).begin();
         synchronized (this) {
             try {
                 this.wait(1000);
-                assert states.contains(ActivatorState.ACTIVATED);
+                assert target.states.contains(ActivatorState.ACTIVATED);
                 assert activator.getCurrentState() == ActivatorState.ACTIVATED;
-                assert states.size() == 1;
+                assert target.states.size() == 1;
                 this.wait(2100);
             } catch (InterruptedException e) {
                 assert false;
             }
         }
         assert activator.getCurrentState() == ActivatorState.DEACTIVATED;
-        assert states.contains(ActivatorState.DEACTIVATED);
-        assert states.size() == 2;
+        assert target.states.contains(ActivatorState.DEACTIVATED);
+        assert target.states.size() == 2;
     }
 
 }

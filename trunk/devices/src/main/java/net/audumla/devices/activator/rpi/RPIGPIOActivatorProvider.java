@@ -1,4 +1,4 @@
-package net.audumla.devices.activator;
+package net.audumla.devices.activator.rpi;
 
 /*
  * *********************************************************************
@@ -16,40 +16,46 @@ package net.audumla.devices.activator;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import net.audumla.automate.event.*;
+import net.audumla.devices.activator.Activator;
+import net.audumla.devices.activator.ActivatorState;
+import net.audumla.devices.activator.ActivatorProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Properties;
 
-public class SetActivatorStateCommand extends AbstractEvent implements CommandEvent<Activator>, RollbackEvent<Activator> {
-    private static final Logger logger = LoggerFactory.getLogger(SetActivatorStateCommand.class);
-    protected ActivatorState previousState;
-    protected ActivatorState newState;
+public class RPIGPIOActivatorProvider implements ActivatorProvider {
+    private static final Logger logger = LoggerFactory.getLogger(RPIGPIOActivatorProvider.class);
 
-    protected SetActivatorStateCommand(ActivatorState newState) {
-        this.newState = newState;
+    @Override
+    public void initialize() throws Exception {
+
     }
 
     @Override
-    public boolean execute(Activator activator) throws Exception {
-        previousState = activator.getCurrentState();
-        return activator.setCurrentState(newState);
+    public void shutdown() {
+
     }
 
     @Override
-    public boolean rollback(Activator activator) {
-        return activator.setCurrentState(previousState);
+    public String getId() {
+        return this.getClass().getSimpleName();
     }
 
-    public ActivatorState getPreviousState() {
-        return previousState;
+    @Override
+    public Activator getActivator(Properties id) {
+        return null;
     }
 
-    public ActivatorState getNewState() {
-        return newState;
+    @Override
+    public Collection<? extends Activator> getActivators() {
+        return null;
     }
 
+    @Override
+    public boolean setCurrentStates(Map<Activator, ActivatorState> newStates) throws Exception {
+        return false;
+    }
 }
