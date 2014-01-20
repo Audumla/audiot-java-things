@@ -19,63 +19,26 @@ package net.audumla.automate.event;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.time.Duration;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.concurrent.Future;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.regex.Pattern;
 
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-
-public class DefaultEventScheduler implements EventScheduler {
-    private static final Logger logger = LoggerFactory.getLogger(DefaultEventScheduler.class);
+public abstract class AbstractEventScheduler implements EventScheduler {
+    private static final Logger logger = LoggerFactory.getLogger(AbstractEventScheduler.class);
 
     protected Map<Pattern, EventTarget> targetRegistry = new HashMap<>();
-    protected ScheduledExecutorService scheduler;
 
-    public class DefaultEventTransaction extends AbstractEventTransaction {
+    protected abstract class SimpleEventTransaction extends AbstractEventTransaction {
 
-        private EventSchedule schedule;
-        private Future<?> future;
-
-        private DefaultEventTransaction(String[] targets, Event[] events, EventSchedule schedule) {
-            super(targets, events, DefaultEventScheduler.this);
-            this.schedule = schedule;
+        protected SimpleEventTransaction() {
+            super(AbstractEventScheduler.this);
         }
 
-        @Override
-        public boolean begin() {
-            if (schedule == null) {
-                future = scheduler.submit(toRunnable());
-            } else {
-                if (schedule instanceof SimpleEventSchedule) {
-                    SimpleEventSchedule ss = (SimpleEventSchedule) schedule;
-                    if (ss.getRepeatCount() > 0) {
-                        throw new UnsupportedOperationException("Scheduler does not support fixed repeat counts");
-                    }
-                    long initialDelay = Duration.between(Instant.now(), ss.getStartTime()).toMillis();
-                    initialDelay = initialDelay < 0 ? 0 : initialDelay;
-                    // set up a repeating schedule. We cannot set a fixed repeat count for this scheduler
-                    if (ss.getRepeatInterval() != null && !ss.getRepeatInterval().isZero()) {
-                        future = scheduler.scheduleAtFixedRate(toRunnable(), initialDelay, ss.getRepeatInterval().toMillis(), MILLISECONDS);
-                    } else {
-                        future = scheduler.schedule(toRunnable(), initialDelay, MILLISECONDS);
-                    }
-                } else {
-                     throw new UnsupportedOperationException("Scheduler does not support " + schedule.getClass());
-                }
-            }
-            return true;
-        }
-
-        @Override
-        public void commit() {
-            // call all listeners or committers and manage rollback if the commit fails
+        protected SimpleEventTransaction(EventSchedule schedule) {
+            super(AbstractEventScheduler.this, schedule);
         }
 
         @Override
@@ -83,7 +46,7 @@ public class DefaultEventScheduler implements EventScheduler {
             getStatus().setState(EventState.ROLLINGBACK);
             boolean result = true;
             Collection<EventState> transactionStates = new HashSet<>();
-            for (Map.Entry<Event, EventTarget> ev : getHandledEventMap().entrySet()) {
+            for (Map.Entry<? extends Event, ? extends EventTarget> ev : getHandledEvents().entrySet()) {
                 // only role back command events and events that actually completed their execution
                 ev.getKey().getStatus().setState(EventState.ROLLINGBACK);
                 try {
@@ -129,37 +92,39 @@ public class DefaultEventScheduler implements EventScheduler {
                 getStatus().setExecutedTime(Instant.now());
                 getStatus().setState(EventState.EXECUTING);
                 Collection<EventState> transactionStates = new HashSet<>();
-                for (Event ev : getEvents()) {
-                    Collection<EventState> eventStates = new HashSet<>();
-                    ev.setScheduler(DefaultEventScheduler.this);
-                    ev.getStatus().setExecutedTime(Instant.now());
-                    for (EventTarget et : getMappedTargets(topics, EventTarget.class)) {
-                        // default the attempted cloned event to the actual event. This allows us to update the event correctly in the case of
-                        // a clone failure.
-                        Event nev = ev;
-                        try {
-                            // clone the original event so that we can keep track of each status for each handler
-                            nev = ev.clone();
-                            addHandledEvent(et, nev);
-                            if (!et.handleEvent(nev)) {
-                                throw new Exception("Failed to execute Event");
+                for (Map.Entry<String[], Event[]> mapItem : getTopicEventMap().entrySet()) {
+                    for (Event ev : mapItem.getValue()) {
+                        Collection<EventState> eventStates = new HashSet<>();
+                        ev.setScheduler(AbstractEventScheduler.this);
+                        ev.getStatus().setExecutedTime(Instant.now());
+                        for (EventTarget et : getMappedTargets(mapItem.getKey(), EventTarget.class)) {
+                            // default the attempted cloned event to the actual event. This allows us to update the event correctly in the case of
+                            // a clone failure.
+                            Event nev = ev;
+                            try {
+                                // clone the original event so that we can keep track of each status for each handler
+                                nev = ev.clone();
+                                addHandledEvent(et, nev);
+                                if (!et.handleEvent(nev)) {
+                                    throw new Exception("Failed to execute Event");
+                                }
+                                nev.getStatus().setState(EventState.COMPLETE);
+                            } catch (CloneNotSupportedException ex) {
+                                nev.getStatus().setFailed(ex, "Failed to clone Event");
+                                // add the event to the handled list as this would not have been called otherwise
+                                addHandledEvent(et, nev);
+                            } catch (Throwable th) {
+                                nev.getStatus().setFailed(th, "Failed to execute Event");
+                            } finally {
+                                nev.getStatus().setCompletedTime(Instant.now());
+                                eventStates.add(nev.getStatus().getState());
+                                transactionStates.add(nev.getStatus().getState());
                             }
-                            nev.getStatus().setState(EventState.COMPLETE);
-                        } catch (CloneNotSupportedException ex) {
-                            nev.getStatus().setFailed(ex, "Failed to clone Event");
-                            // add the event to the handled list as this would not have been called otherwise
-                            addHandledEvent(et, nev);
-                        } catch (Throwable th) {
-                            nev.getStatus().setFailed(th, "Failed to execute Event");
-                        } finally {
-                            nev.getStatus().setCompletedTime(Instant.now());
-                            eventStates.add(nev.getStatus().getState());
-                            transactionStates.add(nev.getStatus().getState());
                         }
+                        // update the original event as there may be references to it that can monitor the state of the overall event
+                        ev.getStatus().setCompletedTime(Instant.now());
+                        ev.getStatus().setState(getStatus(eventStates));
                     }
-                    // update the original event as there may be references to it that can monitor the state of the overall event
-                    ev.getStatus().setCompletedTime(Instant.now());
-                    ev.getStatus().setState(getStatus(eventStates));
                 }
                 getStatus().setCompletedTime(Instant.now());
                 getStatus().setState(getStatus(transactionStates));
@@ -167,7 +132,14 @@ public class DefaultEventScheduler implements EventScheduler {
                 if (!getStatus().getState().equals(EventState.NOIDENTIFIEDTARGETS)) {
                     if (getStatus().getState().equals(EventState.COMPLETE)) {
                         if (isAutoCommit()) {
-                            commit();
+                            try {
+                                commit();
+                            } catch (Exception e) {
+                                logger.error("Transaction commit failed", e);
+                                if (getRollBackOnError()) {
+                                    rollback();
+                                }
+                            }
                         }
                     } else {
                         if (getRollBackOnError()) {
@@ -180,56 +152,60 @@ public class DefaultEventScheduler implements EventScheduler {
 
     }
 
-    public DefaultEventScheduler() {
+    public AbstractEventScheduler() {
         initialize();
     }
 
     @Override
-    public EventTransaction scheduleEvent(String topic, EventSchedule schedule, Event... events) {
-        return scheduleEvent(events, new String[]{topic.toString()}, schedule);
+    public EventTransaction scheduleEvent(EventSchedule schedule, String topic, Event... events) throws Exception {
+        return scheduleEvent(schedule, events, new String[]{topic.toString()});
     }
 
     @Override
-    public EventTransaction scheduleEvent(String topic, Event... events) {
-        return scheduleEvent(events, new String[]{topic.toString()});
+    public EventTransaction publishEvent(String topic, Event... events) throws Exception {
+        return publishEvent(events, new String[]{topic.toString()});
     }
 
     @Override
-    public EventTransaction scheduleEvent(Event event, String... topics) {
-        return scheduleEvent(new Event[]{event}, topics);
+    public EventTransaction publishEvent(Event event, String... topics) throws Exception {
+        return publishEvent(new Event[]{event}, topics.length == 0 ? new String[]{event.getName()} : topics);
     }
 
     @Override
-    public EventTransaction scheduleEvent(Event event, EventSchedule schedule, String... topics) {
-        return scheduleEvent(new Event[]{event}, topics, schedule);
+    public EventTransaction scheduleEvent(EventSchedule schedule, Event event, String... topics) throws Exception {
+        return scheduleEvent(schedule, new Event[]{event}, topics);
     }
 
     @Override
-    public EventTransaction scheduleEvent(Event[] events, String[] topics, EventSchedule schedule) {
-        return new DefaultEventTransaction(topics, events, schedule);
+    public EventTransaction scheduleEvent(EventSchedule schedule, Event[] events, String[] topics) throws Exception {
+        EventTransaction et = createTransaction(schedule);
+        et.publishEvent(events, topics);
+        return et;
     }
 
     @Override
-    public EventTransaction scheduleEvent(Event[] events, String[] topics) {
-        return new DefaultEventTransaction(topics, events, null);
+    public EventTransaction publishEvent(Event[] events, String[] topics) throws Exception {
+        EventTransaction et = createTransaction();
+        et.publishEvent(events, topics);
+        return et;
     }
 
     @Override
     public boolean registerEventTarget(EventTarget target) {
-        registerEventTarget(target.getName(), target);
+        registerEventTarget(target, target.getName());
         return true;
     }
 
     @Override
-    public boolean registerEventTarget(String[] topics, EventTarget target) {
+    public boolean registerEventTarget(EventTarget target, String[] topics) {
         for (String topic : topics) {
-            registerEventTarget(topic, target);
+            registerEventTarget(target, topic);
         }
         return true;
     }
 
     @Override
-    public boolean registerEventTarget(String topic, EventTarget target) {
+    public boolean registerEventTarget(EventTarget target, String topic) {
         topic = topic.replaceAll("\\.", "\\\\.");
         if (topic.endsWith("*")) {
             topic = topic.substring(0, topic.length() - 1).replaceAll("\\*", "[^.]+") + ".*";
@@ -239,6 +215,7 @@ public class DefaultEventScheduler implements EventScheduler {
 
         Pattern pattern = Pattern.compile(topic);
         targetRegistry.put(pattern, target);
+        target.setScheduler(this);
         return true;
     }
 
@@ -254,14 +231,12 @@ public class DefaultEventScheduler implements EventScheduler {
 
     @Override
     public boolean initialize() {
-        scheduler = new ScheduledThreadPoolExecutor(1);
         return true;
     }
 
     @Override
     public boolean shutdown() {
         targetRegistry.clear();
-        scheduler.shutdown();
         return true;
     }
 
@@ -276,4 +251,5 @@ public class DefaultEventScheduler implements EventScheduler {
         }
         return targets;
     }
+
 }

@@ -18,6 +18,19 @@ package net.audumla.automate.event;
 
 public interface Event extends Cloneable {
 
+    public String EVENT_TOPIC = "event.";
+
+
+    /**
+     * Generates the topic that is used by a given target to publish notification events
+     *
+     * @param target the target that we wish to monitor events from
+     * @return the event topic for the given target
+     */
+    static String getEventTopic(EventTarget target) {
+        return EVENT_TOPIC+target.getName();
+    }
+
     /**
      * @return The current status of the event in its lifecycle
      */
@@ -26,7 +39,7 @@ public interface Event extends Cloneable {
     /**
      * @return The name of the event
      */
-    String getId();
+    String getName();
 
     /**
      * @return the event scheduler that this event was scheduled to.

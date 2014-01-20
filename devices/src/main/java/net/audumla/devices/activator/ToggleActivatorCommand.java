@@ -30,8 +30,7 @@ public class ToggleActivatorCommand extends EnableActivatorCommand {
     public ToggleActivatorCommand() {
     }
 
-    public ToggleActivatorCommand(Duration delay, ActivatorListener... listeners) {
-        super(listeners);
+    public ToggleActivatorCommand(Duration delay) {
         this.delay = delay;
     }
 
@@ -45,10 +44,13 @@ public class ToggleActivatorCommand extends EnableActivatorCommand {
 
     @Override
     public boolean execute(Activator activator) throws Exception {
-        // ensure that the result of the call to ativate results in the activator now being in the correct state.
+        // ensure that the result of the call to activate results in the activator now being in the correct state.
         if (super.execute(activator)) {
             if (getScheduler() != null) {
-                return getScheduler().scheduleEvent(activator.getName(), new SimpleEventSchedule(Instant.now().plus(delay)), new DisableActivatorCommand(getListeners())).begin();
+                // it would be nice to have this included as part of the overall transaction, however currently a transaction can only be active on a
+                // single schedule, and we need to create a new schedule for the disable command.
+                getScheduler().scheduleEvent(new SimpleEventSchedule(Instant.now().plus(delay)), activator.getName(), new DisableActivatorCommand()).begin();
+                return true;
             } else {
                 synchronized (this) {
                     try {
@@ -57,7 +59,7 @@ public class ToggleActivatorCommand extends EnableActivatorCommand {
                         logger.error("Failed to execute blocking deactivate", e);
                     }
                 }
-                return new DisableActivatorCommand(getListeners()).execute(activator);
+                return new DisableActivatorCommand().execute(activator);
             }
         }
         return false;

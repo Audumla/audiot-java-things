@@ -1,4 +1,4 @@
-package net.audumla.devices.activator.provider.rpi;
+package net.audumla.devices.activator;
 
 /*
  * *********************************************************************
@@ -16,46 +16,28 @@ package net.audumla.devices.activator.provider.rpi;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import net.audumla.devices.activator.Activator;
-import net.audumla.devices.activator.ActivatorState;
-import net.audumla.devices.activator.provider.ActivatorProvider;
+import net.audumla.automate.event.AbstractEventTarget;
+import net.audumla.automate.event.Event;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Map;
-import java.util.Properties;
 
-public class RPIGPIOActivatorProvider implements ActivatorProvider {
-    private static final Logger logger = LoggerFactory.getLogger(RPIGPIOActivatorProvider.class);
+public class ActivatorStateChangeEventTarget extends AbstractEventTarget<ActivatorStateChangeEvent> {
 
-    @Override
-    public void initialize() throws Exception {
+    private static final Logger logger = LoggerFactory.getLogger(ActivatorStateChangeEventTarget.class);
 
+    public Collection<ActivatorState> states = new ArrayList<ActivatorState>();
+
+    public ActivatorStateChangeEventTarget(Activator activator) {
+        super(Event.getEventTopic(activator));
     }
 
     @Override
-    public void shutdown() {
-
+    public boolean handleEvent(ActivatorStateChangeEvent event) throws Throwable {
+        states.add(event.getNewState());
+        return true;
     }
 
-    @Override
-    public String getId() {
-        return this.getClass().getSimpleName();
-    }
-
-    @Override
-    public Activator getActivator(Properties id) {
-        return null;
-    }
-
-    @Override
-    public Collection<Activator> getActivators() {
-        return null;
-    }
-
-    @Override
-    public boolean setCurrentStates(Map<Activator, ActivatorState> newStates) throws Exception {
-        return false;
-    }
 }

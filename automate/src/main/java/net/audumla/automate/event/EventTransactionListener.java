@@ -21,6 +21,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
-public interface EventTransactionCommitter {
-    boolean commitEventTransaction(EventTransaction transaction, Map<Event, EventTarget> eventTargetMap) throws Exception;
+public interface EventTransactionListener <TEvent extends Event, TEventTarget extends EventTarget>
+{
+    public  boolean onTransactionCommit(EventTransaction transaction, Map<TEvent, TEventTarget> events) throws Exception;
+    boolean onTransactionBegin(EventTransaction transaction) throws Exception;
 }

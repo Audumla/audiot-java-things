@@ -19,21 +19,25 @@ package net.audumla.automate.event;
 import java.util.concurrent.atomic.AtomicReference;
 
 public interface EventScheduler {
-     EventTransaction scheduleEvent(String topic, Event... events);
+    EventTransaction publishEvent(String topic, Event... events) throws Exception;
 
-     EventTransaction scheduleEvent(String topic, EventSchedule schedule, Event... events);
+    EventTransaction publishEvent(Event event, String... topics) throws Exception;
 
-     EventTransaction scheduleEvent(Event event, String... topics);
+    EventTransaction publishEvent(Event[] event, String[] topics) throws Exception;
 
-     EventTransaction scheduleEvent(Event event, EventSchedule schedule, String... topics);
+    EventTransaction scheduleEvent(EventSchedule schedule, String topic, Event... events) throws Exception;
 
-     EventTransaction scheduleEvent(Event[] event, String[] topics, EventSchedule schedule);
+    EventTransaction scheduleEvent(EventSchedule schedule, Event event, String... topics) throws Exception;
 
-     EventTransaction scheduleEvent(Event[] event, String[] topics);
+    EventTransaction scheduleEvent(EventSchedule schedule, Event[] event, String[] topics) throws Exception;
 
-     boolean registerEventTarget(String[] topics, EventTarget target);
+    EventTransaction createTransaction();
 
-     boolean registerEventTarget(String topic, EventTarget target);
+    EventTransaction createTransaction(EventSchedule schedule);
+
+    boolean registerEventTarget(EventTarget target, String... topics);
+
+    boolean registerEventTarget(EventTarget target, String topic);
 
     boolean registerEventTarget(EventTarget target);
 
@@ -56,7 +60,7 @@ public interface EventScheduler {
 
     static EventScheduler getDefaultEventScheduler() {
         if (scheduler.get() == null) {
-            setDefaultEventScheduler(new DefaultEventScheduler());
+            setDefaultEventScheduler(new ThreadPoolEventScheduler());
         }
         return scheduler.get();
     }

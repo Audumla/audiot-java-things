@@ -1,4 +1,4 @@
-package net.audumla.devices.activator;
+package net.audumla.automate.event;
 
 /*
  * *********************************************************************
@@ -16,17 +16,21 @@ package net.audumla.devices.activator;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import net.audumla.automate.event.CommandEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public interface ActivatorCommand extends CommandEvent<Activator> {
+import java.util.Map;
 
-    ActivatorListener[] getListeners();
+public abstract class AbstractEventTransactionListener<TEvent extends Event, TEventTarget extends EventTarget> implements EventTransactionListener<TEvent,TEventTarget> {
+    private static final Logger logger = LoggerFactory.getLogger(AbstractEventTransactionListener.class);
 
-    void setListeners(ActivatorListener[] listeners);
+    @Override
+    public boolean onTransactionCommit(EventTransaction transaction, Map<TEvent, TEventTarget> events) throws Exception {
+        return true;
+    }
 
-    void addListener(ActivatorListener listener);
-
-    void removeListener(ActivatorListener listener);
-
-
+    @Override
+    public boolean onTransactionBegin(EventTransaction transaction) throws Exception {
+        return true;
+    }
 }

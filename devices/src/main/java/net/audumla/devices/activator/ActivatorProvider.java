@@ -1,4 +1,4 @@
-package net.audumla.devices.activator.provider;
+package net.audumla.devices.activator;
 
 /*
  * *********************************************************************
@@ -16,6 +16,9 @@ package net.audumla.devices.activator.provider;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
+import net.audumla.automate.event.Event;
+import net.audumla.automate.event.EventTarget;
+import net.audumla.automate.event.EventTransactionListener;
 import net.audumla.devices.activator.Activator;
 import net.audumla.devices.activator.ActivatorState;
 
@@ -24,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-public interface ActivatorProvider {
+public interface ActivatorProvider{
 
     /**
      * The key that is used within the id property bundle for each activator to associate it back to its provider
@@ -59,7 +62,7 @@ public interface ActivatorProvider {
      *
      * @return all the activators associated with this provider
      */
-    Collection<Activator> getActivators();
+    Collection<? extends Activator> getActivators();
 
     /**
      * Performs an atomic update if possible to all activators to the associated state.

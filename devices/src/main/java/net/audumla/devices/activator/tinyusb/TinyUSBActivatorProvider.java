@@ -1,12 +1,14 @@
-package net.audumla.devices.activator.provider.tinyusb;
+package net.audumla.devices.activator.tinyusb;
 
 import com.ftdichip.ftd2xx.Device;
 import com.ftdichip.ftd2xx.FTD2xxException;
 import com.ftdichip.ftd2xx.Service;
+import net.audumla.automate.event.*;
 import net.audumla.bean.BeanUtils;
 import net.audumla.devices.activator.Activator;
 import net.audumla.devices.activator.ActivatorState;
-import net.audumla.devices.activator.provider.ActivatorProvider;
+import net.audumla.devices.activator.ActivatorStateChangeEvent;
+import net.audumla.devices.activator.ActivatorProvider;
 import net.audumla.exception.ErrorHandler;
 import org.apache.log4j.Logger;
 
@@ -20,12 +22,12 @@ import java.util.Properties;
  * Date: 10/09/13
  * Time: 3:52 PM
  */
-public class TinyUSBActivatorProvider implements ActivatorProvider {
+public class TinyUSBActivatorProvider implements EventTransactionListener<ActivatorStateChangeEvent,TinyUSBActivator>, ActivatorProvider {
     private static final Logger logger = Logger.getLogger(Activator.class);
     private static final int RELAY_ACTIVATE_INCREMENT = 100;
     private static final int RELAY_DEACTIVATE_INCREMENT = 110;
     private Device devices[] = new Device[0];
-    private Map<String, Activator> activatorRegistry = new HashMap<String,Activator>();
+    private Map<String, TinyUSBActivator> activatorRegistry = new HashMap<>();
     private String id = BeanUtils.generateName(this);
 
     private TinyUSBActivatorProvider() {
@@ -41,9 +43,8 @@ public class TinyUSBActivatorProvider implements ActivatorProvider {
             for (Device device : devices) {
                 logger.debug("TinyOS Relay Serial Number : " + device.getDeviceDescriptor().getSerialNumber());
             }
-            Collection<Activator> activators = getActivators();
-            for (Activator activator : activators) {
-                logger.debug("Relay identified : " + activator.getId() +" - " + activator.getName());
+            for (Activator activator : getActivators()) {
+                logger.debug("Relay identified : " + activator.getId() + " - " + activator.getName());
             }
         } catch (Throwable ex) {
             logger.info("Cannot manage TinyOS relays", ex);
@@ -76,21 +77,21 @@ public class TinyUSBActivatorProvider implements ActivatorProvider {
 
     @Override
     public Activator getActivator(Properties id) {
-        String sid = id.getProperty(TinyUSBActivator.DEVICE_ID)+","+id.getProperty(TinyUSBActivator.RELAY_ID);
+        String sid = id.getProperty(TinyUSBActivator.DEVICE_ID) + "," + id.getProperty(TinyUSBActivator.RELAY_ID);
         return activatorRegistry.get(sid);
     }
 
     @Override
-    public Collection<Activator> getActivators() {
+    public Collection<? extends Activator> getActivators() {
         int di = 0;
         for (Device d : devices) {
             for (int i = 0; i < getRelaysPerDevice(); ++i) {
-                String id = di+","+i;
-                Activator activator = new TinyUSBActivator(this,di,i);
-                activator.getId().put(PROVIDER_ID,getId());
-                activator.setName("Device["+di+"] Relay["+i+"]");
+                String id = di + "," + i;
+                TinyUSBActivator activator = new TinyUSBActivator(this, di, i);
+                activator.getId().put(PROVIDER_ID, getId());
+                activator.setName("Device[" + di + "] Relay[" + i + "]");
                 Properties props = activator.getId();
-                activatorRegistry.put(id,activator);
+                activatorRegistry.put(id, activator);
             }
             ++di;
         }
@@ -103,21 +104,17 @@ public class TinyUSBActivatorProvider implements ActivatorProvider {
     }
 
     public boolean deactivateRelay(int device, int relay, ErrorHandler handler) {
-        if (hasDevice(device)) {
-            try {
-                if (!setRelay(device, relay, RELAY_DEACTIVATE_INCREMENT, handler)) {
-                    handler.handleError("Attempting to shutdown all TinyOS relays due to unexpected failure", null);
-                    deactivateAllDevices(handler);
-                    return false;
-                }
-            } catch (Throwable e) {
-                handler.handleError("Unknown deactivation failure", e);
+        try {
+            if (!setRelay(device, relay, RELAY_DEACTIVATE_INCREMENT, handler)) {
+                handler.handleError("Attempting to shutdown all TinyOS relays due to unexpected failure", null);
+                deactivateAllDevices(handler);
                 return false;
             }
-            return true;
-        } else {
+        } catch (Throwable e) {
+            handler.handleError("Unknown deactivation failure", e);
             return false;
         }
+        return true;
     }
 
     public boolean activateRelay(int device, int relay, ErrorHandler handler) {
@@ -134,7 +131,7 @@ public class TinyUSBActivatorProvider implements ActivatorProvider {
     }
 
     protected boolean setRelay(int device, int relay, int offset, ErrorHandler handler) throws Exception {
-        if (relay > 0 && relay < 9) {
+        if (hasDevice(device) && relay > 0 && relay < 9) {
             try {
                 if (!writeToDevice(device, relay + offset, handler)) {
                     handler.handleError("Failed to set TinyOS tinyusb [Device:" + device + "][Relay:" + relay + "]", null);
@@ -146,6 +143,7 @@ public class TinyUSBActivatorProvider implements ActivatorProvider {
             }
         }
         return false;
+
     }
 
     protected void deactivateAllDevices(ErrorHandler handler) {
@@ -185,14 +183,12 @@ public class TinyUSBActivatorProvider implements ActivatorProvider {
                     devices[device].reset();
                     devices[device].purgeReceiveBuffer();
                     devices[device].purgeTransmitBuffer();
-                }
-                catch (Throwable ignored) {
+                } catch (Throwable ignored) {
                 }
                 try {
                     devices[device].open();
                     return true;
-                }
-                catch (Throwable e) {
+                } catch (Throwable e) {
                     handler.handleError("Cannot open TinyOS tinyusb [Device:" + device + "]", e);
                 }
             }
@@ -209,4 +205,13 @@ public class TinyUSBActivatorProvider implements ActivatorProvider {
         }
     }
 
+    @Override
+    public boolean onTransactionCommit(EventTransaction transaction, Map<ActivatorStateChangeEvent, TinyUSBActivator> events) throws Exception {
+        return false;
+    }
+
+    @Override
+    public boolean onTransactionBegin(EventTransaction transaction) throws Exception {
+        return true;
+    }
 }

@@ -19,7 +19,7 @@ public class LCDControllerTest {
 
     @Test
     public void testLCD() throws Exception {
-        scheduler.scheduleEvent(target.getName(),new LCDWriteCommand("Hello")).begin();
+        scheduler.publishEvent(target.getName(), new LCDWriteCommand("Hello")).begin();
     }
 
     @Test
@@ -32,11 +32,11 @@ public class LCDControllerTest {
 
     @Test
     public void testController() throws Exception {
-        scheduler.scheduleEvent(target.getName(),new LCDClearCommand()).begin();
-        scheduler.scheduleEvent(target.getName(), new LCDWriteCommand("Test Output")).begin();
-        scheduler.scheduleEvent(target.getName(),new LCDSetCursorCommand(0, 1)).begin();
-        scheduler.scheduleEvent(target.getName(),new LCDWriteCommand("Moved to Line")).begin();
-        scheduler.scheduleEvent(target.getName(),new LCDPauseCommand()).begin();
+        scheduler.publishEvent(target.getName(), new LCDClearCommand()).begin();
+        scheduler.publishEvent(target.getName(), new LCDWriteCommand("Test Output")).begin();
+        scheduler.publishEvent(target.getName(), new LCDSetCursorCommand(0, 1)).begin();
+        scheduler.publishEvent(target.getName(), new LCDWriteCommand("Moved to Line")).begin();
+        scheduler.publishEvent(target.getName(), new LCDPauseCommand()).begin();
     }
 
 }

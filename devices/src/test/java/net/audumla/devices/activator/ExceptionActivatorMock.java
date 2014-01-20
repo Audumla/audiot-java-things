@@ -9,7 +9,7 @@ import java.util.Collection;
  * Date: 10/09/13
  * Time: 4:27 PM
  */
-public class ExceptionActivatorMock extends AbstractActivator {
+public class ExceptionActivatorMock  extends AbstractActivator<ActivatorProvider,SetActivatorStateCommand> {
     private static final Logger logger = Logger.getLogger(Activator.class);
     private boolean activate;
     private boolean deactivate;
@@ -20,7 +20,7 @@ public class ExceptionActivatorMock extends AbstractActivator {
     }
 
     @Override
-    protected boolean executeStateChange(ActivatorState newstate, Collection<ActivatorListener> listeners) {
+    protected boolean executeStateChange(ActivatorState newstate) {
         if (newstate.equals(ActivatorState.DEACTIVATED)) {
             logger.info(deactivate ? "Simulator Deactivated - " + getName() : "Simulator Failed Deactivation - " + getName());
             if (deactivate) {

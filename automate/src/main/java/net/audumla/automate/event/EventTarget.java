@@ -20,10 +20,31 @@ import net.audumla.bean.BeanUtils;
 
 public interface EventTarget<T extends Event> {
 
+    /**
+     * @return the name of the event target. This can sometimes be used as the topic for scheduling
+     */
     default String getName() {
         return BeanUtils.generateName(this);
     }
 
+    /**
+     * @param event the event that should be handled or executed
+     * @return true if the event was handled, otherwise false
+     * @throws Throwable
+     */
     boolean handleEvent(T event) throws Throwable;
+
+    /**
+     * @return the scheduler that this target has been registered with
+     */
+    default EventScheduler getScheduler() {
+        return EventScheduler.getDefaultEventScheduler();
+    }
+
+    /**
+     * @param scheduler the scheduler that this target has been registered with
+     */
+    default void setScheduler(EventScheduler scheduler) {
+    }
 
 }

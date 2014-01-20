@@ -1,11 +1,10 @@
 package net.audumla.devices.activator;
 
+import net.audumla.automate.event.ThreadPoolEventScheduler;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 
 /**
@@ -55,76 +54,47 @@ public class FailingBlockingActivatorTest {
     }
 
     public void failActivate(Activator activator) {
-        final Collection<ActivatorState> states = new ArrayList<ActivatorState>();
+        ActivatorStateChangeEventTarget target = new ActivatorStateChangeEventTarget(activator);
 
-        final ActivatorListener listener = new ActivatorListener() {
-            @Override
-            public void onStateChange(ActivatorStateChangeEvent event) {
-                states.add(event.getNewState());
-                assert false;
-            }
-
-            @Override
-            public void onStateChangeFailure(ActivatorStateChangeEvent event, Throwable ex, String message) {
-                states.add(event.getNewState());
-            }
-        };
+        new ThreadPoolEventScheduler().registerEventTarget(activator);
+        activator.getScheduler().registerEventTarget(target);
 
         assert activator.getCurrentState() == ActivatorState.UNKNOWN;
-        assert states.isEmpty();
-        activator.setCurrentState(ActivatorState.ACTIVATED,listener);
-        assert states.contains(ActivatorState.ACTIVATED);
-        assert states.contains(ActivatorState.DEACTIVATED);
-        assert states.size() == 2;
+        assert target.states.isEmpty();
+        activator.setCurrentState(ActivatorState.ACTIVATED);
+        assert target.states.contains(ActivatorState.ACTIVATED);
+        assert target.states.contains(ActivatorState.DEACTIVATED);
+        assert target.states.size() == 2;
         assert activator.getCurrentState() == ActivatorState.UNKNOWN;
     }
 
     public void failDelayActivate(Activator activator) throws Exception {
-        final Collection<ActivatorState> states = new ArrayList<ActivatorState>();
+        ActivatorStateChangeEventTarget target = new ActivatorStateChangeEventTarget(activator);
 
-        final ActivatorListener listener = new ActivatorListener() {
-            @Override
-            public void onStateChange(ActivatorStateChangeEvent event) {
-                states.add(event.getNewState());
-                assert false;
-            }
-
-            @Override
-            public void onStateChangeFailure(ActivatorStateChangeEvent event, Throwable ex, String message) {
-                states.add(event.getNewState());
-            }
-        };
+        new ThreadPoolEventScheduler().registerEventTarget(activator);
+        activator.getScheduler().registerEventTarget(target);
 
         assert activator.getCurrentState() == ActivatorState.UNKNOWN;
-        assert states.isEmpty();
-        new ToggleActivatorCommand(Duration.ofSeconds(2), listener).execute(activator);
-        assert states.contains(ActivatorState.ACTIVATED);
-        assert states.contains(ActivatorState.DEACTIVATED);
-        assert states.size() == 2;
+        assert target.states.isEmpty();
+        new ToggleActivatorCommand(Duration.ofSeconds(2)).execute(activator);
+        assert target.states.contains(ActivatorState.ACTIVATED);
+        assert target.states.contains(ActivatorState.DEACTIVATED);
+        assert target.states.size() == 2;
         assert activator.getCurrentState() == ActivatorState.UNKNOWN;
     }
 
     public void failDeactivate(Activator activator) {
-        final Collection<ActivatorState> states = new ArrayList<ActivatorState>();
+        ActivatorStateChangeEventTarget target = new ActivatorStateChangeEventTarget(activator);
 
-        final ActivatorListener listener = new ActivatorListener() {
-            @Override
-            public void onStateChange(ActivatorStateChangeEvent event) {
-                states.add(event.getNewState());
-                assert false;
-            }
+        new ThreadPoolEventScheduler().registerEventTarget(activator);
+        activator.getScheduler().registerEventTarget(target);
 
-            @Override
-            public void onStateChangeFailure(ActivatorStateChangeEvent event, Throwable ex, String message) {
-                states.add(event.getNewState());
-            }
-        };
 
         assert activator.getCurrentState() == ActivatorState.UNKNOWN;
-        assert states.isEmpty();
-        activator.setCurrentState(ActivatorState.DEACTIVATED,listener);
-        assert states.contains(ActivatorState.DEACTIVATED);
-        assert states.size() == 1;
+        assert target.states.isEmpty();
+        activator.setCurrentState(ActivatorState.DEACTIVATED);
+        assert target.states.contains(ActivatorState.DEACTIVATED);
+        assert target.states.size() == 1;
         assert activator.getCurrentState() == ActivatorState.UNKNOWN;
     }
 

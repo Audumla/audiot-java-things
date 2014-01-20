@@ -17,5 +17,7 @@ package net.audumla.automate.event;
  */
 
 public interface CommandEvent<T> extends Event {
+    public String COMMAND_TOPIC = "command.";
+
     boolean execute(T t) throws Exception;
 }
