@@ -1,7 +1,6 @@
 package net.audumla.devices.activator;
 
 import net.audumla.automate.event.ThreadLocalEventScheduler;
-import net.audumla.automate.event.ThreadPoolEventScheduler;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -19,22 +18,22 @@ public class FailingBlockingActivatorTest {
 
 
     @Test
-    public void testFailExceptionDeactivate() {
+    public void testFailExceptionDeactivate() throws Exception {
         failDeactivate(new ExceptionActivatorMock(false, false));
     }
 
     @Test
-    public void testFailSimpleDeactivate() {
+    public void testFailSimpleDeactivate() throws Exception {
         failDeactivate(new ActivatorMock(false, false));
     }
 
     @Test
-    public void testFailExceptionActivate() {
+    public void testFailExceptionActivate() throws Exception {
         failActivate(new ExceptionActivatorMock(false, false));
     }
 
     @Test
-    public void testFailSimpleActivate() {
+    public void testFailSimpleActivate() throws Exception {
         failActivate(new ActivatorMock(false, false));
     }
 
@@ -54,7 +53,7 @@ public class FailingBlockingActivatorTest {
         Assert.assertEquals((double) (end.getTime() - start.getTime()), 0, 50);
     }
 
-    public void failActivate(Activator activator) {
+    public void failActivate(Activator activator) throws Exception {
         ActivatorStateChangeEventTarget target = new ActivatorStateChangeEventTarget(activator);
 
         new ThreadLocalEventScheduler().registerEventTarget(activator);
@@ -62,10 +61,10 @@ public class FailingBlockingActivatorTest {
 
         assert activator.getCurrentState() == ActivatorState.UNKNOWN;
         assert target.states.isEmpty();
-        activator.setCurrentState(ActivatorState.ACTIVATED);
-        assert target.states.contains(ActivatorState.ACTIVATED);
-        assert target.states.contains(ActivatorState.DEACTIVATED);
-        assert target.states.size() == 2;
+        activator.getScheduler().publishEvent(new EnableActivatorCommand(), activator.getName()).begin();
+//        assert target.states.contains(ActivatorState.ACTIVATED);
+//        assert target.states.contains(ActivatorState.DEACTIVATED);
+        assert target.states.size() == 0;
         assert activator.getCurrentState() == ActivatorState.UNKNOWN;
     }
 
@@ -77,14 +76,14 @@ public class FailingBlockingActivatorTest {
 
         assert activator.getCurrentState() == ActivatorState.UNKNOWN;
         assert target.states.isEmpty();
-        new ToggleActivatorCommand(Duration.ofSeconds(2)).execute(activator);
-        assert target.states.contains(ActivatorState.ACTIVATED);
-        assert target.states.contains(ActivatorState.DEACTIVATED);
-        assert target.states.size() == 2;
+        activator.getScheduler().publishEvent(new ToggleActivatorCommand(Duration.ofSeconds(2)), activator.getName()).begin();
+//        assert target.states.contains(ActivatorState.ACTIVATED);
+//        assert target.states.contains(ActivatorState.DEACTIVATED);
+        assert target.states.size() == 0;
         assert activator.getCurrentState() == ActivatorState.UNKNOWN;
     }
 
-    public void failDeactivate(Activator activator) {
+    public void failDeactivate(Activator activator) throws Exception {
         ActivatorStateChangeEventTarget target = new ActivatorStateChangeEventTarget(activator);
 
         new ThreadLocalEventScheduler().registerEventTarget(activator);
@@ -93,9 +92,9 @@ public class FailingBlockingActivatorTest {
 
         assert activator.getCurrentState() == ActivatorState.UNKNOWN;
         assert target.states.isEmpty();
-        activator.setCurrentState(ActivatorState.DEACTIVATED);
-        assert target.states.contains(ActivatorState.DEACTIVATED);
-        assert target.states.size() == 1;
+        activator.getScheduler().publishEvent(new DisableActivatorCommand(), activator.getName()).begin();
+//        assert target.states.contains(ActivatorState.DEACTIVATED);
+        assert target.states.size() == 0;
         assert activator.getCurrentState() == ActivatorState.UNKNOWN;
     }
 
