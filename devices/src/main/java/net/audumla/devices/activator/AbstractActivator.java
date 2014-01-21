@@ -69,7 +69,7 @@ public abstract class AbstractActivator<TProvider extends ActivatorProvider, TEv
                 }
             }
         } else {
-            logger.debug("Cannot set Activator [" + getName() + "] to state [" + newstate.getName() + "] when state is already [" + getCurrentState() + "]");
+            logger.trace("Cannot set Activator [" + getName() + "] to state [" + newstate.getName() + "] when state is already [" + getCurrentState() + "]");
         }
         return false;
     }
