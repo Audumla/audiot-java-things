@@ -27,7 +27,7 @@ public abstract class EventTargetActivator<TProvider extends ActivatorProvider, 
     protected EventTargetActivator() {
     }
 
-    protected void setActiveState(ActivatorState state) {
+    public void setActiveState(ActivatorState state) {
         this.state = state;
     }
 

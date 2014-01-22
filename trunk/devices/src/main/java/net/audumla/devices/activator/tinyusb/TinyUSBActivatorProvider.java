@@ -169,7 +169,10 @@ public class TinyUSBActivatorProvider implements EventTransactionListener<Activa
 
     @Override
     public boolean onTransactionCommit(EventTransaction transaction, Map<ActivatorStateChangeEvent, TinyUSBActivator> events) throws Exception {
-        return false;
+        for (Map.Entry<ActivatorStateChangeEvent, TinyUSBActivator> e : events.entrySet()) {
+             e.getValue().setActiveState(e.getKey().getNewState());
+        }
+        return true;
     }
 
     @Override
