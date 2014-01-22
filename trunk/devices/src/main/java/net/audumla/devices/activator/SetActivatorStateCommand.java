@@ -16,13 +16,11 @@ package net.audumla.devices.activator;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import net.audumla.automate.event.*;
+import net.audumla.automate.event.AbstractEvent;
+import net.audumla.automate.event.CommandEvent;
+import net.audumla.automate.event.RollbackEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 
 public class SetActivatorStateCommand extends AbstractEvent implements CommandEvent<Activator>, RollbackEvent<Activator> {
     private static final Logger logger = LoggerFactory.getLogger(SetActivatorStateCommand.class);
@@ -36,12 +34,12 @@ public class SetActivatorStateCommand extends AbstractEvent implements CommandEv
     @Override
     public boolean execute(Activator activator) throws Exception {
         previousState = activator.getCurrentState();
-        return activator.setCurrentState(newState);
+        return activator.updateState(newState);
     }
 
     @Override
     public boolean rollback(Activator activator) {
-        return activator.setCurrentState(previousState);
+        return activator.updateState(previousState);
     }
 
     public ActivatorState getPreviousState() {

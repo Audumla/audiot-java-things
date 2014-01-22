@@ -40,11 +40,12 @@ public class ThreadPoolEventScheduler extends AbstractEventScheduler{
 
         private Future<?> future;
 
-        protected ThreadPoolEventTransaction() {
+        public ThreadPoolEventTransaction(EventScheduler scheduler, EventSchedule schedule) {
+            super(scheduler, schedule);
         }
 
-        protected ThreadPoolEventTransaction(EventSchedule schedule) {
-            super(schedule);
+        public ThreadPoolEventTransaction(EventScheduler scheduler) {
+            super(scheduler);
         }
 
         @Override
@@ -90,11 +91,11 @@ public class ThreadPoolEventScheduler extends AbstractEventScheduler{
 
     @Override
     public EventTransaction createTransaction() {
-        return new ThreadPoolEventTransaction();
+        return new ThreadPoolEventTransaction(this);
     }
 
     @Override
     public EventTransaction createTransaction(EventSchedule schedule) {
-        return new ThreadPoolEventTransaction(schedule);
+        return new ThreadPoolEventTransaction(this,schedule);
     }
 }

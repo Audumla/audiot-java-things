@@ -16,35 +16,32 @@ package net.audumla.devices.i2c.rpi;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import com.pi4j.io.i2c.impl.I2CBusImpl;
 import com.pi4j.io.i2c.impl.I2CDeviceImpl;
 import com.pi4j.jni.I2C;
 import net.audumla.devices.i2c.I2CBus;
 import net.audumla.devices.i2c.I2CDevice;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
 public class RPII2CBus implements I2CBus {
 
     public RPII2CBus(int busid) throws IOException {
-        fd = I2C.i2cOpen("/dev/i2c-"+busid);
+        fd = I2C.i2cOpen("/dev/i2c-" + busid);
         if (fd < 0) {
-            throw new IOException("Cannot open I2C Bus [/dev/i2c-"+busid+ "] received " + fd);
+            throw new IOException("Cannot open I2C Bus [/dev/i2c-" + busid + "] received " + fd);
         }
     }
 
-    /** File handle for this i2c bus */
+    /**
+     * File handle for this i2c bus
+     */
     protected int fd;
 
     /**
-     * Returns i2c device implementation ({@link I2CDeviceImpl}).
+     * Returns i2c device implementation
      *
      * @param address address of i2c device
-     *
      * @return implementation of i2c device with given address
-     *
      * @throws IOException never in this implementation
      */
     @Override

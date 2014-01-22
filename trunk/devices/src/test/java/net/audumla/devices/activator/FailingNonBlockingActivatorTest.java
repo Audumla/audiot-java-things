@@ -17,19 +17,19 @@ public class FailingNonBlockingActivatorTest {
 
     @Test
     public void testStateChangeAllFailure() throws Exception {
-        Activator activator = new ActivatorMock(false, false);
+        EventTargetActivator activator = new ActivatorMock(false, false);
         new ThreadPoolEventScheduler().registerEventTarget(activator);
         stateChangeAllFailure(activator);
     }
 
     @Test
     public void testStateChangeAllFailureException() throws Exception {
-        Activator activator = new ExceptionActivatorMock(false, false);
+        EventTargetActivator activator = new ActivatorMock(false, false);
         new ThreadPoolEventScheduler().registerEventTarget(activator);
         stateChangeAllFailure(activator);
     }
 
-    public void stateChangeAllFailure(Activator activator) throws Exception {
+    public void stateChangeAllFailure(EventTargetActivator activator) throws Exception {
         assert activator.getCurrentState() == ActivatorState.UNKNOWN;
         activator.getScheduler().publishEvent(activator.getName(), new ToggleActivatorCommand(Duration.ofSeconds(1))).begin();
 //        assert activator.getCurrentState() == ActivatorState.UNKNOWN;
@@ -46,19 +46,19 @@ public class FailingNonBlockingActivatorTest {
 
     @Test
     public void testStateChangeActivateFailure() throws Exception {
-        Activator activator = new ActivatorMock(false, true);
+        EventTargetActivator activator = new ActivatorMock(false, true);
         new ThreadPoolEventScheduler().registerEventTarget(activator);
         stateChangeActivateFailure(activator);
     }
 
     @Test
     public void testStateChangeActivateFailureException() throws Exception {
-        Activator activator = new ExceptionActivatorMock(false, true);
+        EventTargetActivator activator = new ActivatorMock(false, true);
         new ThreadPoolEventScheduler().registerEventTarget(activator);
         stateChangeActivateFailure(activator);
     }
 
-    public void stateChangeActivateFailure(Activator activator) throws Exception {
+    public void stateChangeActivateFailure(EventTargetActivator activator) throws Exception {
         assert activator.getCurrentState() == ActivatorState.UNKNOWN;
         activator.getScheduler().publishEvent(activator.getName(), new ToggleActivatorCommand(Duration.ofSeconds(1))).begin();
 //        assert activator.getCurrentState() == ActivatorState.DEACTIVATED;
@@ -77,19 +77,19 @@ public class FailingNonBlockingActivatorTest {
 
     @Test
     public void testStateChangeListener() throws Exception {
-        final Activator activator = new ActivatorMock(false, false);
+        final EventTargetActivator activator = new ActivatorMock(false, false);
         new ThreadPoolEventScheduler().registerEventTarget(activator);
         stateChangeListener(activator);
     }
 
     @Test
     public void testStateChangeListenerException() throws Exception {
-        final Activator activator = new ExceptionActivatorMock(false, false);
+        final EventTargetActivator activator = new ActivatorMock(false, false);
         new ThreadPoolEventScheduler().registerEventTarget(activator);
         stateChangeListener(activator);
     }
 
-    public void stateChangeListener(Activator activator) throws Exception {
+    public void stateChangeListener(EventTargetActivator activator) throws Exception {
         ActivatorStateChangeEventTarget target = new ActivatorStateChangeEventTarget(activator);
         activator.getScheduler().registerEventTarget(target);
 

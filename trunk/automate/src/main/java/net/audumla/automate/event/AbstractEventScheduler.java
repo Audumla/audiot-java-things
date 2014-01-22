@@ -16,14 +16,12 @@ package net.audumla.automate.event;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
+import net.audumla.bean.BeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.Instant;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Pattern;
 
 public abstract class AbstractEventScheduler implements EventScheduler {
@@ -31,14 +29,127 @@ public abstract class AbstractEventScheduler implements EventScheduler {
 
     protected Map<Pattern, EventTarget> targetRegistry = new HashMap<>();
 
-    protected abstract class SimpleEventTransaction extends AbstractEventTransaction {
+    protected abstract class SimpleEventTransaction implements EventTransaction {
 
-        protected SimpleEventTransaction() {
-            super(AbstractEventScheduler.this);
+        private EventTransactionStatus status = new DefaultEventStatus();
+        private final EventScheduler eventScheduler;
+        private boolean rollbackOnError = true;
+        private boolean autoCommit = true;
+        private String id = BeanUtils.generateName(this);
+        private Map<Event, EventTarget> handledEvents = new HashMap<>();
+        private Collection<EventTransactionListener> listeners = new HashSet<EventTransactionListener>();
+        private Map<String[], Event[]> topicEventMap = new HashMap<>();
+        private EventSchedule schedule;
+
+        protected SimpleEventTransaction(EventScheduler scheduler, EventSchedule schedule) {
+            this.eventScheduler = scheduler;
+            this.schedule = schedule;
         }
 
-        protected SimpleEventTransaction(EventSchedule schedule) {
-            super(AbstractEventScheduler.this, schedule);
+        protected SimpleEventTransaction(EventScheduler scheduler) {
+            this.eventScheduler = scheduler;
+        }
+
+        public EventTransactionStatus getStatus() {
+            return status;
+        }
+
+
+        public String getId() {
+            return id;
+        }
+
+
+        public EventScheduler getEventScheduler() {
+            return eventScheduler;
+        }
+
+
+        public void setRollbackOnError(boolean roe) {
+            rollbackOnError = roe;
+        }
+
+
+        public boolean getRollBackOnError() {
+            return rollbackOnError;
+        }
+
+
+        public void addTransactionListener(EventTransactionListener listener) {
+            if (listener != null) {
+                listeners.add(listener);
+            }
+        }
+
+
+        public void removeTransactionListener(EventTransactionListener listener) {
+            listeners.remove(listener);
+        }
+
+
+        public void publishEvent(String topic, Event... events) throws Exception {
+            validateState(EventState.PENDING);
+            publishEvent(events, new String[]{topic});
+        }
+
+
+        public void publishEvent(Event event, String... topics) throws Exception {
+            validateState(EventState.PENDING);
+            publishEvent(new Event[]{event}, topics);
+        }
+
+
+        public void publishEvent(Event[] events, String[] topics) throws Exception {
+            validateState(EventState.PENDING);
+            Arrays.asList(events).stream().forEach( (e) -> e.setEventTransaction(this));
+            topicEventMap.put(topics, events);
+        }
+
+
+        public void setSchedule(EventSchedule schedule) throws Exception {
+            validateState(EventState.PENDING);
+            this.schedule = schedule;
+        }
+
+
+        public EventSchedule getSchedule() {
+            return schedule;
+        }
+
+        protected void commit() throws Exception {
+            for (EventTransactionListener etl : listeners) {
+                etl.onTransactionCommit(this, this.getHandledEvents());
+            }
+        }
+
+        protected boolean isAutoCommit() {
+            return autoCommit;
+        }
+
+        protected void setAutoCommit(boolean autoCommit) {
+            this.autoCommit = autoCommit;
+        }
+
+        protected void addHandledEvent(EventTarget target, Event event) {
+            handledEvents.put(event, target);
+        }
+
+        protected Collection<EventTransactionListener> getListeners() {
+            return listeners;
+        }
+
+        protected Map<String[], Event[]> getTopicEventMap() {
+            return topicEventMap;
+        }
+
+        protected void validateState(EventState state) throws Exception {
+            if (getStatus().getState() != state) {
+                throw new Exception("Operation cannot be performed when Transaction is " + getStatus().getState());
+            }
+        }
+
+        public Map<? extends Event, ? extends EventTarget> getHandledEvents() {
+            return handledEvents;
         }
 
         @Override
@@ -91,6 +202,13 @@ public abstract class AbstractEventScheduler implements EventScheduler {
             return () -> {
                 getStatus().setExecutedTime(Instant.now());
                 getStatus().setState(EventState.EXECUTING);
+                for (EventTransactionListener l : getListeners()) {
+                    try {
+                        l.onTransactionBegin(this);
+                    } catch (Exception e) {
+                        logger.error("Transaction Listener error",e);
+                    }
+                }
                 Collection<EventState> transactionStates = new HashSet<>();
                 for (Map.Entry<String[], Event[]> mapItem : getTopicEventMap().entrySet()) {
                     for (Event ev : mapItem.getValue()) {
@@ -119,6 +237,10 @@ public abstract class AbstractEventScheduler implements EventScheduler {
                                 nev.getStatus().setCompletedTime(Instant.now());
                                 eventStates.add(nev.getStatus().getState());
                                 transactionStates.add(nev.getStatus().getState());
+                                if (!nev.getStatus().getState().equals(EventState.COMPLETE)) {
+                                    logger.error(nev.getStatus().getFailureMessage(),nev.getStatus().getFailureException());
+                                }
+
                             }
                         }
                         // update the original event as there may be references to it that can monitor the state of the overall event

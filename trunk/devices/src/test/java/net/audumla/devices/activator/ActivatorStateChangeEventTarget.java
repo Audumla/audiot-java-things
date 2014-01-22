@@ -31,7 +31,7 @@ public class ActivatorStateChangeEventTarget extends AbstractEventTarget<Activat
     public Collection<ActivatorState> states = new ArrayList<ActivatorState>();
 
     public ActivatorStateChangeEventTarget(Activator activator) {
-        super(Event.getEventTopic(activator));
+        super(Event.getEventTopic(activator.getName()));
     }
 
     @Override
