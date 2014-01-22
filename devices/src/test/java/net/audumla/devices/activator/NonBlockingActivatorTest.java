@@ -24,7 +24,7 @@ public class NonBlockingActivatorTest {
         ActivatorMock activator = new ActivatorMock(true, true);
         new ThreadPoolEventScheduler().registerEventTarget(activator);
         assert activator.getCurrentState() == ActivatorState.UNKNOWN;
-        activator.setCurrentState(ActivatorState.DEACTIVATED);
+        activator.updateState(ActivatorState.DEACTIVATED);
         assert activator.getCurrentState() == ActivatorState.DEACTIVATED;
         activator.getScheduler().publishEvent(activator.getName(), new ToggleActivatorCommand(Duration.ofSeconds(2))).begin();
 //        assert activator.getCurrentState() == ActivatorState.ACTIVATED;

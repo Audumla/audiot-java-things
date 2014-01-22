@@ -20,7 +20,7 @@ import net.audumla.automate.event.*;
 
 import java.util.Properties;
 
-public interface Activator<TProvider extends ActivatorProvider, TEvent extends Event>  extends RollbackEventTarget<RollbackEvent<Activator>>, EventTarget<TEvent> {
+public interface Activator<TProvider extends ActivatorProvider>   {
 
     /**
      * It is up to implementation classes to determine the name that will applied to an activator
@@ -43,7 +43,7 @@ public interface Activator<TProvider extends ActivatorProvider, TEvent extends E
      * @return returns true if the activation was successful otherwise false is returned
      */
 
-    boolean setCurrentState(ActivatorState state);
+    boolean updateState(ActivatorState state);
 
     /**
      * The current state of the activator. Upon initialization the state should be UNKNOWN until a successful call to either activate or deactivate has been made

@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-public interface ActivatorProvider{
+public interface ActivatorProvider<TActivator extends Activator> {
 
     /**
      * The key that is used within the id property bundle for each activator to associate it back to its provider
@@ -43,7 +43,7 @@ public interface ActivatorProvider{
     /**
      * performs any shut down activities. Generally this should deactivate all associated activators
      */
-    void shutdown();
+    void shutdown() throws Exception;
 
     /**
      *
@@ -56,13 +56,13 @@ public interface ActivatorProvider{
      * @param id the id property bundle
      * @return the activator associated with the id or null if it cannot be found
      */
-    Activator getActivator(Properties id);
+    TActivator getActivator(Properties id);
 
     /**
      *
      * @return all the activators associated with this provider
      */
-    Collection<? extends Activator> getActivators();
+    Collection<? extends TActivator> getActivators();
 
     /**
      * Performs an atomic update if possible to all activators to the associated state.
@@ -70,5 +70,7 @@ public interface ActivatorProvider{
      * @param newStates a Map containing the activator as the key and the new state that should be assigned to that activator
      * @return true if the assignment of the activators completed successfully
      */
-    boolean setCurrentStates(Map<Activator,ActivatorState> newStates) throws Exception;
+    default boolean setCurrentStates(Map<Activator,ActivatorState> newStates) throws Exception {
+        return false;
+    }
 }

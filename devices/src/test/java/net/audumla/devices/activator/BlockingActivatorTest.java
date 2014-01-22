@@ -1,7 +1,6 @@
 package net.audumla.devices.activator;
 
 import net.audumla.automate.event.ThreadLocalEventScheduler;
-import net.audumla.automate.event.ThreadPoolEventScheduler;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -22,9 +21,9 @@ public class BlockingActivatorTest {
         ActivatorMock activator = new ActivatorMock(true, true);
         new ThreadLocalEventScheduler().registerEventTarget(activator);
         assert activator.getCurrentState() == ActivatorState.UNKNOWN;
-        activator.setCurrentState(ActivatorState.DEACTIVATED);
+        activator.updateState(ActivatorState.DEACTIVATED);
         assert activator.getCurrentState() == ActivatorState.DEACTIVATED;
-        activator.setCurrentState(ActivatorState.ACTIVATED);
+        activator.updateState(ActivatorState.ACTIVATED);
         assert activator.getCurrentState() == ActivatorState.ACTIVATED;
     }
 
@@ -38,11 +37,11 @@ public class BlockingActivatorTest {
 
         assert activator.getCurrentState() == ActivatorState.UNKNOWN;
         assert target.states.isEmpty();
-        activator.setCurrentState(ActivatorState.DEACTIVATED);
+        activator.updateState(ActivatorState.DEACTIVATED);
         assert !target.states.contains(ActivatorState.ACTIVATED);
         assert target.states.contains(ActivatorState.DEACTIVATED);
         assert target.states.size() == 1;
-        activator.setCurrentState(ActivatorState.ACTIVATED);
+        activator.updateState(ActivatorState.ACTIVATED);
         assert target.states.contains(ActivatorState.ACTIVATED);
         assert target.states.contains(ActivatorState.DEACTIVATED);
         assert target.states.size() == 2;
@@ -53,7 +52,7 @@ public class BlockingActivatorTest {
         ActivatorMock activator = new ActivatorMock(true, true);
         new ThreadLocalEventScheduler().registerEventTarget(activator);
         assert activator.getCurrentState() == ActivatorState.UNKNOWN;
-        activator.setCurrentState(ActivatorState.DEACTIVATED);
+        activator.updateState(ActivatorState.DEACTIVATED);
         assert activator.getCurrentState() == ActivatorState.DEACTIVATED;
         Date start = new Date();
         new ToggleActivatorCommand(Duration.ofSeconds(3)).execute(activator);
@@ -79,9 +78,9 @@ public class BlockingActivatorTest {
         assert target.states.contains(ActivatorState.ACTIVATED);
         assert target.states.contains(ActivatorState.DEACTIVATED);
         assert target.states.size() == 2;
-        activator.setCurrentState(ActivatorState.ACTIVATED);
+        activator.updateState(ActivatorState.ACTIVATED);
         assert target.states.size() == 3;
-        activator.setCurrentState(ActivatorState.DEACTIVATED);
+        activator.updateState(ActivatorState.DEACTIVATED);
         assert target.states.size() == 4;
     }
 }

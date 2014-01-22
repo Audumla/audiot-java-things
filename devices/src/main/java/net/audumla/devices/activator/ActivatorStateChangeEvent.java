@@ -16,7 +16,7 @@ public class ActivatorStateChangeEvent extends AbstractEvent {
         this.oldState = oldState;
         this.newState = newState;
         this.activator = activator;
-        setName(Event.getEventTopic(activator));
+        setName(Event.getEventTopic(activator.getName()));
     }
 
     public ActivatorState getOldState() {

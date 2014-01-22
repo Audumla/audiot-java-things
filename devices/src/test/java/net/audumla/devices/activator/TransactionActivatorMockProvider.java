@@ -1,4 +1,4 @@
-package net.audumla.devices.activator.rpi;
+package net.audumla.devices.activator;
 
 /*
  * *********************************************************************
@@ -18,18 +18,18 @@ package net.audumla.devices.activator.rpi;
 
 import net.audumla.automate.event.EventTransaction;
 import net.audumla.automate.event.EventTransactionListener;
-import net.audumla.devices.activator.Activator;
-import net.audumla.devices.activator.ActivatorState;
-import net.audumla.devices.activator.ActivatorProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Properties;
 
-public class RPIGPIOActivatorProvider implements ActivatorProvider, EventTransactionListener {
-    private static final Logger logger = LoggerFactory.getLogger(RPIGPIOActivatorProvider.class);
+public class TransactionActivatorMockProvider implements ActivatorProvider<TransactionActivatorMock>, EventTransactionListener<SetActivatorStateCommand,EventTargetActivator>{
+    private static final Logger logger = LoggerFactory.getLogger(TransactionActivatorMockProvider.class);
+
+    Collection<TransactionActivatorMock> activators= new HashSet<>();
 
     @Override
     public void initialize() throws Exception {
@@ -43,31 +43,36 @@ public class RPIGPIOActivatorProvider implements ActivatorProvider, EventTransac
 
     @Override
     public String getId() {
-        return this.getClass().getSimpleName();
+        return "MockProvider";
     }
 
     @Override
-    public Activator getActivator(Properties id) {
-        return null;
+    public TransactionActivatorMock getActivator(Properties id) {
+        TransactionActivatorMock a = new TransactionActivatorMock(this);
+        activators.add(a);
+        return a;
     }
 
     @Override
-    public Collection<? extends Activator> getActivators() {
-        return null;
+    public Collection<TransactionActivatorMock> getActivators() {
+        return activators;
     }
 
     @Override
-    public boolean setCurrentStates(Map newStates) throws Exception {
+    public boolean setCurrentStates(Map<Activator, ActivatorState> newStates) throws Exception {
         return false;
     }
 
     @Override
-    public boolean onTransactionCommit(EventTransaction transaction, Map events) throws Exception {
-        return false;
+    public boolean onTransactionCommit(EventTransaction transaction, Map<SetActivatorStateCommand, EventTargetActivator> events) throws Exception {
+        for (Map.Entry<SetActivatorStateCommand, EventTargetActivator> e : events.entrySet()) {
+            e.getValue().setActiveState(e.getKey().newState);
+        }
+        return true;
     }
 
     @Override
     public boolean onTransactionBegin(EventTransaction transaction) throws Exception {
-        return false;
+        return true;
     }
 }

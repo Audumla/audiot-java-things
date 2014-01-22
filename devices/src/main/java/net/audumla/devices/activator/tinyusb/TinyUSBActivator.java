@@ -1,6 +1,9 @@
 package net.audumla.devices.activator.tinyusb;
 
-import net.audumla.devices.activator.*;
+import net.audumla.devices.activator.Activator;
+import net.audumla.devices.activator.ActivatorState;
+import net.audumla.devices.activator.EventTargetActivator;
+import net.audumla.devices.activator.SetActivatorStateCommand;
 import org.apache.log4j.Logger;
 
 /**
@@ -8,7 +11,7 @@ import org.apache.log4j.Logger;
  * Date: 10/09/13
  * Time: 3:51 PM
  */
-public class TinyUSBActivator extends AbstractActivator<TinyUSBActivatorProvider,SetActivatorStateCommand> {
+public class TinyUSBActivator extends EventTargetActivator<TinyUSBActivatorProvider, SetActivatorStateCommand> {
     private static final Logger logger = Logger.getLogger(Activator.class);
     private int device = 0;
     private int relay = 0;
@@ -27,18 +30,13 @@ public class TinyUSBActivator extends AbstractActivator<TinyUSBActivatorProvider
     }
 
     @Override
-    protected boolean executeStateChange(ActivatorState newstate) {
+    protected void executeStateChange(ActivatorState newstate) throws Exception {
         if (newstate.equals(ActivatorState.DEACTIVATED)) {
-            return getProvider().deactivateRelay(device, relay, (String m, Throwable e) -> {
-//                listeners.forEach(l -> l.onStateChangeFailure(new ActivatorStateChangeEvent(getCurrentState(), ActivatorState.DEACTIVATED, this), e, m));
-            });
+            getProvider().deactivateRelay(device, relay);
         } else {
-            return getProvider().activateRelay(device, relay, (String m, Throwable e) -> {
-//                listeners.forEach(l -> l.onStateChangeFailure(new ActivatorStateChangeEvent(getCurrentState(), ActivatorState.ACTIVATED, this), e, m));
-            });
+            getProvider().activateRelay(device, relay);
         }
     }
-
 
     public void setDevice(int device) {
         this.device = device;
@@ -50,5 +48,9 @@ public class TinyUSBActivator extends AbstractActivator<TinyUSBActivatorProvider
         getId().setProperty(RELAY_ID, String.valueOf(relay));
     }
 
-
+    @Override
+    public boolean handleEvent(SetActivatorStateCommand event) throws Exception {
+        event.getEventTransaction().addTransactionListener(getProvider());
+        return true;
+    }
 }

@@ -1,17 +1,13 @@
 package net.audumla.devices.activator;
 
-import net.audumla.automate.event.AbstractEventTarget;
-import net.audumla.automate.event.Event;
 import org.apache.log4j.Logger;
-
-import java.util.Collection;
 
 /**
  * User: mgleeson
  * Date: 10/09/13
  * Time: 4:27 PM
  */
-public class ActivatorMock extends AbstractActivator<ActivatorProvider,SetActivatorStateCommand> {
+public class ActivatorMock extends EventTargetActivator<ActivatorProvider,SetActivatorStateCommand> {
     private static final Logger logger = Logger.getLogger(Activator.class);
     private boolean activate;
     private boolean deactivate;
@@ -22,14 +18,23 @@ public class ActivatorMock extends AbstractActivator<ActivatorProvider,SetActiva
     }
 
     @Override
-    protected boolean executeStateChange(ActivatorState newstate) {
+    protected void executeStateChange(ActivatorState newstate) throws Exception {
         if (newstate.equals(ActivatorState.DEACTIVATED)) {
             logger.info(deactivate ? "Simulator Deactivated - " + getName() : "Simulator Failed Deactivation - " + getName());
-            return deactivate;
+            if (!deactivate) {
+                throw new Exception("Unsupported Failure");
+            }
         } else {
             logger.info(activate ? "Simulator Activated - " + getName() : "Simulator Failed Activation - " + getName());
-            return activate;
+            if (!activate) {
+                throw new Exception("Unsupported Failure");
+            }
         }
+    }
+
+    @Override
+    public boolean handleEvent(SetActivatorStateCommand event) throws Throwable {
+        return event.execute(this);
     }
 
 }

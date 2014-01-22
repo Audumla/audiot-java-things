@@ -39,12 +39,14 @@ public class ThreadLocalEventScheduler extends AbstractEventScheduler {
 
     protected class ThreadLocalEventTransaction extends SimpleEventTransaction {
 
-        protected ThreadLocalEventTransaction() {
+        public ThreadLocalEventTransaction(EventScheduler scheduler, EventSchedule schedule) {
+            super(scheduler, schedule);
         }
 
-        protected ThreadLocalEventTransaction(EventSchedule schedule) {
-            super(schedule);
+        public ThreadLocalEventTransaction(EventScheduler scheduler) {
+            super(scheduler);
         }
+
 
         @Override
         public void begin() {
@@ -81,11 +83,11 @@ public class ThreadLocalEventScheduler extends AbstractEventScheduler {
 
     @Override
     public EventTransaction createTransaction() {
-        return new ThreadLocalEventTransaction();
+        return new ThreadLocalEventTransaction(this);
     }
 
     @Override
     public EventTransaction createTransaction(EventSchedule schedule) {
-        return new ThreadLocalEventTransaction(schedule);
+        return new ThreadLocalEventTransaction(this,schedule);
     }
 }

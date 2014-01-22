@@ -19,7 +19,7 @@ public class FailingBlockingActivatorTest {
 
     @Test
     public void testFailExceptionDeactivate() throws Exception {
-        failDeactivate(new ExceptionActivatorMock(false, false));
+        failDeactivate(new ActivatorMock(false, false));
     }
 
     @Test
@@ -29,7 +29,7 @@ public class FailingBlockingActivatorTest {
 
     @Test
     public void testFailExceptionActivate() throws Exception {
-        failActivate(new ExceptionActivatorMock(false, false));
+        failActivate(new ActivatorMock(false, false));
     }
 
     @Test
@@ -40,7 +40,7 @@ public class FailingBlockingActivatorTest {
     @Test
     public void testFailDelayedExceptionActivate() throws Exception {
         Date start = new Date();
-        failDelayActivate(new ExceptionActivatorMock(false, false));
+        failDelayActivate(new ActivatorMock(false, false));
         Date end = new Date();
         Assert.assertEquals((double) (end.getTime() - start.getTime()), 0, 50);
     }
@@ -53,7 +53,7 @@ public class FailingBlockingActivatorTest {
         Assert.assertEquals((double) (end.getTime() - start.getTime()), 0, 50);
     }
 
-    public void failActivate(Activator activator) throws Exception {
+    public void failActivate(EventTargetActivator activator) throws Exception {
         ActivatorStateChangeEventTarget target = new ActivatorStateChangeEventTarget(activator);
 
         new ThreadLocalEventScheduler().registerEventTarget(activator);
@@ -68,7 +68,7 @@ public class FailingBlockingActivatorTest {
         assert activator.getCurrentState() == ActivatorState.UNKNOWN;
     }
 
-    public void failDelayActivate(Activator activator) throws Exception {
+    public void failDelayActivate(EventTargetActivator activator) throws Exception {
         ActivatorStateChangeEventTarget target = new ActivatorStateChangeEventTarget(activator);
 
         new ThreadLocalEventScheduler().registerEventTarget(activator);
@@ -83,7 +83,7 @@ public class FailingBlockingActivatorTest {
         assert activator.getCurrentState() == ActivatorState.UNKNOWN;
     }
 
-    public void failDeactivate(Activator activator) throws Exception {
+    public void failDeactivate(EventTargetActivator activator) throws Exception {
         ActivatorStateChangeEventTarget target = new ActivatorStateChangeEventTarget(activator);
 
         new ThreadLocalEventScheduler().registerEventTarget(activator);
