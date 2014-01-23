@@ -29,7 +29,7 @@ public class TransactionActivatorTest {
     @Test
     public void testBlockingTransaction() throws Exception {
 
-        TransactionActivatorMockProvider provider = new TransactionActivatorMockProvider();
+        TransactionActivatorMockFactory provider = new TransactionActivatorMockFactory();
         ThreadLocalEventScheduler scheduler = new ThreadLocalEventScheduler();
         scheduler.registerEventTarget(provider.getActivator(null), "activator.1");
         scheduler.registerEventTarget(provider.getActivator(null), "activator.2");
@@ -50,6 +50,16 @@ public class TransactionActivatorTest {
         }
         assert i == 4;
 
+        tr = scheduler.publishEvent(new DisableActivatorCommand(), "activator.1", "activator.2");
+        tr.begin();
+        assert tr.getHandledEvents().size() == 2;
+        i = 0;
+        for (Activator a : provider.getActivators()) {
+            if (a.getState().equals(ActivatorState.DEACTIVATED)) {
+                ++i;
+            }
+        }
+        assert i == 2;
 
     }
 }

@@ -19,7 +19,7 @@ package net.audumla.devices.activator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class EventTransactionActivator<TProvider extends EventTransactionActivatorProvider<EventTransactionActivator>, TEvent extends ActivatorCommand> extends EventTargetActivator<TProvider, TEvent> {
+public class EventTransactionActivator<TProvider extends EventTransactionActivatorFactory<EventTransactionActivator>, TEvent extends ActivatorCommand> extends EventTargetActivator<TProvider, TEvent> {
     private static final Logger logger = LoggerFactory.getLogger(EventTransactionActivator.class);
 
     public EventTransactionActivator(TProvider provider) {

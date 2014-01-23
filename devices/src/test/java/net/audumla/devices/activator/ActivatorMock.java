@@ -7,7 +7,7 @@ import org.apache.log4j.Logger;
  * Date: 10/09/13
  * Time: 4:27 PM
  */
-public class ActivatorMock extends EventTargetActivator<ActivatorProvider,ActivatorCommand> {
+public class ActivatorMock extends EventTargetActivator<ActivatorFactory,ActivatorCommand> {
     private static final Logger logger = Logger.getLogger(Activator.class);
     private boolean activate;
     private boolean deactivate;
@@ -15,6 +15,7 @@ public class ActivatorMock extends EventTargetActivator<ActivatorProvider,Activa
     public ActivatorMock(boolean activate, boolean deactivate) {
         this.activate = activate;
         this.deactivate = deactivate;
+        allowSetState(true);
     }
 
     @Override

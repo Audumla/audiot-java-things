@@ -15,14 +15,14 @@ import java.util.Properties;
  * Date: 10/09/13
  * Time: 3:13 PM
  */
-public abstract class EventTargetActivator<TProvider extends ActivatorProvider, TEvent extends ActivatorCommand> extends AbstractEventTarget<TEvent> implements RollbackEventTarget<RollbackEvent<Activator>>, Activator {
+public abstract class EventTargetActivator<TProvider extends ActivatorFactory, TEvent extends ActivatorCommand> extends AbstractEventTarget<TEvent> implements RollbackEventTarget<RollbackEvent<Activator>>, Activator {
 
     private static final Logger logger = Logger.getLogger(Activator.class);
     private ActivatorState state = ActivatorState.UNKNOWN;
     private Properties id = new Properties();
     private TProvider provider;
-    private boolean setVariable;
-    private boolean setState;
+    private boolean setVariable = false;
+    private boolean setState = true;
 
     protected EventTargetActivator(TProvider provider) {
         this.provider = provider;
@@ -47,24 +47,28 @@ public abstract class EventTargetActivator<TProvider extends ActivatorProvider, 
 
     @Override
     public boolean setState(ActivatorState newstate) throws Exception {
-        if (!newstate.getValue().equals(getState().getValue())) {
-            try {
-                executeStateChange(newstate);
-                ActivatorState oldState = getState();
-                setActiveState(newstate);
-                getScheduler().publishEvent(new ActivatorStateChangeEvent(oldState, newstate, this)).begin();
-                return true;
-            } catch (Exception ex) {
-                // we should attempt to deactivate the activator if we were not already attempting to do so
-                if (!newstate.equals(ActivatorState.DEACTIVATED)) {
-                    // We will attempt to deactivate the activator to bring it into a known off state.
-                    setActiveState(ActivatorState.UNKNOWN);    // set the state to unknown as we are currently in an undefined state until we either successfully enable or disable.
-                    setState(ActivatorState.DEACTIVATED); // now we attempt to deactivate the activator by recursively calling this method.
+        if (canSetState()) {
+            if (!newstate.getValue().equals(getState().getValue())) {
+                try {
+                    executeStateChange(newstate);
+                    ActivatorState oldState = getState();
+                    setActiveState(newstate);
+                    getScheduler().publishEvent(new ActivatorStateChangeEvent(oldState, newstate, this)).begin();
+                    return true;
+                } catch (Exception ex) {
+                    // we should attempt to deactivate the activator if we were not already attempting to do so
+                    if (!newstate.equals(ActivatorState.DEACTIVATED)) {
+                        // We will attempt to deactivate the activator to bring it into a known off state.
+                        setActiveState(ActivatorState.UNKNOWN);    // set the state to unknown as we are currently in an undefined state until we either successfully enable or disable.
+                        setState(ActivatorState.DEACTIVATED); // now we attempt to deactivate the activator by recursively calling this method.
+                    }
+                    throw ex;
                 }
-                throw ex;
             }
+            logger.trace("Cannot set Activator [" + getName() + "] to state [" + newstate.getName() + "] when state is already [" + getState() + "]");
+        } else {
+            throw new Exception("Activator [" + getName() + "] is not settable");
         }
-        logger.trace("Cannot set Activator [" + getName() + "] to state [" + newstate.getName() + "] when state is already [" + getState() + "]");
         return false;
     }
 

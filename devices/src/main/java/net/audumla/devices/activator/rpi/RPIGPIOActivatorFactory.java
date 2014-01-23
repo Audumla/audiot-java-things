@@ -1,4 +1,4 @@
-package net.audumla.devices.activator;
+package net.audumla.devices.activator.rpi;
 
 /*
  * *********************************************************************
@@ -16,41 +16,66 @@ package net.audumla.devices.activator;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
+import net.audumla.automate.event.EventTransaction;
+import net.audumla.devices.activator.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.Map;
 import java.util.Properties;
 
-public class TransactionActivatorMockProvider extends EventTransactionActivatorProvider<EventTransactionActivator> {
-    private static final Logger logger = LoggerFactory.getLogger(TransactionActivatorMockProvider.class);
+public class RPIGPIOActivatorFactory extends EventTransactionActivatorFactory<EventTransactionActivator>
+{
+    private static final Logger logger = LoggerFactory.getLogger(RPIGPIOActivatorFactory.class);
 
-    Collection<EventTransactionActivator<TransactionActivatorMockProvider, ActivatorCommand>> activators = new HashSet<EventTransactionActivator<TransactionActivatorMockProvider, ActivatorCommand>>();
+    protected RPIGPIOActivatorFactory() {
+        super("RaspberryPI GPIO Factory");
+    }
 
-    public TransactionActivatorMockProvider() {
-        super("Mock Provider");
+    @Override
+    public void initialize() throws Exception {
+
+    }
+
+    @Override
+    public void shutdown() {
+
+    }
+
+    @Override
+    public String getId() {
+        return this.getClass().getSimpleName();
     }
 
     @Override
     public EventTransactionActivator getActivator(Properties id) {
-        EventTransactionActivator<TransactionActivatorMockProvider, ActivatorCommand> a = new EventTransactionActivator<>(this);
-        if (id != null) {
-            a.getId().putAll(id);
-        }
-        activators.add(a);
-        return a;
+        return null;
     }
 
     @Override
     public Collection<? extends EventTransactionActivator> getActivators() {
-        return activators;
+        return null;
     }
 
     @Override
     public boolean setState(EventTransactionActivator activator, ActivatorState newState) throws Exception {
-        logger.info("Simulator " + ActivatorState.DEACTIVATED.getName() + " - " + activator.getId());
-        return super.setState(activator, newState);
+        return true;
     }
 
+
+    @Override
+    public boolean setStates(Map newStates) throws Exception {
+        return false;
+    }
+
+    @Override
+    public boolean onTransactionCommit(EventTransaction transaction, Map events) throws Exception {
+        return false;
+    }
+
+    @Override
+    public boolean onTransactionBegin(EventTransaction transaction) throws Exception {
+        return false;
+    }
 }
