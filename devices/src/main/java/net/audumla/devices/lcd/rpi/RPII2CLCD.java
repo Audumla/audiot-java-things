@@ -91,7 +91,7 @@ public class RPII2CLCD extends AbstractEventTarget<CommandEvent<LCD>> implements
     }
 
     @Override
-    public void initialize() {
+    public boolean initialize() {
         try {
             synchronized (Thread.currentThread()) {
                 // this will get the RPII2CLCD into the write state to start sending commands
@@ -116,7 +116,9 @@ public class RPII2CLCD extends AbstractEventTarget<CommandEvent<LCD>> implements
             }
         } catch (Exception ex) {
             logger.error(ex);
+            return false;
         }
+        return true;
     }
 
     protected void command4bits(int... args) {
@@ -323,7 +325,6 @@ public class RPII2CLCD extends AbstractEventTarget<CommandEvent<LCD>> implements
             for (int i = 0; i < 5; ++i) {
                 try {
                     device = I2CBus.getI2CBusFactory().getInstance(i).getDevice(address);
-                    logger.trace("Found I2C device on bus " + i);
                     break;
                 } catch (IOException ex) {
                 }
