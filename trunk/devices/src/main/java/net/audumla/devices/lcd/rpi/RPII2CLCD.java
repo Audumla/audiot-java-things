@@ -315,15 +315,20 @@ public class RPII2CLCD extends AbstractEventTarget<CommandEvent<LCD>> implements
         private int address;
 
         public PortExtender(int address) {
-
-            // create I2C communications bus instance
-            for (int i = 0; i < 5; ++i) {
-                try {
-                    device = I2CBus.getI2CBusFactory().getInstance(i).getDevice(address);
-                    break;
-                } catch (IOException ex) {
-                }
+            try {
+                device = I2CBus.getI2CBusFactory().getInstance(1).getDevice(address);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
+
+//            // create I2C communications bus instance
+//            for (int i = 0; i < 5; ++i) {
+//                try {
+//                    device = I2CBus.getI2CBusFactory().getInstance(i).getDevice(address);
+//                    break;
+//                } catch (IOException ex) {
+//                }
+//            }
 
         }
 
