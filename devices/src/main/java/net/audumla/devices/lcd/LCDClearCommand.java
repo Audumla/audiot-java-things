@@ -9,7 +9,7 @@ public class LCDClearCommand extends AbstractEvent implements CommandEvent<LCD> 
 
     }
 
-    public boolean execute(LCD lcd) {
+    public boolean execute(LCD lcd) throws Exception {
         lcd.clear();
         return true;
     }

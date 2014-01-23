@@ -12,7 +12,7 @@ public class LCDSetDisplayCommand extends AbstractEvent implements CommandEvent<
         this.display = d;
     }
 
-    public boolean execute(LCD lcd) {
+    public boolean execute(LCD lcd) throws Exception {
         if (display)
             lcd.display();
         else {
