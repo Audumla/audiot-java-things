@@ -21,7 +21,7 @@ public class LCDPauseCommand extends AbstractEvent implements CommandEvent<LCD> 
     public LCDPauseCommand(int msec) {
         this.msec = msec;
     }
-
+    @Override
     public boolean execute(LCD lcd) {
         synchronized (lcd) {
             try {

@@ -31,7 +31,7 @@ public class LCDSetCursorCommand extends AbstractEvent implements CommandEvent<L
         col = c;
         row = r;
     }
-
+    @Override
     public boolean execute(LCD lcd) throws Exception {
         lcd.setCursor(col, row);
         return true;

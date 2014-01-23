@@ -75,7 +75,7 @@ public class ThreadPoolEventScheduler extends AbstractEventScheduler{
 
     @Override
     public boolean initialize() {
-        schedulerService = new ScheduledThreadPoolExecutor(5);
+        schedulerService = new ScheduledThreadPoolExecutor(1);
         return super.initialize();
     }
 
