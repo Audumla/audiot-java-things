@@ -37,7 +37,7 @@ public abstract class AbstractEventScheduler implements EventScheduler {
         private boolean rollbackOnError = true;
         private boolean autoCommit = true;
         private String id = BeanUtils.generateName(this);
-        private Collection<Pair<EventTarget,Event>> handledEvents = new ArrayList<>();
+        private Collection<Pair<EventTarget, Event>> handledEvents = new ArrayList<>();
         private Collection<EventTransactionListener> listeners = new HashSet<>();
         private Map<String[], Event[]> topicEventMap = new HashMap<>();
         private EventSchedule schedule;
@@ -101,9 +101,17 @@ public abstract class AbstractEventScheduler implements EventScheduler {
 
 
         public void publishEvent(Event[] events, String[] topics) throws Exception {
-            validateState(EventState.PENDING);
-            Arrays.asList(events).stream().forEach( (e) -> e.setEventTransaction(this));
-            topicEventMap.put(topics, events);
+                validateState(EventState.PENDING);
+                Arrays.asList(events).stream().forEach((e) -> {
+                    try {
+                        e.setEventTransaction(this);
+                    }
+                    catch (Throwable th) {
+                        th.printStackTrace();
+                        e.getStatus().setFailed(th,"Cannot publish event");
+                    }
+                });
+                topicEventMap.put(topics, events);
         }
 
 
@@ -207,7 +215,7 @@ public abstract class AbstractEventScheduler implements EventScheduler {
                     try {
                         l.onTransactionBegin(this);
                     } catch (Exception e) {
-                        logger.error("Transaction Listener error",e);
+                        logger.error("Transaction Listener error", e);
                     }
                 }
                 Collection<EventState> transactionStates = new HashSet<>();
@@ -237,7 +245,7 @@ public abstract class AbstractEventScheduler implements EventScheduler {
                                 eventStates.add(nev.getStatus().getState());
                                 transactionStates.add(nev.getStatus().getState());
                                 if (!nev.getStatus().getState().equals(EventState.COMPLETE)) {
-                                    logger.error(nev.getStatus().getFailureMessage(),nev.getStatus().getFailureException());
+                                    logger.error(nev.getStatus().getFailureMessage(), nev.getStatus().getFailureException());
                                 }
 
                             }
