@@ -8,6 +8,25 @@ public class LCDSetCursorCommand extends AbstractEvent implements CommandEvent<L
     protected int col;
     protected int row;
 
+    public LCDSetCursorCommand() {
+    }
+
+    public int getCol() {
+        return col;
+    }
+
+    public void setCol(int col) {
+        this.col = col;
+    }
+
+    public int getRow() {
+        return row;
+    }
+
+    public void setRow(int row) {
+        this.row = row;
+    }
+
     public LCDSetCursorCommand(int c, int r) {
         col = c;
         row = r;

@@ -8,8 +8,19 @@ public class LCDSetDisplayCommand extends AbstractEvent implements CommandEvent<
 
     protected boolean display;
 
+    public LCDSetDisplayCommand() {
+    }
+
     public LCDSetDisplayCommand(boolean d) {
         this.display = d;
+    }
+
+    public boolean isDisplay() {
+        return display;
+    }
+
+    public void setDisplay(boolean display) {
+        this.display = display;
     }
 
     public boolean execute(LCD lcd) throws Exception {
