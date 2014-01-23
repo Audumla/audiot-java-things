@@ -9,6 +9,18 @@ public class LCDSetBacklightCommand extends AbstractEvent implements CommandEven
 
     protected boolean backlight;
 
+
+    public LCDSetBacklightCommand() {
+    }
+
+    public boolean isBacklight() {
+        return backlight;
+    }
+
+    public void setBacklight(boolean backlight) {
+        this.backlight = backlight;
+    }
+
     public LCDSetBacklightCommand(boolean b) {
         backlight = b;
     }

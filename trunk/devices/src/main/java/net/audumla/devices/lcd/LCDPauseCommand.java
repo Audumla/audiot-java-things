@@ -10,6 +10,14 @@ public class LCDPauseCommand extends AbstractEvent implements CommandEvent<LCD> 
     public LCDPauseCommand() {
     }
 
+    public int getMsec() {
+        return msec;
+    }
+
+    public void setMsec(int msec) {
+        this.msec = msec;
+    }
+
     public LCDPauseCommand(int msec) {
         this.msec = msec;
     }

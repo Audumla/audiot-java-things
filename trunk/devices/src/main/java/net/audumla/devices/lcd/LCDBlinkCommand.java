@@ -7,6 +7,17 @@ public class LCDBlinkCommand extends AbstractEvent implements CommandEvent<LCD> 
 
     protected boolean blink;
 
+    public LCDBlinkCommand() {
+    }
+
+    public boolean isBlink() {
+        return blink;
+    }
+
+    public void setBlink(boolean blink) {
+        this.blink = blink;
+    }
+
     public LCDBlinkCommand(boolean b) {
         blink = b;
     }
