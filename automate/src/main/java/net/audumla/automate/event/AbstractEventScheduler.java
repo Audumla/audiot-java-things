@@ -101,17 +101,22 @@ public abstract class AbstractEventScheduler implements EventScheduler {
 
 
         public void publishEvent(Event[] events, String[] topics) throws Exception {
+            try {
                 validateState(EventState.PENDING);
                 Arrays.asList(events).stream().forEach((e) -> {
                     try {
                         e.setEventTransaction(this);
                     }
                     catch (Throwable th) {
-                        th.printStackTrace();
+                        logger.error("Cannot publish event",th);
                         e.getStatus().setFailed(th,"Cannot publish event");
                     }
                 });
                 topicEventMap.put(topics, events);
+            }
+            catch (Throwable th) {
+                logger.error("Fatal event publishing error",th);
+            }
         }
 
 
