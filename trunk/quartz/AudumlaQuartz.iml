@@ -4,6 +4,9 @@
     <facet type="Osmorc" name="OSGi">
       <configuration manifestGenerationMode="OsmorcControlled" manifestLocation="" jarfileLocation="quartz-1.0-SNAPSHOT.jar" outputPathType="CompilerOutputPath" bndFileLocation="" bundlorFileLocation="" bundleActivator="" bundleSymbolicName="net.audumla.quartz" bundleVersion="1.0.0" ignoreFilePattern="" useProjectDefaultManifestFileLocation="true" alwaysRebuildBundleJAR="false" doNotSynchronizeWithMaven="false">
         <additionalProperties>
+          <property key="Bundle-Description" value="Extensions to Quartz timer library. Includes schedulers based on Astrological events as well as sequence coordination mechanisms" />
+          <property key="Bundle-Vendor" value="Audumla.net" />
+          <property key="Bundle-DocURL" value="http://www.audumla.net" />
           <property key="Bundle-Name" value="Audumla Quartz" />
         </additionalProperties>
         <additionalJARContents />

@@ -39,7 +39,7 @@ public abstract class AbstractEventScheduler implements EventScheduler {
         private String id = BeanUtils.generateName(this);
         private Collection<Pair<EventTarget, Event>> handledEvents = new ArrayList<>();
         private Collection<EventTransactionListener> listeners = new HashSet<>();
-        private Map<String[], Event[]> topicEventMap = new HashMap<>();
+        private Collection<Pair<String[], Event[]>> topicEvents = new ArrayList<>();
         private EventSchedule schedule;
 
         protected AbstractEventTransaction(EventScheduler scheduler, EventSchedule schedule) {
@@ -115,7 +115,7 @@ public abstract class AbstractEventScheduler implements EventScheduler {
 //                        e.getStatus().setFailed(th,"Cannot publish event");
 //                    }
 //                });
-                topicEventMap.put(topics, events);
+                topicEvents.add(new Pair<>(topics, events));
             } catch (Throwable th) {
                 logger.error("Fatal event publishing error", th);
             }
@@ -154,8 +154,8 @@ public abstract class AbstractEventScheduler implements EventScheduler {
             return listeners;
         }
 
-        protected Map<String[], Event[]> getTopicEventMap() {
-            return topicEventMap;
+        protected Collection<Pair<String[], Event[]>> getTopicEvents() {
+            return topicEvents;
         }
 
         protected void validateState(EventState state) throws Exception {
@@ -229,12 +229,12 @@ public abstract class AbstractEventScheduler implements EventScheduler {
                         }
                     }
                     Collection<EventState> transactionStates = new HashSet<>();
-                    for (Map.Entry<String[], Event[]> mapItem : getTopicEventMap().entrySet()) {
-                        for (Event ev : mapItem.getValue()) {
+                    for (Pair<String[], Event[]> mapItem : getTopicEvents()) {
+                        for (Event ev : mapItem.getItem2()) {
                             Collection<EventState> eventStates = new HashSet<>();
                             ev.setScheduler(AbstractEventScheduler.this);
                             ev.getStatus().setExecutedTime(Instant.now());
-                            for (EventTarget et : getMappedTargets(mapItem.getKey(), EventTarget.class)) {
+                            for (EventTarget et : getMappedTargets(mapItem.getItem1(), EventTarget.class)) {
                                 // default the attempted cloned event to the actual event. This allows us to update the event correctly in the case of
                                 // a clone failure.
                                 Event nev = ev;
