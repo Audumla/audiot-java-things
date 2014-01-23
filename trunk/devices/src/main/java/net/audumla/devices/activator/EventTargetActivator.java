@@ -3,6 +3,7 @@ package net.audumla.devices.activator;
 import net.audumla.automate.event.AbstractEventTarget;
 import net.audumla.automate.event.RollbackEvent;
 import net.audumla.automate.event.RollbackEventTarget;
+import net.audumla.devices.activator.factory.ActivatorFactory;
 import org.apache.log4j.Logger;
 
 import java.util.Properties;

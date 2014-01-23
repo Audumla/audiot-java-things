@@ -1,5 +1,6 @@
 package net.audumla.devices.activator;
 
+import net.audumla.devices.activator.factory.ActivatorFactory;
 import org.apache.log4j.Logger;
 
 /**

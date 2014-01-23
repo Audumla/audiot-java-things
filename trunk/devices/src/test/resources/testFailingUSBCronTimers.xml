@@ -20,7 +20,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd">
 
-    <bean id="tinyOSrelay.controller" class="net.audumla.devices.activator.tinyusb.TinyUSBActivatorFactory" init-method="initialize" destroy-method="shutdown">
+    <bean id="tinyOSrelay.controller" class="net.audumla.devices.activator.factory.TOSRUSBRelayActivatorFactory" init-method="initialize" destroy-method="shutdown">
     </bean>
 
     <bean id="durationFactory" class="net.audumla.automate.FixedDurationFactory">
