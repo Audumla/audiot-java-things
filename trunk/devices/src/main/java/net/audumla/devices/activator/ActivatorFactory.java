@@ -20,7 +20,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Properties;
 
-public interface ActivatorProvider<TActivator extends Activator> {
+public interface ActivatorFactory<TActivator extends Activator> {
 
     /**
      * The key that is used within the id property bundle for each activator to associate it back to its provider

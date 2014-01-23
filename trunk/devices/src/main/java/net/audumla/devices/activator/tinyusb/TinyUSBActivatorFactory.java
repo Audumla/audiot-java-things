@@ -17,7 +17,7 @@ import java.util.Properties;
  * Date: 10/09/13
  * Time: 3:52 PM
  */
-public class TinyUSBActivatorProvider extends EventTransactionActivatorProvider<EventTransactionActivator> {
+public class TinyUSBActivatorFactory extends EventTransactionActivatorFactory<EventTransactionActivator> {
     private static final Logger logger = Logger.getLogger(Activator.class);
 
     public static final String DEVICE_ID = "deviceid";
@@ -29,7 +29,7 @@ public class TinyUSBActivatorProvider extends EventTransactionActivatorProvider<
     private Map<String, EventTransactionActivator> activatorRegistry = new HashMap<>();
     private String id = BeanUtils.generateName(this);
 
-    private TinyUSBActivatorProvider() {
+    private TinyUSBActivatorFactory() {
         super("TinyUSBActivator");
     }
 
@@ -46,10 +46,12 @@ public class TinyUSBActivatorProvider extends EventTransactionActivatorProvider<
             for (int di = 0; di < devices.length; ++di) {
                 for (int i = 0; i < getRelaysPerDevice(); ++i) {
                     String id = di + "," + i;
-                    EventTransactionActivator<TinyUSBActivatorProvider, ActivatorCommand> activator = new EventTransactionActivator<>(this);
+                    EventTransactionActivator<TinyUSBActivatorFactory, ActivatorCommand> activator = new EventTransactionActivator<>(this);
                     activator.getId().put(PROVIDER_ID, getId());
                     activator.getId().put(RELAY_ID, i);
                     activator.getId().put(DEVICE_ID, di);
+                    activator.allowSetState(true);
+                    activator.allowVariableState(false);
                     activator.setName("Device[" + di + "] Relay[" + i + "]");
                     activatorRegistry.put(id, activator);
                     logger.debug("Relay identified : " + activator.getId() + " - " + activator.getName());

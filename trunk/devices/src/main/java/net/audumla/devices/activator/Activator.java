@@ -82,9 +82,4 @@ public interface Activator {
      * @return whether this activator can handle variable states
      */
     boolean hasVariableState();
-
-
-
-
-
 }
