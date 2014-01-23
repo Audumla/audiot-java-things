@@ -17,6 +17,7 @@ public class LCDJUnitListener extends RunListener {
     public LCDJUnitListener() {
         if (target.initialize()) {
             logger.debug("Loaded JUnit RPII2CLCD Listener");
+            scheduler.registerEventTarget(target);
         } else {
             scheduler.unregisterEventTarget(target);
         }

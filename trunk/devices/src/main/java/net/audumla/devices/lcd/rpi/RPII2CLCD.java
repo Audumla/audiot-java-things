@@ -87,7 +87,6 @@ public class RPII2CLCD extends AbstractEventTarget<CommandEvent<LCD>> implements
         super(name);
         ext = new PortExtender(address);
         backlightStatus = LCD_BACKLIGHT;
-        EventScheduler.getDefaultEventScheduler().registerEventTarget(this);
     }
 
     @Override
