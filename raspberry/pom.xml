@@ -22,6 +22,11 @@
                 </os>
             </activation>
             <dependencies>
+                <dependency>
+                    <groupId>net.audumla</groupId>
+                    <artifactId>automate</artifactId>
+                    <version>1.0-SNAPSHOT</version>
+                </dependency>
             </dependencies>
             <build>
                 <plugins>

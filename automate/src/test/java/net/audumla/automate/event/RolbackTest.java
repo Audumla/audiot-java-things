@@ -30,14 +30,11 @@ public class RolbackTest {
 
     public static class SimpleRollbackHandler extends AbstractEventTarget implements RollbackEventTarget {
 
-        private boolean event = true;
         private boolean rollback = true;
         private boolean eventException = false;
         private boolean rollbackException = false;
 
-        public SimpleRollbackHandler(boolean event, boolean rollback, boolean eventException, boolean rollbackException) {
-            this.event = event;
-            this.rollback = rollback;
+        public SimpleRollbackHandler(boolean eventException, boolean rollbackException) {
             this.eventException = eventException;
             this.rollbackException = rollbackException;
         }
@@ -70,7 +67,7 @@ public class RolbackTest {
 
     @Test
     public void testRollbackTrue() throws Exception {
-        SimpleRollbackHandler handler = new SimpleRollbackHandler(false, true, false, false);
+        SimpleRollbackHandler handler = new SimpleRollbackHandler(true, false);
         EventScheduler.getDefaultEventScheduler().registerEventTarget(handler, "event.*");
         EventTransaction transaction = EventScheduler.getDefaultEventScheduler().publishEvent(new AbstractEvent(), "event.1");
         assert transaction.getStatus().getState() == EventState.PENDING;
@@ -96,7 +93,7 @@ public class RolbackTest {
 
     @Test
     public void testRollbackException() throws Exception {
-        SimpleRollbackHandler handler = new SimpleRollbackHandler(false, true, true, false);
+        SimpleRollbackHandler handler = new SimpleRollbackHandler(true, false);
         EventScheduler.getDefaultEventScheduler().registerEventTarget(handler, "event.*");
         EventTransaction transaction = EventScheduler.getDefaultEventScheduler().publishEvent(new AbstractEvent(), "event.1");
         assert transaction.getStatus().getState() == EventState.PENDING;
@@ -122,7 +119,7 @@ public class RolbackTest {
 
     @Test
     public void testRollbackFailException() throws Exception {
-        SimpleRollbackHandler handler = new SimpleRollbackHandler(false, true, true, true);
+        SimpleRollbackHandler handler = new SimpleRollbackHandler(true, true);
         EventScheduler.getDefaultEventScheduler().registerEventTarget(handler, "event.*");
         EventScheduler.getDefaultEventScheduler().registerEventTarget(handler, "event.handle.bla.*");
         EventTransaction transaction = EventScheduler.getDefaultEventScheduler().publishEvent(new AbstractEvent(), "event.1");
@@ -149,7 +146,7 @@ public class RolbackTest {
 
     @Test
     public void testRollbackFail() throws Exception {
-        SimpleRollbackHandler handler = new SimpleRollbackHandler(false, false, false, false);
+        SimpleRollbackHandler handler = new SimpleRollbackHandler(true, true);
         EventScheduler.getDefaultEventScheduler().registerEventTarget(handler, "event.*.1","event.4");
         EventTransaction transaction = EventScheduler.getDefaultEventScheduler().publishEvent(new AbstractEvent(), "event.2.1");
         assert transaction.getStatus().getState() == EventState.PENDING;
@@ -175,9 +172,9 @@ public class RolbackTest {
 
     @Test
     public void testRollbackPartialFail() throws Exception {
-        EventScheduler.getDefaultEventScheduler().registerEventTarget(new SimpleRollbackHandler(false, false, false, false), "event.*");
-        EventScheduler.getDefaultEventScheduler().registerEventTarget(new SimpleRollbackHandler(false, true, false, false), "event.*");
-        EventScheduler.getDefaultEventScheduler().registerEventTarget(new SimpleRollbackHandler(false, true, false, false), "event.3.*");
+        EventScheduler.getDefaultEventScheduler().registerEventTarget(new SimpleRollbackHandler(false, false), "event.*");
+        EventScheduler.getDefaultEventScheduler().registerEventTarget(new SimpleRollbackHandler(true, true), "event.*");
+        EventScheduler.getDefaultEventScheduler().registerEventTarget(new SimpleRollbackHandler(true, false), "event.3.*");
         EventTransaction transaction = EventScheduler.getDefaultEventScheduler().scheduleEvent(new SimpleEventSchedule(Instant.now().plusMillis(100)), new AbstractEvent(), "event.1");
         transaction.begin();
         assert transaction.getStatus().getState() == EventState.PENDING;
@@ -199,12 +196,12 @@ public class RolbackTest {
 
     @Test
     public void testRollbackMultiHandle() throws Exception {
-        EventScheduler.getDefaultEventScheduler().registerEventTarget(new SimpleRollbackHandler(true, true, false, false), "event.*");
-        EventScheduler.getDefaultEventScheduler().registerEventTarget(new SimpleRollbackHandler(true, true, false, false), "*");
-        EventScheduler.getDefaultEventScheduler().registerEventTarget(new SimpleRollbackHandler(false, true, false, false), "*.1");
-        EventScheduler.getDefaultEventScheduler().registerEventTarget(new SimpleRollbackHandler(false, true, false, false), "event.2");
-        EventScheduler.getDefaultEventScheduler().registerEventTarget(new SimpleRollbackHandler(false, true, false, false), "*.2");
-        EventScheduler.getDefaultEventScheduler().registerEventTarget(new SimpleRollbackHandler(false, true, false, false), "event");
+        EventScheduler.getDefaultEventScheduler().registerEventTarget(new SimpleRollbackHandler(true, false), "event.*");
+        EventScheduler.getDefaultEventScheduler().registerEventTarget(new SimpleRollbackHandler(true, false), "*");
+        EventScheduler.getDefaultEventScheduler().registerEventTarget(new SimpleRollbackHandler(false,false), "*.1");
+        EventScheduler.getDefaultEventScheduler().registerEventTarget(new SimpleRollbackHandler(false,false), "event.2");
+        EventScheduler.getDefaultEventScheduler().registerEventTarget(new SimpleRollbackHandler(false,false), "*.2");
+        EventScheduler.getDefaultEventScheduler().registerEventTarget(new SimpleRollbackHandler(false, false), "event");
         EventScheduler.getDefaultEventScheduler().scheduleEvent(new SimpleEventSchedule(Instant.now().plusMillis(10)), new AbstractEvent(), "event.2").begin();
         EventScheduler.getDefaultEventScheduler().scheduleEvent(new SimpleEventSchedule(Instant.now().plusMillis(100)), new AbstractEvent(), "event.3").begin();
         EventScheduler.getDefaultEventScheduler().scheduleEvent(new SimpleEventSchedule(Instant.now().plusMillis(300)), new AbstractEvent(), "event.4").begin();

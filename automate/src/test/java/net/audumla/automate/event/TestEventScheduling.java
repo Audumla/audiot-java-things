@@ -81,7 +81,7 @@ public class TestEventScheduling {
             } catch (Exception ex) {
 
             }
-            this.wait(2000);
+            this.wait(2000000);
         }
 
 
