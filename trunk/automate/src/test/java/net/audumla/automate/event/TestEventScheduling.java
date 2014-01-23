@@ -49,7 +49,7 @@ public class TestEventScheduling {
         EventScheduler.getDefaultEventScheduler().publishEvent("event1", new AbstractEvent()).begin();
 
         synchronized (this) {
-            this.wait(1000);
+            this.wait(100000);
         }
 
         assert count.get() == 2;
@@ -81,7 +81,7 @@ public class TestEventScheduling {
             } catch (Exception ex) {
 
             }
-            this.wait(2000000);
+            this.wait(200);
         }
 
 
