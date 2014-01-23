@@ -89,7 +89,7 @@ public interface EventTransaction {
      *
      * @return the events that have been handled by this transaction
      */
-    Map<? extends Event, ? extends EventTarget> getHandledEvents();
+    Map<? extends EventTarget, ? extends Event> getHandledEvents();
 
     /**
      *

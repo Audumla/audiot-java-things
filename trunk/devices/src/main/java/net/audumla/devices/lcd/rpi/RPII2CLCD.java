@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RPII2CLCD extends AbstractEventTarget<CommandEvent<LCD>> implements net.audumla.devices.lcd.LCD{
+public class RPII2CLCD extends AbstractEventTarget<CommandEvent<LCD>> implements net.audumla.devices.lcd.LCD {
     public static final int DEFAULT_ADDRESS = 0x20;
 
     protected final static int LCD_8BITMODE = 0x10;
@@ -78,7 +78,7 @@ public class RPII2CLCD extends AbstractEventTarget<CommandEvent<LCD>> implements
     public static LCD instance(String name, int address) {
         LCD instance = instances.get(address);
         if (instance == null) {
-            instance = new RPII2CLCD(name,address);
+            instance = new RPII2CLCD(name, address);
         }
         return instance;
     }
@@ -294,8 +294,8 @@ public class RPII2CLCD extends AbstractEventTarget<CommandEvent<LCD>> implements
     }
 
     @Override
-    public boolean handleEvent(CommandEvent<LCD> event) throws Exception {
-        return event.execute(this);
+    public void handleEvent(CommandEvent<LCD> event) throws Exception {
+        event.execute(this);
     }
 
     protected static class PortExtender {

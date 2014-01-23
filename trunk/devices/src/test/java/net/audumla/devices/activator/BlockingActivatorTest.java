@@ -17,31 +17,31 @@ import java.util.Date;
 public class BlockingActivatorTest {
 
     @Test
-    public void testStateChange() {
+    public void testStateChange() throws Exception {
         ActivatorMock activator = new ActivatorMock(true, true);
         new ThreadLocalEventScheduler().registerEventTarget(activator);
-        assert activator.getCurrentState() == ActivatorState.UNKNOWN;
-        activator.updateState(ActivatorState.DEACTIVATED);
-        assert activator.getCurrentState() == ActivatorState.DEACTIVATED;
-        activator.updateState(ActivatorState.ACTIVATED);
-        assert activator.getCurrentState() == ActivatorState.ACTIVATED;
+        assert activator.getState() == ActivatorState.UNKNOWN;
+        activator.setState(ActivatorState.DEACTIVATED);
+        assert activator.getState() == ActivatorState.DEACTIVATED;
+        activator.setState(ActivatorState.ACTIVATED);
+        assert activator.getState() == ActivatorState.ACTIVATED;
     }
 
     @Test
-    public void testStateChangeListener() {
+    public void testStateChangeListener() throws Exception {
         final ActivatorMock activator = new ActivatorMock(true, true);
         ActivatorStateChangeEventTarget target = new ActivatorStateChangeEventTarget(activator);
 
         new ThreadLocalEventScheduler().registerEventTarget(activator);
         activator.getScheduler().registerEventTarget(target);
 
-        assert activator.getCurrentState() == ActivatorState.UNKNOWN;
+        assert activator.getState() == ActivatorState.UNKNOWN;
         assert target.states.isEmpty();
-        activator.updateState(ActivatorState.DEACTIVATED);
+        activator.setState(ActivatorState.DEACTIVATED);
         assert !target.states.contains(ActivatorState.ACTIVATED);
         assert target.states.contains(ActivatorState.DEACTIVATED);
         assert target.states.size() == 1;
-        activator.updateState(ActivatorState.ACTIVATED);
+        activator.setState(ActivatorState.ACTIVATED);
         assert target.states.contains(ActivatorState.ACTIVATED);
         assert target.states.contains(ActivatorState.DEACTIVATED);
         assert target.states.size() == 2;
@@ -51,14 +51,14 @@ public class BlockingActivatorTest {
     public void testDelayedStateChange() throws Exception {
         ActivatorMock activator = new ActivatorMock(true, true);
         new ThreadLocalEventScheduler().registerEventTarget(activator);
-        assert activator.getCurrentState() == ActivatorState.UNKNOWN;
-        activator.updateState(ActivatorState.DEACTIVATED);
-        assert activator.getCurrentState() == ActivatorState.DEACTIVATED;
+        assert activator.getState() == ActivatorState.UNKNOWN;
+        activator.setState(ActivatorState.DEACTIVATED);
+        assert activator.getState() == ActivatorState.DEACTIVATED;
         Date start = new Date();
         new ToggleActivatorCommand(Duration.ofSeconds(3)).execute(activator);
         Date end = new Date();
         Assert.assertEquals((double) (end.getTime() - start.getTime()), 3000, 100);
-        assert activator.getCurrentState() == ActivatorState.DEACTIVATED;
+        assert activator.getState() == ActivatorState.DEACTIVATED;
     }
 
     @Test
@@ -69,7 +69,7 @@ public class BlockingActivatorTest {
         new ThreadLocalEventScheduler().registerEventTarget(activator);
         activator.getScheduler().registerEventTarget(target);
 
-        assert activator.getCurrentState() == ActivatorState.UNKNOWN;
+        assert activator.getState() == ActivatorState.UNKNOWN;
         assert target.states.isEmpty();
         Date start = new Date();
         new ToggleActivatorCommand(Duration.ofSeconds(3)).execute(activator);
@@ -78,9 +78,9 @@ public class BlockingActivatorTest {
         assert target.states.contains(ActivatorState.ACTIVATED);
         assert target.states.contains(ActivatorState.DEACTIVATED);
         assert target.states.size() == 2;
-        activator.updateState(ActivatorState.ACTIVATED);
+        activator.setState(ActivatorState.ACTIVATED);
         assert target.states.size() == 3;
-        activator.updateState(ActivatorState.DEACTIVATED);
+        activator.setState(ActivatorState.DEACTIVATED);
         assert target.states.size() == 4;
     }
 }

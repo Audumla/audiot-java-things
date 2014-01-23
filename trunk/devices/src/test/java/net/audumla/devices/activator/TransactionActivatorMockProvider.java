@@ -16,63 +16,41 @@ package net.audumla.devices.activator;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import net.audumla.automate.event.EventTransaction;
-import net.audumla.automate.event.EventTransactionListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Properties;
 
-public class TransactionActivatorMockProvider implements ActivatorProvider<TransactionActivatorMock>, EventTransactionListener<SetActivatorStateCommand,EventTargetActivator>{
+public class TransactionActivatorMockProvider extends EventTransactionActivatorProvider<EventTransactionActivator> {
     private static final Logger logger = LoggerFactory.getLogger(TransactionActivatorMockProvider.class);
 
-    Collection<TransactionActivatorMock> activators= new HashSet<>();
+    Collection<EventTransactionActivator<TransactionActivatorMockProvider, ActivatorCommand>> activators = new HashSet<EventTransactionActivator<TransactionActivatorMockProvider, ActivatorCommand>>();
 
-    @Override
-    public void initialize() throws Exception {
-
+    public TransactionActivatorMockProvider() {
+        super("Mock Provider");
     }
 
     @Override
-    public void shutdown() {
-
-    }
-
-    @Override
-    public String getId() {
-        return "MockProvider";
-    }
-
-    @Override
-    public TransactionActivatorMock getActivator(Properties id) {
-        TransactionActivatorMock a = new TransactionActivatorMock(this);
+    public EventTransactionActivator getActivator(Properties id) {
+        EventTransactionActivator<TransactionActivatorMockProvider, ActivatorCommand> a = new EventTransactionActivator<>(this);
+        if (id != null) {
+            a.getId().putAll(id);
+        }
         activators.add(a);
         return a;
     }
 
     @Override
-    public Collection<TransactionActivatorMock> getActivators() {
+    public Collection<? extends EventTransactionActivator> getActivators() {
         return activators;
     }
 
     @Override
-    public boolean setCurrentStates(Map<Activator, ActivatorState> newStates) throws Exception {
-        return false;
+    public boolean setState(EventTransactionActivator activator, ActivatorState newState) throws Exception {
+        logger.info("Simulator " + ActivatorState.DEACTIVATED.getName() + " - " + activator.getId());
+        return super.setState(activator, newState);
     }
 
-    @Override
-    public boolean onTransactionCommit(EventTransaction transaction, Map<SetActivatorStateCommand, EventTargetActivator> events) throws Exception {
-        for (Map.Entry<SetActivatorStateCommand, EventTargetActivator> e : events.entrySet()) {
-            e.getValue().setActiveState(e.getKey().newState);
-        }
-        return true;
-    }
-
-    @Override
-    public boolean onTransactionBegin(EventTransaction transaction) throws Exception {
-        return true;
-    }
 }

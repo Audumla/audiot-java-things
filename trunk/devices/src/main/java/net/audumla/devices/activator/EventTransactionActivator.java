@@ -1,4 +1,4 @@
-package net.audumla.automate.event;
+package net.audumla.devices.activator;
 
 /*
  * *********************************************************************
@@ -19,18 +19,21 @@ package net.audumla.automate.event;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Map;
+public class EventTransactionActivator<TProvider extends EventTransactionActivatorProvider<EventTransactionActivator>, TEvent extends ActivatorCommand> extends EventTargetActivator<TProvider, TEvent> {
+    private static final Logger logger = LoggerFactory.getLogger(EventTransactionActivator.class);
 
-public abstract class AbstractEventTransactionListener<TEvent extends Event, TEventTarget extends EventTarget> implements EventTransactionListener<TEvent,TEventTarget> {
-    private static final Logger logger = LoggerFactory.getLogger(AbstractEventTransactionListener.class);
-
-    @Override
-    public boolean onTransactionCommit(EventTransaction transaction, Map<TEvent, TEventTarget> events) throws Exception {
-        return true;
+    public EventTransactionActivator(TProvider provider) {
+        super(provider);
     }
 
     @Override
-    public boolean onTransactionBegin(EventTransaction transaction) throws Exception {
-        return true;
+    protected void executeStateChange(ActivatorState newstate) throws Exception {
+        getProvider().setState(this, newstate);
     }
+
+    @Override
+    public void handleEvent(TEvent event) throws Throwable {
+        event.getEventTransaction().addTransactionListener(getProvider());
+    }
+
 }

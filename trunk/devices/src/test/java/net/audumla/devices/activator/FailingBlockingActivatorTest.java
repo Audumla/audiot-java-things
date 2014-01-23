@@ -59,13 +59,13 @@ public class FailingBlockingActivatorTest {
         new ThreadLocalEventScheduler().registerEventTarget(activator);
         activator.getScheduler().registerEventTarget(target);
 
-        assert activator.getCurrentState() == ActivatorState.UNKNOWN;
+        assert activator.getState() == ActivatorState.UNKNOWN;
         assert target.states.isEmpty();
         activator.getScheduler().publishEvent(new EnableActivatorCommand(), activator.getName()).begin();
 //        assert target.states.contains(ActivatorState.ACTIVATED);
 //        assert target.states.contains(ActivatorState.DEACTIVATED);
         assert target.states.size() == 0;
-        assert activator.getCurrentState() == ActivatorState.UNKNOWN;
+        assert activator.getState() == ActivatorState.UNKNOWN;
     }
 
     public void failDelayActivate(EventTargetActivator activator) throws Exception {
@@ -74,13 +74,13 @@ public class FailingBlockingActivatorTest {
         new ThreadLocalEventScheduler().registerEventTarget(activator);
         activator.getScheduler().registerEventTarget(target);
 
-        assert activator.getCurrentState() == ActivatorState.UNKNOWN;
+        assert activator.getState() == ActivatorState.UNKNOWN;
         assert target.states.isEmpty();
         activator.getScheduler().publishEvent(new ToggleActivatorCommand(Duration.ofSeconds(2)), activator.getName()).begin();
 //        assert target.states.contains(ActivatorState.ACTIVATED);
 //        assert target.states.contains(ActivatorState.DEACTIVATED);
         assert target.states.size() == 0;
-        assert activator.getCurrentState() == ActivatorState.UNKNOWN;
+        assert activator.getState() == ActivatorState.UNKNOWN;
     }
 
     public void failDeactivate(EventTargetActivator activator) throws Exception {
@@ -90,12 +90,12 @@ public class FailingBlockingActivatorTest {
         activator.getScheduler().registerEventTarget(target);
 
 
-        assert activator.getCurrentState() == ActivatorState.UNKNOWN;
+        assert activator.getState() == ActivatorState.UNKNOWN;
         assert target.states.isEmpty();
         activator.getScheduler().publishEvent(new DisableActivatorCommand(), activator.getName()).begin();
 //        assert target.states.contains(ActivatorState.DEACTIVATED);
         assert target.states.size() == 0;
-        assert activator.getCurrentState() == ActivatorState.UNKNOWN;
+        assert activator.getState() == ActivatorState.UNKNOWN;
     }
 
 

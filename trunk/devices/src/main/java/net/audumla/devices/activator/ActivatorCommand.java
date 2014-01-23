@@ -22,24 +22,24 @@ import net.audumla.automate.event.RollbackEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SetActivatorStateCommand extends AbstractEvent implements CommandEvent<Activator>, RollbackEvent<Activator> {
-    private static final Logger logger = LoggerFactory.getLogger(SetActivatorStateCommand.class);
+public class ActivatorCommand extends AbstractEvent implements CommandEvent<Activator>, RollbackEvent<Activator> {
+    private static final Logger logger = LoggerFactory.getLogger(ActivatorCommand.class);
     protected ActivatorState previousState;
     protected ActivatorState newState;
 
-    protected SetActivatorStateCommand(ActivatorState newState) {
+    protected ActivatorCommand(ActivatorState newState) {
         this.newState = newState;
     }
 
     @Override
     public boolean execute(Activator activator) throws Exception {
-        previousState = activator.getCurrentState();
-        return activator.updateState(newState);
+        previousState = activator.getState();
+        return activator.setState(getNewState());
     }
 
     @Override
-    public boolean rollback(Activator activator) {
-        return activator.updateState(previousState);
+    public boolean rollback(Activator activator) throws Exception {
+        return activator.setState(getPreviousState());
     }
 
     public ActivatorState getPreviousState() {

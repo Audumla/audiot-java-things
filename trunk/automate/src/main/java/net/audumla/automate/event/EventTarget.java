@@ -29,10 +29,9 @@ public interface EventTarget<T extends Event> {
 
     /**
      * @param event the event that should be handled or executed
-     * @return true if the event was handled, otherwise false
      * @throws Throwable
      */
-    boolean handleEvent(T event) throws Throwable;
+    void handleEvent(T event) throws Throwable;
 
     /**
      * @return the scheduler that this target has been registered with

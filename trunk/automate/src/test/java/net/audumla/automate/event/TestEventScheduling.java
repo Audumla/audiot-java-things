@@ -43,7 +43,6 @@ public class TestEventScheduling {
 
         EventScheduler.getDefaultEventScheduler().registerEventTarget(event -> {
             count.set(count.get() + 1);
-            return true;
         }, "event.*");
         EventScheduler.getDefaultEventScheduler().publishEvent("event.1", new AbstractEvent()).begin();
         EventScheduler.getDefaultEventScheduler().publishEvent("event.2", new AbstractEvent()).begin();
@@ -65,7 +64,6 @@ public class TestEventScheduling {
                 count.set(count.get() + 1);
                 this.wait(500);
             }
-            return true;
         }, "event.*");
 
 

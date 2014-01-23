@@ -28,7 +28,8 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Properties;
 
-public class RPIGPIOActivatorProvider implements ActivatorProvider, EventTransactionListener {
+public class RPIGPIOActivatorProvider implements ActivatorProvider, EventTransactionListener
+{
     private static final Logger logger = LoggerFactory.getLogger(RPIGPIOActivatorProvider.class);
 
     @Override
@@ -57,7 +58,12 @@ public class RPIGPIOActivatorProvider implements ActivatorProvider, EventTransac
     }
 
     @Override
-    public boolean setCurrentStates(Map newStates) throws Exception {
+    public boolean setState(Activator activator, ActivatorState newState) throws Exception {
+        return false;
+    }
+
+    @Override
+    public boolean setStates(Map newStates) throws Exception {
         return false;
     }
 

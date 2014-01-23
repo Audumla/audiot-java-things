@@ -3,12 +3,8 @@ package net.audumla.devices.activator.tinyusb;
 import com.ftdichip.ftd2xx.Device;
 import com.ftdichip.ftd2xx.FTD2xxException;
 import com.ftdichip.ftd2xx.Service;
-import net.audumla.automate.event.EventTransaction;
-import net.audumla.automate.event.EventTransactionListener;
 import net.audumla.bean.BeanUtils;
-import net.audumla.devices.activator.Activator;
-import net.audumla.devices.activator.ActivatorProvider;
-import net.audumla.devices.activator.ActivatorStateChangeEvent;
+import net.audumla.devices.activator.*;
 import org.apache.log4j.Logger;
 
 import java.util.Collection;
@@ -21,15 +17,20 @@ import java.util.Properties;
  * Date: 10/09/13
  * Time: 3:52 PM
  */
-public class TinyUSBActivatorProvider implements EventTransactionListener<ActivatorStateChangeEvent, TinyUSBActivator>, ActivatorProvider {
+public class TinyUSBActivatorProvider extends EventTransactionActivatorProvider<EventTransactionActivator> {
     private static final Logger logger = Logger.getLogger(Activator.class);
+
+    public static final String DEVICE_ID = "deviceid";
+    public static final String RELAY_ID = "relayid";
+
     private static final int RELAY_ACTIVATE_INCREMENT = 100;
     private static final int RELAY_DEACTIVATE_INCREMENT = 110;
     private Device devices[] = new Device[0];
-    private Map<String, TinyUSBActivator> activatorRegistry = new HashMap<>();
+    private Map<String, EventTransactionActivator> activatorRegistry = new HashMap<>();
     private String id = BeanUtils.generateName(this);
 
     private TinyUSBActivatorProvider() {
+        super("TinyUSBActivator");
     }
 
     public void initialize() throws Exception {
@@ -45,8 +46,10 @@ public class TinyUSBActivatorProvider implements EventTransactionListener<Activa
             for (int di = 0; di < devices.length; ++di) {
                 for (int i = 0; i < getRelaysPerDevice(); ++i) {
                     String id = di + "," + i;
-                    TinyUSBActivator activator = new TinyUSBActivator(this, di, i);
+                    EventTransactionActivator<TinyUSBActivatorProvider, ActivatorCommand> activator = new EventTransactionActivator<>(this);
                     activator.getId().put(PROVIDER_ID, getId());
+                    activator.getId().put(RELAY_ID, i);
+                    activator.getId().put(DEVICE_ID, di);
                     activator.setName("Device[" + di + "] Relay[" + i + "]");
                     activatorRegistry.put(id, activator);
                     logger.debug("Relay identified : " + activator.getId() + " - " + activator.getName());
@@ -82,21 +85,33 @@ public class TinyUSBActivatorProvider implements EventTransactionListener<Activa
     }
 
     @Override
-    public Activator getActivator(Properties id) {
-        String sid = id.getProperty(TinyUSBActivator.DEVICE_ID) + "," + id.getProperty(TinyUSBActivator.RELAY_ID);
+    public EventTransactionActivator getActivator(Properties id) {
+        String sid = id.getProperty(DEVICE_ID) + "," + id.getProperty(RELAY_ID);
         return activatorRegistry.get(sid);
     }
 
     @Override
-    public Collection<? extends Activator> getActivators() {
+    public Collection<? extends EventTransactionActivator> getActivators() {
         return activatorRegistry.values();
     }
 
     @Override
-    public boolean setCurrentStates(Map newStates) throws Exception {
+    public boolean setStates(Map newStates) throws Exception {
         return false;
     }
 
+    @Override
+    public boolean setState(EventTransactionActivator activator, ActivatorState newState) throws Exception {
+        int deviceid = Integer.parseInt(activator.getId().getProperty(DEVICE_ID));
+        int relayid = Integer.parseInt(activator.getId().getProperty(RELAY_ID));
+
+        if (newState.equals(ActivatorState.DEACTIVATED)) {
+            deactivateRelay(deviceid, relayid);
+        } else {
+            activateRelay(deviceid, relayid);
+        }
+        return true;
+    }
 
     public void deactivateRelay(int device, int relay) throws Exception {
         try {
@@ -167,16 +182,4 @@ public class TinyUSBActivatorProvider implements EventTransactionListener<Activa
         }
     }
 
-    @Override
-    public boolean onTransactionCommit(EventTransaction transaction, Map<ActivatorStateChangeEvent, TinyUSBActivator> events) throws Exception {
-        for (Map.Entry<ActivatorStateChangeEvent, TinyUSBActivator> e : events.entrySet()) {
-             e.getValue().setActiveState(e.getKey().getNewState());
-        }
-        return true;
-    }
-
-    @Override
-    public boolean onTransactionBegin(EventTransaction transaction) throws Exception {
-        return true;
-    }
 }
