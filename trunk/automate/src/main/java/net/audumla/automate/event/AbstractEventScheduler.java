@@ -116,9 +116,8 @@ public abstract class AbstractEventScheduler implements EventScheduler {
 //                    }
 //                });
                 topicEventMap.put(topics, events);
-            }
-            catch (Throwable th) {
-                logger.error("Fatal event publishing error",th);
+            } catch (Throwable th) {
+                logger.error("Fatal event publishing error", th);
             }
         }
 
@@ -216,77 +215,82 @@ public abstract class AbstractEventScheduler implements EventScheduler {
         }
 
         protected Runnable toRunnable() {
-            return () -> {
-                getStatus().setExecutedTime(Instant.now());
-                getStatus().setState(EventState.EXECUTING);
-                for (EventTransactionListener l : getListeners()) {
-                    try {
-                        l.onTransactionBegin(this);
-                    } catch (Exception e) {
-                        logger.error("Transaction Listener error", e);
-                    }
-                }
-                Collection<EventState> transactionStates = new HashSet<>();
-                for (Map.Entry<String[], Event[]> mapItem : getTopicEventMap().entrySet()) {
-                    for (Event ev : mapItem.getValue()) {
-                        Collection<EventState> eventStates = new HashSet<>();
-                        ev.setScheduler(AbstractEventScheduler.this);
-                        ev.getStatus().setExecutedTime(Instant.now());
-                        for (EventTarget et : getMappedTargets(mapItem.getKey(), EventTarget.class)) {
-                            // default the attempted cloned event to the actual event. This allows us to update the event correctly in the case of
-                            // a clone failure.
-                            Event nev = ev;
-                            try {
-                                // clone the original event so that we can keep track of each status for each handler
-                                nev = ev.clone();
-                                addHandledEvent(et, nev);
-                                et.handleEvent(nev);
-                                nev.getStatus().setState(EventState.COMPLETE);
-                            } catch (CloneNotSupportedException ex) {
-                                nev.getStatus().setFailed(ex, "Failed to clone Event");
-                                // add the event to the handled list as this would not have been called otherwise
-                                addHandledEvent(et, nev);
-                            } catch (Throwable th) {
-                                nev.getStatus().setFailed(th, "Failed to execute Event");
-                            } finally {
-                                nev.getStatus().setCompletedTime(Instant.now());
-                                eventStates.add(nev.getStatus().getState());
-                                transactionStates.add(nev.getStatus().getState());
-                                if (!nev.getStatus().getState().equals(EventState.COMPLETE)) {
-                                    logger.error(nev.getStatus().getFailureMessage(), nev.getStatus().getFailureException());
-                                }
+            return new Runnable() {
+                @Override
+                public void run() {
 
-                            }
+                    getStatus().setExecutedTime(Instant.now());
+                    getStatus().setState(EventState.EXECUTING);
+                    for (EventTransactionListener l : getListeners()) {
+                        try {
+                            l.onTransactionBegin(AbstractEventTransaction.this);
+                        } catch (Exception e) {
+                            logger.error("Transaction Listener error", e);
                         }
-                        // update the original event as there may be references to it that can monitor the state of the overall event
-                        ev.getStatus().setCompletedTime(Instant.now());
-                        ev.getStatus().setState(getStatus(eventStates));
                     }
-                }
-                getStatus().setCompletedTime(Instant.now());
-                getStatus().setState(getStatus(transactionStates));
+                    Collection<EventState> transactionStates = new HashSet<>();
+                    for (Map.Entry<String[], Event[]> mapItem : getTopicEventMap().entrySet()) {
+                        for (Event ev : mapItem.getValue()) {
+                            Collection<EventState> eventStates = new HashSet<>();
+                            ev.setScheduler(AbstractEventScheduler.this);
+                            ev.getStatus().setExecutedTime(Instant.now());
+                            for (EventTarget et : getMappedTargets(mapItem.getKey(), EventTarget.class)) {
+                                // default the attempted cloned event to the actual event. This allows us to update the event correctly in the case of
+                                // a clone failure.
+                                Event nev = ev;
+                                try {
+                                    // clone the original event so that we can keep track of each status for each handler
+                                    nev = ev.clone();
+                                    addHandledEvent(et, nev);
+                                    et.handleEvent(nev);
+                                    nev.getStatus().setState(EventState.COMPLETE);
+                                } catch (CloneNotSupportedException ex) {
+                                    nev.getStatus().setFailed(ex, "Failed to clone Event");
+                                    // add the event to the handled list as this would not have been called otherwise
+                                    addHandledEvent(et, nev);
+                                } catch (Throwable th) {
+                                    nev.getStatus().setFailed(th, "Failed to execute Event");
+                                } finally {
+                                    nev.getStatus().setCompletedTime(Instant.now());
+                                    eventStates.add(nev.getStatus().getState());
+                                    transactionStates.add(nev.getStatus().getState());
+                                    if (!nev.getStatus().getState().equals(EventState.COMPLETE)) {
+                                        logger.error(nev.getStatus().getFailureMessage(), nev.getStatus().getFailureException());
+                                    }
 
-                if (!getStatus().getState().equals(EventState.NOIDENTIFIEDTARGETS)) {
-                    if (getStatus().getState().equals(EventState.COMPLETE)) {
-                        if (isAutoCommit()) {
-                            try {
-                                commit();
-                            } catch (Exception e) {
-                                logger.error("Transaction commit failed", e);
-                                if (getRollBackOnError()) {
-                                    rollback();
                                 }
                             }
+                            // update the original event as there may be references to it that can monitor the state of the overall event
+                            ev.getStatus().setCompletedTime(Instant.now());
+                            ev.getStatus().setState(getStatus(eventStates));
                         }
-                    } else {
-                        if (getRollBackOnError()) {
-                            rollback();
+                    }
+                    getStatus().setCompletedTime(Instant.now());
+                    getStatus().setState(getStatus(transactionStates));
+
+                    if (!getStatus().getState().equals(EventState.NOIDENTIFIEDTARGETS)) {
+                        if (getStatus().getState().equals(EventState.COMPLETE)) {
+                            if (isAutoCommit()) {
+                                try {
+                                    commit();
+                                } catch (Exception e) {
+                                    logger.error("Transaction commit failed", e);
+                                    if (getRollBackOnError()) {
+                                        rollback();
+                                    }
+                                }
+                            }
+                        } else {
+                            if (getRollBackOnError()) {
+                                rollback();
+                            }
                         }
                     }
                 }
+
+
             };
         }
-
     }
 
     public AbstractEventScheduler() {
