@@ -55,5 +55,5 @@ public interface LCD extends EventTarget<CommandEvent<LCD>> {
     // Turn on and off the blinking cursor
     void noBlink();
 
-    void initialize();
+    boolean initialize();
 }

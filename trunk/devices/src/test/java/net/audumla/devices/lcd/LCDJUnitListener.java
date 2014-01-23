@@ -10,12 +10,16 @@ import org.junit.runner.notification.RunListener;
 
 public class LCDJUnitListener extends RunListener {
 
-    Logger logger = Logger.getLogger(LCDJUnitListener.class);
-    EventScheduler scheduler = EventScheduler.getDefaultEventScheduler();
-    LCD target = RPII2CLCD.instance("JunitLCDListener", RPII2CLCD.DEFAULT_ADDRESS);
+    private Logger logger = Logger.getLogger(LCDJUnitListener.class);
+    private EventScheduler scheduler = EventScheduler.getDefaultEventScheduler();
+    private LCD target = RPII2CLCD.instance("JunitLCDListener", RPII2CLCD.DEFAULT_ADDRESS);
 
     public LCDJUnitListener() {
-        logger.debug("Loaded JUnit RPII2CLCD Listener");
+        if (target.initialize()) {
+            logger.debug("Loaded JUnit RPII2CLCD Listener");
+        } else {
+            scheduler.unregisterEventTarget(target);
+        }
     }
 
     @Override
