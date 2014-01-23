@@ -84,8 +84,8 @@ public class RolbackTest {
 //        transaction.getEvents().stream().forEach((e) -> {
 //            assert e.getStatus().getState() == EventState.FAILED;
 //        });
-        transaction.getHandledEvents().values().stream().forEach((e) -> {
-            assert e.getStatus().getState() == EventState.ROLLEDBACK;
+        transaction.getHandledEvents().stream().forEach((e) -> {
+            assert e.getItem2().getStatus().getState() == EventState.ROLLEDBACK;
         });
         assert transaction.getStatus().getState() == EventState.ROLLEDBACK;
 
@@ -110,8 +110,8 @@ public class RolbackTest {
 //        transaction.getEvents().stream().forEach((e) -> {
 //            assert e.getStatus().getState() == EventState.FAILED;
 //        });
-        transaction.getHandledEvents().values().stream().forEach((e) -> {
-            assert e.getStatus().getState() == EventState.ROLLEDBACK;
+        transaction.getHandledEvents().stream().forEach((e) -> {
+            assert e.getItem2().getStatus().getState() == EventState.ROLLEDBACK;
         });
         assert transaction.getStatus().getState() == EventState.ROLLEDBACK;
 
@@ -137,8 +137,8 @@ public class RolbackTest {
 //        transaction.getEvents().stream().forEach((e) -> {
 //            assert e.getStatus().getState() == EventState.FAILED;
 //        });
-        transaction.getHandledEvents().values().stream().forEach((e) -> {
-            assert e.getStatus().getState() == EventState.FAILEDROLLBACK;
+        transaction.getHandledEvents().stream().forEach((e) -> {
+            assert e.getItem2().getStatus().getState() == EventState.FAILEDROLLBACK;
         });
         assert transaction.getStatus().getState() == EventState.FAILEDROLLBACK;
 
@@ -163,8 +163,8 @@ public class RolbackTest {
 //        transaction.getEvents().stream().forEach((e) -> {
 //            assert e.getStatus().getState() == EventState.FAILED;
 //        });
-        transaction.getHandledEvents().values().stream().forEach((e) -> {
-            assert e.getStatus().getState() == EventState.FAILEDROLLBACK;
+        transaction.getHandledEvents().stream().forEach((e) -> {
+            assert e.getItem2().getStatus().getState() == EventState.FAILEDROLLBACK;
         });
         assert transaction.getStatus().getState() == EventState.FAILEDROLLBACK;
 

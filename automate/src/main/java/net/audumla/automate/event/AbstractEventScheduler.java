@@ -17,6 +17,7 @@ package net.audumla.automate.event;
  */
 
 import net.audumla.bean.BeanUtils;
+import net.audumla.collections.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,7 +37,7 @@ public abstract class AbstractEventScheduler implements EventScheduler {
         private boolean rollbackOnError = true;
         private boolean autoCommit = true;
         private String id = BeanUtils.generateName(this);
-        private Map<EventTarget,Event> handledEvents = new HashMap<>();
+        private Collection<Pair<EventTarget,Event>> handledEvents = new ArrayList<>();
         private Collection<EventTransactionListener> listeners = new HashSet<>();
         private Map<String[], Event[]> topicEventMap = new HashMap<>();
         private EventSchedule schedule;
@@ -131,7 +132,7 @@ public abstract class AbstractEventScheduler implements EventScheduler {
         }
 
         protected void addHandledEvent(EventTarget target, Event event) {
-            handledEvents.put(target,event);
+            handledEvents.add(new Pair<>(target, event));
         }
 
         protected Collection<EventTransactionListener> getListeners() {
@@ -148,7 +149,7 @@ public abstract class AbstractEventScheduler implements EventScheduler {
             }
         }
 
-        public Map<? extends EventTarget, ? extends Event> getHandledEvents() {
+        public Collection<Pair<EventTarget, Event>> getHandledEvents() {
             return handledEvents;
         }
 
@@ -157,27 +158,27 @@ public abstract class AbstractEventScheduler implements EventScheduler {
             getStatus().setState(EventState.ROLLINGBACK);
             boolean result = true;
             Collection<EventState> transactionStates = new HashSet<>();
-            for (Map.Entry<? extends EventTarget, ? extends Event> ev : getHandledEvents().entrySet()) {
+            for (Pair<EventTarget, Event> ev : getHandledEvents()) {
                 // only role back command events and events that actually completed their execution
-                ev.getValue().getStatus().setState(EventState.ROLLINGBACK);
+                ev.getItem2().getStatus().setState(EventState.ROLLINGBACK);
                 try {
-                    if (ev.getKey() instanceof RollbackEventTarget) {
-                        RollbackEventTarget ret = (RollbackEventTarget) ev.getKey();
-                        if (!ret.rollbackEvent(ev.getValue())) {
-                            ev.getValue().getStatus().setFailed(null, "Event Handler Failed to roll back");
-                            ev.getValue().getStatus().setState(EventState.FAILEDROLLBACK);
+                    if (ev.getItem1() instanceof RollbackEventTarget) {
+                        RollbackEventTarget ret = (RollbackEventTarget) ev.getItem1();
+                        if (!ret.rollbackEvent(ev.getItem2())) {
+                            ev.getItem2().getStatus().setFailed(null, "Event Handler Failed to roll back");
+                            ev.getItem2().getStatus().setState(EventState.FAILEDROLLBACK);
                         } else {
-                            ev.getValue().getStatus().setState(EventState.ROLLEDBACK);
+                            ev.getItem2().getStatus().setState(EventState.ROLLEDBACK);
                         }
                     } else {
-                        ev.getValue().getStatus().setFailed(null, "Event target does not handle roll back");
-                        ev.getValue().getStatus().setState(EventState.FAILEDROLLBACK);
+                        ev.getItem2().getStatus().setFailed(null, "Event target does not handle roll back");
+                        ev.getItem2().getStatus().setState(EventState.FAILEDROLLBACK);
                     }
                 } catch (Throwable th) {
-                    ev.getValue().getStatus().setFailed(th, "Failed to roll back event");
-                    ev.getValue().getStatus().setState(EventState.FAILEDROLLBACK);
+                    ev.getItem2().getStatus().setFailed(th, "Failed to roll back event");
+                    ev.getItem2().getStatus().setState(EventState.FAILEDROLLBACK);
                 } finally {
-                    transactionStates.add(ev.getValue().getStatus().getState());
+                    transactionStates.add(ev.getItem2().getStatus().getState());
                 }
             }
             getStatus().setState(getRollbackStatus(transactionStates));

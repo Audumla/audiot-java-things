@@ -16,6 +16,8 @@ package net.audumla.automate.event;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
+import net.audumla.collections.Pair;
+
 import java.util.Collection;
 import java.util.Map;
 
@@ -89,7 +91,7 @@ public interface EventTransaction {
      *
      * @return the events that have been handled by this transaction
      */
-    Map<? extends EventTarget, ? extends Event> getHandledEvents();
+    Collection<Pair<EventTarget,Event>> getHandledEvents();
 
     /**
      *

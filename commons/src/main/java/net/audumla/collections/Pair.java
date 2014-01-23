@@ -1,4 +1,4 @@
-package net.audumla.automate.event;
+package net.audumla.collections;
 
 /*
  * *********************************************************************
@@ -16,20 +16,33 @@ package net.audumla.automate.event;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import net.audumla.collections.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collection;
-import java.util.Map;
+public class Pair<Item1, Item2> {
+    private static final Logger logger = LoggerFactory.getLogger(Pair.class);
 
-public interface EventTransactionListener <TEvent extends Event, TEventTarget extends EventTarget>
-{
-    public default boolean onTransactionCommit(EventTransaction transaction, Collection<Pair<TEventTarget, TEvent>> events) throws Exception {
-        return true;
+    protected Item1 item1;
+    protected Item2 item2;
+
+    public Pair(Item1 item1, Item2 item2) {
+        this.item1 = item1;
+        this.item2 = item2;
     }
 
-    default boolean onTransactionBegin(EventTransaction transaction) throws Exception {
-        return true;
+    public Item1 getItem1() {
+        return item1;
+    }
+
+    public void setItem1(Item1 item1) {
+        this.item1 = item1;
+    }
+
+    public Item2 getItem2() {
+        return item2;
+    }
+
+    public void setItem2(Item2 item2) {
+        this.item2 = item2;
     }
 }
