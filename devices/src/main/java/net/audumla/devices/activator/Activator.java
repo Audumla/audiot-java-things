@@ -39,6 +39,7 @@ public interface Activator {
      *
      * @param state the new state to be set
      * @return returns true if the activation was successful otherwise false is returned
+     * @throws java.lang.Exception thrown if the the state failed to set
      */
 
     boolean setState(ActivatorState state) throws Exception;

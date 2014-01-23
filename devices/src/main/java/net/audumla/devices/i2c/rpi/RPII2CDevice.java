@@ -111,7 +111,7 @@ public class RPII2CDevice implements I2CDevice {
     /**
      * This method reads one byte from the i2c device. Result is between -128 and 127.
      *
-     * @return
+     * @return the value read from the device
      * @throws IOException thrown in case byte cannot be read from the i2c device or i2c bus
      */
     @Override
@@ -150,7 +150,7 @@ public class RPII2CDevice implements I2CDevice {
      * This method reads one byte from the i2c device. Result is between -128 and 127.
      *
      * @param address local address in the i2c device
-     * @return
+     * @return the value read from the device
      * @throws IOException thrown in case byte cannot be read from the i2c device or i2c bus
      */
     @Override

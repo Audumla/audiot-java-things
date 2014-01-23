@@ -29,7 +29,7 @@ import java.util.Map;
 import java.util.Properties;
 
 /**
- * Used to drive the USB relay identified at http://www.tinyosshop.com/index.php?route=product/product&path=141_142&product_id=363
+ * Used to drive the USB relay identified at http://www.tinyosshop.com/index.php?route=product/product&amp;path=141_142&amp;product_id=363
  */
 public class TOSRUSBRelayActivatorFactory extends EventTransactionActivatorFactory<EventTransactionActivator> {
     private static final Logger logger = Logger.getLogger(Activator.class);

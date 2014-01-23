@@ -40,6 +40,8 @@ public interface ActivatorFactory<TActivator extends Activator> {
 
     /**
      * performs any shut down activities. Generally this should deactivate all associated activators
+     *
+     * @throws java.lang.Exception thrown if shutdown fails
      */
     default void shutdown() throws Exception {
 
@@ -69,6 +71,7 @@ public interface ActivatorFactory<TActivator extends Activator> {
      * All the activators in the map can be assumed to have originated from this provider
      * @param newStates a Map containing the activator as the key and the new state that should be assigned to that activator
      * @return true if the assignment of the activators completed successfully
+     * @throws java.lang.Exception thrown if the the states failed to set
      */
     default boolean setStates(Map<TActivator, ActivatorState> newStates) throws Exception {
         boolean result = true;
@@ -84,6 +87,7 @@ public interface ActivatorFactory<TActivator extends Activator> {
      * @param activator the activator that will be assigned the new state
      * @param newState new state that should be assigned to that activator
      * @return true if the assignment of the activators completed successfully
+     * @throws java.lang.Exception thrown if the the state failed to set
      */
     boolean setState(TActivator activator, ActivatorState newState) throws Exception;
 }
