@@ -81,6 +81,7 @@
                             </properties>
                             <parallel>methods</parallel>
                             <threadCount>1</threadCount>
+                            <useFile>false</useFile>
                         </configuration>
                     </plugin>
                 </plugins>
