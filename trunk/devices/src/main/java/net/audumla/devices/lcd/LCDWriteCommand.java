@@ -21,6 +21,7 @@ public class LCDWriteCommand extends AbstractEvent implements CommandEvent<LCD> 
         this.value = value;
     }
 
+    @Override
     public boolean execute(LCD lcd) throws Exception {
         lcd.write(value);
         return true;

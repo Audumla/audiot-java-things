@@ -22,7 +22,7 @@ public class LCDSetDisplayCommand extends AbstractEvent implements CommandEvent<
     public void setDisplay(boolean display) {
         this.display = display;
     }
-
+    @Override
     public boolean execute(LCD lcd) throws Exception {
         if (display)
             lcd.display();

@@ -24,7 +24,7 @@ public class LCDSetBacklightCommand extends AbstractEvent implements CommandEven
     public LCDSetBacklightCommand(boolean b) {
         backlight = b;
     }
-
+    @Override
     public boolean execute(LCD lcd) throws IOException {
         if (backlight)
             lcd.enableBacklight();

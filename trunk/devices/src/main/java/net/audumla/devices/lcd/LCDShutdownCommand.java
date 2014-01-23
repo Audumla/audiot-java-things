@@ -5,6 +5,11 @@ import net.audumla.automate.event.CommandEvent;
 
 public class LCDShutdownCommand extends AbstractEvent implements CommandEvent<LCD> {
 
+
+    public LCDShutdownCommand() {
+    }
+
+    @Override
     public boolean execute(LCD lcd) {
 //		lcd.clear();
 //		lcd.write("System shutdown");
