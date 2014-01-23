@@ -3,6 +3,8 @@ package net.audumla.devices.lcd;
 import net.audumla.automate.event.CommandEvent;
 import net.audumla.automate.event.EventTarget;
 
+import java.io.IOException;
+
 /**
  * Created with IntelliJ IDEA.
  * User: mgleeson
@@ -11,49 +13,49 @@ import net.audumla.automate.event.EventTarget;
  * To change this template use File | Settings | File Templates.
  */
 public interface LCD extends EventTarget<CommandEvent<LCD>> {
-    void write(String s);
+    void write(String s) throws Exception;
 
-    void clear();
+    void clear() throws Exception;
 
-    void home();
+    void home() throws Exception;
 
-    void setCursor(int col, int row);
+    void setCursor(int col, int row) throws Exception;
 
     // Turn the display on/off (quickly)
-    void noDisplay();
+    void noDisplay() throws Exception;
 
-    void display();
+    void display() throws Exception;
 
     // Turns the underline cursor on/off
-    void noCursor();
+    void noCursor() throws Exception;
 
-    void cursor();
+    void cursor() throws Exception;
 
-    void blink();
+    void blink() throws Exception;
 
     // These commands scroll the display without changing the RAM
-    void scrollDisplayLeft();
+    void scrollDisplayLeft() throws Exception;
 
-    void scrollDisplayRight();
+    void scrollDisplayRight() throws Exception;
 
     // This is for text that flows Left to Right
-    void leftToRight();
+    void leftToRight() throws Exception;
 
     // This is for text that flows Right to Left
-    void rightToLeft();
+    void rightToLeft() throws Exception;
 
     // This will 'right justify' text from the cursor
-    void autoscroll();
+    void autoscroll() throws Exception;
 
     // This will 'left justify' text from the cursor
-    void noAutoscroll();
+    void noAutoscroll() throws Exception;
 
-    void enableBacklight();
+    void enableBacklight() throws IOException;
 
-    void disableBacklight();
+    void disableBacklight() throws IOException;
 
     // Turn on and off the blinking cursor
-    void noBlink();
+    void noBlink() throws Exception;
 
     boolean initialize();
 }

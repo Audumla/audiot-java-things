@@ -114,26 +114,25 @@ public class RPII2CLCD extends AbstractEventTarget<CommandEvent<LCD>> implements
                 // LCD_NO_PIN,0x1c, 0x00,0x18
             }
         } catch (Exception ex) {
-            logger.error(ex);
+            logger.error("Cannot initialize LCD ["+getName()+"]",ex);
             return false;
         }
         return true;
     }
 
-    protected void command4bits(int... args) {
+    protected void command4bits(int... args) throws Exception {
         for (int v : args) {
             send(v, LCD_COMMAND);
         }
     }
 
-    protected void command(int... args) {
+    protected void command(int... args) throws Exception {
         for (int v : args) {
             send4bits(v, LCD_COMMAND);
         }
     }
 
-    protected void send(int value, int mode) {
-        try {
+    protected void send(int value, int mode) throws Exception {
             synchronized (Thread.currentThread()) {
                 ext.digitalWrite(backlightStatus);
                 ext.digitalWrite(value | backlightStatus | mode);
@@ -142,12 +141,9 @@ public class RPII2CLCD extends AbstractEventTarget<CommandEvent<LCD>> implements
                 ext.digitalWrite(value | backlightStatus | mode);
                 Thread.sleep(0, 50000);
             }
-        } catch (Exception ex) {
-            logger.error(ex);
-        }
     }
 
-    protected void send4bits(int value, int mode) {
+    protected void send4bits(int value, int mode) throws Exception {
         int bitx4 = 0;
         for (int i = 0; i < LCD_DATA_4BITMASK.length; ++i) {
             if ((LCD_DATA_4BITMASK[i] & value) > 0) {
@@ -161,31 +157,31 @@ public class RPII2CLCD extends AbstractEventTarget<CommandEvent<LCD>> implements
         send(bitx4, mode);
     }
 
-    protected void write(int... args) {
+    protected void write(int... args) throws Exception {
         for (int v : args) {
             send4bits(v, LCD_CHARACTER_WRITE);
         }
     }
 
     @Override
-    public void write(String s) {
+    public void write(String s) throws Exception {
         for (byte v : s.getBytes()) {
             send4bits(v, LCD_CHARACTER_WRITE);
         }
     }
 
     @Override
-    public void clear() {
+    public void clear() throws Exception {
         command(LCD_CLEARDISPLAY); // clear display, set cursor position to zero
     }
 
     @Override
-    public void home() {
+    public void home() throws Exception {
         command(LCD_RETURNHOME); // set cursor position to zero
     }
 
     @Override
-    public void setCursor(int col, int row) {
+    public void setCursor(int col, int row) throws Exception {
         int row_offsets[] = {0x00, 0x40, 0x14, 0x54};
         if (row > 4) {
             row = 3; // we count rows starting w/0
@@ -196,85 +192,85 @@ public class RPII2CLCD extends AbstractEventTarget<CommandEvent<LCD>> implements
 
     // Turn the display on/off (quickly)
     @Override
-    public void noDisplay() {
+    public void noDisplay() throws Exception {
         displayControl &= ~LCD_DISPLAYON;
         command(displayControl);
     }
 
     @Override
-    public void display() {
+    public void display() throws Exception {
         displayControl |= LCD_DISPLAYON;
         command(displayControl);
     }
 
     // Turns the underline cursor on/off
     @Override
-    public void noCursor() {
+    public void noCursor() throws Exception {
         displayControl &= ~LCD_CURSORON;
         command(displayControl);
     }
 
     @Override
-    public void cursor() {
+    public void cursor() throws Exception {
         displayControl |= LCD_CURSORON;
         command(displayControl);
     }
 
     // Turn on and off the blinking cursor
     @Override
-    public void noBlink() {
+    public void noBlink() throws Exception {
         displayControl &= ~LCD_BLINKON;
         command(displayControl);
     }
 
     @Override
-    public void blink() {
+    public void blink() throws Exception {
         displayControl |= LCD_BLINKON;
         command(displayControl);
     }
 
     // These commands scroll the display without changing the RAM
     @Override
-    public void scrollDisplayLeft() {
+    public void scrollDisplayLeft() throws Exception {
         command(LCD_CURSORSHIFT | LCD_DISPLAYMOVE | LCD_MOVELEFT);
     }
 
     @Override
-    public void scrollDisplayRight() {
+    public void scrollDisplayRight() throws Exception {
         command(LCD_CURSORSHIFT | LCD_DISPLAYMOVE | LCD_MOVERIGHT);
     }
 
     // This is for text that flows Left to Right
     @Override
-    public void leftToRight() {
+    public void leftToRight() throws Exception {
         displayMode |= LCD_ENTRYLEFT;
         command(displayMode);
     }
 
     // This is for text that flows Right to Left
     @Override
-    public void rightToLeft() {
+    public void rightToLeft() throws Exception {
         displayMode &= ~LCD_ENTRYLEFT;
         command(displayMode);
     }
 
     // This will 'right justify' text from the cursor
     @Override
-    public void autoscroll() {
+    public void autoscroll() throws Exception {
         displayMode |= LCD_ENTRYSHIFTINCREMENT;
         command(displayMode);
     }
 
     // This will 'left justify' text from the cursor
     @Override
-    public void noAutoscroll() {
+    public void noAutoscroll() throws Exception {
         displayMode &= ~LCD_ENTRYSHIFTINCREMENT;
         command(displayMode);
     }
 
     // Allows us to fill the first 8 CGRAM locations
     // with custom characters
-    public void createChar(int location, int charmap[]) {
+    public void createChar(int location, int charmap[]) throws Exception {
         location &= 0x7; // we only have 8 locations 0-7
         command(LCD_SETCGRAMADDR | (location << 3));
         for (int i = 0; i < 8; i++) {
@@ -283,13 +279,13 @@ public class RPII2CLCD extends AbstractEventTarget<CommandEvent<LCD>> implements
     }
 
     @Override
-    public void enableBacklight() {
+    public void enableBacklight() throws IOException {
         backlightStatus = LCD_BACKLIGHT;
         ext.digitalWrite(backlightStatus);
     }
 
     @Override
-    public void disableBacklight() {
+    public void disableBacklight() throws IOException {
         backlightStatus = 0x00;
         ext.digitalWrite(backlightStatus);
     }
@@ -331,21 +327,13 @@ public class RPII2CLCD extends AbstractEventTarget<CommandEvent<LCD>> implements
 
         }
 
-        public void digitalWrite(int d) {
-            try {
+        public void digitalWrite(int d) throws IOException {
                 // System.out.println("Sending : " + d + " : " + Integer.toBinaryString(d) + " : " + Integer.toHexString(d));
                 device.write(MCP23008_GPIO, (byte) d);
-            } catch (Exception ex) {
-                logger.error(ex);
-            }
         }
 
-        public void commandWrite(int reg, int d) {
-            try {
+        public void commandWrite(int reg, int d) throws IOException {
                 device.write(reg, (byte) d);
-            } catch (Exception ex) {
-                logger.error(ex);
-            }
         }
 
     }

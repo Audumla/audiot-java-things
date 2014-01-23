@@ -10,7 +10,7 @@ public class LCDWriteCommand extends AbstractEvent implements CommandEvent<LCD> 
         value = v;
     }
 
-    public boolean execute(LCD lcd) {
+    public boolean execute(LCD lcd) throws Exception {
         lcd.write(value);
         return true;
     }

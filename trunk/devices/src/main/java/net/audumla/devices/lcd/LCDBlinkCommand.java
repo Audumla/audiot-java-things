@@ -11,7 +11,7 @@ public class LCDBlinkCommand extends AbstractEvent implements CommandEvent<LCD> 
         blink = b;
     }
 
-    public boolean execute(LCD lcd) {
+    public boolean execute(LCD lcd) throws Exception {
         if (blink)
             lcd.blink();
         else
