@@ -16,9 +16,16 @@ package net.audumla.devices.activator.rpi;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
+import net.audumla.devices.activator.Activator;
+import net.audumla.devices.activator.ActivatorState;
+import net.audumla.devices.activator.factory.RPIGPIOActivator;
+import net.audumla.devices.activator.factory.RPIGPIOActivatorFactory;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.Collection;
 
 public class RPPIActivatorTest {
     private static final Logger logger = LoggerFactory.getLogger(RPPIActivatorTest.class);
@@ -27,7 +34,40 @@ public class RPPIActivatorTest {
     public void testGPIOPins() throws Exception {
         RPIGPIOActivatorFactory rpi = new RPIGPIOActivatorFactory();
         for (RPIGPIOActivator a : rpi.getActivators()) {
-            assert a.getName() != null;
+            RPIGPIOActivatorFactory.GPIOName.valueOf(a.getName());
+        }
+    }
+
+    @Test
+    public void testRawRelay() throws Exception {
+        RPIGPIOActivatorFactory rpi = new RPIGPIOActivatorFactory();
+        Collection<Activator> pins = new ArrayList<>();
+        pins.add(rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO0));
+        pins.add(rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO2));
+        pins.add(rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO3));
+        pins.add(rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.SPI_MOSI));
+        pins.add(rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.SPI_SCLK));
+        pins.add(rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.SPI_MOSI));
+        pins.add(rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.SPI_CE0));
+        pins.add(rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.SPI_CE1));
+
+        Activator power = rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO6);
+        power.allowVariableState(false);
+        power.allowSetState(true);
+        power.setState(ActivatorState.DEACTIVATED);
+
+        for (Activator a : pins) {
+            a.allowVariableState(false);
+            a.allowSetState(true);
+            power.setState(ActivatorState.ACTIVATED);
+        }
+
+        for (Activator a : pins) {
+            a.setState(ActivatorState.DEACTIVATED);
+            synchronized (this) {
+                wait(200);
+            }
+            a.setState(ActivatorState.ACTIVATED);
         }
 
     }

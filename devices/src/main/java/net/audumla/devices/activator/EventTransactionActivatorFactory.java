@@ -19,11 +19,11 @@ package net.audumla.devices.activator;
 import net.audumla.automate.event.EventTransaction;
 import net.audumla.automate.event.EventTransactionListener;
 import net.audumla.collections.Pair;
+import net.audumla.devices.activator.factory.ActivatorFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
-import java.util.Map;
 
 public abstract class EventTransactionActivatorFactory<TActivator extends EventTargetActivator> implements ActivatorFactory<TActivator>, EventTransactionListener<ActivatorCommand, TActivator> {
     private static final Logger logger = LoggerFactory.getLogger(EventTransactionActivatorFactory.class);

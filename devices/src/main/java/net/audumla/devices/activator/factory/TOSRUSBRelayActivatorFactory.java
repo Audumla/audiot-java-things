@@ -1,4 +1,20 @@
-package net.audumla.devices.activator.tinyusb;
+package net.audumla.devices.activator.factory;
+
+/*
+ * *********************************************************************
+ *  ORGANIZATION : audumla.net
+ *  More information about this project can be found at the following locations:
+ *  http://www.audumla.net/
+ *  http://audumla.googlecode.com/
+ * *********************************************************************
+ *  Copyright (C) 2012 - 2013 Audumla.net
+ *  Licensed under the Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License.
+ *  You may not use this file except in compliance with the License located at http://creativecommons.org/licenses/by-nc-nd/3.0/
+ *
+ *  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an
+ *  "AS IS BASIS", WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and limitations under the License.
+ */
 
 import com.ftdichip.ftd2xx.Device;
 import com.ftdichip.ftd2xx.FTD2xxException;
@@ -13,11 +29,9 @@ import java.util.Map;
 import java.util.Properties;
 
 /**
- * User: mgleeson
- * Date: 10/09/13
- * Time: 3:52 PM
+ * Used to drive the USB relay identified at http://www.tinyosshop.com/index.php?route=product/product&path=141_142&product_id=363
  */
-public class TinyUSBActivatorFactory extends EventTransactionActivatorFactory<EventTransactionActivator> {
+public class TOSRUSBRelayActivatorFactory extends EventTransactionActivatorFactory<EventTransactionActivator> {
     private static final Logger logger = Logger.getLogger(Activator.class);
 
     public static final String DEVICE_ID = "deviceid";
@@ -29,7 +43,7 @@ public class TinyUSBActivatorFactory extends EventTransactionActivatorFactory<Ev
     private Map<String, EventTransactionActivator> activatorRegistry = new HashMap<>();
     private String id = BeanUtils.generateName(this);
 
-    private TinyUSBActivatorFactory() {
+    private TOSRUSBRelayActivatorFactory() {
         super("TinyUSBActivator");
     }
 
@@ -46,8 +60,8 @@ public class TinyUSBActivatorFactory extends EventTransactionActivatorFactory<Ev
             for (int di = 0; di < devices.length; ++di) {
                 for (int i = 0; i < getRelaysPerDevice(); ++i) {
                     String id = di + "," + i;
-                    EventTransactionActivator<TinyUSBActivatorFactory, ActivatorCommand> activator = new EventTransactionActivator<>(this);
-                    activator.getId().put(PROVIDER_ID, getId());
+                    EventTransactionActivator<TOSRUSBRelayActivatorFactory, ActivatorCommand> activator = new EventTransactionActivator<>(this);
+                    activator.getId().put(ActivatorFactory.PROVIDER_ID, getId());
                     activator.getId().put(RELAY_ID, i);
                     activator.getId().put(DEVICE_ID, di);
                     activator.allowSetState(true);

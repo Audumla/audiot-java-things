@@ -1,4 +1,4 @@
-package net.audumla.devices.activator;
+package net.audumla.devices.activator.factory;
 
 /*
  * *********************************************************************
@@ -15,6 +15,9 @@ package net.audumla.devices.activator;
  *  "AS IS BASIS", WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and limitations under the License.
  */
+
+import net.audumla.devices.activator.Activator;
+import net.audumla.devices.activator.ActivatorState;
 
 import java.util.Collection;
 import java.util.Map;

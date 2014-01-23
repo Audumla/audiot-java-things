@@ -1,4 +1,4 @@
-package net.audumla.devices.activator.rpi;
+package net.audumla.devices.activator.factory;
 
 /*
  * *********************************************************************
@@ -17,7 +17,6 @@ package net.audumla.devices.activator.rpi;
  */
 
 import com.pi4j.io.gpio.PinEdge;
-import com.pi4j.io.gpio.PinMode;
 import com.pi4j.wiringpi.Gpio;
 import net.audumla.devices.activator.ActivatorCommand;
 import net.audumla.devices.activator.EventTransactionActivator;
@@ -33,13 +32,13 @@ public class RPIGPIOActivator extends EventTransactionActivator<RPIGPIOActivator
     protected int pin;
     protected int resistance = Gpio.PUD_OFF;
 
-    public RPIGPIOActivator(int pin, String name, RPIGPIOActivatorFactory rpigpioActivatorFactory) {
+    public RPIGPIOActivator(int pin, RPIGPIOActivatorFactory.GPIOName name, RPIGPIOActivatorFactory rpigpioActivatorFactory) {
         super(rpigpioActivatorFactory);
         setPullResistance(resistance);
         this.pin = pin;
-        setName(name);
+        setName(name.name());
         getId().setProperty(GPIO_PIN, String.valueOf(pin));
-        getId().setProperty(GPIO_NAME, name);
+        getId().setProperty(GPIO_NAME, name.name());
     }
 
 
