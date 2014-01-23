@@ -17,10 +17,13 @@ public class LCDJUnitListener extends RunListener {
     public LCDJUnitListener() {
         if (target.initialize()) {
             logger.debug("Loaded JUnit RPII2CLCD Listener");
-            scheduler.registerEventTarget(target);
+            scheduler.registerEventTarget(target,target.getName());
             try {
                 target.write("LCD Started");
-            } catch (Exception e) {
+                scheduler.publishEvent(target.getName(),
+                        new LCDClearCommand(),
+                        new LCDWriteCommand("Testing"),
+                        new LCDPauseCommand()).begin();            } catch (Exception e) {
                 e.printStackTrace();
             }
         } else {
@@ -82,7 +85,7 @@ public class LCDJUnitListener extends RunListener {
                 new LCDSetCursorCommand(0, 2),
                 new LCDWriteCommand("Tests failed:" + result.getFailureCount()),
                 new LCDPauseCommand()).begin();
-        scheduler.shutdown();
+//        scheduler.shutdown();
     }
 
 }
