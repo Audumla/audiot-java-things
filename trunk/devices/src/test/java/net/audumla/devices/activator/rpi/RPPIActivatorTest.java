@@ -26,7 +26,9 @@ public class RPPIActivatorTest {
     @Test
     public void testGPIOPins() throws Exception {
         RPIGPIOActivatorFactory rpi = new RPIGPIOActivatorFactory();
-        rpi.getActivators();
+        for (RPIGPIOActivator a : rpi.getActivators()) {
+            assert a.getName() != null;
+        }
 
     }
 }

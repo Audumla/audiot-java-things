@@ -28,15 +28,18 @@ public class RPIGPIOActivator extends EventTransactionActivator<RPIGPIOActivator
     private static final Logger logger = LoggerFactory.getLogger(RPIGPIOActivator.class);
 
     public static String GPIO_PIN = "gpio_pin";
+    public static String GPIO_NAME = "gpio_name";
 
     protected int pin;
     protected int resistance = Gpio.PUD_OFF;
 
-    public RPIGPIOActivator(int pin, RPIGPIOActivatorFactory rpigpioActivatorFactory) {
+    public RPIGPIOActivator(int pin, String name, RPIGPIOActivatorFactory rpigpioActivatorFactory) {
         super(rpigpioActivatorFactory);
         setPullResistance(resistance);
         this.pin = pin;
+        setName(name);
         getId().setProperty(GPIO_PIN, String.valueOf(pin));
+        getId().setProperty(GPIO_NAME, name);
     }
 
 
