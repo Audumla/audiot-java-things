@@ -28,6 +28,7 @@ package net.audumla.devices.lcd.rpi;
 
 import com.pi4j.system.NetworkInfo;
 import com.pi4j.system.SystemInfo;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -40,6 +41,7 @@ import java.text.ParseException;
  */
 public class RaspberryInfo {
 
+    @Test
     public void getInfo() throws InterruptedException, IOException, ParseException {
 
         // display a few of the available system information properties
