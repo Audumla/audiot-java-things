@@ -1,4 +1,4 @@
-package net.audumla.devices.activator;
+package net.audumla.devices.activator.rpi;
 
 /*
  * *********************************************************************
@@ -16,24 +16,17 @@ package net.audumla.devices.activator;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class EventTransactionActivator<TProvider extends EventTransactionActivatorFactory, TEvent extends ActivatorCommand> extends EventTargetActivator<TProvider, TEvent> {
-    private static final Logger logger = LoggerFactory.getLogger(EventTransactionActivator.class);
+public class RPPIActivatorTest {
+    private static final Logger logger = LoggerFactory.getLogger(RPPIActivatorTest.class);
 
-    public EventTransactionActivator(TProvider provider) {
-        super(provider);
+    @Test
+    public void testGPIOPins() throws Exception {
+        RPIGPIOActivatorFactory rpi = new RPIGPIOActivatorFactory();
+        rpi.getActivators();
+
     }
-
-    @Override
-    protected void executeStateChange(ActivatorState newstate) throws Exception {
-        getProvider().setState(this, newstate);
-    }
-
-    @Override
-    public void handleEvent(TEvent event) throws Throwable {
-        event.getEventTransaction().addTransactionListener(getProvider());
-    }
-
 }
