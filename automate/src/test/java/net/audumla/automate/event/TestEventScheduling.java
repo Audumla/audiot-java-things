@@ -27,29 +27,20 @@ import java.util.concurrent.atomic.AtomicReference;
 public class TestEventScheduling {
     private static final Logger logger = LoggerFactory.getLogger(TestEventScheduling.class);
 
-    @After
-    public void tearDown() throws Exception {
-        EventScheduler.getDefaultEventScheduler().shutdown();
-    }
-
-    @Before
-    public void setUp() throws Exception {
-        EventScheduler.getDefaultEventScheduler().initialize();
-    }
-
     @Test
     public void testWildCardTopic() throws Exception {
         AtomicReference<Integer> count = new AtomicReference<Integer>(0);
 
-        EventScheduler.getDefaultEventScheduler().registerEventTarget(event -> {
+        ThreadPoolEventScheduler scheduler = new ThreadPoolEventScheduler();
+        scheduler.registerEventTarget(event -> {
             count.set(count.get() + 1);
         }, "event.*");
-        EventScheduler.getDefaultEventScheduler().publishEvent("event.1", new AbstractEvent()).begin();
-        EventScheduler.getDefaultEventScheduler().publishEvent("event.2", new AbstractEvent()).begin();
-        EventScheduler.getDefaultEventScheduler().publishEvent("event1", new AbstractEvent()).begin();
+        scheduler.publishEvent("event.1", new AbstractEvent()).begin();
+        scheduler.publishEvent("event.2", new AbstractEvent()).begin();
+        scheduler.publishEvent("event1", new AbstractEvent()).begin();
 
         synchronized (this) {
-            this.wait(100000);
+            this.wait(1000);
         }
 
         assert count.get() == 2;
@@ -59,15 +50,16 @@ public class TestEventScheduling {
     public void testFailingTransactionModification() throws Exception {
         AtomicReference<Integer> count = new AtomicReference<Integer>(0);
 
-        EventScheduler.getDefaultEventScheduler().registerEventTarget(event -> {
+        ThreadPoolEventScheduler scheduler = new ThreadPoolEventScheduler();
+               scheduler.registerEventTarget(event -> {
             synchronized (this) {
                 count.set(count.get() + 1);
-                this.wait(500);
+                this.wait(300);
             }
         }, "event.*");
 
 
-        EventTransaction tr = EventScheduler.getDefaultEventScheduler().publishEvent("event.1", new AbstractEvent());
+        EventTransaction tr = scheduler.publishEvent("event.1", new AbstractEvent());
         tr.publishEvent("event.2", new AbstractEvent());
         tr.publishEvent("event1", new AbstractEvent());
         tr.begin();
@@ -81,7 +73,7 @@ public class TestEventScheduling {
             } catch (Exception ex) {
 
             }
-            this.wait(200);
+            this.wait(1000);
         }
 
 

@@ -18,9 +18,11 @@ package net.audumla.devices.activator;
 
 import net.audumla.automate.event.EventTransaction;
 import net.audumla.automate.event.EventTransactionListener;
+import net.audumla.collections.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collection;
 import java.util.Map;
 
 public abstract class EventTransactionActivatorFactory<TActivator extends EventTargetActivator> implements ActivatorFactory<TActivator>, EventTransactionListener<ActivatorCommand, TActivator> {
@@ -41,11 +43,11 @@ public abstract class EventTransactionActivatorFactory<TActivator extends EventT
     }
 
     @Override
-    public boolean onTransactionCommit(EventTransaction transaction, Map<TActivator, ActivatorCommand> events) throws Exception {
+    public boolean onTransactionCommit(EventTransaction transaction, Collection<Pair<TActivator, ActivatorCommand>> events) throws Exception {
         // this should be overridden to commit all the states as an atomic transaction
         boolean result = true;
-        for (Map.Entry<TActivator, ActivatorCommand> e : events.entrySet()) {
-            result &= e.getKey().setState(e.getValue().getNewState());
+        for (Pair<TActivator, ActivatorCommand> e : events) {
+            result &= e.getItem1().setState(e.getItem2().getNewState());
         }
         return result;
     }
