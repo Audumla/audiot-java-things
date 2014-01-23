@@ -29,24 +29,24 @@ public abstract class AbstractEventScheduler implements EventScheduler {
 
     protected Map<Pattern, EventTarget> targetRegistry = new HashMap<>();
 
-    protected abstract class SimpleEventTransaction implements EventTransaction {
+    protected abstract class AbstractEventTransaction implements EventTransaction {
 
         private EventTransactionStatus status = new DefaultEventStatus();
         private final EventScheduler eventScheduler;
         private boolean rollbackOnError = true;
         private boolean autoCommit = true;
         private String id = BeanUtils.generateName(this);
-        private Map<Event, EventTarget> handledEvents = new HashMap<>();
-        private Collection<EventTransactionListener> listeners = new HashSet<EventTransactionListener>();
+        private Map<EventTarget,Event> handledEvents = new HashMap<>();
+        private Collection<EventTransactionListener> listeners = new HashSet<>();
         private Map<String[], Event[]> topicEventMap = new HashMap<>();
         private EventSchedule schedule;
 
-        protected SimpleEventTransaction(EventScheduler scheduler, EventSchedule schedule) {
+        protected AbstractEventTransaction(EventScheduler scheduler, EventSchedule schedule) {
             this.eventScheduler = scheduler;
             this.schedule = schedule;
         }
 
-        protected SimpleEventTransaction(EventScheduler scheduler) {
+        protected AbstractEventTransaction(EventScheduler scheduler) {
             this.eventScheduler = scheduler;
         }
 
@@ -131,7 +131,7 @@ public abstract class AbstractEventScheduler implements EventScheduler {
         }
 
         protected void addHandledEvent(EventTarget target, Event event) {
-            handledEvents.put(event, target);
+            handledEvents.put(target,event);
         }
 
         protected Collection<EventTransactionListener> getListeners() {
@@ -148,7 +148,7 @@ public abstract class AbstractEventScheduler implements EventScheduler {
             }
         }
 
-        public Map<? extends Event, ? extends EventTarget> getHandledEvents() {
+        public Map<? extends EventTarget, ? extends Event> getHandledEvents() {
             return handledEvents;
         }
 
@@ -157,27 +157,27 @@ public abstract class AbstractEventScheduler implements EventScheduler {
             getStatus().setState(EventState.ROLLINGBACK);
             boolean result = true;
             Collection<EventState> transactionStates = new HashSet<>();
-            for (Map.Entry<? extends Event, ? extends EventTarget> ev : getHandledEvents().entrySet()) {
+            for (Map.Entry<? extends EventTarget, ? extends Event> ev : getHandledEvents().entrySet()) {
                 // only role back command events and events that actually completed their execution
-                ev.getKey().getStatus().setState(EventState.ROLLINGBACK);
+                ev.getValue().getStatus().setState(EventState.ROLLINGBACK);
                 try {
-                    if (ev.getValue() instanceof RollbackEventTarget) {
-                        RollbackEventTarget ret = (RollbackEventTarget) ev.getValue();
-                        if (!ret.rollbackEvent(ev.getKey())) {
-                            ev.getKey().getStatus().setFailed(null, "Event Handler Failed to roll back");
-                            ev.getKey().getStatus().setState(EventState.FAILEDROLLBACK);
+                    if (ev.getKey() instanceof RollbackEventTarget) {
+                        RollbackEventTarget ret = (RollbackEventTarget) ev.getKey();
+                        if (!ret.rollbackEvent(ev.getValue())) {
+                            ev.getValue().getStatus().setFailed(null, "Event Handler Failed to roll back");
+                            ev.getValue().getStatus().setState(EventState.FAILEDROLLBACK);
                         } else {
-                            ev.getKey().getStatus().setState(EventState.ROLLEDBACK);
+                            ev.getValue().getStatus().setState(EventState.ROLLEDBACK);
                         }
                     } else {
-                        ev.getKey().getStatus().setFailed(null, "Event target does not handle roll back");
-                        ev.getKey().getStatus().setState(EventState.FAILEDROLLBACK);
+                        ev.getValue().getStatus().setFailed(null, "Event target does not handle roll back");
+                        ev.getValue().getStatus().setState(EventState.FAILEDROLLBACK);
                     }
                 } catch (Throwable th) {
-                    ev.getKey().getStatus().setFailed(th, "Failed to roll back event");
-                    ev.getKey().getStatus().setState(EventState.FAILEDROLLBACK);
+                    ev.getValue().getStatus().setFailed(th, "Failed to roll back event");
+                    ev.getValue().getStatus().setState(EventState.FAILEDROLLBACK);
                 } finally {
-                    transactionStates.add(ev.getKey().getStatus().getState());
+                    transactionStates.add(ev.getValue().getStatus().getState());
                 }
             }
             getStatus().setState(getRollbackStatus(transactionStates));
@@ -223,9 +223,7 @@ public abstract class AbstractEventScheduler implements EventScheduler {
                                 // clone the original event so that we can keep track of each status for each handler
                                 nev = ev.clone();
                                 addHandledEvent(et, nev);
-                                if (!et.handleEvent(nev)) {
-                                    throw new Exception("Failed to execute Event");
-                                }
+                                et.handleEvent(nev);
                                 nev.getStatus().setState(EventState.COMPLETE);
                             } catch (CloneNotSupportedException ex) {
                                 nev.getStatus().setFailed(ex, "Failed to clone Event");

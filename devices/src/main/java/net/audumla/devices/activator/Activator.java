@@ -16,11 +16,9 @@ package net.audumla.devices.activator;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import net.audumla.automate.event.*;
-
 import java.util.Properties;
 
-public interface Activator<TProvider extends ActivatorProvider>   {
+public interface Activator {
 
     /**
      * It is up to implementation classes to determine the name that will applied to an activator
@@ -43,14 +41,14 @@ public interface Activator<TProvider extends ActivatorProvider>   {
      * @return returns true if the activation was successful otherwise false is returned
      */
 
-    boolean updateState(ActivatorState state);
+    boolean setState(ActivatorState state) throws Exception;
 
     /**
      * The current state of the activator. Upon initialization the state should be UNKNOWN until a successful call to either activate or deactivate has been made
      *
      * @return the current state of the activator.
      */
-    ActivatorState getCurrentState();
+    ActivatorState getState();
 
     /**
      * It is up to implementation classes to determine the name that will applied to an activator
@@ -60,9 +58,33 @@ public interface Activator<TProvider extends ActivatorProvider>   {
     Properties getId();
 
     /**
-     *
-     * @return the provider that manages this activator. May return null if no provider exists for this activator
+     * Specifies whether this activator can recieve setState requests.
+     * If this is false then only get requests for states will be allowed with the result being determined by the activator implementation
+     * If true then calls to set the state will be handled by the underlying activator implementation to store that state
+     * @param set whether sets state is enabled
      */
-    TProvider getProvider();
+    void allowSetState(boolean set);
+
+    /**
+     *
+     * @return the current mode for the SetState functionality
+     */
+    boolean canSetState();
+
+    /**
+     * Specifies whether this activator can handle variable states. If not then only Activate and Deactivate states can be applied
+     * @param var true to allow variable states
+     */
+    void allowVariableState(boolean var);
+
+    /**
+     *
+     * @return whether this activator can handle variable states
+     */
+    boolean hasVariableState();
+
+
+
+
 
 }

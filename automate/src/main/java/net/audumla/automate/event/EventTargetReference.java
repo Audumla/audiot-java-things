@@ -49,8 +49,8 @@ public class EventTargetReference implements EventTarget {
     }
 
     @Override
-    public boolean handleEvent(Event event) throws Throwable {
-        return target != null && target.handleEvent(event);
+    public void handleEvent(Event event) throws Throwable {
+        target.handleEvent(event);
     }
 
     @Override

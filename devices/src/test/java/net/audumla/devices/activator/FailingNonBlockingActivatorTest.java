@@ -30,18 +30,18 @@ public class FailingNonBlockingActivatorTest {
     }
 
     public void stateChangeAllFailure(EventTargetActivator activator) throws Exception {
-        assert activator.getCurrentState() == ActivatorState.UNKNOWN;
+        assert activator.getState() == ActivatorState.UNKNOWN;
         activator.getScheduler().publishEvent(activator.getName(), new ToggleActivatorCommand(Duration.ofSeconds(1))).begin();
-//        assert activator.getCurrentState() == ActivatorState.UNKNOWN;
+//        assert activator.getState() == ActivatorState.UNKNOWN;
         synchronized (this) {
             try {
                 this.wait(1100);
-                assert activator.getCurrentState() == ActivatorState.UNKNOWN;
+                assert activator.getState() == ActivatorState.UNKNOWN;
             } catch (InterruptedException e) {
                 assert false;
             }
         }
-        assert activator.getCurrentState() == ActivatorState.UNKNOWN;
+        assert activator.getState() == ActivatorState.UNKNOWN;
     }
 
     @Test
@@ -59,20 +59,20 @@ public class FailingNonBlockingActivatorTest {
     }
 
     public void stateChangeActivateFailure(EventTargetActivator activator) throws Exception {
-        assert activator.getCurrentState() == ActivatorState.UNKNOWN;
+        assert activator.getState() == ActivatorState.UNKNOWN;
         activator.getScheduler().publishEvent(activator.getName(), new ToggleActivatorCommand(Duration.ofSeconds(1))).begin();
-//        assert activator.getCurrentState() == ActivatorState.DEACTIVATED;
+//        assert activator.getState() == ActivatorState.DEACTIVATED;
         synchronized (this) {
             try {
                 this.wait(500);
-                assert activator.getCurrentState() == ActivatorState.DEACTIVATED;
+                assert activator.getState() == ActivatorState.DEACTIVATED;
                 this.wait(1100);
-                assert activator.getCurrentState() == ActivatorState.DEACTIVATED;
+                assert activator.getState() == ActivatorState.DEACTIVATED;
             } catch (InterruptedException e) {
                 assert false;
             }
         }
-        assert activator.getCurrentState() == ActivatorState.DEACTIVATED;
+        assert activator.getState() == ActivatorState.DEACTIVATED;
     }
 
     @Test
@@ -93,7 +93,7 @@ public class FailingNonBlockingActivatorTest {
         ActivatorStateChangeEventTarget target = new ActivatorStateChangeEventTarget(activator);
         activator.getScheduler().registerEventTarget(target);
 
-        assert activator.getCurrentState() == ActivatorState.UNKNOWN;
+        assert activator.getState() == ActivatorState.UNKNOWN;
         assert target.states.isEmpty();
         activator.getScheduler().publishEvent(activator.getName(), new ToggleActivatorCommand(Duration.ofSeconds(3))).begin();
         synchronized (this) {
@@ -105,7 +105,7 @@ public class FailingNonBlockingActivatorTest {
         }
 //        assert target.states.contains(ActivatorState.ACTIVATED);
 //        assert target.states.contains(ActivatorState.DEACTIVATED);
-        assert activator.getCurrentState() == ActivatorState.UNKNOWN;
+        assert activator.getState() == ActivatorState.UNKNOWN;
         assert target.states.size() == 0;
     }
 

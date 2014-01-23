@@ -23,21 +23,21 @@ public class NonBlockingActivatorTest {
     public void testStateChange() throws Exception {
         ActivatorMock activator = new ActivatorMock(true, true);
         new ThreadPoolEventScheduler().registerEventTarget(activator);
-        assert activator.getCurrentState() == ActivatorState.UNKNOWN;
-        activator.updateState(ActivatorState.DEACTIVATED);
-        assert activator.getCurrentState() == ActivatorState.DEACTIVATED;
+        assert activator.getState() == ActivatorState.UNKNOWN;
+        activator.setState(ActivatorState.DEACTIVATED);
+        assert activator.getState() == ActivatorState.DEACTIVATED;
         activator.getScheduler().publishEvent(activator.getName(), new ToggleActivatorCommand(Duration.ofSeconds(2))).begin();
-//        assert activator.getCurrentState() == ActivatorState.ACTIVATED;
+//        assert activator.getState() == ActivatorState.ACTIVATED;
         synchronized (this) {
             try {
                 this.wait(1000);
-                assert activator.getCurrentState() == ActivatorState.ACTIVATED;
+                assert activator.getState() == ActivatorState.ACTIVATED;
                 this.wait(2100);
             } catch (InterruptedException e) {
                 assert false;
             }
         }
-        assert activator.getCurrentState() == ActivatorState.DEACTIVATED;
+        assert activator.getState() == ActivatorState.DEACTIVATED;
     }
 
     @Test
@@ -47,21 +47,21 @@ public class NonBlockingActivatorTest {
         ActivatorStateChangeEventTarget target = new ActivatorStateChangeEventTarget(activator);
         activator.getScheduler().registerEventTarget(target);
 
-        assert activator.getCurrentState() == ActivatorState.UNKNOWN;
+        assert activator.getState() == ActivatorState.UNKNOWN;
         assert target.states.isEmpty();
         activator.getScheduler().publishEvent(activator.getName(), new ToggleActivatorCommand(Duration.ofSeconds(2))).begin();
         synchronized (this) {
             try {
                 this.wait(1000);
                 assert target.states.contains(ActivatorState.ACTIVATED);
-                assert activator.getCurrentState() == ActivatorState.ACTIVATED;
+                assert activator.getState() == ActivatorState.ACTIVATED;
                 assert target.states.size() == 1;
                 this.wait(2100);
             } catch (InterruptedException e) {
                 assert false;
             }
         }
-        assert activator.getCurrentState() == ActivatorState.DEACTIVATED;
+        assert activator.getState() == ActivatorState.DEACTIVATED;
         assert target.states.contains(ActivatorState.DEACTIVATED);
         assert target.states.size() == 2;
     }

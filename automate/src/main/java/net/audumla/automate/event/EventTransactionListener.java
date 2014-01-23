@@ -23,6 +23,6 @@ import java.util.Map;
 
 public interface EventTransactionListener <TEvent extends Event, TEventTarget extends EventTarget>
 {
-    public  boolean onTransactionCommit(EventTransaction transaction, Map<TEvent, TEventTarget> events) throws Exception;
+    public  boolean onTransactionCommit(EventTransaction transaction, Map<TEventTarget,TEvent> events) throws Exception;
     boolean onTransactionBegin(EventTransaction transaction) throws Exception;
 }

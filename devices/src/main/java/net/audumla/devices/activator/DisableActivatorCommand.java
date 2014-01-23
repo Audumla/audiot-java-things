@@ -19,7 +19,7 @@ package net.audumla.devices.activator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DisableActivatorCommand extends SetActivatorStateCommand {
+public class DisableActivatorCommand extends ActivatorCommand {
     private static final Logger logger = LoggerFactory.getLogger(DisableActivatorCommand.class);
 
     public DisableActivatorCommand() {

@@ -44,7 +44,7 @@ public class TransactionActivatorTest {
         assert tr.getHandledEvents().size() == 4;
         int i = 0;
         for (Activator a : provider.getActivators()) {
-            if (a.getCurrentState().equals(ActivatorState.ACTIVATED)) {
+            if (a.getState().equals(ActivatorState.ACTIVATED)) {
                 ++i;
             }
         }

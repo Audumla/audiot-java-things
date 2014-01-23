@@ -21,23 +21,16 @@ import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.concurrent.Future;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.regex.Pattern;
-
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 public class ThreadLocalEventScheduler extends AbstractEventScheduler {
     private static final Logger logger = LoggerFactory.getLogger(ThreadLocalEventScheduler.class);
 
     protected Map<Pattern, EventTarget> targetRegistry = new HashMap<>();
 
-    protected class ThreadLocalEventTransaction extends SimpleEventTransaction {
+    protected class ThreadLocalEventTransaction extends AbstractEventTransaction {
 
         public ThreadLocalEventTransaction(EventScheduler scheduler, EventSchedule schedule) {
             super(scheduler, schedule);

@@ -35,9 +35,8 @@ public class ActivatorStateChangeEventTarget extends AbstractEventTarget<Activat
     }
 
     @Override
-    public boolean handleEvent(ActivatorStateChangeEvent event) throws Throwable {
+    public void handleEvent(ActivatorStateChangeEvent event) throws Throwable {
         states.add(event.getNewState());
-        return true;
     }
 
 }

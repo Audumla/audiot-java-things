@@ -1,6 +1,8 @@
 package net.audumla.devices.activator;
 
-import net.audumla.automate.event.*;
+import net.audumla.automate.event.AbstractEventTarget;
+import net.audumla.automate.event.RollbackEvent;
+import net.audumla.automate.event.RollbackEventTarget;
 import org.apache.log4j.Logger;
 
 import java.util.Properties;
@@ -13,12 +15,14 @@ import java.util.Properties;
  * Date: 10/09/13
  * Time: 3:13 PM
  */
-public abstract class EventTargetActivator<TProvider extends ActivatorProvider, TEvent extends Event> extends AbstractEventTarget<TEvent> implements RollbackEventTarget<RollbackEvent<Activator>>, EventTarget<TEvent>, Activator<TProvider> {
+public abstract class EventTargetActivator<TProvider extends ActivatorProvider, TEvent extends ActivatorCommand> extends AbstractEventTarget<TEvent> implements RollbackEventTarget<RollbackEvent<Activator>>, Activator {
 
     private static final Logger logger = Logger.getLogger(Activator.class);
     private ActivatorState state = ActivatorState.UNKNOWN;
     private Properties id = new Properties();
     private TProvider provider;
+    private boolean setVariable;
+    private boolean setState;
 
     protected EventTargetActivator(TProvider provider) {
         this.provider = provider;
@@ -32,7 +36,7 @@ public abstract class EventTargetActivator<TProvider extends ActivatorProvider, 
     }
 
     @Override
-    public ActivatorState getCurrentState() {
+    public ActivatorState getState() {
         return state;
     }
 
@@ -42,11 +46,11 @@ public abstract class EventTargetActivator<TProvider extends ActivatorProvider, 
     }
 
     @Override
-    public boolean updateState(ActivatorState newstate) {
-        if (!newstate.getValue().equals(getCurrentState().getValue())) {
+    public boolean setState(ActivatorState newstate) throws Exception {
+        if (!newstate.getValue().equals(getState().getValue())) {
             try {
                 executeStateChange(newstate);
-                ActivatorState oldState = getCurrentState();
+                ActivatorState oldState = getState();
                 setActiveState(newstate);
                 getScheduler().publishEvent(new ActivatorStateChangeEvent(oldState, newstate, this)).begin();
                 return true;
@@ -55,11 +59,12 @@ public abstract class EventTargetActivator<TProvider extends ActivatorProvider, 
                 if (!newstate.equals(ActivatorState.DEACTIVATED)) {
                     // We will attempt to deactivate the activator to bring it into a known off state.
                     setActiveState(ActivatorState.UNKNOWN);    // set the state to unknown as we are currently in an undefined state until we either successfully enable or disable.
-                    updateState(ActivatorState.DEACTIVATED); // now we attempt to deactivate the activator by recursively calling this method.
+                    setState(ActivatorState.DEACTIVATED); // now we attempt to deactivate the activator by recursively calling this method.
                 }
+                throw ex;
             }
         }
-        logger.trace("Cannot set Activator [" + getName() + "] to state [" + newstate.getName() + "] when state is already [" + getCurrentState() + "]");
+        logger.trace("Cannot set Activator [" + getName() + "] to state [" + newstate.getName() + "] when state is already [" + getState() + "]");
         return false;
     }
 
@@ -70,12 +75,36 @@ public abstract class EventTargetActivator<TProvider extends ActivatorProvider, 
         return event.rollback(this);
     }
 
-    @Override
     public TProvider getProvider() {
         return provider;
     }
 
+    @Override
+    public void handleEvent(TEvent event) throws Throwable {
+        setState(event.getNewState());
+    }
+
     public void setProvider(TProvider provider) {
         this.provider = provider;
+    }
+
+    @Override
+    public void allowSetState(boolean set) {
+        this.setState = set;
+    }
+
+    @Override
+    public boolean canSetState() {
+        return setState;
+    }
+
+    @Override
+    public void allowVariableState(boolean var) {
+        setVariable = var;
+    }
+
+    @Override
+    public boolean hasVariableState() {
+        return setVariable;
     }
 }

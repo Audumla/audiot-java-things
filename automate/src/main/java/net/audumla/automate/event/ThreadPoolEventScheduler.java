@@ -21,13 +21,9 @@ import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Map;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.regex.Pattern;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
@@ -36,7 +32,7 @@ public class ThreadPoolEventScheduler extends AbstractEventScheduler{
 
     protected ScheduledExecutorService schedulerService;
 
-    protected class ThreadPoolEventTransaction extends SimpleEventTransaction{
+    protected class ThreadPoolEventTransaction extends AbstractEventTransaction {
 
         private Future<?> future;
 

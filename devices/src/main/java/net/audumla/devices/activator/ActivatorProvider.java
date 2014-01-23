@@ -16,14 +16,7 @@ package net.audumla.devices.activator;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import net.audumla.automate.event.Event;
-import net.audumla.automate.event.EventTarget;
-import net.audumla.automate.event.EventTransactionListener;
-import net.audumla.devices.activator.Activator;
-import net.audumla.devices.activator.ActivatorState;
-
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -38,12 +31,16 @@ public interface ActivatorProvider<TActivator extends Activator> {
      * Performs any initialization that is required to startup the activitors
      * @throws Exception if the activiators cannot be started
      */
-    void initialize() throws Exception;
+    default void initialize() throws Exception {
+
+    }
 
     /**
      * performs any shut down activities. Generally this should deactivate all associated activators
      */
-    void shutdown() throws Exception;
+    default void shutdown() throws Exception {
+
+    }
 
     /**
      *
@@ -70,7 +67,20 @@ public interface ActivatorProvider<TActivator extends Activator> {
      * @param newStates a Map containing the activator as the key and the new state that should be assigned to that activator
      * @return true if the assignment of the activators completed successfully
      */
-    default boolean setCurrentStates(Map<Activator,ActivatorState> newStates) throws Exception {
-        return false;
+    default boolean setStates(Map<TActivator, ActivatorState> newStates) throws Exception {
+        boolean result = true;
+        for (Map.Entry<TActivator, ActivatorState> e : newStates.entrySet()) {
+             result &= setState(e.getKey(), e.getValue());
+        }
+        return result;
     }
+
+    /**
+     * Performs an update on a single activator to the given state.
+     *
+     * @param activator the activator that will be assigned the new state
+     * @param newState new state that should be assigned to that activator
+     * @return true if the assignment of the activators completed successfully
+     */
+    boolean setState(TActivator activator, ActivatorState newState) throws Exception;
 }
