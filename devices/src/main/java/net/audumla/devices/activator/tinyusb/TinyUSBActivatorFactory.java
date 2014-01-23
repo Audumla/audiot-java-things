@@ -98,11 +98,6 @@ public class TinyUSBActivatorFactory extends EventTransactionActivatorFactory<Ev
     }
 
     @Override
-    public boolean setStates(Map newStates) throws Exception {
-        return false;
-    }
-
-    @Override
     public boolean setState(EventTransactionActivator activator, ActivatorState newState) throws Exception {
         int deviceid = Integer.parseInt(activator.getId().getProperty(DEVICE_ID));
         int relayid = Integer.parseInt(activator.getId().getProperty(RELAY_ID));

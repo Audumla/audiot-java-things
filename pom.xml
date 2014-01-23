@@ -77,7 +77,7 @@
     <modules>
         <module>devices</module>
         <module>climate</module>
-        <module>irrigation</module>
+        <!--<module>irrigation</module>-->
         <module>commons</module>
         <module>automate</module>
         <module>ftd2xxj</module>
