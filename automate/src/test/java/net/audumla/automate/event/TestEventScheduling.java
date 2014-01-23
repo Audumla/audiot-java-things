@@ -16,8 +16,6 @@ package net.audumla.automate.event;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +24,80 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class TestEventScheduling {
     private static final Logger logger = LoggerFactory.getLogger(TestEventScheduling.class);
+
+    @Test
+    public void testMultiEventOnSingleTopicWithSeperatelyExecutedTransactions() throws Exception {
+        AtomicReference<Integer> count = new AtomicReference<Integer>(0);
+
+        ThreadPoolEventScheduler scheduler = new ThreadPoolEventScheduler();
+        scheduler.registerEventTarget(event -> {
+            count.set(count.get() + 1);
+        }, "event.*");
+        scheduler.publishEvent("event.1", new AbstractEvent()).begin();
+        scheduler.publishEvent("event.1", new AbstractEvent()).begin();
+        scheduler.publishEvent("event.1", new AbstractEvent()).begin();
+        scheduler.publishEvent("event1", new AbstractEvent()).begin();
+        scheduler.publishEvent("bla", new AbstractEvent()).begin();
+
+        synchronized (this) {
+            this.wait(1000);
+        }
+
+        assert count.get() == 3;
+    }
+
+    @Test
+    public void testMultiEventOnSingleTopicWithSingleAtomicTransaction() throws Exception {
+        AtomicReference<Integer> count = new AtomicReference<Integer>(0);
+
+        ThreadPoolEventScheduler scheduler = new ThreadPoolEventScheduler();
+        scheduler.registerEventTarget(new EventTarget<ValueEvent>() {
+            int lastValue = 0;
+            @Override
+            public void handleEvent(ValueEvent event) throws Throwable {
+                assert lastValue < event.value;
+                lastValue = event.value;
+                count.set(count.get() + 1);
+            }
+        }, "event.*");
+        EventTransaction tr = scheduler.publishEvent("event.1", new ValueEvent(1), new ValueEvent(2), new ValueEvent(3));
+        tr.publishEvent("event1", new ValueEvent(1), new ValueEvent(1), new ValueEvent(1));
+        tr.begin();
+
+        synchronized (this) {
+            this.wait(1000);
+        }
+
+        assert count.get() == 3;
+    }
+
+    @Test
+    public void testMultiEventOnSingleTopicWithSingleTransaction() throws Exception {
+        AtomicReference<Integer> count = new AtomicReference<Integer>(0);
+
+        ThreadPoolEventScheduler scheduler = new ThreadPoolEventScheduler();
+        scheduler.registerEventTarget(new EventTarget<ValueEvent>() {
+            int lastValue = 0;
+            @Override
+            public void handleEvent(ValueEvent event) throws Throwable {
+                assert lastValue < event.value;
+                lastValue = event.value;
+                count.set(count.get() + 1);
+            }
+        }, "event.*");
+        EventTransaction tr = scheduler.publishEvent("event.1", new ValueEvent(1));
+        tr.publishEvent("event.1", new ValueEvent(2));
+        tr.publishEvent("event.1", new ValueEvent(3));
+        tr.publishEvent("event1", new ValueEvent(0));
+        tr.begin();
+
+        synchronized (this) {
+            this.wait(1000);
+        }
+
+        assert count.get() == 3;
+    }
+
 
     @Test
     public void testWildCardTopic() throws Exception {
@@ -51,7 +123,7 @@ public class TestEventScheduling {
         AtomicReference<Integer> count = new AtomicReference<Integer>(0);
 
         ThreadPoolEventScheduler scheduler = new ThreadPoolEventScheduler();
-               scheduler.registerEventTarget(event -> {
+        scheduler.registerEventTarget(event -> {
             synchronized (this) {
                 count.set(count.get() + 1);
                 this.wait(300);

@@ -19,7 +19,23 @@ package net.audumla.automate.event;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DefaultTransactionStatus  {
-    private static final Logger logger = LoggerFactory.getLogger(DefaultTransactionStatus.class);
+public class ValueEvent extends AbstractEvent{
+    private static final Logger logger = LoggerFactory.getLogger(ValueEvent.class);
 
+    int value;
+
+    public ValueEvent(int value) {
+        this.value = value;
+    }
+
+    public ValueEvent() {
+    }
+
+    public int getValue() {
+        return value;
+    }
+
+    public void setValue(int value) {
+        this.value = value;
+    }
 }
