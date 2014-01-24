@@ -61,6 +61,7 @@ public abstract class EventTargetActivator<TFactory extends ActivatorFactory, TE
                     }
                     return true;
                 } catch (Exception ex) {
+                    logger.trace("Failed to set Activator [" + getName() + "] to state [" + newstate.getName() + "]",ex);
                     // we should attempt to deactivate the activator if we were not already attempting to do so
                     if (!newstate.equals(ActivatorState.DEACTIVATED)) {
                         // We will attempt to deactivate the activator to bring it into a known off state.
