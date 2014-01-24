@@ -57,7 +57,7 @@ public class RPPIActivatorTest {
         pins.add(rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO3));
         pins.add(rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.SPI_MOSI));
         pins.add(rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.SPI_SCLK));
-        pins.add(rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.SPI_MOSI));
+        pins.add(rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.SPI_MISO));
         pins.add(rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.SPI_CE0));
         pins.add(rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.SPI_CE1));
 
@@ -76,11 +76,11 @@ public class RPPIActivatorTest {
         power.setState(ActivatorState.ACTIVATED);
 
 
-        for (int i = 0; i < 10; ++i) {
+        for (int i = 0; i < 40; ++i) {
             for (Activator a : pins) {
                 a.setState(ActivatorState.DEACTIVATED);
                 synchronized (this) {
-                    wait(200);
+                    wait(20);
                 }
                 a.setState(ActivatorState.ACTIVATED);
 

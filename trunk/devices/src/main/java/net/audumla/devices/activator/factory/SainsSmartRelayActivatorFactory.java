@@ -29,16 +29,29 @@ import java.util.Properties;
 
 public class SainsSmartRelayActivatorFactory extends EventTransactionActivatorFactory<EventTransactionActivator> {
     private static final Logger logger = LoggerFactory.getLogger(SainsSmartRelayActivatorFactory.class);
-    protected int relayCount = 8;
+    private final Activator[] sourcePins;
+    private final Activator power;
 
-    protected SainsSmartRelayActivatorFactory(String id, int relayCount, Activator power, Activator[] relayActvators) {
+    public SainsSmartRelayActivatorFactory(String id, Activator power, Activator[] sourcePins) {
         super(id);
-        this.relayCount = relayCount;
+        this.power = power;
+        this.sourcePins = sourcePins;
     }
 
     @Override
     public void initialize() throws Exception {
+        power.allowVariableState(false);
+        power.allowSetState(true);
+        power.setState(ActivatorState.DEACTIVATED);
 
+        for (Activator a : sourcePins) {
+            assert a != null;
+            a.allowVariableState(false);
+            a.allowSetState(true);
+            a.setState(ActivatorState.ACTIVATED);
+        }
+
+        power.setState(ActivatorState.ACTIVATED);
     }
 
     @Override
