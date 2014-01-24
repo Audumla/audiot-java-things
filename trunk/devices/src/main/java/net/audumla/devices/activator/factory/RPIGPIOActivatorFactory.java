@@ -28,7 +28,7 @@ import java.util.Collection;
 import java.util.Properties;
 
 public class RPIGPIOActivatorFactory extends EventTransactionActivatorFactory<RPIGPIOActivator> {
-    private org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(RPIGPIOActivatorFactory.class);
+    private static final Logger logger = LoggerFactory.getLogger(RPIGPIOActivatorFactory.class);
 
     protected ArrayList<RPIGPIOActivator> activators = new ArrayList<>();
     // the pin names and assignments are based on
@@ -50,10 +50,10 @@ public class RPIGPIOActivatorFactory extends EventTransactionActivatorFactory<RP
 
         int revisionIndex = Gpio.piBoardRev() - 1;
         if (revisionIndex < 2) {
-            logger.error("Identified RaspberryPI revision - " + Gpio.piBoardRev());
-            for (int i = 0; i > GPIOPinRevisions[revisionIndex].length; ++i) {
-                activators.add(new RPIGPIOActivator(GPIOPinRevisions[revisionIndex][i], GPIOName.values()[i], this));
+            logger.info("Identified RaspberryPI revision - " + Gpio.piBoardRev());
+            for (int i = 0; i < GPIOPinRevisions[revisionIndex].length; ++i) {
                 logger.debug("Registering RaspberryPI pin ["+GPIOPinRevisions[revisionIndex][i]+":"+GPIOName.values()[i].name()+"]");
+                activators.add(new RPIGPIOActivator(GPIOPinRevisions[revisionIndex][i], GPIOName.values()[i], this));
             }
 
         } else {

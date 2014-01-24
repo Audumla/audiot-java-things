@@ -24,7 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class RPIGPIOActivator extends EventTransactionActivator<RPIGPIOActivatorFactory, ActivatorCommand> {
-    private org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(RPIGPIOActivator.class);
+    private static final Logger logger = LoggerFactory.getLogger(RPIGPIOActivator.class);
 
     public static String GPIO_PIN = "gpio_pin";
     public static String GPIO_NAME = "gpio_name";
