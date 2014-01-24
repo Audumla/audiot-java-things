@@ -52,6 +52,9 @@ public class PCF8574GPIOActivatorFactory extends EventTransactionActivatorFactor
     public static final int PCF8574A_0x3E = 0x3E; // 110
     public static final int PCF8574A_0x3F = 0x3F; // 111
 
+    protected static final int PCF8574_WRITE = 0x40;
+    protected static final int PCF8574_READ = 0x41;
+
     public static final int PCF8574_MAX_IO_PINS = 8;
 
     private I2CDevice device;
@@ -87,7 +90,7 @@ public class PCF8574GPIOActivatorFactory extends EventTransactionActivatorFactor
     public boolean setState(PCF8547GPIOActivator activator, ActivatorState newState) throws Exception {
         // set state value for pin bit
         currentStates.set(activator.getPin(), newState.equals(ActivatorState.DEACTIVATED));
-        device.write(currentStates.toByteArray()[0]);
+        device.write(PCF8574_WRITE,currentStates.toByteArray()[0]);
         return true;
     }
 
