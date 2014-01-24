@@ -63,7 +63,7 @@ public class PCF8574GPIOActivatorFactory extends EventTransactionActivatorFactor
     private Collection<PCF8547GPIOActivator> pins = new ArrayList<>();
 
     public PCF8574GPIOActivatorFactory(I2CDevice device) throws IOException {
-        super("PCF8674 GPIO Expander "+ SafeParse.getHex((byte) device.getAddress()));
+        super("PCF8674 GPIO Expander 0x"+ SafeParse.getHex((byte) device.getAddress()));
         this.device = device;
 
         // set all default pin cache states to match documented chip power up states
@@ -90,8 +90,8 @@ public class PCF8574GPIOActivatorFactory extends EventTransactionActivatorFactor
     @Override
     public boolean setState(PCF8547GPIOActivator activator, ActivatorState newState) throws Exception {
         // set state value for pin bit
-        if (currentStates.get(activator.getPin()) != newState.equals(ActivatorState.DEACTIVATED)) {
-            currentStates.set(activator.getPin(), newState.equals(ActivatorState.DEACTIVATED));
+        if (currentStates.get(activator.getPin()) == newState.equals(ActivatorState.DEACTIVATED)) {
+            currentStates.set(activator.getPin(), !newState.equals(ActivatorState.DEACTIVATED));
             if (currentStates.toByteArray().length == 0) {
                 device.write(PCF8574_WRITE, (byte) 0x00);
             } else {
