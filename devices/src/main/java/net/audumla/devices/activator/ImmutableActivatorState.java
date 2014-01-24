@@ -51,4 +51,22 @@ public class ImmutableActivatorState implements ActivatorState {
             return getName();
         }
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ImmutableActivatorState)) return false;
+
+        ImmutableActivatorState that = (ImmutableActivatorState) o;
+
+        return value.equals(that.value);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = value.hashCode();
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        return result;
+    }
 }

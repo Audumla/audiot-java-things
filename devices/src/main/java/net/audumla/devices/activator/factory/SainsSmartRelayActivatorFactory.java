@@ -93,8 +93,8 @@ public class SainsSmartRelayActivatorFactory extends EventTransactionActivatorFa
             }
             int i = 0;
             for (Activator a : sourcePins) {
-                relays.add(new SainsSmartRelayActivator(this, a, i++));
                 logger.debug("Associating SainsSmart Relay #"+i+" to "+a.getName());
+                relays.add(new SainsSmartRelayActivator(this, a, i++));
             }
         } catch (Exception e) {
             logger.error("Unable to configure source pins for SainsSmart Relay board", e);
