@@ -38,7 +38,7 @@ public class RPIGPIOActivator extends EventTransactionActivator<RPIGPIOActivator
         this.pin = pin;
         setName(name.name());
         getId().setProperty(GPIO_PIN, String.valueOf(pin));
-        getId().setProperty(GPIO_NAME, name.name());
+        getId().setProperty(GPIO_NAME, name.toString());
     }
 
 
