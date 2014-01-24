@@ -90,7 +90,7 @@ public class RPIGPIOActivatorFactory extends EventTransactionActivatorFactory<RP
 
     public RPIGPIOActivator getActivator(GPIOName name) {
         for (RPIGPIOActivator a : activators) {
-            if (a.getId().getProperty(RPIGPIOActivator.GPIO_NAME).equals(name.name())) {
+            if (a.getId().getProperty(RPIGPIOActivator.GPIO_NAME).equals(name.toString())) {
                 return a;
             }
         }

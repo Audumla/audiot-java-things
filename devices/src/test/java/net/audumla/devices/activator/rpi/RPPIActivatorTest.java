@@ -33,6 +33,7 @@ public class RPPIActivatorTest {
     @Test
     public void testGPIOPins() throws Exception {
         RPIGPIOActivatorFactory rpi = new RPIGPIOActivatorFactory();
+        assert rpi.getActivators().size() > 0;
         for (RPIGPIOActivator a : rpi.getActivators()) {
             RPIGPIOActivatorFactory.GPIOName.valueOf(a.getName());
         }
@@ -51,16 +52,18 @@ public class RPPIActivatorTest {
         pins.add(rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.SPI_CE0));
         pins.add(rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.SPI_CE1));
 
+        for (Activator a : pins) {
+            assert a != null;
+            a.allowVariableState(false);
+            a.allowSetState(true);
+            a.setState(ActivatorState.ACTIVATED);
+        }
+
         Activator power = rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO6);
         power.allowVariableState(false);
         power.allowSetState(true);
         power.setState(ActivatorState.DEACTIVATED);
 
-        for (Activator a : pins) {
-            a.allowVariableState(false);
-            a.allowSetState(true);
-            power.setState(ActivatorState.ACTIVATED);
-        }
 
         for (Activator a : pins) {
             a.setState(ActivatorState.DEACTIVATED);
