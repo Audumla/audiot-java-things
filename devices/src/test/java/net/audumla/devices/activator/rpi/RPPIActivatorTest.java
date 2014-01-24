@@ -36,7 +36,7 @@ public class RPPIActivatorTest {
         try {
             rpi.initialize();
         } catch (Exception e) {
-            logger.error("Cannot initialize PI",e);
+            logger.error("Cannot initialize PI", e);
         }
     }
 
@@ -61,6 +61,11 @@ public class RPPIActivatorTest {
         pins.add(rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.SPI_CE0));
         pins.add(rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.SPI_CE1));
 
+        Activator power = rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO6);
+        power.allowVariableState(false);
+        power.allowSetState(true);
+        power.setState(ActivatorState.DEACTIVATED);
+
         for (Activator a : pins) {
             assert a != null;
             a.allowVariableState(false);
@@ -68,19 +73,20 @@ public class RPPIActivatorTest {
             a.setState(ActivatorState.ACTIVATED);
         }
 
-        Activator power = rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO6);
-        power.allowVariableState(false);
-        power.allowSetState(true);
-        power.setState(ActivatorState.DEACTIVATED);
+        power.setState(ActivatorState.ACTIVATED);
 
 
-        for (Activator a : pins) {
-            a.setState(ActivatorState.DEACTIVATED);
-            synchronized (this) {
-                wait(200);
+        for (int i = 0; i < 10; ++i) {
+            for (Activator a : pins) {
+                a.setState(ActivatorState.DEACTIVATED);
+                synchronized (this) {
+                    wait(200);
+                }
+                a.setState(ActivatorState.ACTIVATED);
+
             }
-            a.setState(ActivatorState.ACTIVATED);
         }
+        power.setState(ActivatorState.DEACTIVATED);
 
     }
 }
