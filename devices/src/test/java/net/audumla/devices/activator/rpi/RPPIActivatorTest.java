@@ -132,7 +132,7 @@ public class RPPIActivatorTest {
         PCF8574GPIOActivatorFactory gpio = new PCF8574GPIOActivatorFactory(d);
         gpio.initialize();
 
-        SainsSmartRelayActivatorFactory ss = new SainsSmartRelayActivatorFactory(gpio.getActivators());
+        SainsSmartRelayActivatorFactory ss = new SainsSmartRelayActivatorFactory(gpio.getActivators(),rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO1));
         ss.initialize();
 
         int v = 0;

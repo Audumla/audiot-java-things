@@ -52,7 +52,11 @@ public class RPIGPIOActivatorFactory extends EventTransactionActivatorFactory<RP
             logger.info("Identified RaspberryPI revision - " + Gpio.piBoardRev());
             for (int i = 0; i < GPIOPinRevisions[revisionIndex].length; ++i) {
                 logger.debug("Registering RaspberryPI pin [" + GPIOPinRevisions[revisionIndex][i] + ":" + GPIOName.values()[i].name() + "]");
-                activators.add(new RPIGPIOActivator(GPIOPinRevisions[revisionIndex][i], GPIOName.values()[i], this));
+                RPIGPIOActivator a = new RPIGPIOActivator(GPIOPinRevisions[revisionIndex][i], GPIOName.values()[i], this);
+                a.allowSetState(true);
+                a.allowVariableState(false);
+                a.setState(ActivatorState.DEACTIVATED);
+                activators.add(a);
             }
 
         } else {
