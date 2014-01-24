@@ -89,7 +89,8 @@ public class PCF8574GPIOActivatorFactory extends EventTransactionActivatorFactor
     @Override
     public boolean setState(PCF8547GPIOActivator activator, ActivatorState newState) throws Exception {
         // set state value for pin bit
-        currentStates.set(activator.getPin(), newState.equals(ActivatorState.DEACTIVATED));
+        currentStates.set(activator.getPin(), !newState.equals(ActivatorState.DEACTIVATED));
+        logger.trace("PCF8547 current state ["+currentStates.toString()+"]");
         device.write(PCF8574_WRITE,currentStates.toByteArray()[0]);
         return true;
     }

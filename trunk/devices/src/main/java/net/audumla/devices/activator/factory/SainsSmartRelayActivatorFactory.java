@@ -47,6 +47,7 @@ public class SainsSmartRelayActivatorFactory extends EventTransactionActivatorFa
             sourcePin.allowVariableState(false);
             sourcePin.allowSetState(true);
             getId().setProperty(RELAY_ID, String.valueOf(relayid));
+            setName("SainsSmart Relay #"+relayid);
         }
 
         @Override
