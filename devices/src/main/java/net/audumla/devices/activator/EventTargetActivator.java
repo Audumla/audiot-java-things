@@ -54,7 +54,9 @@ public abstract class EventTargetActivator<TProvider extends ActivatorFactory, T
                     executeStateChange(newstate);
                     ActivatorState oldState = getState();
                     setActiveState(newstate);
-                    getScheduler().publishEvent(new ActivatorStateChangeEvent(oldState, newstate, this)).begin();
+                    if (getScheduler() != null) {
+                        getScheduler().publishEvent(new ActivatorStateChangeEvent(oldState, newstate, this)).begin();
+                    }
                     return true;
                 } catch (Exception ex) {
                     // we should attempt to deactivate the activator if we were not already attempting to do so
