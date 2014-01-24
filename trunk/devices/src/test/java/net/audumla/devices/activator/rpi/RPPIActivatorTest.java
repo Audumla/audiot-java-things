@@ -29,10 +29,13 @@ import java.util.Collection;
 
 public class RPPIActivatorTest {
     private static final Logger logger = LoggerFactory.getLogger(RPPIActivatorTest.class);
+    private static final org.apache.log4j.Logger logger4j = org.apache.log4j.Logger.getLogger(RPPIActivatorTest.class);
 
     @Test
     public void testGPIOPins() throws Exception {
+        logger4j.debug("Starting Tests");
         RPIGPIOActivatorFactory rpi = new RPIGPIOActivatorFactory();
+        rpi.initialize();
         assert rpi.getActivators().size() > 0;
         for (RPIGPIOActivator a : rpi.getActivators()) {
             RPIGPIOActivatorFactory.GPIOName.valueOf(a.getName());
@@ -41,7 +44,9 @@ public class RPPIActivatorTest {
 
     @Test
     public void testRawRelay() throws Exception {
+        logger4j.debug("Starting Tests");
         RPIGPIOActivatorFactory rpi = new RPIGPIOActivatorFactory();
+        rpi.initialize();
         Collection<Activator> pins = new ArrayList<>();
         pins.add(rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO0));
         pins.add(rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO2));
