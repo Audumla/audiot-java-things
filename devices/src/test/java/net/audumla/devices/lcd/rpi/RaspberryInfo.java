@@ -41,7 +41,7 @@ import java.text.ParseException;
  */
 public class RaspberryInfo {
 
-    @Test
+
     public void getInfo() throws InterruptedException, IOException, ParseException {
 
         // display a few of the available system information properties
