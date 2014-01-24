@@ -18,8 +18,11 @@ package net.audumla.devices.activator.rpi;
 
 import net.audumla.devices.activator.Activator;
 import net.audumla.devices.activator.ActivatorState;
+import net.audumla.devices.activator.factory.PCF8574GPIOActivatorFactory;
 import net.audumla.devices.activator.factory.RPIGPIOActivatorFactory;
 import net.audumla.devices.activator.factory.SainsSmartRelayActivatorFactory;
+import net.audumla.devices.i2c.I2CDevice;
+import net.audumla.devices.i2c.rpi.RPII2CBusFactory;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -91,7 +94,7 @@ public class RPPIActivatorTest {
     }
 
     @Test
-    public void testSainsmartRelay() throws Exception {
+    public void testSainsSmartRelayFromRPIGPIO() throws Exception {
         Collection<Activator> pins = new ArrayList<>();
         pins.add(rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO0));
         pins.add(rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO2));
@@ -112,10 +115,35 @@ public class RPPIActivatorTest {
             for (Activator a : ss.getActivators()) {
                 a.setState(ActivatorState.ACTIVATED);
                 synchronized (this) {
-                    wait(20+(i*v)+v);
+                    wait(20+v);
                 }
                 a.setState(ActivatorState.DEACTIVATED);
-                ++v;
+                v += 2;
+            }
+        }
+        ss.shutdown();
+
+    }
+
+
+    public void testSainsSmartRelayFromPCF8574() throws Exception {
+
+        I2CDevice d = new RPII2CBusFactory().getInstance(1).getDevice(PCF8574GPIOActivatorFactory.PCF8574_0x21);
+        PCF8574GPIOActivatorFactory gpio = new PCF8574GPIOActivatorFactory(d);
+        gpio.initialize();
+
+        SainsSmartRelayActivatorFactory ss = new SainsSmartRelayActivatorFactory(gpio.getActivators());
+        ss.initialize();
+
+        int v = 0;
+        for (int i = 0; i < 10; ++i) {
+            for (Activator a : ss.getActivators()) {
+                a.setState(ActivatorState.ACTIVATED);
+                synchronized (this) {
+                    wait(20+v);
+                }
+                a.setState(ActivatorState.DEACTIVATED);
+                v += 2;
             }
         }
         ss.shutdown();
