@@ -109,7 +109,7 @@ public class RPPIActivatorTest {
 
         int v = 0;
         for (int i = 0; i < 10; ++i) {
-            for (Activator a : pins) {
+            for (Activator a : ss.getActivators()) {
                 a.setState(ActivatorState.ACTIVATED);
                 synchronized (this) {
                     wait(20+(i*v)+v);
