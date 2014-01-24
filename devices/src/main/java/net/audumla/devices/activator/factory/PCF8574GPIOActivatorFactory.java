@@ -16,6 +16,7 @@ package net.audumla.devices.activator.factory;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
+import net.audumla.bean.SafeParse;
 import net.audumla.devices.activator.ActivatorCommand;
 import net.audumla.devices.activator.ActivatorState;
 import net.audumla.devices.activator.EventTransactionActivator;
@@ -62,7 +63,7 @@ public class PCF8574GPIOActivatorFactory extends EventTransactionActivatorFactor
     private Collection<PCF8547GPIOActivator> pins = new ArrayList<>();
 
     public PCF8574GPIOActivatorFactory(I2CDevice device) throws IOException {
-        super("PCF8674 GPIO Activator Factory");
+        super("PCF8674 GPIO Expander "+ SafeParse.getHex((byte) device.getAddress()));
         this.device = device;
 
         // set all default pin cache states to match documented chip power up states
@@ -89,20 +90,24 @@ public class PCF8574GPIOActivatorFactory extends EventTransactionActivatorFactor
     @Override
     public boolean setState(PCF8547GPIOActivator activator, ActivatorState newState) throws Exception {
         // set state value for pin bit
-        logger.trace("PCF8547 current state ["+currentStates.toString()+"]");
-        currentStates.set(activator.getPin(), !newState.equals(ActivatorState.DEACTIVATED));
-        if (currentStates.toByteArray().length == 0) {
-            device.write(PCF8574_WRITE, (byte) 0x00);
+        if (currentStates.get(activator.getPin()) != newState.equals(ActivatorState.DEACTIVATED)) {
+            currentStates.set(activator.getPin(), newState.equals(ActivatorState.DEACTIVATED));
+            if (currentStates.toByteArray().length == 0) {
+                device.write(PCF8574_WRITE, (byte) 0x00);
+            } else {
+                device.write(PCF8574_WRITE, currentStates.toByteArray()[0]);
+            }
+            logger.trace("PCF8547 state [" + currentStates.toString() + "]");
         }
         else {
-            device.write(PCF8574_WRITE,currentStates.toByteArray()[0]);
+            logger.trace("PCF8547 GPIO pin #"+activator.getPin()+" is already "+ newState );
         }
         return true;
     }
 
     @Override
     public void initialize() throws Exception {
-        currentStates.set(0,PCF8574_MAX_IO_PINS,true);
+        currentStates.set(0, PCF8574_MAX_IO_PINS, true);
         device.write(PCF8574_WRITE, (byte) 0xff);
         for (PCF8547GPIOActivator a : getActivators()) {
             a.setState(ActivatorState.DEACTIVATED);
@@ -128,7 +133,7 @@ public class PCF8574GPIOActivatorFactory extends EventTransactionActivatorFactor
             this.pin = pin;
             getId().setProperty(GPIO_PIN, String.valueOf(pin));
             super.allowVariableState(false);
-            setName("PCF8547 GPIO Pin #"+pin);
+            setName("PCF8547 GPIO Pin #" + pin);
         }
 
         @Override

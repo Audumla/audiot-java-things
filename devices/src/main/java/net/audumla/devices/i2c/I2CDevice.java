@@ -20,6 +20,8 @@ import java.io.IOException;
 
 public interface I2CDevice {
 
+    int getAddress();
+
     /**
      * This method writes one byte directly to i2c device.
      *
