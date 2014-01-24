@@ -77,7 +77,11 @@ public class SainsSmartRelayActivatorFactory extends EventTransactionActivatorFa
         }
     }
 
-    public SainsSmartRelayActivatorFactory(Collection<Activator> sourcePins, Activator power) {
+    public SainsSmartRelayActivatorFactory(Collection<? extends Activator> sourcePins) {
+        this(sourcePins, null);
+    }
+
+    public SainsSmartRelayActivatorFactory(Collection<? extends Activator> sourcePins, Activator power) {
         super("SainsSmart "+sourcePins.size()+" port relay board");
         this.power = power;
         try {
