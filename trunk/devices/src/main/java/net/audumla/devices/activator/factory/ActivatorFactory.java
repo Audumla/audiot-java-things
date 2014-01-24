@@ -28,7 +28,7 @@ public interface ActivatorFactory<TActivator extends Activator> {
     /**
      * The key that is used within the id property bundle for each activator to associate it back to its provider
      */
-    static String PROVIDER_ID = "providerid";
+    static String FACTORY_ID = "factoryid";
 
     /**
      * Performs any initialization that is required to startup the activitors

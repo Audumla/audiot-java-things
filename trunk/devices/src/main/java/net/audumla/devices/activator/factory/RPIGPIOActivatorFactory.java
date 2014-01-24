@@ -16,10 +16,9 @@ package net.audumla.devices.activator.factory;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
+import com.pi4j.io.gpio.PinEdge;
 import com.pi4j.wiringpi.Gpio;
-import net.audumla.devices.activator.Activator;
-import net.audumla.devices.activator.ActivatorState;
-import net.audumla.devices.activator.EventTransactionActivatorFactory;
+import net.audumla.devices.activator.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,7 +26,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Properties;
 
-public class RPIGPIOActivatorFactory extends EventTransactionActivatorFactory<RPIGPIOActivator> {
+public class RPIGPIOActivatorFactory extends EventTransactionActivatorFactory<RPIGPIOActivatorFactory.RPIGPIOActivator> {
     private static final Logger logger = LoggerFactory.getLogger(RPIGPIOActivatorFactory.class);
 
     protected ArrayList<RPIGPIOActivator> activators = new ArrayList<>();
@@ -52,7 +51,7 @@ public class RPIGPIOActivatorFactory extends EventTransactionActivatorFactory<RP
         if (revisionIndex < 2) {
             logger.info("Identified RaspberryPI revision - " + Gpio.piBoardRev());
             for (int i = 0; i < GPIOPinRevisions[revisionIndex].length; ++i) {
-                logger.debug("Registering RaspberryPI pin ["+GPIOPinRevisions[revisionIndex][i]+":"+GPIOName.values()[i].name()+"]");
+                logger.debug("Registering RaspberryPI pin [" + GPIOPinRevisions[revisionIndex][i] + ":" + GPIOName.values()[i].name() + "]");
                 activators.add(new RPIGPIOActivator(GPIOPinRevisions[revisionIndex][i], GPIOName.values()[i], this));
             }
 
@@ -97,4 +96,64 @@ public class RPIGPIOActivatorFactory extends EventTransactionActivatorFactory<RP
         return null;
     }
 
+    public static class RPIGPIOActivator extends EventTransactionActivator<RPIGPIOActivatorFactory, ActivatorCommand> {
+        private static final Logger logger = LoggerFactory.getLogger(RPIGPIOActivator.class);
+
+        public static String GPIO_PIN = "gpio_pin";
+        public static String GPIO_NAME = "gpio_name";
+
+        protected int pin;
+        protected int resistance = Gpio.PUD_OFF;
+
+        public RPIGPIOActivator(int pin, GPIOName name, RPIGPIOActivatorFactory rpigpioActivatorFactory) {
+            super(rpigpioActivatorFactory);
+            setPullResistance(resistance);
+            this.pin = pin;
+            setName(name.name());
+            getId().setProperty(GPIO_PIN, String.valueOf(pin));
+            getId().setProperty(GPIO_NAME, name.toString());
+        }
+
+
+        public void setPullResistance(int value) {
+            resistance = value;
+            Gpio.pullUpDnControl(pin, value);
+        }
+
+        public int getPullResistance() {
+            return resistance;
+        }
+
+        @Override
+        public void allowSetState(boolean set) {
+            super.allowSetState(set);
+            setMode();
+        }
+
+        @Override
+        public void allowVariableState(boolean var) {
+            super.allowVariableState(var);
+            setMode();
+        }
+
+        protected void setMode() {
+            if (canSetState()) {
+                if (hasVariableState()) {
+                    Gpio.pinMode(pin, Gpio.PWM_OUTPUT);
+                }
+                else {
+                    Gpio.pinMode(pin, Gpio.OUTPUT);
+                }
+            } else {
+                Gpio.pinMode(pin, Gpio.INPUT);
+                // if this is an input pin, then configure edge detection
+                com.pi4j.wiringpi.GpioUtil.setEdgeDetection(pin, PinEdge.BOTH.getValue());
+            }
+        }
+
+        public int getPin() {
+            return pin;
+        }
+
+    }
 }

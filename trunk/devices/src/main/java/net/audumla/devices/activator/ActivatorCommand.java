@@ -27,7 +27,18 @@ public class ActivatorCommand extends AbstractEvent implements CommandEvent<Acti
     protected ActivatorState previousState;
     protected ActivatorState newState;
 
-    protected ActivatorCommand(ActivatorState newState) {
+    public ActivatorCommand() {
+    }
+
+    public void setPreviousState(ActivatorState previousState) {
+        this.previousState = previousState;
+    }
+
+    public void setNewState(ActivatorState newState) {
+        this.newState = newState;
+    }
+
+    public ActivatorCommand(ActivatorState newState) {
         this.newState = newState;
     }
 
