@@ -120,6 +120,7 @@ public class PCF8574GPIOActivatorFactory extends EventTransactionActivatorFactor
             this.pin = pin;
             getId().setProperty(GPIO_PIN, String.valueOf(pin));
             super.allowVariableState(false);
+            setName("PCF8547 GPIO Pin #"+pin);
         }
 
         @Override

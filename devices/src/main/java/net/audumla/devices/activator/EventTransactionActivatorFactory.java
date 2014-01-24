@@ -32,6 +32,7 @@ public abstract class EventTransactionActivatorFactory<TActivator extends EventT
 
     protected EventTransactionActivatorFactory(String id) {
         this.id = id;
+        logger.info("Instantiating Activator Factory ["+id+"]");
     }
 
     public String getId() {

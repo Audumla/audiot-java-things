@@ -35,6 +35,7 @@ public abstract class EventTargetActivator<TFactory extends ActivatorFactory, TE
 
     public void setActiveState(ActivatorState state) {
         this.state = state;
+        logger.debug("Setting Activator ["+getName()+"] to ["+state+"]");
     }
 
     @Override

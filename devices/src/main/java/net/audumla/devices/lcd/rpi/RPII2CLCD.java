@@ -321,14 +321,6 @@ public class RPII2CLCD extends AbstractEventTarget<CommandEvent<LCD>> implements
                 e.printStackTrace();
             }
 
-//            // create I2C communications bus instance
-//            for (int i = 0; i < 5; ++i) {
-//                try {
-//                    device = I2CBus.getI2CBusFactory().getInstance(i).getDevice(address);
-//                    break;
-//                } catch (IOException ex) {
-//                }
-//            }
 
         }
 
