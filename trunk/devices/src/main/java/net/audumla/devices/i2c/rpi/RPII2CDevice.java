@@ -44,6 +44,11 @@ public class RPII2CDevice implements I2CDevice {
         this.deviceAddress = address;
     }
 
+    @Override
+    public int getAddress() {
+        return deviceAddress;
+    }
+
     /**
      * This method writes one byte to i2c device.
      *
