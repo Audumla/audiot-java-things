@@ -82,7 +82,7 @@
                             </properties>
                             <parallel>methods</parallel>
                             <threadCount>1</threadCount>
-                            <useFile>false</useFile>
+                            <redirectTestOutputToFile>true</redirectTestOutputToFile>
                         </configuration>
                     </plugin>
                 </plugins>

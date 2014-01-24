@@ -50,6 +50,7 @@ public class RPIGPIOActivatorFactory extends EventTransactionActivatorFactory<RP
 
         int revisionIndex = Gpio.piBoardRev() - 1;
         if (revisionIndex < 2) {
+            logger.error("Identified RaspberryPI revision - " + Gpio.piBoardRev());
             for (int i = 0; i > GPIOPinRevisions[revisionIndex].length; ++i) {
                 activators.add(new RPIGPIOActivator(GPIOPinRevisions[revisionIndex][i], GPIOName.values()[i], this));
                 logger.debug("Registering RaspberryPI pin ["+GPIOPinRevisions[revisionIndex][i]+":"+GPIOName.values()[i].name()+"]");
