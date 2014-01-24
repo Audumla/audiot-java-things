@@ -65,6 +65,7 @@ public class PCF8574GPIOActivatorFactory extends EventTransactionActivatorFactor
         super("PCF8674 GPIO Activator Factory");
         this.device = device;
 
+        currentStates.set(0,PCF8574_MAX_IO_PINS,true);
         // set all default pin cache states to match documented chip power up states
         for (int i = 0; i < PCF8574_MAX_IO_PINS; ++i) {
             pins.add(new PCF8547GPIOActivator(i, this));
