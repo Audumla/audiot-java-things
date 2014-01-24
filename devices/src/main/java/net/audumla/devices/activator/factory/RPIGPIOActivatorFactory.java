@@ -28,7 +28,7 @@ import java.util.Collection;
 import java.util.Properties;
 
 public class RPIGPIOActivatorFactory extends EventTransactionActivatorFactory<RPIGPIOActivator> {
-    private static final Logger logger = LoggerFactory.getLogger(RPIGPIOActivatorFactory.class);
+    private org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(RPIGPIOActivatorFactory.class);
 
     protected ArrayList<RPIGPIOActivator> activators = new ArrayList<>();
     // the pin names and assignments are based on
