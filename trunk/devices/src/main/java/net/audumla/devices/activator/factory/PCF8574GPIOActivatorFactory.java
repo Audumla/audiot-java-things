@@ -99,9 +99,9 @@ public class PCF8574GPIOActivatorFactory extends EventTransactionActivatorFactor
             }
             logger.trace("PCF8547 state [" + currentStates.toString() + "]");
         }
-        else {
-            logger.trace("PCF8547 GPIO pin #"+activator.getPin()+" is already "+ newState );
-        }
+//        else {
+//            logger.trace("PCF8547 GPIO pin #"+activator.getPin()+" is already "+ newState );
+//        }
         return true;
     }
 
