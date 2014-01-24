@@ -16,17 +16,18 @@ import java.util.Properties;
  * Date: 10/09/13
  * Time: 3:13 PM
  */
-public abstract class EventTargetActivator<TProvider extends ActivatorFactory, TEvent extends ActivatorCommand> extends AbstractEventTarget<TEvent> implements RollbackEventTarget<RollbackEvent<Activator>>, Activator {
+public abstract class EventTargetActivator<TFactory extends ActivatorFactory, TEvent extends ActivatorCommand> extends AbstractEventTarget<TEvent> implements RollbackEventTarget<RollbackEvent<Activator>>, Activator {
 
     private static final Logger logger = Logger.getLogger(Activator.class);
     private ActivatorState state = ActivatorState.UNKNOWN;
     private Properties id = new Properties();
-    private TProvider provider;
+    private TFactory factory;
     private boolean setVariable = false;
     private boolean setState = true;
 
-    protected EventTargetActivator(TProvider provider) {
-        this.provider = provider;
+    protected EventTargetActivator(TFactory factory) {
+        this.factory = factory;
+        getId().setProperty(ActivatorFactory.FACTORY_ID, factory.getId());
     }
 
     protected EventTargetActivator() {
@@ -82,8 +83,8 @@ public abstract class EventTargetActivator<TProvider extends ActivatorFactory, T
         return event.rollback(this);
     }
 
-    public TProvider getProvider() {
-        return provider;
+    public TFactory getFactory() {
+        return factory;
     }
 
     @Override
@@ -91,8 +92,9 @@ public abstract class EventTargetActivator<TProvider extends ActivatorFactory, T
         setState(event.getNewState());
     }
 
-    public void setProvider(TProvider provider) {
-        this.provider = provider;
+    public void setFactory(TFactory factory) {
+        this.factory = factory;
+        getId().setProperty(ActivatorFactory.FACTORY_ID,factory.getId());
     }
 
     @Override

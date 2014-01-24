@@ -61,7 +61,7 @@ public class TOSRUSBRelayActivatorFactory extends EventTransactionActivatorFacto
                 for (int i = 0; i < getRelaysPerDevice(); ++i) {
                     String id = di + "," + i;
                     EventTransactionActivator<TOSRUSBRelayActivatorFactory, ActivatorCommand> activator = new EventTransactionActivator<>(this);
-                    activator.getId().put(ActivatorFactory.PROVIDER_ID, getId());
+                    activator.getId().put(ActivatorFactory.FACTORY_ID, getId());
                     activator.getId().put(RELAY_ID, i);
                     activator.getId().put(DEVICE_ID, di);
                     activator.allowSetState(true);

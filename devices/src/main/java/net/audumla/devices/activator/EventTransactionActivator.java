@@ -28,12 +28,12 @@ public class EventTransactionActivator<TProvider extends EventTransactionActivat
 
     @Override
     protected void executeStateChange(ActivatorState newstate) throws Exception {
-        getProvider().setState(this, newstate);
+        getFactory().setState(this, newstate);
     }
 
     @Override
     public void handleEvent(TEvent event) throws Throwable {
-        event.getEventTransaction().addTransactionListener(getProvider());
+        event.getEventTransaction().addTransactionListener(getFactory());
     }
 
 }

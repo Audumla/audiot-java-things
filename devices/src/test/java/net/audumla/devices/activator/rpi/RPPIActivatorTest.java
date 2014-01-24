@@ -18,8 +18,8 @@ package net.audumla.devices.activator.rpi;
 
 import net.audumla.devices.activator.Activator;
 import net.audumla.devices.activator.ActivatorState;
-import net.audumla.devices.activator.factory.RPIGPIOActivator;
 import net.audumla.devices.activator.factory.RPIGPIOActivatorFactory;
+import net.audumla.devices.activator.factory.SainsSmartRelayActivatorFactory;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,7 +44,7 @@ public class RPPIActivatorTest {
     @Test
     public void testGPIOPins() throws Exception {
         assert rpi.getActivators().size() > 0;
-        for (RPIGPIOActivator a : rpi.getActivators()) {
+        for (RPIGPIOActivatorFactory.RPIGPIOActivator a : rpi.getActivators()) {
             RPIGPIOActivatorFactory.GPIOName.valueOf(a.getName());
         }
     }
@@ -76,17 +76,49 @@ public class RPPIActivatorTest {
         power.setState(ActivatorState.ACTIVATED);
 
 
-        for (int i = 0; i < 40; ++i) {
+        for (int i = 0; i < 10; ++i) {
             for (Activator a : pins) {
                 a.setState(ActivatorState.DEACTIVATED);
                 synchronized (this) {
-                    wait(20);
+                    wait(120);
                 }
                 a.setState(ActivatorState.ACTIVATED);
 
             }
         }
         power.setState(ActivatorState.DEACTIVATED);
+
+    }
+
+    @Test
+    public void testSainsmartRelay() throws Exception {
+        Collection<Activator> pins = new ArrayList<>();
+        pins.add(rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO0));
+        pins.add(rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO2));
+        pins.add(rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO3));
+        pins.add(rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.SPI_MOSI));
+        pins.add(rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.SPI_SCLK));
+        pins.add(rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.SPI_MISO));
+        pins.add(rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.SPI_CE0));
+        pins.add(rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.SPI_CE1));
+
+        Activator power = rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO6);
+
+        SainsSmartRelayActivatorFactory ss = new SainsSmartRelayActivatorFactory(pins, power);
+        ss.initialize();
+
+        int v = 0;
+        for (int i = 0; i < 10; ++i) {
+            for (Activator a : pins) {
+                a.setState(ActivatorState.ACTIVATED);
+                synchronized (this) {
+                    wait(20+(i*v)+v);
+                }
+                a.setState(ActivatorState.DEACTIVATED);
+                ++v;
+            }
+        }
+        ss.shutdown();
 
     }
 }
