@@ -52,7 +52,7 @@ public class RPPIActivatorTest {
         }
     }
 
-    @Test
+//    @Test
     public void testRawRelay() throws Exception {
         Collection<Activator> pins = new ArrayList<>();
         pins.add(rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO0));
@@ -93,7 +93,7 @@ public class RPPIActivatorTest {
 
     }
 
-    @Test
+//    @Test
     public void testSainsSmartRelayFromRPIGPIO() throws Exception {
         Collection<Activator> pins = new ArrayList<>();
         pins.add(rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO0));
@@ -140,7 +140,7 @@ public class RPPIActivatorTest {
             for (Activator a : ss.getActivators()) {
                 a.setState(ActivatorState.ACTIVATED);
                 synchronized (this) {
-                    wait(20+v);
+                    wait(200+v);
                 }
                 a.setState(ActivatorState.DEACTIVATED);
                 v += 2;
