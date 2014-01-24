@@ -128,7 +128,7 @@ public class RPPIActivatorTest {
 
     public void testSainsSmartRelayFromPCF8574() throws Exception {
 
-        I2CDevice d = new RPII2CBusFactory().getInstance(1).getDevice(PCF8574GPIOActivatorFactory.PCF8574_0x24);
+        I2CDevice d = new RPII2CBusFactory().getInstance(1).getDevice(PCF8574GPIOActivatorFactory.PCF8574_0x21);
         PCF8574GPIOActivatorFactory gpio = new PCF8574GPIOActivatorFactory(d);
         gpio.initialize();
 
