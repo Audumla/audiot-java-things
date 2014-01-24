@@ -18,6 +18,7 @@ package net.audumla.devices.activator.rpi;
 
 import net.audumla.devices.activator.Activator;
 import net.audumla.devices.activator.ActivatorState;
+import net.audumla.devices.activator.AggregateActivator;
 import net.audumla.devices.activator.factory.PCF8574GPIOActivatorFactory;
 import net.audumla.devices.activator.factory.RPIGPIOActivatorFactory;
 import net.audumla.devices.activator.factory.SainsSmartRelayActivatorFactory;
@@ -29,11 +30,23 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Properties;
 
 public class RPPIActivatorTest {
     private static final Logger logger = LoggerFactory.getLogger(RPPIActivatorTest.class);
 
     static RPIGPIOActivatorFactory rpi = new RPIGPIOActivatorFactory();
+    static PCF8574GPIOActivatorFactory power;
+
+    static {
+        try {
+            I2CDevice d = new RPII2CBusFactory().getInstance(1).getDevice(0x27);
+            power = new PCF8574GPIOActivatorFactory(d);
+            power.initialize();
+        } catch (Exception e) {
+            logger.error("Failed to initialize power", e);
+        }
+    }
 
     static {
         try {
@@ -44,6 +57,17 @@ public class RPPIActivatorTest {
     }
 
 
+    Activator getPower(int pin1_5v, int pin2_5v, Activator pin3_33v) throws Exception {
+        AggregateActivator aa = new AggregateActivator();
+        Properties id = new Properties();
+        id.setProperty(PCF8574GPIOActivatorFactory.PCF8547GPIOActivator.GPIO_PIN, String.valueOf(pin1_5v));
+        aa.addActivator(power.getActivator(id));
+        id.setProperty(PCF8574GPIOActivatorFactory.PCF8547GPIOActivator.GPIO_PIN, String.valueOf(pin2_5v));
+        aa.addActivator(power.getActivator(id));
+        aa.addActivator(pin3_33v);
+        return aa;
+    }
+
     @Test
     public void testGPIOPins() throws Exception {
         assert rpi.getActivators().size() > 0;
@@ -52,7 +76,7 @@ public class RPPIActivatorTest {
         }
     }
 
-//    @Test
+    //    @Test
     public void testRawRelay() throws Exception {
         Collection<Activator> pins = new ArrayList<>();
         pins.add(rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO0));
@@ -64,7 +88,8 @@ public class RPPIActivatorTest {
         pins.add(rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.SPI_CE0));
         pins.add(rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.SPI_CE1));
 
-        Activator power = rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO6);
+//        Activator power = rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO6);
+        Activator power = getPower(2,3,rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO6));
         power.allowVariableState(false);
         power.allowSetState(true);
         power.setState(ActivatorState.DEACTIVATED);
@@ -93,7 +118,7 @@ public class RPPIActivatorTest {
 
     }
 
-//    @Test
+    //    @Test
     public void testSainsSmartRelayFromRPIGPIO() throws Exception {
         Collection<Activator> pins = new ArrayList<>();
         pins.add(rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO0));
@@ -105,7 +130,8 @@ public class RPPIActivatorTest {
         pins.add(rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.SPI_CE0));
         pins.add(rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.SPI_CE1));
 
-        Activator power = rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO6);
+//        Activator power = rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO6);
+        Activator power = getPower(2,3,rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO6));
 
         SainsSmartRelayActivatorFactory ss = new SainsSmartRelayActivatorFactory(pins, power);
         ss.initialize();
@@ -115,7 +141,7 @@ public class RPPIActivatorTest {
             for (Activator a : ss.getActivators()) {
                 a.setState(ActivatorState.ACTIVATED);
                 synchronized (this) {
-                    wait(20+v);
+                    wait(20 + v);
                 }
                 a.setState(ActivatorState.DEACTIVATED);
                 v += 2;
@@ -131,8 +157,9 @@ public class RPPIActivatorTest {
         I2CDevice d = new RPII2CBusFactory().getInstance(1).getDevice(PCF8574GPIOActivatorFactory.PCF8574_0x21);
         PCF8574GPIOActivatorFactory gpio = new PCF8574GPIOActivatorFactory(d);
         gpio.initialize();
+        Activator power = getPower(6,7,rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO1));
 
-        SainsSmartRelayActivatorFactory ss = new SainsSmartRelayActivatorFactory(gpio.getActivators(),rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO1));
+        SainsSmartRelayActivatorFactory ss = new SainsSmartRelayActivatorFactory(gpio.getActivators(), power);
         ss.initialize();
 
         int v = 0;
@@ -140,7 +167,7 @@ public class RPPIActivatorTest {
             for (Activator a : ss.getActivators()) {
                 a.setState(ActivatorState.ACTIVATED);
                 synchronized (this) {
-                    wait(200+v);
+                    wait(200 + v);
                 }
                 a.setState(ActivatorState.DEACTIVATED);
                 v += 2;
