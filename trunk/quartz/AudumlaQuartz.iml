@@ -8,6 +8,7 @@
           <property key="Bundle-Vendor" value="Audumla.net" />
           <property key="Bundle-DocURL" value="http://www.audumla.net" />
           <property key="Bundle-Name" value="Audumla Quartz" />
+          <property key="Include-Resource" value="log4j.properties=$MODULE_DIR$/src/main/resources/log4j.properties" />
         </additionalProperties>
         <additionalJARContents />
       </configuration>
