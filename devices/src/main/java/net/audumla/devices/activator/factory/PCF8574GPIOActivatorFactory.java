@@ -97,7 +97,6 @@ public class PCF8574GPIOActivatorFactory extends EventTransactionActivatorFactor
             } else {
                 device.write(PCF8574_WRITE, currentStates.toByteArray()[0]);
             }
-            logger.trace("PCF8547 state [" + currentStates.toString() + "]");
         }
 //        else {
 //            logger.trace("PCF8547 GPIO pin #"+activator.getPin()+" is already "+ newState );

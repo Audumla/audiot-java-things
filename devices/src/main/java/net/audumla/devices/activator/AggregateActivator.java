@@ -46,8 +46,13 @@ public class AggregateActivator extends EventTargetActivator<ActivatorFactory,Ac
     }
 
     @Override
-    protected void executeStateChange(ActivatorState newstate) throws Exception {
+    protected void setActiveState(ActivatorState state) {
+        logger.warn("setActiveState should never be called for Aggregate Activator");
+    }
 
+    @Override
+    protected void executeStateChange(ActivatorState newstate) throws Exception {
+         logger.warn("executeStateChange should never be called for Aggregate Activator");
     }
 
     @Override
@@ -56,5 +61,19 @@ public class AggregateActivator extends EventTargetActivator<ActivatorFactory,Ac
             a.setState(newstate);
         }
         return true;
+    }
+
+    @Override
+    public void allowSetState(boolean set) {
+        for (Activator a : activators) {
+            a.allowSetState(set);
+        }
+    }
+
+    @Override
+    public void allowVariableState(boolean var) {
+        for (Activator a : activators) {
+            a.allowVariableState(var);
+        }
     }
 }
