@@ -33,9 +33,9 @@ public class SainsSmartRelayActivatorFactory extends EventTransactionActivatorFa
     private final Collection<SainsSmartRelayActivator> relays = new ArrayList<>();
     private final Activator power;
 
-    public static class SainsSmartRelayActivator extends EventTargetActivator<SainsSmartRelayActivatorFactory, ActivatorCommand> {
+    public class SainsSmartRelayActivator extends EventTargetActivator<SainsSmartRelayActivatorFactory, ActivatorCommand> {
 
-        public static String RELAY_ID = "relayid";
+        public final static String RELAY_ID = "relayid";
 
         protected Activator sourcePin;
 
@@ -52,6 +52,8 @@ public class SainsSmartRelayActivatorFactory extends EventTransactionActivatorFa
 
         @Override
         protected void executeStateChange(ActivatorState newstate) throws Exception {
+
+            setPower(false);
             // we need to set the underlying pin to the opposite of the relay state as the device is on when the pin is low, and off when the pin is high
             ActivatorState pinState = newstate.equals(ActivatorState.DEACTIVATED) ? ActivatorState.ACTIVATED : ActivatorState.DEACTIVATED;
             if (sourcePin instanceof EventTarget && ((EventTarget) sourcePin).getScheduler() != null) {
@@ -60,6 +62,7 @@ public class SainsSmartRelayActivatorFactory extends EventTransactionActivatorFa
             } else {
                 sourcePin.setState(pinState);
             }
+            setPower(true);
         }
 
         @Override
