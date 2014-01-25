@@ -103,6 +103,7 @@ public class SainsSmartRelayActivatorFactory extends EventTransactionActivatorFa
 
     protected void setPower(boolean powerOn) throws Exception {
         if (power != null) {
+            logger.debug("Turning on power for ["+getId()+"]");
             ActivatorState pinState = powerOn ? ActivatorState.ACTIVATED : ActivatorState.DEACTIVATED;
             if (power instanceof EventTarget && ((EventTarget) power).getScheduler() != null) {
                 EventScheduler sc = ((EventTarget) power).getScheduler();
@@ -110,6 +111,9 @@ public class SainsSmartRelayActivatorFactory extends EventTransactionActivatorFa
             } else {
                 power.setState(pinState);
             }
+        }
+        else {
+            logger.debug("Direct power connected to ["+getId()+"] cannot be turned on or off");
         }
     }
 
