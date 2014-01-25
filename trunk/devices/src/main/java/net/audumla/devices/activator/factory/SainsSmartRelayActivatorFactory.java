@@ -122,6 +122,7 @@ public class SainsSmartRelayActivatorFactory extends EventTransactionActivatorFa
 
     @Override
     public void initialize() throws Exception {
+        setPower(false );
         for (Activator a : relays) {
             a.setState(ActivatorState.DEACTIVATED);
         }
