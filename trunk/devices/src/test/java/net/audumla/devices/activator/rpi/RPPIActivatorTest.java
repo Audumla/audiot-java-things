@@ -43,9 +43,9 @@ public class RPPIActivatorTest {
             I2CDevice d = new RPII2CBusFactory().getInstance(1).getDevice(0x27);
             power5v = new PCF8574GPIOActivatorFactory(d);
             power5v.initialize();
-            for (Activator a : power5v.getActivators()) {
-                a.setState(ActivatorState.ACTIVATED);
-            }
+//            for (Activator a : power5v.getActivators()) {
+//                a.setState(ActivatorState.ACTIVATED);
+//            }
 
         } catch (Exception e) {
             logger.error("Failed to initialize power5v", e);
@@ -92,8 +92,8 @@ public class RPPIActivatorTest {
         pins.add(rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.SPI_CE0));
         pins.add(rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.SPI_CE1));
 
-        Activator power = rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO6);
-//        Activator power5v = getPower(2, 3, rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO6));
+//        Activator power = rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO6);
+        Activator power = getPower(2, 3, rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO6));
         power.allowVariableState(false);
         power.allowSetState(true);
         power.setState(ActivatorState.DEACTIVATED);
@@ -134,8 +134,8 @@ public class RPPIActivatorTest {
         pins.add(rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.SPI_CE0));
         pins.add(rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.SPI_CE1));
 
-        Activator power = rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO6);
-//        Activator power5v = getPower(2, 3, rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO6));
+//        Activator power = rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO6);
+        Activator power = getPower(2, 3, rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO6));
 
         SainsSmartRelayActivatorFactory ss = new SainsSmartRelayActivatorFactory(pins, power);
         ss.initialize();
@@ -161,8 +161,8 @@ public class RPPIActivatorTest {
         I2CDevice d = new RPII2CBusFactory().getInstance(1).getDevice(PCF8574GPIOActivatorFactory.PCF8574_0x21);
         PCF8574GPIOActivatorFactory gpio = new PCF8574GPIOActivatorFactory(d);
         gpio.initialize();
-        Activator power = rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO1);
-//        Activator power5v = getPower(6, 7, rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO1));
+//        Activator power = rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO1);
+        Activator power = getPower(6, 7, rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO1));
 
         SainsSmartRelayActivatorFactory ss = new SainsSmartRelayActivatorFactory(gpio.getActivators(), power);
         ss.initialize();
