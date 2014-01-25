@@ -57,6 +57,7 @@ public class AggregateActivator extends EventTargetActivator<ActivatorFactory,Ac
 
     @Override
     public boolean setState(ActivatorState newstate) throws Exception {
+        logger.debug("Setting Aggregate Activator ["+getName()+"] to ["+newstate+"]");
         for (Activator a : activators) {
             a.setState(newstate);
         }
