@@ -172,7 +172,7 @@ public class RPPIActivatorTest {
             for (Activator a : ss.getActivators()) {
                 a.setState(ActivatorState.ACTIVATED);
                 synchronized (this) {
-                    wait(200 + v);
+                    wait(10 + v);
                 }
                 a.setState(ActivatorState.DEACTIVATED);
                 v += 2;
