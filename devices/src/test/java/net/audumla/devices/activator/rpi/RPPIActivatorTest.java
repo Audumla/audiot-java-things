@@ -125,14 +125,14 @@ public class RPPIActivatorTest {
 
     protected SainsSmartRelayActivatorFactory getSSGPIO() throws Exception {
         Collection<Activator> pins = new ArrayList<>();
-        pins.add(rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO0));
-        pins.add(rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO2));
-        pins.add(rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO3));
-        pins.add(rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.SPI_MOSI));
-        pins.add(rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.SPI_SCLK));
-        pins.add(rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.SPI_MISO));
-        pins.add(rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.SPI_CE0));
         pins.add(rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.SPI_CE1));
+        pins.add(rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.SPI_CE0));
+        pins.add(rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.SPI_MISO));
+        pins.add(rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.SPI_SCLK));
+        pins.add(rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.SPI_MOSI));
+        pins.add(rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO3));
+        pins.add(rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO2));
+        pins.add(rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO0));
 
 //        Activator power = rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO6);
         Activator power = getPower(2, 3, rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO6));
