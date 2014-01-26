@@ -162,12 +162,12 @@ public class RPPIActivatorTest {
 
     }
 
-    SainsSmartRelayActivatorFactory getSSPCF(int addr,int pwr1, int pwr2) throws Exception {
+    SainsSmartRelayActivatorFactory getSSPCF(int addr,int pwr1, int pwr2,RPIGPIOActivatorFactory.GPIOName gpioPower) throws Exception {
         I2CDevice d = new RPII2CBusFactory().getInstance(1).getDevice(addr);
         PCF8574GPIOActivatorFactory gpio = new PCF8574GPIOActivatorFactory(d);
         gpio.initialize();
 //        Activator power = rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO1);
-        Activator power = getPower(pwr1, pwr2, rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO1));
+        Activator power = getPower(pwr1, pwr2, rpi.getActivator(gpioPower));
 
         SainsSmartRelayActivatorFactory ss = new SainsSmartRelayActivatorFactory(gpio.getActivators(), power);
         ss.initialize();
@@ -177,7 +177,7 @@ public class RPPIActivatorTest {
 
     @Test
     public void testSainsSmartRelayFromPCF8574() throws Exception {
-        SainsSmartRelayActivatorFactory ss = getSSPCF(PCF8574GPIOActivatorFactory.PCF8574_0x21);
+        SainsSmartRelayActivatorFactory ss = getSSPCF(PCF8574GPIOActivatorFactory.PCF8574_0x21,6,7,RPIGPIOActivatorFactory.GPIOName.GPIO1);
         int v = 0;
         for (int i = 0; i < 3; ++i) {
             for (Activator a : ss.getActivators()) {
@@ -197,8 +197,8 @@ public class RPPIActivatorTest {
     @Test
     public void testMultiSainsSmartRelay() throws Exception {
         SainsSmartRelayActivatorFactory ss1 = getSSGPIO();
-        SainsSmartRelayActivatorFactory ss2 = getSSPCF(PCF8574GPIOActivatorFactory.PCF8574_0x21,6,7);
-        SainsSmartRelayActivatorFactory ss3 = getSSPCF(PCF8574GPIOActivatorFactory.PCF8574_0x24,4,5);
+        SainsSmartRelayActivatorFactory ss2 = getSSPCF(PCF8574GPIOActivatorFactory.PCF8574_0x21,6,7,RPIGPIOActivatorFactory.GPIOName.GPIO1);
+        SainsSmartRelayActivatorFactory ss3 = getSSPCF(PCF8574GPIOActivatorFactory.PCF8574_0x24,4,5,RPIGPIOActivatorFactory.GPIOName.GPIO5);
 
         Collection<Activator> activators = new ArrayList<>();
         activators.addAll(ss1.getActivators());
