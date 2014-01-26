@@ -53,4 +53,8 @@ public abstract class EventTransactionActivatorFactory<TActivator extends EventT
         return result;
     }
 
+    @Override
+    public String toString() {
+        return getId();
+    }
 }
