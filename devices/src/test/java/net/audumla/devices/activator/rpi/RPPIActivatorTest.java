@@ -216,7 +216,9 @@ public class RPPIActivatorTest {
                 v += 2;
             }
         }
-        ss.shutdown();
+        ss1.shutdown();
+        ss2.shutdown();
+        ss3.shutdown();
 
     }
 }
