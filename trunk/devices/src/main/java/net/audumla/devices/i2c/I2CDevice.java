@@ -20,6 +20,10 @@ import java.io.IOException;
 
 public interface I2CDevice {
 
+    /**
+     *
+     * @return the address of the device
+     */
     int getAddress();
 
     /**
