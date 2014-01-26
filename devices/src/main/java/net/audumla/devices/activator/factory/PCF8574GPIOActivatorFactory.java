@@ -63,7 +63,7 @@ public class PCF8574GPIOActivatorFactory extends EventTransactionActivatorFactor
     private Collection<PCF8547GPIOActivator> pins = new ArrayList<>();
 
     public PCF8574GPIOActivatorFactory(I2CDevice device) throws IOException {
-        super("PCF8674 GPIO Expander 0x"+ SafeParse.getHex((byte) device.getAddress()));
+        super("PCF8674 GPIO Expander connected on "+device.toString());
         this.device = device;
 
         // set all default pin cache states to match documented chip power up states
@@ -120,10 +120,9 @@ public class PCF8574GPIOActivatorFactory extends EventTransactionActivatorFactor
         }
     }
 
-    public static class PCF8547GPIOActivator extends EventTransactionActivator<PCF8574GPIOActivatorFactory, ActivatorCommand> {
-        private static final Logger logger = LoggerFactory.getLogger(PCF8547GPIOActivator.class);
+    public class PCF8547GPIOActivator extends EventTransactionActivator<PCF8574GPIOActivatorFactory, ActivatorCommand> {
 
-        public static String GPIO_PIN = "gpio_pin";
+        public static final String GPIO_PIN = "gpio_pin";
 
         protected int pin;
 
@@ -132,7 +131,7 @@ public class PCF8574GPIOActivatorFactory extends EventTransactionActivatorFactor
             this.pin = pin;
             getId().setProperty(GPIO_PIN, String.valueOf(pin));
             super.allowVariableState(false);
-            setName("PCF8547 GPIO Pin #" + pin);
+            setName("GPIO Pin#" + pin + " on " + PCF8574GPIOActivatorFactory.this.toString() );
         }
 
         @Override

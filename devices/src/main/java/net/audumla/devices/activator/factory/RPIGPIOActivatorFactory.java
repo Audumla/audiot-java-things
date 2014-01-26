@@ -116,8 +116,10 @@ public class RPIGPIOActivatorFactory extends EventTransactionActivatorFactory<RP
         public static String GPIO_PIN = "gpio_pin";
         public static String GPIO_NAME = "gpio_name";
 
+        public enum PULL_RESISTANCE {PULL_UP, PULL_DOWN, PULL_OFF}
+
         protected int pin;
-        protected int resistance = Gpio.PUD_OFF;
+        protected PULL_RESISTANCE resistance = PULL_RESISTANCE.PULL_OFF;
 
         public RPIGPIOActivator(int pin, GPIOName name, RPIGPIOActivatorFactory rpigpioActivatorFactory) {
             super(rpigpioActivatorFactory);
@@ -129,12 +131,12 @@ public class RPIGPIOActivatorFactory extends EventTransactionActivatorFactory<RP
         }
 
 
-        public void setPullResistance(int value) {
+        public void setPullResistance(PULL_RESISTANCE value) {
             resistance = value;
-            Gpio.pullUpDnControl(pin, value);
+            Gpio.pullUpDnControl(pin, value.ordinal());
         }
 
-        public int getPullResistance() {
+        public PULL_RESISTANCE getPullResistance() {
             return resistance;
         }
 

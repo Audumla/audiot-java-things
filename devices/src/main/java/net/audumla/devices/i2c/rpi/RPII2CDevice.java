@@ -212,5 +212,9 @@ public class RPII2CDevice implements I2CDevice {
                 + " to address 0x" + Integer.toHexString(address);
     }
 
+    @Override
+    public String toString() {
+        return makeDescription();
+    }
 }
 
