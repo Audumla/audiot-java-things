@@ -162,12 +162,12 @@ public class RPPIActivatorTest {
 
     }
 
-    SainsSmartRelayActivatorFactory getSSPCF(int addr) throws Exception {
+    SainsSmartRelayActivatorFactory getSSPCF(int addr,int pwr1, int pwr2) throws Exception {
         I2CDevice d = new RPII2CBusFactory().getInstance(1).getDevice(addr);
         PCF8574GPIOActivatorFactory gpio = new PCF8574GPIOActivatorFactory(d);
         gpio.initialize();
 //        Activator power = rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO1);
-        Activator power = getPower(6, 7, rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO1));
+        Activator power = getPower(pwr1, pwr2, rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO1));
 
         SainsSmartRelayActivatorFactory ss = new SainsSmartRelayActivatorFactory(gpio.getActivators(), power);
         ss.initialize();
@@ -197,8 +197,8 @@ public class RPPIActivatorTest {
     @Test
     public void testMultiSainsSmartRelay() throws Exception {
         SainsSmartRelayActivatorFactory ss1 = getSSGPIO();
-        SainsSmartRelayActivatorFactory ss2 = getSSPCF(PCF8574GPIOActivatorFactory.PCF8574_0x21);
-        SainsSmartRelayActivatorFactory ss3 = getSSPCF(PCF8574GPIOActivatorFactory.PCF8574_0x24);
+        SainsSmartRelayActivatorFactory ss2 = getSSPCF(PCF8574GPIOActivatorFactory.PCF8574_0x21,6,7);
+        SainsSmartRelayActivatorFactory ss3 = getSSPCF(PCF8574GPIOActivatorFactory.PCF8574_0x24,4,5);
 
         Collection<Activator> activators = new ArrayList<>();
         activators.addAll(ss1.getActivators());
@@ -213,7 +213,7 @@ public class RPPIActivatorTest {
                     wait(v);
                 }
                 a.setState(ActivatorState.DEACTIVATED);
-                v += 2;
+                v += 1;
             }
         }
         ss1.shutdown();
