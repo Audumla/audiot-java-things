@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="climate.ObserverCatalogue" class="net.audumla.climate.ClimateObserverCatalogue"
+          factory-method="getInstance"/>
+
+    <bean id="climate.ClimateDataSourceFactory" class="net.audumla.climate.ClimateDataSourceFactory"/>
+
+    <bean id="climate.ClimateObserverCatalogue" class="net.audumla.climate.ClimateObserverCatalogue"
+          factory-method="getInstance"/>
+
+    <bean id="irrigation.Location" class="net.audumla.climate.ClimateDataSource"
+          factory-bean="climate.ClimateDataSourceFactory" factory-method="newInstance">
+        <property name="latitude" value="-37.84"/>
+        <property name="longitude" value="144.98"/>
+    </bean>
+
+    <bean id="irrigation.Climate.Observer" class="net.audumla.climate.ClimateObserver"
+          factory-bean="climate.ClimateObserverCatalogue" factory-method="getClimateObserver">
+        <constructor-arg ref="irrigation.Location"/>
+    </bean>
+
+    <bean id="irrigation.Zone1" class="net.audumla.irrigation.IrrigationZone">
+        <constructor-arg ref="irrigation.Climate.Observer"/>
+        <property name="surfaceArea" value="10"/>
+        <property name="flowRate" value="10"/>
+        <property name="enclosureRating" value="1"/>
+        <property name="coverRating" value="1"/>
+        <property name="shadeRating" value="1"/>
+    </bean>
+
+    <bean id="irrigation.Zone1.DurationFactory" class="net.audumla.automate.FixedDurationFactory">
+        <property name="seconds" value="360"/>
+    </bean>
+
+    <bean id="irrigation.Zone1.IrrigationEventFactory" class="net.audumla.automate.DefaultEventFactory">
+        <property name="durationFactory" ref="irrigation.Zone1.DurationFactory"/>
+    </bean>
+
+    <bean id="job.Zone1Timer" class="net.audumla.automate.eventScheduler.quartz.FixedSchedule">
+        <!-- run every morning at 6 AM -->
+        <property name="cronExpression" value="0 0 6 * * ?"/>
+        <property name="group" value="ZoneGroup1"/>
+        <property name="factory" ref="irrigation.Zone1.IrrigationEventFactory"/>
+        <property name="zone" ref="irrigation.Zone1"/>
+        <property name="name" value="Zone1Timer"/>
+    </bean>
+
+</beans>

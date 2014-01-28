@@ -1,0 +1,73 @@
+<!--
+  ~ **********************************************************************
+  ~  ORGANIZATION : audumla.net
+  ~  More information about this project can be found at the following locations:
+  ~  http://www.audumla.net/
+  ~  http://audumla.googlecode.com/
+  ~ **********************************************************************
+  ~  Copyright (C) 2012 - 2013 Audumla.net
+  ~  Licensed under the Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License.
+  ~  You may not use this file except in compliance with the License located at http://creativecommons.org/licenses/by-nc-nd/3.0/
+  ~
+  ~  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an
+  ~  "AS I BASIS", WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  See the License for the specific language governing permissions and limitations under the License.
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>climate</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <name>Audumla&#160;Climate</name>
+    <description>Generic climate monitoring and historical information querying framework</description>
+    <packaging>bundle</packaging>
+    <parent>
+        <artifactId>core</artifactId>
+        <groupId>net.audumla</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <properties>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20090211</version>
+        </dependency>
+        <dependency>
+            <groupId>opencsv</groupId>
+            <artifactId>opencsv</artifactId>
+            <version>2.3</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-net</groupId>
+            <artifactId>commons-net</artifactId>
+            <version>3.3</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.4</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-configuration</groupId>
+            <artifactId>commons-configuration</artifactId>
+            <version>1.9</version>
+        </dependency>
+        <dependency>
+            <groupId>net.audumla</groupId>
+            <artifactId>commons</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>net.audumla</groupId>
+            <artifactId>astronomy</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+        </plugins>
+    </build>
+</project>
