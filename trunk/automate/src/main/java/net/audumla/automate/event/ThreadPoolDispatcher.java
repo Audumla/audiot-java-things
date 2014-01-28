@@ -21,66 +21,77 @@ import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.regex.Pattern;
+import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 
-public class ThreadLocalEventScheduler extends AbstractEventScheduler {
-    private static final Logger logger = LoggerFactory.getLogger(ThreadLocalEventScheduler.class);
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
-    protected Map<Pattern, EventTarget> targetRegistry = new HashMap<>();
+public class ThreadPoolDispatcher extends AbstractDispatcher {
+    private static final Logger logger = LoggerFactory.getLogger(ThreadPoolDispatcher.class);
 
-    protected class ThreadLocalEventTransaction extends AbstractEventTransaction {
+    protected ScheduledExecutorService schedulerService;
 
-        public ThreadLocalEventTransaction(EventScheduler scheduler, EventSchedule schedule) {
+    protected class ThreadPoolEventTransaction extends AbstractEventTransaction {
+
+        private Future<?> future;
+
+        public ThreadPoolEventTransaction(Dispatcher scheduler, EventSchedule schedule) {
             super(scheduler, schedule);
         }
 
-        public ThreadLocalEventTransaction(EventScheduler scheduler) {
+        public ThreadPoolEventTransaction(Dispatcher scheduler) {
             super(scheduler);
         }
-
 
         @Override
         public void begin() {
             if (getSchedule() == null) {
-                toRunnable().run();
+                future = schedulerService.submit(toRunnable());
             } else {
                 if (getSchedule() instanceof SimpleEventSchedule) {
                     SimpleEventSchedule ss = (SimpleEventSchedule) getSchedule();
-                    if (ss.getRepeatCount() > 0 || (ss.getRepeatInterval() != null && !ss.getRepeatInterval().isZero())) {
-                        throw new UnsupportedOperationException("Scheduler does not support repeat scheduling");
+                    if (ss.getRepeatCount() > 0) {
+                        throw new UnsupportedOperationException("Scheduler does not support fixed repeat counts");
                     }
                     long initialDelay = Duration.between(Instant.now(), ss.getStartTime()).toMillis();
                     initialDelay = initialDelay < 0 ? 0 : initialDelay;
-                    synchronized (this) {
-                        try {
-                            this.wait(initialDelay);
-                            toRunnable().run();
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
+                    // set up a repeating schedule. We cannot set a fixed repeat count for this schedulerService
+                    if (ss.getRepeatInterval() != null && !ss.getRepeatInterval().isZero()) {
+                        future = schedulerService.scheduleAtFixedRate(toRunnable(), initialDelay, ss.getRepeatInterval().toMillis(), MILLISECONDS);
+                    } else {
+                        future = schedulerService.schedule(toRunnable(), initialDelay, MILLISECONDS);
                     }
                 } else {
                     throw new UnsupportedOperationException("Scheduler does not support " + getSchedule().getClass());
                 }
             }
         }
-
     }
 
-    public ThreadLocalEventScheduler() {
-        super();
+    public ThreadPoolDispatcher() {
+        initialize();
     }
 
+    @Override
+    public boolean initialize() {
+        schedulerService = new ScheduledThreadPoolExecutor(1);
+        return super.initialize();
+    }
+
+    @Override
+    public boolean shutdown() {
+        schedulerService.shutdown();
+        return super.shutdown();
+    }
 
     @Override
     public EventTransaction createTransaction() {
-        return new ThreadLocalEventTransaction(this);
+        return new ThreadPoolEventTransaction(this);
     }
 
     @Override
     public EventTransaction createTransaction(EventSchedule schedule) {
-        return new ThreadLocalEventTransaction(this,schedule);
+        return new ThreadPoolEventTransaction(this,schedule);
     }
 }

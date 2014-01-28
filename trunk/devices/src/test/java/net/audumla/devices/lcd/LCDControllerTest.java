@@ -1,19 +1,19 @@
 package net.audumla.devices.lcd;
 
-import net.audumla.automate.event.EventScheduler;
+import net.audumla.automate.event.Dispatcher;
 import net.audumla.devices.lcd.rpi.RPII2CLCD;
 import org.junit.Before;
 import org.junit.Test;
 
 public class LCDControllerTest {
 
-    EventScheduler scheduler = null;
+    Dispatcher scheduler = null;
     LCD target = null;
 
     @Before
     public void setUp() throws Exception {
 
-        scheduler = EventScheduler.getDefaultEventScheduler();
+        scheduler = Dispatcher.getDefaultEventScheduler();
         target = RPII2CLCD.instance("LCD", RPII2CLCD.DEFAULT_ADDRESS);
     }
 

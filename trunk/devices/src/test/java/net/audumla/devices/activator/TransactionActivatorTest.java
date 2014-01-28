@@ -17,7 +17,7 @@ package net.audumla.devices.activator;
  */
 
 import net.audumla.automate.event.EventTransaction;
-import net.audumla.automate.event.ThreadLocalEventScheduler;
+import net.audumla.automate.event.ThreadLocalDispatcher;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +30,7 @@ public class TransactionActivatorTest {
     public void testBlockingTransaction() throws Exception {
 
         TransactionActivatorMockFactory provider = new TransactionActivatorMockFactory();
-        ThreadLocalEventScheduler scheduler = new ThreadLocalEventScheduler();
+        ThreadLocalDispatcher scheduler = new ThreadLocalDispatcher();
         scheduler.registerEventTarget(provider.getActivator(null), "activator.1");
         scheduler.registerEventTarget(provider.getActivator(null), "activator.2");
         scheduler.registerEventTarget(provider.getActivator(null), "activator.3");

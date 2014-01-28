@@ -57,19 +57,19 @@ public class RolbackTest {
 
     @After
     public void tearDown() throws Exception {
-        EventScheduler.getDefaultEventScheduler().shutdown();
+        Dispatcher.getDefaultEventScheduler().shutdown();
     }
 
     @Before
     public void setUp() throws Exception {
-        EventScheduler.getDefaultEventScheduler().initialize();
+        Dispatcher.getDefaultEventScheduler().initialize();
     }
 
     @Test
     public void testRollbackTrue() throws Exception {
         SimpleRollbackHandler handler = new SimpleRollbackHandler(true, false);
-        EventScheduler.getDefaultEventScheduler().registerEventTarget(handler, "event.*");
-        EventTransaction transaction = EventScheduler.getDefaultEventScheduler().publishEvent(new AbstractEvent(), "event.1");
+        Dispatcher.getDefaultEventScheduler().registerEventTarget(handler, "event.*");
+        EventTransaction transaction = Dispatcher.getDefaultEventScheduler().publishEvent(new AbstractEvent(), "event.1");
         assert transaction.getStatus().getState() == EventState.PENDING;
         assert transaction.getHandledEvents().size() == 0;
 //        assert transaction.getEvents().size() == 1;
@@ -94,8 +94,8 @@ public class RolbackTest {
     @Test
     public void testRollbackException() throws Exception {
         SimpleRollbackHandler handler = new SimpleRollbackHandler(true, false);
-        EventScheduler.getDefaultEventScheduler().registerEventTarget(handler, "event.*");
-        EventTransaction transaction = EventScheduler.getDefaultEventScheduler().publishEvent(new AbstractEvent(), "event.1");
+        Dispatcher.getDefaultEventScheduler().registerEventTarget(handler, "event.*");
+        EventTransaction transaction = Dispatcher.getDefaultEventScheduler().publishEvent(new AbstractEvent(), "event.1");
         assert transaction.getStatus().getState() == EventState.PENDING;
         assert transaction.getHandledEvents().size() == 0;
 //        assert transaction.getEvents().size() == 1;
@@ -120,9 +120,9 @@ public class RolbackTest {
     @Test
     public void testRollbackFailException() throws Exception {
         SimpleRollbackHandler handler = new SimpleRollbackHandler(true, true);
-        EventScheduler.getDefaultEventScheduler().registerEventTarget(handler, "event.*");
-        EventScheduler.getDefaultEventScheduler().registerEventTarget(handler, "event.handle.bla.*");
-        EventTransaction transaction = EventScheduler.getDefaultEventScheduler().publishEvent(new AbstractEvent(), "event.1");
+        Dispatcher.getDefaultEventScheduler().registerEventTarget(handler, "event.*");
+        Dispatcher.getDefaultEventScheduler().registerEventTarget(handler, "event.handle.bla.*");
+        EventTransaction transaction = Dispatcher.getDefaultEventScheduler().publishEvent(new AbstractEvent(), "event.1");
         assert transaction.getStatus().getState() == EventState.PENDING;
         assert transaction.getHandledEvents().size() == 0;
 //        assert transaction.getEvents().size() == 1;
@@ -147,8 +147,8 @@ public class RolbackTest {
     @Test
     public void testRollbackFail() throws Exception {
         SimpleRollbackHandler handler = new SimpleRollbackHandler(true, true);
-        EventScheduler.getDefaultEventScheduler().registerEventTarget(handler, "event.*.1","event.4");
-        EventTransaction transaction = EventScheduler.getDefaultEventScheduler().publishEvent(new AbstractEvent(), "event.2.1");
+        Dispatcher.getDefaultEventScheduler().registerEventTarget(handler, "event.*.1","event.4");
+        EventTransaction transaction = Dispatcher.getDefaultEventScheduler().publishEvent(new AbstractEvent(), "event.2.1");
         assert transaction.getStatus().getState() == EventState.PENDING;
         assert transaction.getHandledEvents().size() == 0;
 //        assert transaction.getEvents().size() == 1;
@@ -172,10 +172,10 @@ public class RolbackTest {
 
     @Test
     public void testRollbackPartialFail() throws Exception {
-        EventScheduler.getDefaultEventScheduler().registerEventTarget(new SimpleRollbackHandler(false, false), "event.*");
-        EventScheduler.getDefaultEventScheduler().registerEventTarget(new SimpleRollbackHandler(true, true), "event.*");
-        EventScheduler.getDefaultEventScheduler().registerEventTarget(new SimpleRollbackHandler(true, false), "event.3.*");
-        EventTransaction transaction = EventScheduler.getDefaultEventScheduler().scheduleEvent(new SimpleEventSchedule(Instant.now().plusMillis(100)), new AbstractEvent(), "event.1");
+        Dispatcher.getDefaultEventScheduler().registerEventTarget(new SimpleRollbackHandler(false, false), "event.*");
+        Dispatcher.getDefaultEventScheduler().registerEventTarget(new SimpleRollbackHandler(true, true), "event.*");
+        Dispatcher.getDefaultEventScheduler().registerEventTarget(new SimpleRollbackHandler(true, false), "event.3.*");
+        EventTransaction transaction = Dispatcher.getDefaultEventScheduler().scheduleEvent(new SimpleEventSchedule(Instant.now().plusMillis(100)), new AbstractEvent(), "event.1");
         transaction.begin();
         assert transaction.getStatus().getState() == EventState.PENDING;
         assert transaction.getHandledEvents().size() == 0;
@@ -196,16 +196,16 @@ public class RolbackTest {
 
     @Test
     public void testRollbackMultiHandle() throws Exception {
-        EventScheduler.getDefaultEventScheduler().registerEventTarget(new SimpleRollbackHandler(true, false), "event.*");
-        EventScheduler.getDefaultEventScheduler().registerEventTarget(new SimpleRollbackHandler(true, false), "*");
-        EventScheduler.getDefaultEventScheduler().registerEventTarget(new SimpleRollbackHandler(false,false), "*.1");
-        EventScheduler.getDefaultEventScheduler().registerEventTarget(new SimpleRollbackHandler(false,false), "event.2");
-        EventScheduler.getDefaultEventScheduler().registerEventTarget(new SimpleRollbackHandler(false,false), "*.2");
-        EventScheduler.getDefaultEventScheduler().registerEventTarget(new SimpleRollbackHandler(false, false), "event");
-        EventScheduler.getDefaultEventScheduler().scheduleEvent(new SimpleEventSchedule(Instant.now().plusMillis(10)), new AbstractEvent(), "event.2").begin();
-        EventScheduler.getDefaultEventScheduler().scheduleEvent(new SimpleEventSchedule(Instant.now().plusMillis(100)), new AbstractEvent(), "event.3").begin();
-        EventScheduler.getDefaultEventScheduler().scheduleEvent(new SimpleEventSchedule(Instant.now().plusMillis(300)), new AbstractEvent(), "event.4").begin();
-        EventTransaction transaction = EventScheduler.getDefaultEventScheduler().scheduleEvent(new SimpleEventSchedule(Instant.now().plusMillis(290)), new AbstractEvent(), "event.1");
+        Dispatcher.getDefaultEventScheduler().registerEventTarget(new SimpleRollbackHandler(true, false), "event.*");
+        Dispatcher.getDefaultEventScheduler().registerEventTarget(new SimpleRollbackHandler(true, false), "*");
+        Dispatcher.getDefaultEventScheduler().registerEventTarget(new SimpleRollbackHandler(false,false), "*.1");
+        Dispatcher.getDefaultEventScheduler().registerEventTarget(new SimpleRollbackHandler(false,false), "event.2");
+        Dispatcher.getDefaultEventScheduler().registerEventTarget(new SimpleRollbackHandler(false,false), "*.2");
+        Dispatcher.getDefaultEventScheduler().registerEventTarget(new SimpleRollbackHandler(false, false), "event");
+        Dispatcher.getDefaultEventScheduler().scheduleEvent(new SimpleEventSchedule(Instant.now().plusMillis(10)), new AbstractEvent(), "event.2").begin();
+        Dispatcher.getDefaultEventScheduler().scheduleEvent(new SimpleEventSchedule(Instant.now().plusMillis(100)), new AbstractEvent(), "event.3").begin();
+        Dispatcher.getDefaultEventScheduler().scheduleEvent(new SimpleEventSchedule(Instant.now().plusMillis(300)), new AbstractEvent(), "event.4").begin();
+        EventTransaction transaction = Dispatcher.getDefaultEventScheduler().scheduleEvent(new SimpleEventSchedule(Instant.now().plusMillis(290)), new AbstractEvent(), "event.1");
         assert transaction.getStatus().getState() == EventState.PENDING;
         assert transaction.getHandledEvents().size() == 0;
 //        assert transaction.getEvents().size() == 1;

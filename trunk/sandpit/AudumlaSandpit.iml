@@ -69,6 +69,9 @@
     <orderEntry type="module" module-name="AudumlaFTD2xxj" />
     <orderEntry type="module" module-name="AudumlaAutomate" />
     <orderEntry type="library" name="Maven: org.osgi:org.osgi.core:4.3.1" level="project" />
+    <orderEntry type="library" name="Maven: com.typesafe.akka:akka-actor_2.10:2.2.3" level="project" />
+    <orderEntry type="library" name="Maven: org.scala-lang:scala-library:2.10.2" level="project" />
+    <orderEntry type="library" name="Maven: com.typesafe:config:1.0.2" level="project" />
     <orderEntry type="library" name="Maven: net.java.dev.jna:jna:4.0.0" level="project" />
     <orderEntry type="module" module-name="AudumlaDevices" scope="TEST" production-on-test="" />
     <orderEntry type="module" module-name="AudumlaCamelScheduler" />

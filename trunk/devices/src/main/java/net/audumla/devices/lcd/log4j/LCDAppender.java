@@ -1,7 +1,7 @@
 package net.audumla.devices.lcd.log4j;
 
 import net.audumla.automate.event.CommandEvent;
-import net.audumla.automate.event.EventScheduler;
+import net.audumla.automate.event.Dispatcher;
 import net.audumla.automate.event.EventTarget;
 import net.audumla.devices.lcd.*;
 import org.apache.log4j.AppenderSkeleton;
@@ -17,7 +17,7 @@ public class LCDAppender extends AppenderSkeleton {
 
     public void append(LoggingEvent logevent) {
         try {
-            EventScheduler.getDefaultEventScheduler().publishEvent(target.getName(),
+            Dispatcher.getDefaultEventScheduler().publishEvent(target.getName(),
                     new LCDClearCommand(),
                     new LCDWriteCommand(logevent.getRenderedMessage()),
                     new LCDPauseCommand()).begin();
@@ -29,7 +29,7 @@ public class LCDAppender extends AppenderSkeleton {
     @Override
     public void close() {
         try {
-            EventScheduler.getDefaultEventScheduler().publishEvent(target.getName(),
+            Dispatcher.getDefaultEventScheduler().publishEvent(target.getName(),
                     new LCDShutdownCommand(),
                     new LCDPauseCommand()).begin();
         } catch (Exception e) {

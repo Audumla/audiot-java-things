@@ -1,6 +1,6 @@
 package net.audumla.devices.activator;
 
-import net.audumla.automate.event.ThreadLocalEventScheduler;
+import net.audumla.automate.event.ThreadLocalDispatcher;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -56,7 +56,7 @@ public class FailingBlockingActivatorTest {
     public void failActivate(EventTargetActivator activator) throws Exception {
         ActivatorStateChangeEventTarget target = new ActivatorStateChangeEventTarget(activator);
 
-        new ThreadLocalEventScheduler().registerEventTarget(activator);
+        new ThreadLocalDispatcher().registerEventTarget(activator);
         activator.getScheduler().registerEventTarget(target);
 
         assert activator.getState() == ActivatorState.UNKNOWN;
@@ -71,7 +71,7 @@ public class FailingBlockingActivatorTest {
     public void failDelayActivate(EventTargetActivator activator) throws Exception {
         ActivatorStateChangeEventTarget target = new ActivatorStateChangeEventTarget(activator);
 
-        new ThreadLocalEventScheduler().registerEventTarget(activator);
+        new ThreadLocalDispatcher().registerEventTarget(activator);
         activator.getScheduler().registerEventTarget(target);
 
         assert activator.getState() == ActivatorState.UNKNOWN;
@@ -86,7 +86,7 @@ public class FailingBlockingActivatorTest {
     public void failDeactivate(EventTargetActivator activator) throws Exception {
         ActivatorStateChangeEventTarget target = new ActivatorStateChangeEventTarget(activator);
 
-        new ThreadLocalEventScheduler().registerEventTarget(activator);
+        new ThreadLocalDispatcher().registerEventTarget(activator);
         activator.getScheduler().registerEventTarget(target);
 
 

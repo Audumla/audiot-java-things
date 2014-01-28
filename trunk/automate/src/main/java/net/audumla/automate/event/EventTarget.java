@@ -36,14 +36,14 @@ public interface EventTarget<T extends Event> {
     /**
      * @return the scheduler that this target has been registered with
      */
-    default EventScheduler getScheduler() {
-        return EventScheduler.getDefaultEventScheduler();
+    default Dispatcher getScheduler() {
+        return Dispatcher.getDefaultEventScheduler();
     }
 
     /**
      * @param scheduler the scheduler that this target has been registered with
      */
-    default void setScheduler(EventScheduler scheduler) {
+    default void setScheduler(Dispatcher scheduler) {
     }
 
 }

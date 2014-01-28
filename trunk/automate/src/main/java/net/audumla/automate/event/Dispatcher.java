@@ -18,7 +18,7 @@ package net.audumla.automate.event;
 
 import java.util.concurrent.atomic.AtomicReference;
 
-public interface EventScheduler {
+public interface Dispatcher {
     EventTransaction publishEvent(String topic, Event... events) throws Exception;
 
     EventTransaction publishEvent(Event event, String... topics) throws Exception;
@@ -47,9 +47,9 @@ public interface EventScheduler {
 
     boolean shutdown();
 
-    static AtomicReference<EventScheduler> scheduler = new AtomicReference<EventScheduler>();
+    static AtomicReference<Dispatcher> scheduler = new AtomicReference<Dispatcher>();
 
-    static void setDefaultEventScheduler(EventScheduler s) {
+    static void setDefaultEventScheduler(Dispatcher s) {
         if (scheduler.get() != null) {
             // if there is already a scheduler registered then we need to swap over to the new one.
             scheduler.get().shutdown();
@@ -58,9 +58,9 @@ public interface EventScheduler {
         scheduler.set(s);
     }
 
-    static EventScheduler getDefaultEventScheduler() {
+    static Dispatcher getDefaultEventScheduler() {
         if (scheduler.get() == null) {
-            setDefaultEventScheduler(new ThreadPoolEventScheduler());
+            setDefaultEventScheduler(new ThreadPoolDispatcher());
         }
         return scheduler.get();
     }

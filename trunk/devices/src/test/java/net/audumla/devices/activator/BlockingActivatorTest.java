@@ -1,6 +1,6 @@
 package net.audumla.devices.activator;
 
-import net.audumla.automate.event.ThreadLocalEventScheduler;
+import net.audumla.automate.event.ThreadLocalDispatcher;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -19,7 +19,7 @@ public class BlockingActivatorTest {
     @Test
     public void testStateChange() throws Exception {
         ActivatorMock activator = new ActivatorMock(true, true);
-        new ThreadLocalEventScheduler().registerEventTarget(activator);
+        new ThreadLocalDispatcher().registerEventTarget(activator);
         assert activator.getState() == ActivatorState.UNKNOWN;
         activator.setState(ActivatorState.DEACTIVATED);
         assert activator.getState() == ActivatorState.DEACTIVATED;
@@ -32,7 +32,7 @@ public class BlockingActivatorTest {
         final ActivatorMock activator = new ActivatorMock(true, true);
         ActivatorStateChangeEventTarget target = new ActivatorStateChangeEventTarget(activator);
 
-        new ThreadLocalEventScheduler().registerEventTarget(activator);
+        new ThreadLocalDispatcher().registerEventTarget(activator);
         activator.getScheduler().registerEventTarget(target);
 
         assert activator.getState() == ActivatorState.UNKNOWN;
@@ -50,7 +50,7 @@ public class BlockingActivatorTest {
     @Test
     public void testDelayedStateChange() throws Exception {
         ActivatorMock activator = new ActivatorMock(true, true);
-        new ThreadLocalEventScheduler().registerEventTarget(activator);
+        new ThreadLocalDispatcher().registerEventTarget(activator);
         assert activator.getState() == ActivatorState.UNKNOWN;
         activator.setState(ActivatorState.DEACTIVATED);
         assert activator.getState() == ActivatorState.DEACTIVATED;
@@ -66,7 +66,7 @@ public class BlockingActivatorTest {
         final ActivatorMock activator = new ActivatorMock(true, true);
         ActivatorStateChangeEventTarget target = new ActivatorStateChangeEventTarget(activator);
 
-        new ThreadLocalEventScheduler().registerEventTarget(activator);
+        new ThreadLocalDispatcher().registerEventTarget(activator);
         activator.getScheduler().registerEventTarget(target);
 
         assert activator.getState() == ActivatorState.UNKNOWN;
