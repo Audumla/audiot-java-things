@@ -79,7 +79,7 @@
         <module>climate</module>
         <!--<module>irrigation</module>-->
         <module>commons</module>
-        <module>automate</module>
+        <!--<module>automate</module>-->
         <module>ftd2xxj</module>
         <module>quartz</module>
         <module>camelscheduler</module>

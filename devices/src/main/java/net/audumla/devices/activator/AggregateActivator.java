@@ -16,9 +16,6 @@ package net.audumla.devices.activator;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import net.audumla.automate.event.AbstractEvent;
-import net.audumla.automate.event.AbstractEventTarget;
-import net.audumla.automate.event.Event;
 import net.audumla.devices.activator.factory.ActivatorFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +23,7 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class AggregateActivator extends EventTargetActivator<ActivatorFactory,ActivatorCommand>  {
+public class AggregateActivator extends DefaultActivator<ActivatorFactory> {
     private static final Logger logger = LoggerFactory.getLogger(AggregateActivator.class);
 
     protected Collection<Activator> activators = new ArrayList<>();

@@ -1,4 +1,4 @@
-package net.audumla.devices.activator.factory;
+package net.audumla.automate.event.activator.factory;
 
 /*
  * *********************************************************************
@@ -16,36 +16,40 @@ package net.audumla.devices.activator.factory;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import net.audumla.devices.activator.DefaultActivator;
-import net.audumla.devices.activator.Activator;
-import net.audumla.devices.activator.ActivatorState;
+import net.audumla.automate.event.Dispatcher;
+import net.audumla.automate.event.EventTarget;
+import net.audumla.automate.event.RollbackEvent;
+import net.audumla.automate.event.activator.ActivatorCommand;
+import net.audumla.automate.event.activator.EventTargetActivator;
+import net.audumla.automate.event.activator.EventTransactionActivatorFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Properties;
 
-public class SainsSmartRelayActivatorFactory implements ActivatorFactory<SainsSmartRelayActivatorFactory.SainsSmartRelayActivator> {
+public class SainsSmartRelayActivatorFactory extends EventTransactionActivatorFactory<SainsSmartRelayActivatorFactory.SainsSmartRelayActivator> {
     private static final Logger logger = LoggerFactory.getLogger(SainsSmartRelayActivatorFactory.class);
     private final Collection<SainsSmartRelayActivator> relays = new ArrayList<>();
     private final Activator power;
-    private String id;
 
-    public class SainsSmartRelayActivator extends DefaultActivator<SainsSmartRelayActivatorFactory> {
+    public class SainsSmartRelayActivator extends EventTargetActivator<SainsSmartRelayActivatorFactory, ActivatorCommand> {
 
         public final static String RELAY_ID = "relayid";
 
         protected Activator sourcePin;
 
-        public SainsSmartRelayActivator(SainsSmartRelayActivatorFactory factory, Activator sourcePin, int relayid) {
-            super(factory, "Relay #" + relayid + " on " + factory.getId());
+        public SainsSmartRelayActivator(SainsSmartRelayActivatorFactory sainsSmartRelayActivatorFactory, Activator sourcePin, int relayid) {
+            super(sainsSmartRelayActivatorFactory);
             this.sourcePin = sourcePin;
             super.allowVariableState(false);
             super.allowSetState(true);
             sourcePin.allowVariableState(false);
             sourcePin.allowSetState(true);
             getId().setProperty(RELAY_ID, String.valueOf(relayid));
+            setName("SainsSmart Relay #"+relayid);
         }
 
         @Override
@@ -54,7 +58,12 @@ public class SainsSmartRelayActivatorFactory implements ActivatorFactory<SainsSm
             setPower(false);
             // we need to set the underlying pin to the opposite of the relay state as the device is on when the pin is low, and off when the pin is high
             ActivatorState pinState = newstate.equals(ActivatorState.DEACTIVATED) ? ActivatorState.ACTIVATED : ActivatorState.DEACTIVATED;
-            sourcePin.setState(pinState);
+            if (sourcePin instanceof EventTarget && ((EventTarget) sourcePin).getScheduler() != null) {
+                Dispatcher sc = ((EventTarget) sourcePin).getScheduler();
+                sc.publishEvent(new ActivatorCommand(pinState), sourcePin.getName()).begin();
+            } else {
+                sourcePin.setState(pinState);
+            }
             setPower(true);
         }
 
@@ -68,6 +77,10 @@ public class SainsSmartRelayActivatorFactory implements ActivatorFactory<SainsSm
             // is only output
         }
 
+        @Override
+        public boolean rollbackEvent(RollbackEvent<Activator> event) throws Throwable {
+            return super.rollbackEvent(event);
+        }
     }
 
     public SainsSmartRelayActivatorFactory(Collection<? extends Activator> sourcePins) {
@@ -75,7 +88,7 @@ public class SainsSmartRelayActivatorFactory implements ActivatorFactory<SainsSm
     }
 
     public SainsSmartRelayActivatorFactory(Collection<? extends Activator> sourcePins, Activator power) {
-        id = "SainsSmart " + sourcePins.size() + " port relay board";
+        super("SainsSmart "+sourcePins.size()+" port relay board");
         this.power = power;
         try {
             if (power != null) {
@@ -85,7 +98,7 @@ public class SainsSmartRelayActivatorFactory implements ActivatorFactory<SainsSm
             }
             int i = 0;
             for (Activator a : sourcePins) {
-                logger.debug("Associating SainsSmart Relay #" + i + " to " + a.getName());
+                logger.debug("Associating SainsSmart Relay #"+i+" to "+a.getName());
                 relays.add(new SainsSmartRelayActivator(this, a, i++));
             }
         } catch (Exception e) {
@@ -95,17 +108,23 @@ public class SainsSmartRelayActivatorFactory implements ActivatorFactory<SainsSm
 
     protected void setPower(boolean powerOn) throws Exception {
         if (power != null) {
-            logger.debug("Turning power " + (powerOn ? "ON" : "OFF") + " for [" + getId() + "]");
+            logger.debug("Turning power "+ (powerOn ? "ON": "OFF")+" for ["+getId()+"]");
             ActivatorState pinState = powerOn ? ActivatorState.ACTIVATED : ActivatorState.DEACTIVATED;
-            power.setState(pinState);
-        } else {
-            logger.debug("Direct power connected to [" + getId() + "] cannot be turned on or off");
+            if (power instanceof EventTarget && ((EventTarget) power).getScheduler() != null) {
+                Dispatcher sc = ((EventTarget) power).getScheduler();
+                sc.publishEvent(new ActivatorCommand(pinState), power.getName()).begin();
+            } else {
+                power.setState(pinState);
+            }
+        }
+        else {
+            logger.debug("Direct power connected to ["+getId()+"] cannot be turned on or off");
         }
     }
 
     @Override
     public void initialize() throws Exception {
-        setPower(false);
+        setPower(false );
         for (Activator a : relays) {
             a.setState(ActivatorState.DEACTIVATED);
         }
@@ -121,11 +140,6 @@ public class SainsSmartRelayActivatorFactory implements ActivatorFactory<SainsSm
     }
 
     @Override
-    public String getId() {
-        return id;
-    }
-
-    @Override
     public SainsSmartRelayActivator getActivator(Properties id) {
         for (SainsSmartRelayActivator a : relays) {
             if (a.getId().get(SainsSmartRelayActivator.RELAY_ID).equals(id.get(SainsSmartRelayActivator.RELAY_ID))) {
@@ -138,6 +152,12 @@ public class SainsSmartRelayActivatorFactory implements ActivatorFactory<SainsSm
     @Override
     public Collection<? extends SainsSmartRelayActivator> getActivators() {
         return relays;
+    }
+
+    @Override
+    public boolean setStates(Map<SainsSmartRelayActivator, ActivatorState> newStates) throws Exception {
+        // TODO: get the underlying provider for the source pins and then pass the source pins with the opposite state to allow atomic commits of multiple relays
+        return super.setStates(newStates);
     }
 
     @Override
