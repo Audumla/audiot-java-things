@@ -51,11 +51,11 @@ public class SainsSmartRelayActivatorFactory implements ActivatorFactory<SainsSm
         @Override
         protected void executeStateChange(ActivatorState newstate) throws Exception {
 
-            setPower(false);
+//            setPower(false);
             // we need to set the underlying pin to the opposite of the relay state as the device is on when the pin is low, and off when the pin is high
             ActivatorState pinState = newstate.equals(ActivatorState.DEACTIVATED) ? ActivatorState.ACTIVATED : ActivatorState.DEACTIVATED;
             sourcePin.setState(pinState);
-            setPower(true);
+//            setPower(true);
         }
 
         @Override
@@ -95,7 +95,7 @@ public class SainsSmartRelayActivatorFactory implements ActivatorFactory<SainsSm
 
     protected void setPower(boolean powerOn) throws Exception {
         if (power != null) {
-            logger.debug("Turning power " + (powerOn ? "ON" : "OFF") + " for [" + getId() + "]");
+            logger.debug("[Power " + (powerOn ? "ON" : "OFF") + "][" + getId() + "]");
             ActivatorState pinState = powerOn ? ActivatorState.ACTIVATED : ActivatorState.DEACTIVATED;
             power.setState(pinState);
         } else {
