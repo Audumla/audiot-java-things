@@ -76,7 +76,7 @@ public class RPPIActivatorTest {
     public void testGPIOPins() throws Exception {
         assert rpi.getActivators().size() > 0;
         for (RPIGPIOActivatorFactory.RPIGPIOActivator a : rpi.getActivators()) {
-            RPIGPIOActivatorFactory.GPIOName.valueOf(a.getName());
+            RPIGPIOActivatorFactory.GPIOName.valueOf(a.getGpioName().name());
         }
     }
 
