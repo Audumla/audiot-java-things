@@ -45,7 +45,7 @@ public class RPIGPIOActivatorFactory implements ActivatorFactory<RPIGPIOActivato
             {2, 3, 4, 7, 8, 9, 10, 11, 14, 15, 17, 18, 27, 22, 23, 24, 25, 28, 29, 30, 31}};
 
     public RPIGPIOActivatorFactory() {
-        id = "RaspberryPI GPIO Factory";
+        id = "RaspberryPI BCM2835 GPIO";
     }
 
     @Override
@@ -57,8 +57,8 @@ public class RPIGPIOActivatorFactory implements ActivatorFactory<RPIGPIOActivato
         if (revisionIndex < 2) {
             logger.info("Identified RaspberryPI revision - " + Gpio.piBoardRev());
             for (int i = 0; i < GPIOPinRevisions[revisionIndex].length; ++i) {
-                logger.debug("Registering RaspberryPI pin [" + GPIOPinRevisions[revisionIndex][i] + ":" + GPIOName.values()[i].name() + "]");
                 RPIGPIOActivator a = new RPIGPIOActivator(GPIOPinRevisions[revisionIndex][i], GPIOName.values()[i], this);
+                logger.debug("Found "+a.getName());
                 if (a.getName().startsWith("GPIO")) {
                     //set all the GPIO pins to output and disasble.
                     a.allowSetState(true);
@@ -120,11 +120,10 @@ public class RPIGPIOActivatorFactory implements ActivatorFactory<RPIGPIOActivato
         protected int pin;
         protected PULL_RESISTANCE resistance = PULL_RESISTANCE.PULL_OFF;
 
-        public RPIGPIOActivator(int pin, GPIOName name, RPIGPIOActivatorFactory rpigpioActivatorFactory) {
-            super(rpigpioActivatorFactory,name.name());
+        public RPIGPIOActivator(int pin, GPIOName name, RPIGPIOActivatorFactory factory) {
+            super(factory,"GPIO : Pin#" + pin + " : " + name.name() + " : " +factory.getId());
             setPullResistance(resistance);
             this.pin = pin;
-            setName(name.name());
             getId().setProperty(GPIO_PIN, String.valueOf(pin));
             getId().setProperty(GPIO_NAME, name.toString());
         }
