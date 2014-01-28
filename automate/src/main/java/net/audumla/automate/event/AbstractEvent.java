@@ -30,7 +30,7 @@ public class AbstractEvent implements Event {
 
     private EventStatus status = new DefaultEventStatus();
     private String name = BeanUtils.generateName(this);
-    private EventScheduler scheduler;
+    private Dispatcher scheduler;
     private EventTransaction eventTransaction;
 
     @Override
@@ -53,11 +53,11 @@ public class AbstractEvent implements Event {
         }
     }
 
-    public EventScheduler getScheduler() {
+    public Dispatcher getScheduler() {
         return scheduler;
     }
 
-    public void setScheduler(EventScheduler scheduler) {
+    public void setScheduler(Dispatcher scheduler) {
         this.scheduler = scheduler;
     }
 

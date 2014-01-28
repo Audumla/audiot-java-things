@@ -85,6 +85,7 @@
         <module>camelscheduler</module>
         <module>raspberry</module>
         <module>astronomy</module>
+        <module>akka</module>
     </modules>
     <build>
         <plugins>

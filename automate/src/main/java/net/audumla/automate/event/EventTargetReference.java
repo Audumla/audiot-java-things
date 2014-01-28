@@ -24,7 +24,7 @@ public class EventTargetReference implements EventTarget {
 
     private String name;
     private EventTarget target;
-    private EventScheduler scheduler;
+    private Dispatcher scheduler;
 
     public EventTargetReference(String name) {
         this.name = name;
@@ -59,13 +59,13 @@ public class EventTargetReference implements EventTarget {
     }
 
     @Override
-    public EventScheduler getScheduler() {
+    public Dispatcher getScheduler() {
         return scheduler;
     }
 
 
     @Override
-    public void setScheduler(EventScheduler scheduler) {
+    public void setScheduler(Dispatcher scheduler) {
         assert this.scheduler == null;
         this.scheduler = scheduler;
     }

@@ -55,13 +55,13 @@ public interface Event extends Cloneable {
      * @return the event scheduler that this event was scheduled to.
      * If the event has not been assigned to a scheduled yet then this will return null
      */
-    EventScheduler getScheduler();
+    Dispatcher getScheduler();
 
     /**
      *
      * @param scheduler the scheduler associated with this event
      */
-    void setScheduler(EventScheduler scheduler);
+    void setScheduler(Dispatcher scheduler);
 
     /**
      *

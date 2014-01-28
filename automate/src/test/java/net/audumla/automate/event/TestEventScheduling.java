@@ -29,7 +29,7 @@ public class TestEventScheduling {
     public void testMultiEventOnSingleTopicWithSeperatelyExecutedTransactions() throws Exception {
         AtomicReference<Integer> count = new AtomicReference<Integer>(0);
 
-        ThreadPoolEventScheduler scheduler = new ThreadPoolEventScheduler();
+        ThreadPoolDispatcher scheduler = new ThreadPoolDispatcher();
         scheduler.registerEventTarget(event -> {
             count.set(count.get() + 1);
         }, "event.*");
@@ -50,7 +50,7 @@ public class TestEventScheduling {
     public void testMultiEventOnSingleTopicWithSingleAtomicTransaction() throws Exception {
         AtomicReference<Integer> count = new AtomicReference<Integer>(0);
 
-        ThreadPoolEventScheduler scheduler = new ThreadPoolEventScheduler();
+        ThreadPoolDispatcher scheduler = new ThreadPoolDispatcher();
         scheduler.registerEventTarget(new EventTarget<ValueEvent>() {
             int lastValue = 0;
             @Override
@@ -75,7 +75,7 @@ public class TestEventScheduling {
     public void testMultiEventOnSingleTopicWithSingleTransaction() throws Exception {
         AtomicReference<Integer> count = new AtomicReference<Integer>(0);
 
-        ThreadPoolEventScheduler scheduler = new ThreadPoolEventScheduler();
+        ThreadPoolDispatcher scheduler = new ThreadPoolDispatcher();
         scheduler.registerEventTarget(new EventTarget<ValueEvent>() {
             int lastValue = 0;
             @Override
@@ -103,7 +103,7 @@ public class TestEventScheduling {
     public void testWildCardTopic() throws Exception {
         AtomicReference<Integer> count = new AtomicReference<Integer>(0);
 
-        ThreadPoolEventScheduler scheduler = new ThreadPoolEventScheduler();
+        ThreadPoolDispatcher scheduler = new ThreadPoolDispatcher();
         scheduler.registerEventTarget(event -> {
             count.set(count.get() + 1);
         }, "event.*");
@@ -122,7 +122,7 @@ public class TestEventScheduling {
     public void testFailingTransactionModification() throws Exception {
         AtomicReference<Integer> count = new AtomicReference<Integer>(0);
 
-        ThreadPoolEventScheduler scheduler = new ThreadPoolEventScheduler();
+        ThreadPoolDispatcher scheduler = new ThreadPoolDispatcher();
         scheduler.registerEventTarget(event -> {
             synchronized (this) {
                 count.set(count.get() + 1);

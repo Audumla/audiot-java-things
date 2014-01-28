@@ -1,4 +1,4 @@
-package net.audumla.automate.event;
+package net.audumla.akka;
 
 /*
  * *********************************************************************
@@ -16,43 +16,29 @@ package net.audumla.automate.event;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import net.audumla.bean.BeanUtils;
-
-public abstract class AbstractEventTarget<T extends Event>  implements EventTarget<T>  {
-
-    private String name;
-    private Dispatcher scheduler;
-
-    protected AbstractEventTarget(String name) {
-        this.name = name;
-    }
+public abstract class AbstractEventTarget<T> extends akka.actor.UntypedActor {
 
     protected AbstractEventTarget() {
-        name = BeanUtils.generateName(this);
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     @Override
     public String toString() {
-        return getName();
+        return self().path().name();
     }
 
     @Override
-    public Dispatcher getScheduler() {
-        return scheduler;
+    public void onReceive(Object message) throws Exception {
+        try {
+            onMessage((T) message);
+        } catch (Throwable throwable) {
+            unhandled(message);
+        }
     }
 
+    /**
+     * @param message the event that should be handled or executed
+     * @throws Throwable
+     */
+    abstract void onMessage(T message) throws Throwable;
 
-    @Override
-    public void setScheduler(Dispatcher scheduler) {
-        assert this.scheduler == null || this.scheduler == scheduler;
-        this.scheduler = scheduler;
-    }
 }

@@ -16,7 +16,7 @@ package net.audumla.devices.activator.factory;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import net.audumla.automate.event.EventScheduler;
+import net.audumla.automate.event.Dispatcher;
 import net.audumla.automate.event.EventTarget;
 import net.audumla.automate.event.RollbackEvent;
 import net.audumla.devices.activator.*;
@@ -57,7 +57,7 @@ public class SainsSmartRelayActivatorFactory extends EventTransactionActivatorFa
             // we need to set the underlying pin to the opposite of the relay state as the device is on when the pin is low, and off when the pin is high
             ActivatorState pinState = newstate.equals(ActivatorState.DEACTIVATED) ? ActivatorState.ACTIVATED : ActivatorState.DEACTIVATED;
             if (sourcePin instanceof EventTarget && ((EventTarget) sourcePin).getScheduler() != null) {
-                EventScheduler sc = ((EventTarget) sourcePin).getScheduler();
+                Dispatcher sc = ((EventTarget) sourcePin).getScheduler();
                 sc.publishEvent(new ActivatorCommand(pinState), sourcePin.getName()).begin();
             } else {
                 sourcePin.setState(pinState);
@@ -109,7 +109,7 @@ public class SainsSmartRelayActivatorFactory extends EventTransactionActivatorFa
             logger.debug("Turning power "+ (powerOn ? "ON": "OFF")+" for ["+getId()+"]");
             ActivatorState pinState = powerOn ? ActivatorState.ACTIVATED : ActivatorState.DEACTIVATED;
             if (power instanceof EventTarget && ((EventTarget) power).getScheduler() != null) {
-                EventScheduler sc = ((EventTarget) power).getScheduler();
+                Dispatcher sc = ((EventTarget) power).getScheduler();
                 sc.publishEvent(new ActivatorCommand(pinState), power.getName()).begin();
             } else {
                 power.setState(pinState);

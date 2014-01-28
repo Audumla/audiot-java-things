@@ -25,15 +25,15 @@ import java.time.Instant;
 import java.util.*;
 import java.util.regex.Pattern;
 
-public abstract class AbstractEventScheduler implements EventScheduler {
-    private static final Logger logger = LoggerFactory.getLogger(AbstractEventScheduler.class);
+public abstract class AbstractDispatcher implements Dispatcher {
+    private static final Logger logger = LoggerFactory.getLogger(AbstractDispatcher.class);
 
     protected Map<Pattern, EventTarget> targetRegistry = new HashMap<>();
 
     protected abstract class AbstractEventTransaction implements EventTransaction {
 
         private EventTransactionStatus status = new DefaultEventStatus();
-        private final EventScheduler eventScheduler;
+        private final Dispatcher dispatcher;
         private boolean rollbackOnError = true;
         private boolean autoCommit = true;
         private String id = BeanUtils.generateName(this);
@@ -42,13 +42,13 @@ public abstract class AbstractEventScheduler implements EventScheduler {
         private Collection<Pair<String[], Event[]>> topicEvents = new ArrayList<>();
         private EventSchedule schedule;
 
-        protected AbstractEventTransaction(EventScheduler scheduler, EventSchedule schedule) {
-            this.eventScheduler = scheduler;
+        protected AbstractEventTransaction(Dispatcher scheduler, EventSchedule schedule) {
+            this.dispatcher = scheduler;
             this.schedule = schedule;
         }
 
-        protected AbstractEventTransaction(EventScheduler scheduler) {
-            this.eventScheduler = scheduler;
+        protected AbstractEventTransaction(Dispatcher scheduler) {
+            this.dispatcher = scheduler;
         }
 
         public EventTransactionStatus getStatus() {
@@ -61,8 +61,8 @@ public abstract class AbstractEventScheduler implements EventScheduler {
         }
 
 
-        public EventScheduler getEventScheduler() {
-            return eventScheduler;
+        public Dispatcher getDispatcher() {
+            return dispatcher;
         }
 
 
@@ -232,7 +232,7 @@ public abstract class AbstractEventScheduler implements EventScheduler {
                     for (Pair<String[], Event[]> mapItem : getTopicEvents()) {
                         for (Event ev : mapItem.getItem2()) {
                             Collection<EventState> eventStates = new HashSet<>();
-                            ev.setScheduler(AbstractEventScheduler.this);
+                            ev.setScheduler(AbstractDispatcher.this);
                             ev.getStatus().setExecutedTime(Instant.now());
                             for (EventTarget et : getMappedTargets(mapItem.getItem1(), EventTarget.class)) {
                                 // default the attempted cloned event to the actual event. This allows us to update the event correctly in the case of
@@ -293,7 +293,7 @@ public abstract class AbstractEventScheduler implements EventScheduler {
         }
     }
 
-    public AbstractEventScheduler() {
+    public AbstractDispatcher() {
         initialize();
     }
 

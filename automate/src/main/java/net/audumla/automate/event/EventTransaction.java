@@ -19,7 +19,6 @@ package net.audumla.automate.event;
 import net.audumla.collections.Pair;
 
 import java.util.Collection;
-import java.util.Map;
 
 public interface EventTransaction {
 
@@ -49,7 +48,7 @@ public interface EventTransaction {
      * @return the event scheduler that this event was scheduled to.
      * If the event has not been assigned to a scheduled yet then this will return null
      */
-    EventScheduler getEventScheduler();
+    Dispatcher getDispatcher();
 
     /**
      * begins the transaction

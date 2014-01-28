@@ -2,7 +2,6 @@ package net.audumla.devices.lcd.rpi;
 
 import net.audumla.automate.event.AbstractEventTarget;
 import net.audumla.automate.event.CommandEvent;
-import net.audumla.automate.event.EventScheduler;
 import net.audumla.devices.i2c.I2CBus;
 import net.audumla.devices.i2c.I2CDevice;
 import net.audumla.devices.lcd.LCD;

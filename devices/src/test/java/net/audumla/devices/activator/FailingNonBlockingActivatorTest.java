@@ -1,6 +1,6 @@
 package net.audumla.devices.activator;
 
-import net.audumla.automate.event.ThreadPoolEventScheduler;
+import net.audumla.automate.event.ThreadPoolDispatcher;
 import org.junit.Test;
 
 import java.time.Duration;
@@ -18,14 +18,14 @@ public class FailingNonBlockingActivatorTest {
     @Test
     public void testStateChangeAllFailure() throws Exception {
         EventTargetActivator activator = new ActivatorMock(false, false);
-        new ThreadPoolEventScheduler().registerEventTarget(activator);
+        new ThreadPoolDispatcher().registerEventTarget(activator);
         stateChangeAllFailure(activator);
     }
 
     @Test
     public void testStateChangeAllFailureException() throws Exception {
         EventTargetActivator activator = new ActivatorMock(false, false);
-        new ThreadPoolEventScheduler().registerEventTarget(activator);
+        new ThreadPoolDispatcher().registerEventTarget(activator);
         stateChangeAllFailure(activator);
     }
 
@@ -47,14 +47,14 @@ public class FailingNonBlockingActivatorTest {
     @Test
     public void testStateChangeActivateFailure() throws Exception {
         EventTargetActivator activator = new ActivatorMock(false, true);
-        new ThreadPoolEventScheduler().registerEventTarget(activator);
+        new ThreadPoolDispatcher().registerEventTarget(activator);
         stateChangeActivateFailure(activator);
     }
 
     @Test
     public void testStateChangeActivateFailureException() throws Exception {
         EventTargetActivator activator = new ActivatorMock(false, true);
-        new ThreadPoolEventScheduler().registerEventTarget(activator);
+        new ThreadPoolDispatcher().registerEventTarget(activator);
         stateChangeActivateFailure(activator);
     }
 
@@ -78,14 +78,14 @@ public class FailingNonBlockingActivatorTest {
     @Test
     public void testStateChangeListener() throws Exception {
         final EventTargetActivator activator = new ActivatorMock(false, false);
-        new ThreadPoolEventScheduler().registerEventTarget(activator);
+        new ThreadPoolDispatcher().registerEventTarget(activator);
         stateChangeListener(activator);
     }
 
     @Test
     public void testStateChangeListenerException() throws Exception {
         final EventTargetActivator activator = new ActivatorMock(false, false);
-        new ThreadPoolEventScheduler().registerEventTarget(activator);
+        new ThreadPoolDispatcher().registerEventTarget(activator);
         stateChangeListener(activator);
     }
 
