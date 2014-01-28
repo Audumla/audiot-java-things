@@ -66,7 +66,9 @@ public class PCF8574GPIOActivatorFactory implements ActivatorFactory<PCF8574GPIO
 
         // set all default pin cache states to match documented chip power up states
         for (int i = 0; i < PCF8574_MAX_IO_PINS; ++i) {
-            pins.add(new PCF8547GPIOActivator(i,"GPIO : Pin#" + i + " : " + id , this));
+            PCF8547GPIOActivator a = new PCF8547GPIOActivator(i, "GPIO : Pin#" + i + " : " + id, this);
+            logger.debug("Found "+a.getName());
+            pins.add(a);
         }
     }
 

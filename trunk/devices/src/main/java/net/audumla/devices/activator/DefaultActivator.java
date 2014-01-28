@@ -66,7 +66,7 @@ public class DefaultActivator<TFactory extends ActivatorFactory> implements Acti
 
     protected void setActiveState(ActivatorState state) {
         this.state = state;
-        logger.debug("Activator [" + state + "]" + "[" + getName() + "]");
+        logger.debug("[" + state + "]" + "[" + getName() + "]");
     }
 
     @Override
