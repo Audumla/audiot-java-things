@@ -61,12 +61,12 @@ public class PCF8574GPIOActivatorFactory implements ActivatorFactory<PCF8574GPIO
     private String id;
 
     public PCF8574GPIOActivatorFactory(I2CDevice device) throws IOException {
-        id = "PCF8674 GPIO Expander connected to "+device.toString();
+        id = "PCF8674 GPIO : "+device.toString();
         this.device = device;
 
         // set all default pin cache states to match documented chip power up states
         for (int i = 0; i < PCF8574_MAX_IO_PINS; ++i) {
-            pins.add(new PCF8547GPIOActivator(i,"GPIO Pin#" + i + " on " + id , this));
+            pins.add(new PCF8547GPIOActivator(i,"GPIO : Pin#" + i + " : " + id , this));
         }
     }
 

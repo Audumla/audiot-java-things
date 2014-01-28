@@ -197,7 +197,7 @@ public class RPII2CDevice implements I2CDevice {
      * @return string with all details
      */
     protected String makeDescription() {
-        return "I2C Bus " + bus.fd + " at address 0x" + Integer.toHexString(deviceAddress);
+        return "I2C 0x" + Integer.toHexString(deviceAddress) +" : Bus "+bus.getBusid();
     }
 
     /**
@@ -208,9 +208,8 @@ public class RPII2CDevice implements I2CDevice {
      * @return string with all details
      */
     protected String makeDescription(int address) {
-        return "I2C Bus " + bus.fd + " at address 0x" + Integer.toHexString(deviceAddress)
-                + " to address 0x" + Integer.toHexString(address);
-    }
+        return "I2C 0x" + Integer.toHexString(deviceAddress) + "to 0x" + Integer.toHexString(address) +"  - Bus "+bus.getBusid();
+   }
 
     @Override
     public String toString() {
