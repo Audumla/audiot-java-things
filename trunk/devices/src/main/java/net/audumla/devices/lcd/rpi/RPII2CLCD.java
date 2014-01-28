@@ -1,7 +1,5 @@
 package net.audumla.devices.lcd.rpi;
 
-import net.audumla.automate.event.AbstractEventTarget;
-import net.audumla.automate.event.CommandEvent;
 import net.audumla.devices.i2c.I2CBus;
 import net.audumla.devices.i2c.I2CDevice;
 import net.audumla.devices.lcd.LCD;
@@ -11,7 +9,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RPII2CLCD extends AbstractEventTarget<CommandEvent<LCD>> implements net.audumla.devices.lcd.LCD {
+public class RPII2CLCD implements net.audumla.devices.lcd.LCD {
     public static final int DEFAULT_ADDRESS = 0x20;
 
     protected final static int LCD_8BITMODE = 0x10;
@@ -65,6 +63,7 @@ public class RPII2CLCD extends AbstractEventTarget<CommandEvent<LCD>> implements
     protected final static int[] LCD_DATA_4BITMASK = {0x80, 0x40, 0x20, 0x10, 0x8, 0x4, 0x2, 0x1};
     // maps matched bits to 4 bit pins
     protected final static int[] LCD_DATA_4BITPIN = {LCD_D7_PIN, LCD_D6_PIN, LCD_D5_PIN, LCD_D4_PIN, LCD_D7_PIN, LCD_D6_PIN, LCD_D5_PIN, LCD_D4_PIN};
+    private final String name;
 
     protected PortExtender ext;
     protected int backlightStatus;
@@ -83,7 +82,7 @@ public class RPII2CLCD extends AbstractEventTarget<CommandEvent<LCD>> implements
     }
 
     private RPII2CLCD(String name, int address) {
-        super(name);
+        this.name = name;
         ext = new PortExtender(address);
         backlightStatus = LCD_BACKLIGHT;
     }
@@ -117,6 +116,10 @@ public class RPII2CLCD extends AbstractEventTarget<CommandEvent<LCD>> implements
             return false;
         }
         return true;
+    }
+
+    private String getName() {
+        return name;
     }
 
     protected void command4bits(int... args) throws Exception {
@@ -289,10 +292,10 @@ public class RPII2CLCD extends AbstractEventTarget<CommandEvent<LCD>> implements
         ext.digitalWrite(backlightStatus);
     }
 
-    @Override
-    public void handleEvent(CommandEvent<LCD> event) throws Exception {
-        event.execute(this);
-    }
+//    @Override
+//    public void handleEvent(CommandEvent<LCD> event) throws Exception {
+//        event.execute(this);
+//    }
 
     protected static class PortExtender {
 

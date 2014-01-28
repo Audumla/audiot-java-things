@@ -1,0 +1,86 @@
+package devices.activator;
+
+/*
+ * *********************************************************************
+ *  ORGANIZATION : audumla.net
+ *  More information about this project can be found at the following locations:
+ *  http://www.audumla.net/
+ *  http://audumla.googlecode.com/
+ * *********************************************************************
+ *  Copyright (C) 2012 - 2013 Audumla.net
+ *  Licensed under the Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License.
+ *  You may not use this file except in compliance with the License located at http://creativecommons.org/licenses/by-nc-nd/3.0/
+ *
+ *  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an
+ *  "AS IS BASIS", WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and limitations under the License.
+ */
+
+import net.audumla.automate.event.ThreadPoolDispatcher;
+import net.audumla.automate.event.activator.ToggleActivatorCommand;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.time.Duration;
+
+/**
+ * Created with IntelliJ IDEA.
+ * User: mgleeson
+ * Date: 11/09/13
+ * Time: 2:45 PM
+ * To change this template use File | Settings | File Templates.
+ */
+public class NonBlockingActivatorTest {
+
+    @Before
+    public void setUp() throws Exception {
+    }
+
+    @Test
+    public void testStateChange() throws Exception {
+        ActivatorMock activator = new ActivatorMock(true, true);
+        new ThreadPoolDispatcher().registerEventTarget(activator);
+        assert activator.getState() == ActivatorState.UNKNOWN;
+        activator.setState(ActivatorState.DEACTIVATED);
+        assert activator.getState() == ActivatorState.DEACTIVATED;
+        activator.getScheduler().publishEvent(activator.getName(), new ToggleActivatorCommand(Duration.ofSeconds(2))).begin();
+//        assert activator.getState() == ActivatorState.ACTIVATED;
+        synchronized (this) {
+            try {
+                this.wait(1000);
+                assert activator.getState() == ActivatorState.ACTIVATED;
+                this.wait(2100);
+            } catch (InterruptedException e) {
+                assert false;
+            }
+        }
+        assert activator.getState() == ActivatorState.DEACTIVATED;
+    }
+
+    @Test
+    public void testStateChangeListener() throws Exception {
+        final ActivatorMock activator = new ActivatorMock(true, true);
+        new ThreadPoolDispatcher().registerEventTarget(activator);
+        ActivatorStateChangeEventTarget target = new ActivatorStateChangeEventTarget(activator);
+        activator.getScheduler().registerEventTarget(target);
+
+        assert activator.getState() == ActivatorState.UNKNOWN;
+        assert target.states.isEmpty();
+        activator.getScheduler().publishEvent(activator.getName(), new ToggleActivatorCommand(Duration.ofSeconds(2))).begin();
+        synchronized (this) {
+            try {
+                this.wait(1000);
+                assert target.states.contains(ActivatorState.ACTIVATED);
+                assert activator.getState() == ActivatorState.ACTIVATED;
+                assert target.states.size() == 1;
+                this.wait(2100);
+            } catch (InterruptedException e) {
+                assert false;
+            }
+        }
+        assert activator.getState() == ActivatorState.DEACTIVATED;
+        assert target.states.contains(ActivatorState.DEACTIVATED);
+        assert target.states.size() == 2;
+    }
+
+}

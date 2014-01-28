@@ -1,4 +1,4 @@
-package net.audumla.devices.activator.factory;
+package net.audumla.automate.event.activator.factory;
 
 /*
  * *********************************************************************
@@ -18,7 +18,9 @@ package net.audumla.devices.activator.factory;
 
 import com.pi4j.io.gpio.PinEdge;
 import com.pi4j.wiringpi.Gpio;
-import net.audumla.devices.activator.DefaultActivator;
+import net.audumla.automate.event.activator.ActivatorCommand;
+import net.audumla.automate.event.activator.EventTransactionActivator;
+import net.audumla.automate.event.activator.EventTransactionActivatorFactory;
 import net.audumla.devices.activator.ActivatorState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,9 +29,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Properties;
 
-public class RPIGPIOActivatorFactory implements ActivatorFactory<RPIGPIOActivatorFactory.RPIGPIOActivator> {
+public class RPIGPIOActivatorFactory extends EventTransactionActivatorFactory<RPIGPIOActivatorFactory.RPIGPIOActivator> {
     private static final Logger logger = LoggerFactory.getLogger(RPIGPIOActivatorFactory.class);
-    private final String id;
 
     protected ArrayList<RPIGPIOActivator> activators = new ArrayList<>();
 
@@ -45,7 +46,7 @@ public class RPIGPIOActivatorFactory implements ActivatorFactory<RPIGPIOActivato
             {2, 3, 4, 7, 8, 9, 10, 11, 14, 15, 17, 18, 27, 22, 23, 24, 25, 28, 29, 30, 31}};
 
     public RPIGPIOActivatorFactory() {
-        id = "RaspberryPI GPIO Factory";
+        super("RaspberryPI GPIO Factory");
     }
 
     @Override
@@ -109,7 +110,7 @@ public class RPIGPIOActivatorFactory implements ActivatorFactory<RPIGPIOActivato
         return null;
     }
 
-    public static class RPIGPIOActivator extends DefaultActivator<RPIGPIOActivatorFactory> {
+    public static class RPIGPIOActivator extends EventTransactionActivator<RPIGPIOActivatorFactory, ActivatorCommand> {
         private static final Logger logger = LoggerFactory.getLogger(RPIGPIOActivator.class);
 
         public static String GPIO_PIN = "gpio_pin";
@@ -121,7 +122,7 @@ public class RPIGPIOActivatorFactory implements ActivatorFactory<RPIGPIOActivato
         protected PULL_RESISTANCE resistance = PULL_RESISTANCE.PULL_OFF;
 
         public RPIGPIOActivator(int pin, GPIOName name, RPIGPIOActivatorFactory rpigpioActivatorFactory) {
-            super(rpigpioActivatorFactory,name.name());
+            super(rpigpioActivatorFactory);
             setPullResistance(resistance);
             this.pin = pin;
             setName(name.name());

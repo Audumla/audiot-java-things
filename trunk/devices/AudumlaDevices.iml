@@ -4,9 +4,6 @@
     <facet type="Osmorc" name="OSGi">
       <configuration manifestGenerationMode="OsmorcControlled" manifestLocation="" jarfileLocation="devices-1.0-SNAPSHOT.jar" outputPathType="CompilerOutputPath" bndFileLocation="" bundlorFileLocation="" bundleActivator="" bundleSymbolicName="net.audumla.devices" bundleVersion="1.0.0" ignoreFilePattern="" useProjectDefaultManifestFileLocation="true" alwaysRebuildBundleJAR="false" doNotSynchronizeWithMaven="false">
         <additionalProperties>
-          <property key="Bundle-Description" value="Management classes for specific devices such as LCDs, Relays and other equipment that requires automation" />
-          <property key="Bundle-Vendor" value="Audumla.net" />
-          <property key="Bundle-DocURL" value="http://www.audumla.net" />
           <property key="Bundle-Name" value="Audumla Devices" />
         </additionalProperties>
         <additionalJARContents />
@@ -46,24 +43,6 @@
     <orderEntry type="library" name="Maven: com.pi4j:pi4j-device:0.0.5" level="project" />
     <orderEntry type="library" name="Maven: com.pi4j:pi4j-gpio-extension:0.0.5" level="project" />
     <orderEntry type="module" module-name="AudumlaFTD2xxj" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.springframework:spring-tx:3.1.4.RELEASE" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: aopalliance:aopalliance:1.0" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.springframework:spring-aop:3.1.4.RELEASE" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.springframework:spring-asm:3.1.4.RELEASE" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.springframework:spring-beans:3.1.4.RELEASE" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.springframework:spring-core:3.1.4.RELEASE" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.springframework:spring-context:3.1.4.RELEASE" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.springframework:spring-expression:3.1.4.RELEASE" level="project" />
-    <orderEntry type="module" module-name="AudumlaQuartz" scope="TEST" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.quartz-scheduler:quartz:2.2.1" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: c3p0:c3p0:0.9.1.1" level="project" />
-    <orderEntry type="module" module-name="AudumlaAstronomy" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.springframework:spring-context-support:3.1.4.RELEASE" level="project" />
-    <orderEntry type="module" module-name="AudumlaAutomate" />
-    <orderEntry type="library" name="Maven: org.osgi:org.osgi.core:4.3.1" level="project" />
-    <orderEntry type="library" name="Maven: com.typesafe.akka:akka-actor_2.10:2.2.3" level="project" />
-    <orderEntry type="library" name="Maven: org.scala-lang:scala-library:2.10.2" level="project" />
-    <orderEntry type="library" name="Maven: com.typesafe:config:1.0.2" level="project" />
     <orderEntry type="library" name="Maven: net.java.dev.jna:jna:4.0.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:4.11" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.hamcrest:hamcrest-core:1.3" level="project" />

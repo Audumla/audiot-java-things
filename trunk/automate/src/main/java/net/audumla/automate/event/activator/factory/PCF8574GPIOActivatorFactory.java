@@ -1,4 +1,4 @@
-package net.audumla.devices.activator.factory;
+package net.audumla.automate.event.activator.factory;
 
 /*
  * *********************************************************************
@@ -16,7 +16,9 @@ package net.audumla.devices.activator.factory;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import net.audumla.devices.activator.DefaultActivator;
+import net.audumla.automate.event.activator.ActivatorCommand;
+import net.audumla.automate.event.activator.EventTransactionActivator;
+import net.audumla.automate.event.activator.EventTransactionActivatorFactory;
 import net.audumla.devices.activator.ActivatorState;
 import net.audumla.devices.i2c.I2CDevice;
 import org.slf4j.Logger;
@@ -28,7 +30,7 @@ import java.util.BitSet;
 import java.util.Collection;
 import java.util.Properties;
 
-public class PCF8574GPIOActivatorFactory implements ActivatorFactory<PCF8574GPIOActivatorFactory.PCF8547GPIOActivator> {
+public class PCF8574GPIOActivatorFactory extends EventTransactionActivatorFactory<PCF8574GPIOActivatorFactory.PCF8547GPIOActivator> {
     private static final Logger logger = LoggerFactory.getLogger(PCF8574GPIOActivatorFactory.class);
 
     //these addresses belong to PCF8574(P)
@@ -58,15 +60,14 @@ public class PCF8574GPIOActivatorFactory implements ActivatorFactory<PCF8574GPIO
     private I2CDevice device;
     private BitSet currentStates = new BitSet(PCF8574_MAX_IO_PINS);
     private Collection<PCF8547GPIOActivator> pins = new ArrayList<>();
-    private String id;
 
     public PCF8574GPIOActivatorFactory(I2CDevice device) throws IOException {
-        id = "PCF8674 GPIO Expander connected to "+device.toString();
+        super("PCF8674 GPIO Expander connected on "+device.toString());
         this.device = device;
 
         // set all default pin cache states to match documented chip power up states
         for (int i = 0; i < PCF8574_MAX_IO_PINS; ++i) {
-            pins.add(new PCF8547GPIOActivator(i,"GPIO Pin#" + i + " on " + id , this));
+            pins.add(new PCF8547GPIOActivator(i, this));
         }
     }
 
@@ -118,22 +119,18 @@ public class PCF8574GPIOActivatorFactory implements ActivatorFactory<PCF8574GPIO
         }
     }
 
-    @Override
-    public String getId() {
-        return id;
-    }
-
-    public class PCF8547GPIOActivator extends DefaultActivator<PCF8574GPIOActivatorFactory> {
+    public class PCF8547GPIOActivator extends EventTransactionActivator<PCF8574GPIOActivatorFactory, ActivatorCommand> {
 
         public static final String GPIO_PIN = "gpio_pin";
 
         protected int pin;
 
-        public PCF8547GPIOActivator(int pin, String name, PCF8574GPIOActivatorFactory activatorFactory) {
-            super(activatorFactory,name);
+        public PCF8547GPIOActivator(int pin, PCF8574GPIOActivatorFactory activatorFactory) {
+            super(activatorFactory);
             this.pin = pin;
             getId().setProperty(GPIO_PIN, String.valueOf(pin));
             super.allowVariableState(false);
+            setName("GPIO Pin#" + pin + " on " + PCF8574GPIOActivatorFactory.this.toString() );
         }
 
         @Override

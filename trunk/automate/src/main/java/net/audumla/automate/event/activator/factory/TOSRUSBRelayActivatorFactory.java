@@ -1,4 +1,4 @@
-package net.audumla.devices.activator.factory;
+package net.audumla.automate.event.activator.factory;
 
 /*
  * *********************************************************************
@@ -19,10 +19,10 @@ package net.audumla.devices.activator.factory;
 import com.ftdichip.ftd2xx.Device;
 import com.ftdichip.ftd2xx.FTD2xxException;
 import com.ftdichip.ftd2xx.Service;
+import net.audumla.automate.event.activator.ActivatorCommand;
+import net.audumla.automate.event.activator.EventTransactionActivator;
+import net.audumla.automate.event.activator.EventTransactionActivatorFactory;
 import net.audumla.bean.BeanUtils;
-import net.audumla.devices.activator.DefaultActivator;
-import net.audumla.devices.activator.Activator;
-import net.audumla.devices.activator.ActivatorState;
 import org.apache.log4j.Logger;
 
 import java.util.Collection;
@@ -33,7 +33,7 @@ import java.util.Properties;
 /**
  * Used to drive the USB relay identified at http://www.tinyosshop.com/index.php?route=product/product&amp;path=141_142&amp;product_id=363
  */
-public class TOSRUSBRelayActivatorFactory implements ActivatorFactory<DefaultActivator<TOSRUSBRelayActivatorFactory>> {
+public class TOSRUSBRelayActivatorFactory extends EventTransactionActivatorFactory<EventTransactionActivator> {
     private static final Logger logger = Logger.getLogger(Activator.class);
 
     public static final String DEVICE_ID = "deviceid";
@@ -42,11 +42,11 @@ public class TOSRUSBRelayActivatorFactory implements ActivatorFactory<DefaultAct
     private static final int RELAY_ACTIVATE_INCREMENT = 100;
     private static final int RELAY_DEACTIVATE_INCREMENT = 110;
     private Device devices[] = new Device[0];
-    private Map<String, DefaultActivator<TOSRUSBRelayActivatorFactory>> activatorRegistry = new HashMap<>();
+    private Map<String, EventTransactionActivator> activatorRegistry = new HashMap<>();
     private String id = BeanUtils.generateName(this);
 
     private TOSRUSBRelayActivatorFactory() {
-        id = "TOS Relay USB Factory";
+        super("TinyUSBActivator");
     }
 
     public void initialize() throws Exception {
@@ -55,24 +55,26 @@ public class TOSRUSBRelayActivatorFactory implements ActivatorFactory<DefaultAct
             if (devices == null) {
                 devices = new Device[0];
             }
-            logger.info("Found " + devices.length + " TOS Relay devices");
+            logger.info("Found " + devices.length + " TinyOS Relay devices");
             for (Device device : devices) {
-                logger.debug("TOS Relay Serial Number : " + device.getDeviceDescriptor().getSerialNumber());
+                logger.debug("TinyOS Relay Serial Number : " + device.getDeviceDescriptor().getSerialNumber());
             }
             for (int di = 0; di < devices.length; ++di) {
                 for (int i = 0; i < getRelaysPerDevice(); ++i) {
                     String id = di + "," + i;
-                    DefaultActivator<TOSRUSBRelayActivatorFactory> activator = new DefaultActivator<>(this,"Relay #"+i+" on Device [TOS Relay USB #"+di+"]");
+                    EventTransactionActivator<TOSRUSBRelayActivatorFactory, ActivatorCommand> activator = new EventTransactionActivator<>(this);
+                    activator.getId().put(ActivatorFactory.FACTORY_ID, getId());
                     activator.getId().put(RELAY_ID, i);
                     activator.getId().put(DEVICE_ID, di);
                     activator.allowSetState(true);
                     activator.allowVariableState(false);
+                    activator.setName("Device[" + di + "] Relay[" + i + "]");
                     activatorRegistry.put(id, activator);
                     logger.debug("Relay identified : " + activator.getId() + " - " + activator.getName());
                 }
             }
         } catch (Throwable ex) {
-            logger.info("Cannot manage TOS relays", ex);
+            logger.info("Cannot manage TinyOS relays", ex);
         } finally {
             deactivateAllDevices();
         }
@@ -101,18 +103,18 @@ public class TOSRUSBRelayActivatorFactory implements ActivatorFactory<DefaultAct
     }
 
     @Override
-    public DefaultActivator<TOSRUSBRelayActivatorFactory> getActivator(Properties id) {
+    public EventTransactionActivator getActivator(Properties id) {
         String sid = id.getProperty(DEVICE_ID) + "," + id.getProperty(RELAY_ID);
         return activatorRegistry.get(sid);
     }
 
     @Override
-    public Collection<? extends DefaultActivator<TOSRUSBRelayActivatorFactory>> getActivators() {
+    public Collection<? extends EventTransactionActivator> getActivators() {
         return activatorRegistry.values();
     }
 
     @Override
-    public boolean setState(DefaultActivator<TOSRUSBRelayActivatorFactory> activator, ActivatorState newState) throws Exception {
+    public boolean setState(EventTransactionActivator activator, ActivatorState newState) throws Exception {
         int deviceid = Integer.parseInt(activator.getId().getProperty(DEVICE_ID));
         int relayid = Integer.parseInt(activator.getId().getProperty(RELAY_ID));
 
@@ -145,13 +147,13 @@ public class TOSRUSBRelayActivatorFactory implements ActivatorFactory<DefaultAct
             try {
                 writeToDevice(device, relay + offset);
             } catch (Exception ex) {
-                throw new Exception("Failed to set TOS Relay [Device:" + device + "][Relay:" + relay + "]", ex);
+                throw new Exception("Failed to set TinyOS tinyusb [Device:" + device + "][Relay:" + relay + "]", ex);
             }
         }
     }
 
     protected void deactivateAllDevices() throws Exception {
-        logger.debug("Closing all TOS relays");
+        logger.debug("Closing all TinyOS relays");
         for (int i = 0; i < devices.length; ++i) {
             writeToDevice(i, RELAY_DEACTIVATE_INCREMENT);
         }
@@ -177,7 +179,7 @@ public class TOSRUSBRelayActivatorFactory implements ActivatorFactory<DefaultAct
                 try {
                     devices[device].open();
                 } catch (Exception e) {
-                    throw new Exception("Cannot open TOS tinyusb [Device:" + device + "]", e);
+                    throw new Exception("Cannot open TinyOS tinyusb [Device:" + device + "]", e);
                 }
             }
         }
@@ -188,7 +190,7 @@ public class TOSRUSBRelayActivatorFactory implements ActivatorFactory<DefaultAct
         if (devices != null && devices.length > device) {
             return true;
         } else {
-            logger.error("Cannot locate TOS at index [Device:" + device + "]");
+            logger.error("Cannot locate TinyOS at index [Device:" + device + "]");
             return false;
         }
     }

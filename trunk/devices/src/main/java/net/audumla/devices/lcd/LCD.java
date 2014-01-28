@@ -1,8 +1,5 @@
 package net.audumla.devices.lcd;
 
-import net.audumla.automate.event.CommandEvent;
-import net.audumla.automate.event.EventTarget;
-
 import java.io.IOException;
 
 /**
@@ -12,7 +9,7 @@ import java.io.IOException;
  * Time: 2:29 PM
  * To change this template use File | Settings | File Templates.
  */
-public interface LCD extends EventTarget<CommandEvent<LCD>> {
+public interface LCD  {
     void write(String s) throws Exception;
 
     void clear() throws Exception;
