@@ -25,17 +25,20 @@ import java.io.IOException;
 
 public class RPII2CBus implements I2CBus {
 
+    /**
+     * File handle for this i2c bus
+     */
+    protected int fd;
+    private final int busid;
+
     public RPII2CBus(int busid) throws IOException {
+        this.busid = busid;
         fd = I2C.i2cOpen("/dev/i2c-" + busid);
         if (fd < 0) {
             throw new IOException("Cannot open I2C Bus [/dev/i2c-" + busid + "] received " + fd);
         }
     }
 
-    /**
-     * File handle for this i2c bus
-     */
-    protected int fd;
 
     /**
      * Returns i2c device implementation
@@ -58,4 +61,9 @@ public class RPII2CBus implements I2CBus {
     public void close() throws IOException {
         I2C.i2cClose(fd);
     }
+
+    public int getBusid() {
+        return busid;
+    }
 }
+
