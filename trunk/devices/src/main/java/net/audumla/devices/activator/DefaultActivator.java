@@ -99,7 +99,7 @@ public class DefaultActivator<TFactory extends ActivatorFactory> implements Acti
                     throw ex;
                 }
             }
-            logger.trace("Cannot set Activator [" + getName() + "] to state [" + newstate.getName() + "] when state is already [" + getState() + "]");
+            logger.trace("Ignored - [" + getState() + "][" + getName() + "] to state [" + newstate.getName() + "]");
         } else {
             throw new Exception("Activator [" + getName() + "] is not settable");
         }

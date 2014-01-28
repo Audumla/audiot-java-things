@@ -54,7 +54,7 @@ public class AggregateActivator extends DefaultActivator<ActivatorFactory> {
 
     @Override
     public boolean setState(ActivatorState newstate) throws Exception {
-        logger.debug("Setting "+getName()+"] to ["+newstate);
+        logger.debug("["+newstate+"]"+getName()+"]");
         for (Activator a : activators) {
             a.setState(newstate);
         }
