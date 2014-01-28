@@ -51,8 +51,6 @@ public class RPIGPIOActivatorFactory implements ActivatorFactory<RPIGPIOActivato
     @Override
     public void initialize() throws Exception {
         com.pi4j.wiringpi.Gpio.wiringPiSetupGpio();
-
-
         int revisionIndex = Gpio.piBoardRev() - 1;
         if (revisionIndex < 2) {
             logger.info("Identified RaspberryPI revision - " + Gpio.piBoardRev());
@@ -61,12 +59,12 @@ public class RPIGPIOActivatorFactory implements ActivatorFactory<RPIGPIOActivato
                 logger.debug("Found ["+a.getName()+"]");
                 activators.add(a);
             }
-            for (RPIGPIOActivator a : getActivators()) {
-                if (a.getName().startsWith("GPIO")) {
+            for (RPIGPIOActivator act : getActivators()) {
+                if (act.getGpioName().name().startsWith("GPIO")) {
                     //set all the GPIO pins to output and disasble.
-                    a.allowSetState(true);
-                    a.allowVariableState(false);
-                    a.setState(ActivatorState.DEACTIVATED);
+                    act.allowSetState(true);
+                    act.allowVariableState(false);
+                    act.setState(ActivatorState.DEACTIVATED);
                 }
             }
 
@@ -120,16 +118,20 @@ public class RPIGPIOActivatorFactory implements ActivatorFactory<RPIGPIOActivato
         public enum PULL_RESISTANCE {PULL_UP, PULL_DOWN, PULL_OFF}
 
         protected int pin;
+        protected GPIOName gpioName;
         protected PULL_RESISTANCE resistance = PULL_RESISTANCE.PULL_OFF;
 
-        public RPIGPIOActivator(int pin, GPIOName name, RPIGPIOActivatorFactory factory) {
-            super(factory, "GPIO : Pin#" + pin + " : " + name.name() + " : " + factory.getId());
-            setPullResistance(resistance);
+        public RPIGPIOActivator(int pin, GPIOName gpioName, RPIGPIOActivatorFactory factory) {
+            super(factory, "GPIO : Pin#" + pin + " : " + gpioName.name() + " : " + factory.getId());
             this.pin = pin;
+            this.gpioName = gpioName;
             getId().setProperty(GPIO_PIN, String.valueOf(pin));
-            getId().setProperty(GPIO_NAME, name.toString());
+            getId().setProperty(GPIO_NAME, gpioName.toString());
         }
 
+        public GPIOName getGpioName() {
+            return gpioName;
+        }
 
         public void setPullResistance(PULL_RESISTANCE value) {
             resistance = value;
