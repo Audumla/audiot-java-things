@@ -64,12 +64,6 @@ public class PCF8574GPIOActivatorFactory implements ActivatorFactory<PCF8574GPIO
         id = "PCF8674 GPIO : "+device.toString();
         this.device = device;
 
-        // set all default pin cache states to match documented chip power up states
-        for (int i = 0; i < PCF8574_MAX_IO_PINS; ++i) {
-            PCF8547GPIOActivator a = new PCF8547GPIOActivator(i, "GPIO : Pin#" + i + " : " + id, this);
-            logger.debug("Found "+a.getName());
-            pins.add(a);
-        }
     }
 
     @Override
@@ -106,6 +100,11 @@ public class PCF8574GPIOActivatorFactory implements ActivatorFactory<PCF8574GPIO
 
     @Override
     public void initialize() throws Exception {
+        for (int i = 0; i < PCF8574_MAX_IO_PINS; ++i) {
+            PCF8547GPIOActivator a = new PCF8547GPIOActivator(i, "GPIO : Pin#" + i + " : " + id, this);
+            logger.debug("Found ["+a.getName()+"]");
+            pins.add(a);
+        }
         currentStates.set(0, PCF8574_MAX_IO_PINS, true);
         device.write(PCF8574_WRITE, (byte) 0xff);
         for (PCF8547GPIOActivator a : getActivators()) {
