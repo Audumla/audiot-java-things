@@ -74,12 +74,12 @@
                             <includes>
                                 <include>**/rpi/**</include>
                             </includes>
-                            <properties>
-                                <property>
-                                    <name>listener</name>
-                                    <value>net.audumla.devices.lcd.LCDJUnitListener</value>
-                                </property>
-                            </properties>
+                            <!--<properties>-->
+                                <!--<property>-->
+                                    <!--<name>listener</name>-->
+                                    <!--<value>net.audumla.devices.lcd.LCDJUnitListener</value>-->
+                                <!--</property>-->
+                            <!--</properties>-->
                             <parallel>methods</parallel>
                             <threadCount>1</threadCount>
                             <redirectTestOutputToFile>true</redirectTestOutputToFile>
