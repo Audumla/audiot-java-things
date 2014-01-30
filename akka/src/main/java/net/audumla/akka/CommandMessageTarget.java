@@ -39,15 +39,12 @@ public class CommandMessageTarget<T, M extends CommandEvent<T>> extends Abstract
     @Override
     public PartialFunction<Object, BoxedUnit> receive() {
         return ReceiveBuilder.
-                match(CommandEvent.class, new FI.UnitApply<CommandEvent>() {
-                    @Override
-                    public void apply(CommandEvent c) {
-                        try {
-                            logger.debug("["+self().path().name()+"] received command ["+c.getClass()+"]");
-                            c.execute(reference);
-                        } catch (Throwable throwable) {
-                            unhandled(c);
-                        }
+                match(CommandEvent.class, c -> {
+                    try {
+                        logger.debug("["+self().path().name()+"] received command ["+c.getClass()+"]");
+                        c.execute(reference);
+                    } catch (Throwable throwable) {
+                        unhandled(c);
                     }
                 }).
                 build();
