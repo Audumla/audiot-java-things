@@ -18,7 +18,6 @@ package net.audumla.devices.lcd.junit;
 
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
-import akka.actor.PoisonPill;
 import akka.actor.Props;
 import akka.pattern.AskTimeoutException;
 import akka.pattern.Patterns;
@@ -39,7 +38,7 @@ import java.util.concurrent.TimeUnit;
 
 public class LCDJUnitListener extends RunListener {
     private static final Logger logger = Logger.getLogger(LCDJUnitListener.class);
-    private final ActorSystem actorSystem;
+    private ActorSystem actorSystem;
 
     private ActorRef target;
 
