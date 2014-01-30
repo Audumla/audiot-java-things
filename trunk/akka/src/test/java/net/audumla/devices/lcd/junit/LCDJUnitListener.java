@@ -44,7 +44,7 @@ public class LCDJUnitListener extends RunListener {
 
     public LCDJUnitListener() {
         actorSystem = ActorSystem.create();
-        Props lcpProps = Props.create(new CMTargetCreator<LCD>(RPII2CLCD.instance("LCD JUnit Logger",RPII2CLCD.DEFAULT_ADDRESS)));
+        Props lcpProps = Props.create(new CMTargetCreator<LCD>(RPII2CLCD.instance("LCD JUnit Logger",RPII2CLCD.DEFAULT_ADDRESS))).withDispatcher("junit-dispatcher");
         target = actorSystem.actorOf(lcpProps, "lcd");
         target.tell(new LCDInitializeCommand(),null);
         logger.debug("Loaded JUnit LCD Listener");
