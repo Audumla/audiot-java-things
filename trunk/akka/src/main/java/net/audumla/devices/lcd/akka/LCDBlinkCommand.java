@@ -1,4 +1,4 @@
-package net.audumla.akka;
+package net.audumla.devices.lcd.akka;
 
 /*
  * *********************************************************************
@@ -16,29 +16,35 @@ package net.audumla.akka;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-public abstract class AbstractEventTarget<T> extends akka.actor.UntypedActor {
+import net.audumla.akka.CommandEvent;
+import net.audumla.devices.lcd.LCD;
 
-    protected AbstractEventTarget() {
+public class LCDBlinkCommand implements CommandEvent<LCD> {
+
+    protected boolean blink;
+
+    public LCDBlinkCommand() {
+    }
+
+    public boolean isBlink() {
+        return blink;
+    }
+
+    public void setBlink(boolean blink) {
+        this.blink = blink;
+    }
+
+    public LCDBlinkCommand(boolean b) {
+        blink = b;
     }
 
     @Override
-    public String toString() {
-        return self().path().name();
+    public boolean execute(LCD lcd) throws Exception {
+        if (blink)
+            lcd.blink();
+        else
+            lcd.noBlink();
+        return true;
     }
-
-    @Override
-    public void onReceive(Object message) throws Exception {
-        try {
-            onMessage((T) message);
-        } catch (Throwable throwable) {
-            unhandled(message);
-        }
-    }
-
-    /**
-     * @param message the event that should be handled or executed
-     * @throws Throwable
-     */
-    abstract void onMessage(T message) throws Throwable;
 
 }
