@@ -1,7 +1,6 @@
 package net.audumla.devices.lcd.rpi;
 
-import net.audumla.devices.i2c.I2CBus;
-import net.audumla.devices.i2c.I2CDevice;
+import net.audumla.devices.io.i2c.I2CBus;
 import net.audumla.devices.lcd.LCD;
 import org.apache.log4j.Logger;
 
