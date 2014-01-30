@@ -1,4 +1,4 @@
-package net.audumla.devices.i2c;
+package net.audumla.devices.io.i2c;
 
 /*
  * *********************************************************************
@@ -16,10 +16,7 @@ package net.audumla.devices.i2c;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import net.audumla.devices.i2c.rpi.RPII2CBusFactory;
-
 import java.io.IOException;
-import java.util.concurrent.atomic.AtomicReference;
 
 public interface I2CBus {
 
@@ -27,10 +24,12 @@ public interface I2CBus {
      * Returns i2c device.
      *
      * @param address i2c device's address
-     * @return i2c device
+     * @return i2c device represented as byte channel
      * @throws IOException thrown in case this bus cannot return i2c device.
      */
-    I2CDevice getDevice(int address) throws IOException;
+    default I2CByteChannelFactory getByteChannelFactory(int address) throws IOException {
+        return new I2CByteChannelFactory(address,this);
+    }
 
     /**
      * Closes this bus. This usually means closing underlying file.
@@ -39,19 +38,22 @@ public interface I2CBus {
      */
     void close() throws IOException;
 
-    public interface I2CBusFactory {
-        I2CBus getInstance(int busid) throws IOException;
-    }
+    /**
+     * Opens this bus.
+     *
+     * @throws IOException thrown in case there are problems closing this i2c bus.
+     */
+    void open() throws IOException;
 
-    static final AtomicReference<I2CBusFactory> factory = new AtomicReference<I2CBusFactory>(new RPII2CBusFactory());
+    boolean isOpen();
 
-    static I2CBusFactory getI2CBusFactory() {
-        return factory.get();
-    }
+    int getBusId();
 
-    static void setI2CBusFactory(I2CBusFactory f) {
-        factory.set(f);
+    int write(int deviceAddress, int deviceRegister, byte value)  throws IOException;
 
-    }
+    int write(int deviceAddress, byte value) throws IOException;
 
+    byte read(int deviceAddress, int deviceRegister)  throws IOException;
+
+    byte read(int deviceAddress) throws IOException;
 }

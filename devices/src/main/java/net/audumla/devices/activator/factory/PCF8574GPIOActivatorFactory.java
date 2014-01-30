@@ -16,13 +16,15 @@ package net.audumla.devices.activator.factory;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import net.audumla.devices.activator.DefaultActivator;
 import net.audumla.devices.activator.ActivatorState;
-import net.audumla.devices.i2c.I2CDevice;
+import net.audumla.devices.activator.DefaultActivator;
+import net.audumla.devices.io.DeviceByteChannelFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.channels.ByteChannel;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Collection;
@@ -55,14 +57,16 @@ public class PCF8574GPIOActivatorFactory implements ActivatorFactory<PCF8574GPIO
 
     public static final int PCF8574_MAX_IO_PINS = 8;
 
-    private I2CDevice device;
+    private ByteChannel writeChannel;
+    private ByteChannel readChannel;
     private BitSet currentStates = new BitSet(PCF8574_MAX_IO_PINS);
     private Collection<PCF8547GPIOActivator> pins = new ArrayList<>();
     private String id;
 
-    public PCF8574GPIOActivatorFactory(I2CDevice device) throws IOException {
-        id = "PCF8674 GPIO : "+device.toString();
-        this.device = device;
+    public PCF8574GPIOActivatorFactory(DeviceByteChannelFactory device) throws IOException {
+        id = "PCF8674 GPIO : " + device.toString();
+        writeChannel = device.openByteChannel(PCF8574_WRITE);
+        readChannel = device.openByteChannel(PCF8574_READ);
 
     }
 
@@ -87,9 +91,9 @@ public class PCF8574GPIOActivatorFactory implements ActivatorFactory<PCF8574GPIO
         if (currentStates.get(activator.getPin()) == newState.equals(ActivatorState.DEACTIVATED)) {
             currentStates.set(activator.getPin(), !newState.equals(ActivatorState.DEACTIVATED));
             if (currentStates.toByteArray().length == 0) {
-                device.write(PCF8574_WRITE, (byte) 0x00);
+                writeChannel.write(ByteBuffer.allocateDirect((byte) 0x00));
             } else {
-                device.write(PCF8574_WRITE, currentStates.toByteArray()[0]);
+                writeChannel.write(ByteBuffer.allocateDirect(currentStates.toByteArray()[0]));
             }
         }
 //        else {
@@ -102,11 +106,11 @@ public class PCF8574GPIOActivatorFactory implements ActivatorFactory<PCF8574GPIO
     public void initialize() throws Exception {
         for (int i = 0; i < PCF8574_MAX_IO_PINS; ++i) {
             PCF8547GPIOActivator a = new PCF8547GPIOActivator(i, "GPIO : Pin#" + i + " : " + id, this);
-            logger.debug("Found ["+a.getName()+"]");
+            logger.debug("Found [" + a.getName() + "]");
             pins.add(a);
         }
         currentStates.set(0, PCF8574_MAX_IO_PINS, true);
-        device.write(PCF8574_WRITE, (byte) 0xff);
+        writeChannel.write(ByteBuffer.allocateDirect((byte) 0xff));
         for (PCF8547GPIOActivator a : getActivators()) {
             a.setState(ActivatorState.DEACTIVATED);
         }
@@ -131,7 +135,7 @@ public class PCF8574GPIOActivatorFactory implements ActivatorFactory<PCF8574GPIO
         protected int pin;
 
         public PCF8547GPIOActivator(int pin, String name, PCF8574GPIOActivatorFactory activatorFactory) {
-            super(activatorFactory,name);
+            super(activatorFactory, name);
             this.pin = pin;
             getId().setProperty(GPIO_PIN, String.valueOf(pin));
             super.allowVariableState(false);

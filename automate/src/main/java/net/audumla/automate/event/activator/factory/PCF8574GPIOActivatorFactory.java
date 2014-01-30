@@ -20,7 +20,7 @@ import net.audumla.automate.event.activator.ActivatorCommand;
 import net.audumla.automate.event.activator.EventTransactionActivator;
 import net.audumla.automate.event.activator.EventTransactionActivatorFactory;
 import net.audumla.devices.activator.ActivatorState;
-import net.audumla.devices.i2c.I2CDevice;
+import net.audumla.devices.io.i2c.I2CDevice;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
