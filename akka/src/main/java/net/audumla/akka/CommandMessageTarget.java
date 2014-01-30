@@ -19,6 +19,7 @@ package net.audumla.akka;
 import akka.actor.AbstractActor;
 import akka.io.Tcp;
 import akka.japi.Creator;
+import akka.japi.pf.FI;
 import akka.japi.pf.ReceiveBuilder;
 import scala.PartialFunction;
 import scala.runtime.BoxedUnit;
@@ -35,11 +36,14 @@ public class CommandMessageTarget<T, M extends CommandEvent<T>> extends Abstract
     @Override
     public PartialFunction<Object, BoxedUnit> receive() {
         return ReceiveBuilder.
-                match(CommandEvent.class, c -> {
-                    try {
-                        c.execute(reference);
-                    } catch (Throwable throwable) {
-                        unhandled(c);
+                match(CommandEvent.class, new FI.UnitApply<CommandEvent>() {
+                    @Override
+                    public void apply(CommandEvent c) {
+                        try {
+                            c.execute(reference);
+                        } catch (Throwable throwable) {
+                            unhandled(c);
+                        }
                     }
                 }).
                 build();
