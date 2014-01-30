@@ -21,10 +21,13 @@ import akka.io.Tcp;
 import akka.japi.Creator;
 import akka.japi.pf.FI;
 import akka.japi.pf.ReceiveBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import scala.PartialFunction;
 import scala.runtime.BoxedUnit;
 
 public class CommandMessageTarget<T, M extends CommandEvent<T>> extends AbstractActor {
+    private static final Logger logger = LoggerFactory.getLogger(CommandMessageTarget.class);
 
 
     public CommandMessageTarget(T reference) {
@@ -40,6 +43,7 @@ public class CommandMessageTarget<T, M extends CommandEvent<T>> extends Abstract
                     @Override
                     public void apply(CommandEvent c) {
                         try {
+                            logger.debug("["+self().path().name()+"] received command ["+c.getClass()+"]");
                             c.execute(reference);
                         } catch (Throwable throwable) {
                             unhandled(c);

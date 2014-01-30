@@ -21,7 +21,7 @@ import net.audumla.devices.lcd.LCD;
 
 public class LCDInitializeCommand implements CommandEvent<LCD> {
 
-    protected LCDInitializeCommand() {
+    public LCDInitializeCommand() {
 
     }
 
