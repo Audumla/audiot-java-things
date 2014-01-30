@@ -49,6 +49,14 @@
                                             <version>1.0-SNAPSHOT</version>
                                             <outputDirectory>${project.build.directory}/test-classes</outputDirectory>
                                         </artifactItem>
+                                        <artifactItem>
+                                            <groupId>net.audumla</groupId>
+                                            <artifactId>akka</artifactId>
+                                            <type>test-jar</type>
+                                            <overWrite>true</overWrite>
+                                            <version>1.0-SNAPSHOT</version>
+                                            <outputDirectory>${project.build.directory}/test-classes</outputDirectory>
+                                        </artifactItem>
                                     </artifactItems>
                                 </configuration>
                             </execution>
@@ -74,12 +82,12 @@
                             <includes>
                                 <include>**/rpi/**</include>
                             </includes>
-                            <!--<properties>-->
-                                <!--<property>-->
-                                    <!--<name>listener</name>-->
-                                    <!--<value>net.audumla.devices.lcd.LCDJUnitListener</value>-->
-                                <!--</property>-->
-                            <!--</properties>-->
+                            <properties>
+                                <property>
+                                    <name>listener</name>
+                                    <value>net.audumla.devices.lcd.junit.LCDJUnitListener</value>
+                                </property>
+                            </properties>
                             <parallel>methods</parallel>
                             <threadCount>1</threadCount>
                             <redirectTestOutputToFile>true</redirectTestOutputToFile>

@@ -1,0 +1,84 @@
+package net.audumla.devices.lcd.junit;
+
+/*
+ * *********************************************************************
+ *  ORGANIZATION : audumla.net
+ *  More information about this project can be found at the following locations:
+ *  http://www.audumla.net/
+ *  http://audumla.googlecode.com/
+ * *********************************************************************
+ *  Copyright (C) 2012 - 2013 Audumla.net
+ *  Licensed under the Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License.
+ *  You may not use this file except in compliance with the License located at http://creativecommons.org/licenses/by-nc-nd/3.0/
+ *
+ *  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an
+ *  "AS IS BASIS", WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and limitations under the License.
+ */
+
+import akka.actor.ActorRef;
+import akka.actor.ActorSystem;
+import akka.actor.Props;
+import net.audumla.devices.lcd.akka.LCDClearCommand;
+import net.audumla.devices.lcd.akka.LCDPauseCommand;
+import net.audumla.devices.lcd.akka.LCDSetCursorCommand;
+import net.audumla.devices.lcd.akka.LCDWriteCommand;
+import net.audumla.devices.lcd.rpi.RPII2CLCD;
+import org.apache.log4j.Logger;
+import org.junit.runner.Description;
+import org.junit.runner.Result;
+import org.junit.runner.notification.Failure;
+import org.junit.runner.notification.RunListener;
+
+public class LCDJUnitListener extends RunListener {
+    private static final Logger logger = Logger.getLogger(LCDJUnitListener.class);
+
+    private ActorRef target;
+
+    public LCDJUnitListener() {
+        ActorSystem akka = ActorSystem.create();
+        Props lcpProps = Props.create(RPII2CLCD.class);
+        target = akka.actorOf(lcpProps, "lcd");
+        logger.debug("Loaded JUnit LCD Listener");
+    }
+
+    protected void displayTestStatus(String desc, String status) {
+        target.tell(new LCDClearCommand(), null);
+        target.tell(new LCDWriteCommand(desc), null);
+        target.tell(new LCDSetCursorCommand(0, 2), null);
+        target.tell(new LCDWriteCommand(status), null);
+        target.tell(new LCDPauseCommand(), null);
+    }
+
+    @Override
+    public void testFinished(Description description) throws Exception {
+        displayTestStatus("Test: " + description.getMethodName(), "Completed");
+    }
+
+    @Override
+    public void testFailure(Failure failure) throws Exception {
+        displayTestStatus("Test: " + failure.getDescription().getMethodName(), "Failed");
+    }
+
+    @Override
+    public void testAssumptionFailure(Failure failure) {
+        displayTestStatus("Test: " + failure.getDescription().getMethodName(), "Assumption Failed");
+    }
+
+    @Override
+    public void testStarted(Description description) throws Exception {
+        displayTestStatus("Test: " + description.getMethodName(), "Started");
+    }
+
+    @Override
+    public void testRunFinished(Result result) throws Exception {
+        target.tell(new LCDClearCommand(), null);
+        target.tell(new LCDWriteCommand("Tests run: " + result.getRunCount()), null);
+        target.tell(new LCDSetCursorCommand(0, 1), null);
+        target.tell(new LCDWriteCommand("Tests passed:" + (result.getRunCount() - result.getFailureCount())), null);
+        target.tell(new LCDSetCursorCommand(0, 2), null);
+        target.tell(new LCDWriteCommand("Tests failed:" + result.getFailureCount()), null);
+        target.tell(new LCDPauseCommand(), null);
+
+    }
+}

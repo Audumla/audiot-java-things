@@ -205,8 +205,8 @@ public class RPPIActivatorTest {
         activators.addAll(ss2.getActivators());
         activators.addAll(ss3.getActivators());
 
-        int v = 1;
-        for (int i = 0; i < 10; ++i) {
+        int v = 10;
+        for (int i = 0; i < 3; ++i) {
             for (Activator a : activators) {
                 a.setState(ActivatorState.ACTIVATED);
                 synchronized (this) {
