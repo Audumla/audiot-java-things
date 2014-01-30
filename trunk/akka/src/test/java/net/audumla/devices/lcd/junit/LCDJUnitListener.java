@@ -18,7 +18,10 @@ package net.audumla.devices.lcd.junit;
 
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
+import akka.actor.PoisonPill;
 import akka.actor.Props;
+import akka.pattern.AskTimeoutException;
+import akka.pattern.Patterns;
 import net.audumla.akka.CMTargetCreator;
 import net.audumla.devices.lcd.LCD;
 import net.audumla.devices.lcd.akka.*;
@@ -28,16 +31,22 @@ import org.junit.runner.Description;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunListener;
+import scala.concurrent.Await;
+import scala.concurrent.Future;
+import scala.concurrent.duration.Duration;
+
+import java.util.concurrent.TimeUnit;
 
 public class LCDJUnitListener extends RunListener {
     private static final Logger logger = Logger.getLogger(LCDJUnitListener.class);
+    private final ActorSystem actorSystem;
 
     private ActorRef target;
 
     public LCDJUnitListener() {
-        ActorSystem akka = ActorSystem.create();
+        actorSystem = ActorSystem.create();
         Props lcpProps = Props.create(new CMTargetCreator<LCD>(RPII2CLCD.instance("LCD JUnit Logger",RPII2CLCD.DEFAULT_ADDRESS)));
-        target = akka.actorOf(lcpProps, "lcd");
+        target = actorSystem.actorOf(lcpProps, "lcd");
         target.tell(new LCDInitializeCommand(),null);
         logger.debug("Loaded JUnit LCD Listener");
     }
@@ -79,6 +88,14 @@ public class LCDJUnitListener extends RunListener {
         target.tell(new LCDSetCursorCommand(0, 2), null);
         target.tell(new LCDWriteCommand("Tests failed:" + result.getFailureCount()), null);
         target.tell(new LCDPauseCommand(), null);
-
+        target.tell(akka.actor.PoisonPill.getInstance(),null);
+        try {
+            Future<Boolean> stopped =
+                    Patterns.gracefulStop(target, Duration.create(5, TimeUnit.SECONDS));
+            Await.result(stopped, Duration.create(60, TimeUnit.SECONDS));
+            // the actor has been stopped
+        } catch (AskTimeoutException e) {
+            // the actor wasn't stopped within 5 seconds
+        }
     }
 }
