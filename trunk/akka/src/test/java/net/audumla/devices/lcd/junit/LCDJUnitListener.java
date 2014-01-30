@@ -19,6 +19,8 @@ package net.audumla.devices.lcd.junit;
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.actor.Props;
+import net.audumla.akka.CMTargetCreator;
+import net.audumla.devices.lcd.LCD;
 import net.audumla.devices.lcd.akka.LCDClearCommand;
 import net.audumla.devices.lcd.akka.LCDPauseCommand;
 import net.audumla.devices.lcd.akka.LCDSetCursorCommand;
@@ -37,7 +39,7 @@ public class LCDJUnitListener extends RunListener {
 
     public LCDJUnitListener() {
         ActorSystem akka = ActorSystem.create();
-        Props lcpProps = Props.create(RPII2CLCD.class);
+        Props lcpProps = Props.create(new CMTargetCreator<LCD>(RPII2CLCD.instance("LCD JUnit Logger",RPII2CLCD.DEFAULT_ADDRESS)));
         target = akka.actorOf(lcpProps, "lcd");
         logger.debug("Loaded JUnit LCD Listener");
     }
