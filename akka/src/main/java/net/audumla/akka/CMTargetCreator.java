@@ -16,32 +16,21 @@ package net.audumla.akka;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import akka.actor.AbstractActor;
-import akka.io.Tcp;
 import akka.japi.Creator;
-import akka.japi.pf.ReceiveBuilder;
-import scala.PartialFunction;
-import scala.runtime.BoxedUnit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class CommandMessageTarget<T, M extends CommandEvent<T>> extends AbstractActor {
+public class CMTargetCreator<T> implements Creator<CommandMessageTarget> {
+    private static final Logger logger = LoggerFactory.getLogger(CMTargetCreator.class);
 
+    private T reference;
 
-    public CommandMessageTarget(T reference) {
-        this.reference = reference;
+    public CMTargetCreator(T ref) {
+        reference = ref;
     }
 
-    protected T reference;
-
     @Override
-    public PartialFunction<Object, BoxedUnit> receive() {
-        return ReceiveBuilder.
-                match(CommandEvent.class, c -> {
-                    try {
-                        c.execute(reference);
-                    } catch (Throwable throwable) {
-                        unhandled(c);
-                    }
-                }).
-                build();
+    public CommandMessageTarget create() throws Exception {
+        return new CommandMessageTarget(reference);
     }
 }
