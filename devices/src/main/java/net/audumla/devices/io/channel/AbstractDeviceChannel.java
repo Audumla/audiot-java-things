@@ -30,6 +30,13 @@ public abstract class AbstractDeviceChannel implements DeviceChannel {
         private int position;
         private Collection<Attribute> attributes = new ArrayList<>();
 
+        public PositionAttribute() {
+        }
+
+        public PositionAttribute(int position) {
+            this.position = position;
+        }
+
         public PositionAttribute(int position, Attribute attribute) {
             this.position = position;
             attributes.add(attribute);
