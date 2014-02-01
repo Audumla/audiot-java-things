@@ -22,7 +22,10 @@ import net.audumla.devices.activator.AggregateActivator;
 import net.audumla.devices.activator.factory.PCF8574GPIOActivatorFactory;
 import net.audumla.devices.activator.factory.RPIGPIOActivatorFactory;
 import net.audumla.devices.activator.factory.SainsSmartRelayActivatorFactory;
-import net.audumla.devices.io.channel.*;
+import net.audumla.devices.io.channel.ChannelAddressAttr;
+import net.audumla.devices.io.channel.DeviceAddressAttr;
+import net.audumla.devices.io.channel.DeviceChannel;
+import net.audumla.devices.io.channel.SleepAttr;
 import net.audumla.devices.io.channel.i2c.RPiI2CChannel;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -73,7 +76,7 @@ public class RPPIActivatorTest {
         return aa;
     }
 
-//    @Test
+    //    @Test
     public void testGPIOPins() throws Exception {
         assert rpi.getActivators().size() > 0;
         for (RPIGPIOActivatorFactory.RPIGPIOActivator a : rpi.getActivators()) {
@@ -82,7 +85,7 @@ public class RPPIActivatorTest {
     }
 
 
-//    @Test
+    //    @Test
     public void testRawRelay() throws Exception {
         Collection<Activator> pins = new ArrayList<>();
         pins.add(rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO0));
@@ -144,7 +147,7 @@ public class RPPIActivatorTest {
 
     }
 
-//    @Test
+    //    @Test
     public void testSainsSmartRelayFromRPIGPIO() throws Exception {
 
         SainsSmartRelayActivatorFactory ss = getSSGPIO();
@@ -177,7 +180,7 @@ public class RPPIActivatorTest {
 
     }
 
-//    @Test
+    //    @Test
     public void testSainsSmartRelayFromPCF8574() throws Exception {
         SainsSmartRelayActivatorFactory ss = getSSPCF(PCF8574GPIOActivatorFactory.PCF8574_0x21, 6, 7, RPIGPIOActivatorFactory.GPIOName.GPIO1);
         int v = 0;
@@ -197,27 +200,26 @@ public class RPPIActivatorTest {
 
     @Test
     public void testSainsSmartRelayFromPCF8574Stream() throws Exception {
-        DeviceChannel d = new RPiI2CChannel().createChannel(new ChannelAddressAttr(1), new DeviceRegisterAttr(PCF8574GPIOActivatorFactory.PCF8574_WRITE), new DeviceAddressAttr(PCF8574GPIOActivatorFactory.PCF8574_0x21));
+        DeviceChannel d = new RPiI2CChannel().createChannel(new ChannelAddressAttr(1), new DeviceAddressAttr(PCF8574GPIOActivatorFactory.PCF8574_0x21));
         Activator power = getPower(6, 7, rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO1));
         power.setState(ActivatorState.ACTIVATED);
         for (int i = 0; i < 40; ++i) {
-            synchronized (this) {
-                ByteBuffer bb = ByteBuffer.allocateDirect(5);
-                bb.put((byte) 0xff);
-                d.setAttribute(bb, new SleepAttr(500));
-                bb.put((byte) 0xfe);
-                d.setAttribute(bb, new SleepAttr(500));
-                bb.put((byte) 0xfd);
-                d.setAttribute(bb, new SleepAttr(500));
-                bb.put((byte) 0xfc);
-                d.setAttribute(bb, new SleepAttr(500));
-                bb.put((byte) 0xfb);
-            }
+            ByteBuffer bb = ByteBuffer.allocateDirect(5);
+            bb.put((byte) 0xff);
+            d.setAttribute(bb, new SleepAttr(500));
+            bb.put((byte) 0xfe);
+            d.setAttribute(bb, new SleepAttr(500));
+            bb.put((byte) 0xfd);
+            d.setAttribute(bb, new SleepAttr(500));
+            bb.put((byte) 0xfc);
+            d.setAttribute(bb, new SleepAttr(500));
+            bb.put((byte) 0xfb);
+            d.write(bb);
         }
     }
 
 
-//    @Test
+    //    @Test
     public void testMultiSainsSmartRelay() throws Exception {
         SainsSmartRelayActivatorFactory ss1 = getSSGPIO();
         SainsSmartRelayActivatorFactory ss2 = getSSPCF(PCF8574GPIOActivatorFactory.PCF8574_0x21, 6, 7, RPIGPIOActivatorFactory.GPIOName.GPIO1);
