@@ -33,6 +33,7 @@ import org.slf4j.LoggerFactory;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Properties;
 
@@ -203,6 +204,7 @@ public class RPPIActivatorTest {
         DeviceChannel d = new RPiI2CChannel().createChannel(new ChannelAddressAttr(1), new DeviceAddressAttr(PCF8574GPIOActivatorFactory.PCF8574_0x21));
         Activator power = getPower(6, 7, rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO1));
         power.setState(ActivatorState.ACTIVATED);
+        logger.debug("Starting test");
         for (int i = 0; i < 40; ++i) {
             ByteBuffer bb = ByteBuffer.allocateDirect(5);
             bb.put((byte) 0xff);
@@ -214,6 +216,7 @@ public class RPPIActivatorTest {
             bb.put((byte) 0xfc);
             d.setAttribute(bb, new SleepAttr(500));
             bb.put((byte) 0xfb);
+            logger.debug("Writting buffer - " + Arrays.asList(bb.get(new byte[bb.position(0).bb.limit()])));
             d.write(bb);
         }
     }

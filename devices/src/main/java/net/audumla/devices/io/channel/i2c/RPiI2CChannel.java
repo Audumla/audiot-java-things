@@ -53,11 +53,11 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
 
     @Override
     public int write(ByteBuffer src) throws IOException {
-
-        logger.debug(Arrays.asList(src.get(new byte[src.position(0).limit()])).toString());
-        logger.debug(bufferAttributes.keySet().toString());
         int bytesWritten = 0;
         try {
+
+            logger.debug("Buffer - " + Arrays.asList(src.get(new byte[src.position(0).limit()])).toString());
+            logger.debug("Buffer Cache - " + bufferAttributes.keySet().toString());
             src.position(0);
             ChannelAddressAttr busAddress = null;
             DeviceAddressAttr deviceAddress = null;
