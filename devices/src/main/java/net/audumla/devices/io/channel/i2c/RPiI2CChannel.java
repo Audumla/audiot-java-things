@@ -64,7 +64,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
         src.position(0);
         ChannelContext ctxt = new ChannelContext();
 
-        bufferAttributes.put(0,new PositionAttribute());
+        bufferAttributes.put(src.limit(),new PositionAttribute());
         for (int nextPosition : bufferAttributes.keySet()) {
 //        Set<Integer> ks = bufferAttributes.keySet();
 //        Iterator<Integer> it = ks.iterator();
