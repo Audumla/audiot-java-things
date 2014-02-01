@@ -67,7 +67,9 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
             setAttribute(src, 0, a);
         }
 
-        for (Integer nextPosition : getBufferAttributes(src).keySet()) {
+        Map<Integer, PositionAttribute> ba = getBufferAttributes(src);
+        ba.put(src.limit(),new PositionAttribute());
+        for (Integer nextPosition : ba.keySet()) {
             int runLength = nextPosition - position;
             if (runLength > 0) {
                 byte[] run = new byte[runLength];
@@ -75,10 +77,12 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
                 if (busHandle != null) {
                     if (deviceAddress != null) {
                         if (deviceRegister == null) {
+                            logger.debug("Writing to [I2Cbus #"+busAddress.getAddress()+":Address 0x"+Integer.toHexString(deviceAddress.getAddress())+"] [limit:"+src.limit()+"][capacity:"+src.capacity()+"]"+src.array());
                             for (byte b : run) {
                                 I2C.i2cWriteByteDirect(busHandle, deviceAddress.getAddress(), b);
                             }
                         } else {
+                            logger.debug("Writing to [I2Cbus #"+busAddress.getAddress()+":Address 0x"+Integer.toHexString(deviceAddress.getAddress())+":Register 0x"+deviceRegister.getRegister()+"] [limit:"+src.limit()+"][capacity:"+src.capacity()+"]"+src.array());
                             for (byte b : run) {
                                 I2C.i2cWriteByte(busHandle, deviceAddress.getAddress(), deviceRegister.getRegister(), b);
                             }
@@ -87,7 +91,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
                     }
                 }
             }
-            for (Attribute a : getBufferAttributes(src).get(nextPosition).getAttributeReferences()) {
+            for (Attribute a : ba.get(nextPosition).getAttributeReferences()) {
                 if ((busAddress = isAttribute(ChannelAddressAttr.class, a, busAddress)) == a) {
                     busHandle = getBusHandle(busAddress.getAddress());
                     continue;

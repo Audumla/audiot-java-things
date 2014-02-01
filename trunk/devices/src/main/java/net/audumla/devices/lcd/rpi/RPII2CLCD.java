@@ -331,9 +331,9 @@ public class RPII2CLCD implements net.audumla.devices.lcd.LCD {
         }
 
         public void commandWrite(int reg, int d) throws IOException {
-            ByteBuffer b = ByteBuffer.allocateDirect(1).put((byte) d);
+            ByteBuffer b = ByteBuffer.allocateDirect(1);
             commandDevice.setAttribute(b,new DeviceRegisterAttr(reg));
-            commandDevice.write(b);
+            commandDevice.write(b.put((byte) d));
         }
 
     }
