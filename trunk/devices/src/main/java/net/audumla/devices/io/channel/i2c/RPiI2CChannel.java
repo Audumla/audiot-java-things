@@ -93,7 +93,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
                     }
                 }
                 logger.debug("Attr:" + ba.get(nextPosition).getAttributeReferences());
-                for (Attribute a : ba.get(nextPosition).getAttributeReferences())   
+                for (Attribute a : ba.get(nextPosition).getAttributeReferences()) {
                     if ((busAddress = isAttribute(ChannelAddressAttr.class, a, busAddress)) == a) {
                         busHandle = getBusHandle(busAddress.getAddress());
                         continue;
