@@ -69,6 +69,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
 
         Map<Integer, PositionAttribute> ba = getBufferAttributes(src);
         ba.put(src.limit(),new PositionAttribute());
+        logger.debug(ba.keySet().toString());
         for (Integer nextPosition : ba.keySet()) {
             int runLength = nextPosition - position;
             logger.debug("Writing to [I2Cbus #"+busAddress+":Address "+deviceAddress+"] [limit:"+src.limit()+"][capacity:"+src.capacity()+"][StartPos:"+position+"][Length:"+runLength+"]");
