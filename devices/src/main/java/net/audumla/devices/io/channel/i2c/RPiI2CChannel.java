@@ -73,7 +73,8 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
             int runLength = nextPosition - position;
             if (runLength > 0) {
                 byte[] run = new byte[runLength];
-                logger.debug("Writing to [I2Cbus #"+busAddress.getAddress()+":Address 0x"+Integer.toHexString(deviceAddress.getAddress())+"] [limit:"+src.limit()+"][capacity:"+src.capacity()+"][StartPos:"+position+"][Length:"+runLength+"]");
+                logger.debug("Writing to [I2Cbus #"+busAddress+":Address "+deviceAddress+"] [limit:"+src.limit()+"][capacity:"+src.capacity()+"][StartPos:"+position+"][Length:"+runLength+"]");
+//                logger.debug("Writing to [I2Cbus #"+busAddress.getAddress()+":Address 0x"+Integer.toHexString(deviceAddress.getAddress())+"] [limit:"+src.limit()+"][capacity:"+src.capacity()+"][StartPos:"+position+"][Length:"+runLength+"]");
                 src.get(run, position, runLength);
                 if (busHandle != null) {
                     if (deviceAddress != null) {
