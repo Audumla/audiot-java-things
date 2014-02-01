@@ -64,10 +64,10 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
             DeviceRegisterAttr deviceRegister = null;
             Integer busHandle = null;
 
-            for (Attribute a : defaultAttributes) {
-//                logger.debug("def - " + a);
-                setAttribute(src, 0, a);
-            }
+//            for (Attribute a : defaultAttributes) {
+////                logger.debug("def - " + a);
+//                setAttribute(src, 0, a);
+//            }
 
             Map<Integer, PositionAttribute> ba = bufferAttributes;
             ba.put(src.limit(), new PositionAttribute());
@@ -120,8 +120,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
     @Override
     public DeviceChannel createChannel(Attribute... attr) {
         RPiI2CChannel dc = new RPiI2CChannel(attr);
-        Collection<Attribute> defaultAttributes = getDefaultAttributes();
-        dc.addDefaultAttribute(defaultAttributes.toArray(new Attribute[defaultAttributes.size()]));
+        dc.bufferAttributes.putAll(bufferAttributes);
         return dc;
     }
 
