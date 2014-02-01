@@ -110,7 +110,7 @@ public class PCF8574GPIOActivatorFactory implements ActivatorFactory<PCF8574GPIO
             pins.add(a);
         }
         currentStates.set(0, PCF8574_MAX_IO_PINS, true);
-        writeChannel.write(ByteBuffer.allocateDirect((byte) 0xff));
+        writeChannel.write(ByteBuffer.allocateDirect(1).put((byte) 0xff));
         for (PCF8547GPIOActivator a : getActivators()) {
             a.setState(ActivatorState.DEACTIVATED);
         }
