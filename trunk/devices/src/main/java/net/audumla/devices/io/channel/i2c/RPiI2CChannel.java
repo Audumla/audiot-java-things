@@ -40,6 +40,13 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
         }
     }
 
+    private class ChannelContext {
+        ChannelAddressAttr busAddress;
+        DeviceAddressAttr deviceAddress;
+        DeviceRegisterAttr deviceRegister;
+        Integer busHandle;
+    }
+
     public RPiI2CChannel() {
     }
 
@@ -54,62 +61,48 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
     @Override
     public int write(ByteBuffer src) throws IOException {
         int bytesWritten = 0;
-        try {
+        src.position(0);
+        ChannelContext ctxt = new ChannelContext();
 
-            logger.debug("Buffer - " + Arrays.asList(src.get(new byte[src.position(0).limit()])).toString());
-            logger.debug("Buffer Cache - " + bufferAttributes.keySet().toString());
-            src.position(0);
-            ChannelAddressAttr busAddress = null;
-            DeviceAddressAttr deviceAddress = null;
-            DeviceRegisterAttr deviceRegister = null;
-            Integer busHandle = null;
-
-//            for (Attribute a : defaultAttributes) {
-////                logger.debug("def - " + a);
-//                setAttribute(src, 0, a);
-//            }
-
-            Map<Integer, PositionAttribute> ba = bufferAttributes;
-            ba.put(src.limit(), new PositionAttribute());
-            logger.debug("Attributes at positions - " + ba.keySet().toString());
-            for (Integer nextPosition : ba.keySet()) {
-                int runLength = nextPosition - src.position();
-//                logger.debug("Writing to [I2Cbus #" + busAddress + ":Address " + deviceAddress + "] [limit:" + src.limit() + "][capacity:" + src.capacity() + "][StartPos:" + src.position() + "][Length:" + runLength + "]");
-                if (runLength > 0) {
-                    byte[] run = new byte[runLength];
-                    src.get(run, 0, runLength);
-                    if (busHandle != null) {
-                        if (deviceAddress != null) {
-                            if (deviceRegister == null) {
-//                                logger.debug("Writing to [I2Cbus #" + busAddress.getAddress() + ":Address 0x" + Integer.toHexString(deviceAddress.getAddress()) + "] [limit:" + src.limit() + "][capacity:" + src.capacity() + "] - "+Arrays.asList(run));
-                                for (byte b : run) {
-                                    I2C.i2cWriteByteDirect(busHandle, deviceAddress.getAddress(), b);
-                                }
-                            } else {
-//                                logger.debug("Writing to [I2Cbus #" + busAddress.getAddress() + ":Address 0x" + Integer.toHexString(deviceAddress.getAddress()) + ":Register 0x" + deviceRegister.getRegister() + "] [limit:" + src.limit() + "][capacity:" + src.capacity() + "] - "+ Arrays.asList(run));
-                                for (byte b : run) {
-                                    I2C.i2cWriteByte(busHandle, deviceAddress.getAddress(), deviceRegister.getRegister(), b);
-                                }
+        Set<Integer> ks = bufferAttributes.keySet();
+        Iterator<Integer> it = ks.iterator();
+        for (int i = 0; i <= ks.size(); ++i) {
+            Integer nextPosition = it.hasNext() ? it.next() : src.limit();
+            int runLength = nextPosition - src.position();
+            if (runLength > 0) {
+                byte[] run = new byte[runLength];
+                src.get(run, 0, runLength);
+                if (ctxt.busHandle != null) {
+                    if (ctxt.deviceAddress != null) {
+                        if (ctxt.deviceRegister == null) {
+                            for (byte b : run) {
+                                I2C.i2cWriteByteDirect(ctxt.busHandle, ctxt.deviceAddress.getAddress(), b);
                             }
-                            bytesWritten += run.length;
+                        } else {
+                            for (byte b : run) {
+                                I2C.i2cWriteByte(ctxt.busHandle, ctxt.deviceAddress.getAddress(), ctxt.deviceRegister.getRegister(), b);
+                            }
                         }
+                        bytesWritten += run.length;
                     }
-                }
-                logger.debug("Attr:" + ba.get(nextPosition).getAttributeReferences());
-                for (Attribute a : ba.get(nextPosition).getAttributeReferences()) {
-                    if ((busAddress = isAttribute(ChannelAddressAttr.class, a, busAddress)) == a) {
-                        busHandle = getBusHandle(busAddress.getAddress());
-                        continue;
-                    }
-                    if ((deviceAddress = isAttribute(DeviceAddressAttr.class, a, deviceAddress)) == a) continue;
-                    if ((deviceRegister = isAttribute(DeviceRegisterAttr.class, a, deviceRegister)) == a) continue;
-                    if (SleepAttr.class.isAssignableFrom(a.getClass())) ((SleepAttr) a).sleep();
                 }
             }
-        } finally {
-//            bufferAttributes.remove(src);
+            applyAttributes(ctxt, bufferAttributes.get(nextPosition).getAttributeReferences());
         }
         return bytesWritten;
+    }
+
+    protected ChannelContext applyAttributes(ChannelContext ctxt, Collection<Attribute> attr) throws IOException {
+        for (Attribute a : attr) {
+            if ((ctxt.busAddress = isAttribute(ChannelAddressAttr.class, a, ctxt.busAddress)) == a) {
+                ctxt.busHandle = getBusHandle(ctxt.busAddress.getAddress());
+                continue;
+            }
+            if ((ctxt.deviceAddress = isAttribute(DeviceAddressAttr.class, a, ctxt.deviceAddress)) == a) continue;
+            if ((ctxt.deviceRegister = isAttribute(DeviceRegisterAttr.class, a, ctxt.deviceRegister)) == a) continue;
+            if (SleepAttr.class.isAssignableFrom(a.getClass())) ((SleepAttr) a).sleep();
+        }
+        return ctxt;
     }
 
     @Override
@@ -122,6 +115,21 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
         RPiI2CChannel dc = new RPiI2CChannel(attr);
         dc.bufferAttributes.putAll(bufferAttributes);
         return dc;
+    }
+
+    @Override
+    public void write(byte b) throws IOException {
+        ChannelContext ctxt = new ChannelContext();
+        ctxt = applyAttributes(ctxt, bufferAttributes.get(0).getAttributeReferences());
+        if (ctxt.busHandle != null) {
+            if (ctxt.deviceAddress != null) {
+                if (ctxt.deviceRegister == null) {
+                    I2C.i2cWriteByteDirect(ctxt.busHandle, ctxt.deviceAddress.getAddress(), b);
+                } else {
+                    I2C.i2cWriteByte(ctxt.busHandle, ctxt.deviceAddress.getAddress(), ctxt.deviceRegister.getRegister(), b);
+                }
+            }
+        }
     }
 
     @Override

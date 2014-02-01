@@ -16,6 +16,7 @@ package net.audumla.devices.io.channel;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
+import java.io.IOException;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.channels.ByteChannel;
@@ -73,9 +74,17 @@ public interface DeviceChannel extends ByteChannel {
     boolean supportsAttribute(Class<? extends Attribute> attr);
 
     /**
-     * Creates a new channel based on the existing instance but with the given attributes associated with every buffer used by the new channel
-     * @param attr the attributes to set as defaults for the new channel
+     * Creates a new channel based on the existing instance. The given attributes will be considered primary attributes and associated with every buffer
+     * written to the channel. These attributes will be applied before any bytes are written to the channel.
+     * All primary attributes of the current channel will be passed onto the new channel instance
+     * @param attr the attributes to set as primary attributes for the new channel
      */
     DeviceChannel createChannel(Attribute ... attr);
+
+    /**
+     * Writes a single byte using only the primary attributes associated with this channel
+     * @param b the byte to be written
+     */
+    void write(byte b) throws IOException;
 
 }

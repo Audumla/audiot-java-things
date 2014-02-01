@@ -207,13 +207,13 @@ public class RPPIActivatorTest {
         power.setState(ActivatorState.ACTIVATED);
         ByteBuffer bb = ByteBuffer.allocateDirect(5);
         bb.put((byte) 0xff);
-        d.setAttribute(bb, new SleepAttr(50));
+        d.setAttribute(bb, new SleepAttr(5));
         bb.put((byte) 0xfe);
-        d.setAttribute(bb, new SleepAttr(100));
+        d.setAttribute(bb, new SleepAttr(10));
         bb.put((byte) 0xfd);
-        d.setAttribute(bb, new SleepAttr(200));
+        d.setAttribute(bb, new SleepAttr(20));
         bb.put((byte) 0xfc);
-        d.setAttribute(bb, new SleepAttr(400));
+        d.setAttribute(bb, new SleepAttr(40));
         bb.put((byte) 0xfb);
         for (int i = 0; i < 40; ++i) {
             logger.debug("Writting buffer [" + i + "] " + Arrays.asList(bb.get(new byte[bb.position(0).limit()])));
