@@ -16,129 +16,66 @@ package net.audumla.devices.io.channel;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
-import java.util.*;
+import java.nio.channels.ByteChannel;
+import java.util.Collection;
 
-public abstract class DeviceChannel implements AttributeChannel {
-    private static final Logger logger = LoggerFactory.getLogger(DeviceChannel.class);
+public interface DeviceChannel extends ByteChannel {
 
-    public static class PositionAttribute implements Attribute {
-        private int position;
-        private Collection<Attribute> attributes = new ArrayList<>();
-
-        public PositionAttribute(int position, Attribute attribute) {
-            this.position = position;
-            attributes.add(attribute);
-        }
-
-        /**
-         * The position that the attribute will be enacted upon when reading or writing the buffer associated with it
-         *
-         * @return the int position in the associated buffer
-         */
-        public int getPosition() {
-            return position;
-        }
-
-        public Collection<Attribute> getAttributeReferences() {
-            return attributes;
-        }
-
-        public void addAttribute(Attribute attr) {
-            if (attr instanceof PositionAttribute) {
-                for (Attribute a : ((PositionAttribute) attr).getAttributeReferences())
-                    addAttribute(a);
-            } else {
-                attributes.add(attr);
-            }
-        }
-
+    /**
+     * An Attribute is a marker interface that is used by implementations of the DeviceChannel to associate
+     * attributes to given positions within a ByteBuffer. The exact implementation of the DeviceChannel will
+     * determine the types of attributes that it supports
+     */
+    public interface Attribute {
     }
 
-    protected Map<Buffer, Map<Integer, PositionAttribute>> bufferAttributes = new HashMap<>();
+    /**
+     * Adds an attribute to the channel that applies to the current position of the given buffer
+     * When the buffer is being written or read to/from the channel the attribute will be enacted up at the appropriate
+     * position. This could be to change the state of the channel at a position in the buffer so that it writes
+     * to a different location of the channel or pauses the channel for a set time to allow the channel to
+     * receive the data correctly before moving on to the rest of the byte stream.
+     * A reference to The buffer may be stored within the channel so the the attribute list can be associated back
+     * to each Buffer.
+     * Once the buffer is written or read the reference will be removed and all associate attributes will be lost
+     * unless an external reference to the result of getAttributes is made
+     *
+     * @param buffer the buffer to associate the Attribute to.
+     * @param attr   the attribute to associate to the buffer
+     * @return the buffer
+     */
+    ByteBuffer setAttribute(ByteBuffer buffer, Attribute attr);
 
-    protected Map<Integer, PositionAttribute> getBufferAttributes(Buffer buffer) {
-        Map<Integer, PositionAttribute> attrs = bufferAttributes.get(buffer);
-        if (attrs == null) {
-            attrs = new TreeMap<Integer, PositionAttribute>();
-        }
-        return attrs;
-    }
+    /**
+     * Returns the associated attributes of the given buffer
+     *
+     *
+     * @param buffer the buffer to return attributes for
+     * @return the collection of attributes
+     */
+    Collection<? extends Attribute> getAttributes(ByteBuffer buffer);
 
-    @Override
-    public ByteBuffer setAttribute(ByteBuffer buffer, Attribute attr) {
-        PositionAttribute posAttr = getBufferAttributes(buffer).get(buffer.position());
-        if (posAttr == null) {
-            posAttr = attr instanceof PositionAttribute ? (PositionAttribute) attr : new PositionAttribute(buffer.position(), attr);
-            getBufferAttributes(buffer).put(posAttr.getPosition(), posAttr);
-        } else {
-            posAttr.addAttribute(attr);
-        }
+    /**
+     * Associates all of the attributes in the given collection to the given buffer
+     *
+     * @param buffer the buffer of interest
+     * @param attributes the attributes that will be associated with the buffer
+     */
+    void setAttributes(ByteBuffer buffer, Collection<Attribute> attributes);
 
-        return buffer;
-    }
+    /**
+     *
+     * @param attr the attribute class to be tested
+     * @return true if the attribute class is supported by the channel
+     */
+    boolean supportsAttribute(Class<? extends Attribute> attr);
 
-    @Override
-    public Collection<? extends Attribute> getAttributes(ByteBuffer buffer) {
-        Map<Integer, PositionAttribute> attrs = bufferAttributes.get(buffer);
-        return attrs == null ? null : attrs.values();
-    }
+    /**
+     * Creates a new channel based on the existing instance but with the given attributes associated with every buffer used by the new channel
+     * @param attr the attributes to set as defaults for the new channel
+     */
+    DeviceChannel createChannel(Attribute ... attr);
 
-    @Override
-    public void setAttributes(ByteBuffer buffer, Collection<Attribute> attributes) {
-        Map<Integer, PositionAttribute> attrs = getBufferAttributes(buffer);
-        for (Attribute a : attributes) {
-            setAttribute(buffer, a);
-        }
-    }
-
-    @Override
-    public int read(ByteBuffer dst) throws IOException {
-        Map<Integer, PositionAttribute> attr = getBufferAttributes(dst);
-        Byte b;
-        int i = 0;
-        do {
-            PositionAttribute attrs;
-            if ((attrs = attr.get(i)) != null) {
-                for (Attribute a : attrs.getAttributeReferences()) {
-                    applyAttribute(a);
-                }
-            }
-            if ((b = read()) != null) {
-                dst.put(b);
-                ++i;
-            }
-        }
-        while (b != null);
-        return i;
-    }
-
-    @Override
-    public int write(ByteBuffer src) throws IOException {
-        Map<Integer, PositionAttribute> attr = getBufferAttributes(src);
-        int i;
-        for (i = 0; i < src.limit(); i++) {
-            byte b = src.get(i);
-            PositionAttribute attrs;
-            if ((attrs = attr.get(i)) != null) {
-                for (Attribute a : attrs.getAttributeReferences()) {
-                    applyAttribute(a);
-                }
-            }
-            write(b);
-        }
-        bufferAttributes.remove(src);
-        return i;
-    }
-
-    protected abstract Byte read() throws IOException;
-
-    protected abstract void write(byte b) throws IOException;
-
-    protected abstract void applyAttribute(Attribute a);
 }

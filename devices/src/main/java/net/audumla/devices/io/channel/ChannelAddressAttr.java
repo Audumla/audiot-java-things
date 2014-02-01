@@ -19,12 +19,16 @@ package net.audumla.devices.io.channel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DeviceAddress {
-    private static final Logger logger = LoggerFactory.getLogger(DeviceAddress.class);
+public class ChannelAddressAttr implements DeviceChannel.Attribute {
+    private static final Logger logger = LoggerFactory.getLogger(ChannelAddressAttr.class);
 
     protected int address;
 
-    public DeviceAddress(int address) {
+    public ChannelAddressAttr(int address) {
+        this.address = address;
+    }
+
+    public void setAddress(int address) {
         this.address = address;
     }
 

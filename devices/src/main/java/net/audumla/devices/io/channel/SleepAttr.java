@@ -19,16 +19,44 @@ package net.audumla.devices.io.channel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DeviceRegister {
-    private static final Logger logger = LoggerFactory.getLogger(DeviceRegister.class);
+public class SleepAttr implements DeviceChannel.Attribute {
+    private static final Logger logger = LoggerFactory.getLogger(SleepAttr.class);
 
-    protected int register;
+    protected long millis;
+    protected int nanos;
 
-    public DeviceRegister(int register) {
-        this.register = register;
+    public SleepAttr(long millis, int nanos) {
+        this.millis = millis;
+        this.nanos = nanos;
     }
 
-    public int getRegister() {
-        return register;
+    public SleepAttr(long millis) {
+        this.millis = millis;
+    }
+
+    public long getMillis() {
+        return millis;
+    }
+
+    public int getNanos() {
+        return nanos;
+    }
+
+    public void setMillis(long millis) {
+        this.millis = millis;
+    }
+
+    public void setNanos(int nanos) {
+        this.nanos = nanos;
+    }
+
+    public void sleep() {
+        synchronized (Thread.currentThread()) {
+            try {
+                Thread.sleep(getMillis(), getNanos());
+            } catch (InterruptedException e) {
+                logger.warn("Unable to execute sleep attribute", e);
+            }
+        }
     }
 }
