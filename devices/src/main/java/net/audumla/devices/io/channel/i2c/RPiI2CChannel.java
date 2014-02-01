@@ -67,7 +67,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
 
             Map<Integer, PositionAttribute> ba = getBufferAttributes(src);
             ba.put(src.limit(), new PositionAttribute());
-//            logger.debug(ba.keySet().toString());
+            logger.debug("Attributes at positions - " + ba.keySet().toString());
             src.position(0);
             for (Integer nextPosition : ba.keySet()) {
                 int runLength = nextPosition - src.position();
@@ -92,8 +92,8 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
                         }
                     }
                 }
-//                logger.debug("Attr:" + ba.get(nextPosition).getAttributeReferences());
-                for (Attribute a : ba.get(nextPosition).getAttributeReferences()) {
+                logger.debug("Attr:" + ba.get(nextPosition).getAttributeReferences());
+                for (Attribute a : ba.get(nextPosition).getAttributeReferences())   
                     if ((busAddress = isAttribute(ChannelAddressAttr.class, a, busAddress)) == a) {
                         busHandle = getBusHandle(busAddress.getAddress());
                         continue;
