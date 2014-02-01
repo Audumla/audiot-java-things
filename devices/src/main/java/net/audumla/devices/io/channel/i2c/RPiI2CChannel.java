@@ -107,8 +107,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
                 }
             }
         } finally {
-            Object o;
-            bufferAttributes.remove(src);
+//            bufferAttributes.remove(src);
         }
         return bytesWritten;
     }

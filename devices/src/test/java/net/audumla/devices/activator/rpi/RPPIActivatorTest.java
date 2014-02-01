@@ -205,19 +205,20 @@ public class RPPIActivatorTest {
         DeviceChannel d = new RPiI2CChannel().createChannel(new ChannelAddressAttr(1), new DeviceAddressAttr(PCF8574GPIOActivatorFactory.PCF8574_0x21));
         Activator power = getPower(6, 7, rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO1));
         power.setState(ActivatorState.ACTIVATED);
+        ByteBuffer bb = ByteBuffer.allocateDirect(5);
+        bb.put((byte) 0xff);
+        d.setAttribute(bb, new SleepAttr(50));
+        bb.put((byte) 0xfe);
+        d.setAttribute(bb, new SleepAttr(100));
+        bb.put((byte) 0xfd);
+        d.setAttribute(bb, new SleepAttr(200));
+        bb.put((byte) 0xfc);
+        d.setAttribute(bb, new SleepAttr(400));
+        bb.put((byte) 0xfb);
         for (int i = 0; i < 40; ++i) {
-            ByteBuffer bb = ByteBuffer.allocateDirect(5);
-            bb.put((byte) 0xff);
-            d.setAttribute(bb, new SleepAttr(500));
-            bb.put((byte) 0xfe);
-            d.setAttribute(bb, new SleepAttr(500));
-            bb.put((byte) 0xfd);
-            d.setAttribute(bb, new SleepAttr(500));
-            bb.put((byte) 0xfc);
-            d.setAttribute(bb, new SleepAttr(500));
-            bb.put((byte) 0xfb);
-            logger.debug("Writting buffer ["+i+"] " + Arrays.asList(bb.get(new byte[bb.position(0).limit()])));
+            logger.debug("Writting buffer [" + i + "] " + Arrays.asList(bb.get(new byte[bb.position(0).limit()])));
             d.write(bb);
+
         }
     }
 
