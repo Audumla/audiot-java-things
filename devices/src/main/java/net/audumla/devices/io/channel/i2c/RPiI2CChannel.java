@@ -78,12 +78,12 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
                     if (busHandle != null) {
                         if (deviceAddress != null) {
                             if (deviceRegister == null) {
-                                logger.debug("Writing to [I2Cbus #" + busAddress.getAddress() + ":Address 0x" + Integer.toHexString(deviceAddress.getAddress()) + "] [limit:" + src.limit() + "][capacity:" + src.capacity() + "] - "+Arrays.asList(run));
+//                                logger.debug("Writing to [I2Cbus #" + busAddress.getAddress() + ":Address 0x" + Integer.toHexString(deviceAddress.getAddress()) + "] [limit:" + src.limit() + "][capacity:" + src.capacity() + "] - "+Arrays.asList(run));
                                 for (byte b : run) {
                                     I2C.i2cWriteByteDirect(busHandle, deviceAddress.getAddress(), b);
                                 }
                             } else {
-                                logger.debug("Writing to [I2Cbus #" + busAddress.getAddress() + ":Address 0x" + Integer.toHexString(deviceAddress.getAddress()) + ":Register 0x" + deviceRegister.getRegister() + "] [limit:" + src.limit() + "][capacity:" + src.capacity() + "] - "+ Arrays.asList(run));
+//                                logger.debug("Writing to [I2Cbus #" + busAddress.getAddress() + ":Address 0x" + Integer.toHexString(deviceAddress.getAddress()) + ":Register 0x" + deviceRegister.getRegister() + "] [limit:" + src.limit() + "][capacity:" + src.capacity() + "] - "+ Arrays.asList(run));
                                 for (byte b : run) {
                                     I2C.i2cWriteByte(busHandle, deviceAddress.getAddress(), deviceRegister.getRegister(), b);
                                 }
@@ -92,7 +92,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
                         }
                     }
                 }
-                logger.debug("Attr:" + ba.get(nextPosition).getAttributeReferences());
+//                logger.debug("Attr:" + ba.get(nextPosition).getAttributeReferences());
                 for (Attribute a : ba.get(nextPosition).getAttributeReferences()) {
                     if ((busAddress = isAttribute(ChannelAddressAttr.class, a, busAddress)) == a) {
                         busHandle = getBusHandle(busAddress.getAddress());
