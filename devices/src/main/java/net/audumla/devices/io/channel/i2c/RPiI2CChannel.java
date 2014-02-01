@@ -69,7 +69,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
                 setAttribute(src, 0, a);
             }
 
-            Map<Integer, PositionAttribute> ba = getBufferAttributes(src);
+            Map<Integer, PositionAttribute> ba = bufferAttributes;
             ba.put(src.limit(), new PositionAttribute());
             logger.debug("Attributes at positions - " + ba.keySet().toString());
             for (Integer nextPosition : ba.keySet()) {
@@ -107,6 +107,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
                 }
             }
         } finally {
+            Object o;
             bufferAttributes.remove(src);
         }
         return bytesWritten;
