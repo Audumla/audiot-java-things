@@ -19,26 +19,20 @@ package net.audumla.devices.io.channel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class WriteSleep implements AttributeChannel.Attribute {
-    private static final Logger logger = LoggerFactory.getLogger(WriteSleep.class);
+public class DeviceAddressAttr implements DeviceChannel.Attribute{
+    private static final Logger logger = LoggerFactory.getLogger(DeviceAddressAttr.class);
 
-    protected long millis;
-    protected int nanos;
+    protected int address;
 
-    public WriteSleep(long millis, int nanos) {
-        this.millis = millis;
-        this.nanos = nanos;
+    public DeviceAddressAttr(int address) {
+        this.address = address;
     }
 
-    public WriteSleep(long millis) {
-        this.millis = millis;
+    public void setAddress(int address) {
+        this.address = address;
     }
 
-    public long getMillis() {
-        return millis;
-    }
-
-    public int getNanos() {
-        return nanos;
+    public int getAddress() {
+        return address;
     }
 }

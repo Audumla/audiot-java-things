@@ -19,6 +19,8 @@ package net.audumla.devices.activator.factory;
 import net.audumla.devices.activator.ActivatorState;
 import net.audumla.devices.activator.DefaultActivator;
 import net.audumla.devices.io.DeviceByteChannelFactory;
+import net.audumla.devices.io.channel.DeviceChannel;
+import net.audumla.devices.io.channel.DeviceRegisterAttr;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,16 +59,16 @@ public class PCF8574GPIOActivatorFactory implements ActivatorFactory<PCF8574GPIO
 
     public static final int PCF8574_MAX_IO_PINS = 8;
 
-    private ByteChannel writeChannel;
-    private ByteChannel readChannel;
+    private DeviceChannel writeChannel;
+    private DeviceChannel readChannel;
     private BitSet currentStates = new BitSet(PCF8574_MAX_IO_PINS);
     private Collection<PCF8547GPIOActivator> pins = new ArrayList<>();
     private String id;
 
-    public PCF8574GPIOActivatorFactory(DeviceByteChannelFactory device) throws IOException {
+    public PCF8574GPIOActivatorFactory(DeviceChannel device) throws IOException {
         id = "PCF8674 GPIO : " + device.toString();
-        writeChannel = device.openByteChannel(PCF8574_WRITE);
-        readChannel = device.openByteChannel(PCF8574_READ);
+        writeChannel = device.createChannel(new DeviceRegisterAttr(PCF8574_WRITE));
+        readChannel = device.createChannel(new DeviceRegisterAttr(PCF8574_READ));
 
     }
 

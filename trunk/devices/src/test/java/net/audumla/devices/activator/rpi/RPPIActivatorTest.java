@@ -22,6 +22,10 @@ import net.audumla.devices.activator.AggregateActivator;
 import net.audumla.devices.activator.factory.PCF8574GPIOActivatorFactory;
 import net.audumla.devices.activator.factory.RPIGPIOActivatorFactory;
 import net.audumla.devices.activator.factory.SainsSmartRelayActivatorFactory;
+import net.audumla.devices.io.channel.ChannelAddressAttr;
+import net.audumla.devices.io.channel.DeviceAddressAttr;
+import net.audumla.devices.io.channel.DeviceChannel;
+import net.audumla.devices.io.channel.i2c.RPiI2CChannel;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +42,7 @@ public class RPPIActivatorTest {
 
     static {
         try {
-            I2CDevice d = new RPII2CBusFactory().getInstance(1).getDevice(0x27);
+            DeviceChannel d = new RPiI2CChannel().createChannel(new ChannelAddressAttr(1), new DeviceAddressAttr(0x27));
             power5v = new PCF8574GPIOActivatorFactory(d);
             power5v.initialize();
 //            for (Activator a : power5v.getActivators()) {
@@ -161,7 +165,8 @@ public class RPPIActivatorTest {
     }
 
     SainsSmartRelayActivatorFactory getSSPCF(int addr,int pwr1, int pwr2,RPIGPIOActivatorFactory.GPIOName gpioPower) throws Exception {
-        I2CDevice d = new RPII2CBusFactory().getInstance(1).getDevice(addr);
+
+        DeviceChannel d = new RPiI2CChannel().createChannel(new ChannelAddressAttr(1), new DeviceAddressAttr(addr));
         PCF8574GPIOActivatorFactory gpio = new PCF8574GPIOActivatorFactory(d);
         gpio.initialize();
 //        Activator power = rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO1);

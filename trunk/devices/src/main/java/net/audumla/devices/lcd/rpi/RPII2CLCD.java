@@ -1,10 +1,15 @@
 package net.audumla.devices.lcd.rpi;
 
-import net.audumla.devices.io.i2c.I2CBus;
+import net.audumla.devices.io.channel.ChannelAddressAttr;
+import net.audumla.devices.io.channel.DeviceAddressAttr;
+import net.audumla.devices.io.channel.DeviceChannel;
+import net.audumla.devices.io.channel.DeviceRegisterAttr;
+import net.audumla.devices.io.channel.i2c.RPiI2CChannel;
 import net.audumla.devices.lcd.LCD;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -111,7 +116,7 @@ public class RPII2CLCD implements net.audumla.devices.lcd.LCD {
                 // LCD_NO_PIN,0x1c, 0x00,0x18
             }
         } catch (Exception ex) {
-            logger.error("Cannot initialize LCD ["+getName()+"]",ex);
+            logger.error("Cannot initialize LCD [" + getName() + "]", ex);
             return false;
         }
         return true;
@@ -134,14 +139,14 @@ public class RPII2CLCD implements net.audumla.devices.lcd.LCD {
     }
 
     protected void send(int value, int mode) throws Exception {
-            synchronized (Thread.currentThread()) {
-                ext.digitalWrite(backlightStatus);
-                ext.digitalWrite(value | backlightStatus | mode);
-                ext.digitalWrite(value | backlightStatus | mode | LCD_ENABLE_PIN);
-                Thread.sleep(0, 500);
-                ext.digitalWrite(value | backlightStatus | mode);
-                Thread.sleep(0, 50000);
-            }
+        synchronized (Thread.currentThread()) {
+            ext.digitalWrite(backlightStatus);
+            ext.digitalWrite(value | backlightStatus | mode);
+            ext.digitalWrite(value | backlightStatus | mode | LCD_ENABLE_PIN);
+            Thread.sleep(0, 500);
+            ext.digitalWrite(value | backlightStatus | mode);
+            Thread.sleep(0, 50000);
+        }
     }
 
     protected void send4bits(int value, int mode) throws Exception {
@@ -312,26 +317,23 @@ public class RPII2CLCD implements net.audumla.devices.lcd.LCD {
         public static final int MCP23008_OLAT = 0x0A;
 
         public static final String DESCRIPTION = "MCP23008 GPIO Provider";
-        private I2CDevice device;
+        private DeviceChannel commandDevice;
+        private DeviceChannel writeDevice;
         private int address;
 
         public PortExtender(int address) {
-            try {
-                device = I2CBus.getI2CBusFactory().getInstance(1).getDevice(address);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-
+            commandDevice = new RPiI2CChannel().createChannel(new ChannelAddressAttr(1), new DeviceAddressAttr(address));
+            writeDevice = commandDevice.createChannel(new DeviceRegisterAttr(MCP23008_GPIO));
         }
 
         public void digitalWrite(int d) throws IOException {
-                // System.out.println("Sending : " + d + " : " + Integer.toBinaryString(d) + " : " + Integer.toHexString(d));
-                device.write(MCP23008_GPIO, (byte) d);
+            writeDevice.write(ByteBuffer.allocateDirect(1).put((byte) d));
         }
 
         public void commandWrite(int reg, int d) throws IOException {
-                device.write(reg, (byte) d);
+            ByteBuffer b = ByteBuffer.allocateDirect(1).put((byte) d);
+            commandDevice.setAttribute(b,new DeviceRegisterAttr(reg));
+            commandDevice.write(b);
         }
 
     }
