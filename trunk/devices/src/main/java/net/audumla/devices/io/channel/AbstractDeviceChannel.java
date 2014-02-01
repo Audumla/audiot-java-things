@@ -28,7 +28,7 @@ public abstract class  AbstractDeviceChannel implements DeviceChannel {
 
     public static class PositionAttribute implements Attribute {
         private int position;
-        private Collection<Attribute> attributes = new ArrayList<>();
+        private Collection<Attribute> attributes = new HashSet<>();
 
         public PositionAttribute() {
         }
@@ -68,7 +68,7 @@ public abstract class  AbstractDeviceChannel implements DeviceChannel {
 
 //    protected Map<Buffer, Map<Integer, PositionAttribute>> bufferAttributes = new HashMap<>();
     protected Map<Integer, PositionAttribute> bufferAttributes = new TreeMap<>();
-    protected Collection<Attribute> defaultAttributes = new ArrayList<>();
+//    protected Collection<Attribute> defaultAttributes = new ArrayList<>();
 
 //    protected Map<Integer, PositionAttribute> getBufferAttributes(Buffer buffer) {
 //        Map<Integer, PositionAttribute> attrs = bufferAttributes.get(buffer);
@@ -81,10 +81,11 @@ public abstract class  AbstractDeviceChannel implements DeviceChannel {
 
     @Override
     public ByteBuffer setAttribute(ByteBuffer buffer, Attribute attr) {
-        return setAttribute(buffer, buffer.position(),attr);
+        setAttribute(buffer.position(),attr);
+        return buffer;
     }
 
-    protected ByteBuffer setAttribute(ByteBuffer buffer, int pos, Attribute attr) {
+    protected void setAttribute(int pos, Attribute attr) {
         PositionAttribute posAttr = bufferAttributes.get(pos);
         if (posAttr == null) {
             posAttr = attr instanceof PositionAttribute ? (PositionAttribute) attr : new PositionAttribute(pos, attr);
@@ -92,8 +93,6 @@ public abstract class  AbstractDeviceChannel implements DeviceChannel {
         } else {
             posAttr.addAttribute(attr);
         }
-
-        return buffer;
     }
 
     @Override
@@ -111,11 +110,9 @@ public abstract class  AbstractDeviceChannel implements DeviceChannel {
     }
 
     protected void addDefaultAttribute(Attribute ... attr) {
-        defaultAttributes.addAll(Arrays.asList(attr));
-    }
-
-    protected Collection<Attribute> getDefaultAttributes() {
-        return defaultAttributes;
+        for (Attribute a : attr) {
+            setAttribute(0,a);
+        }
     }
 
 }
