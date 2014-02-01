@@ -62,7 +62,6 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
             DeviceAddressAttr deviceAddress = null;
             DeviceRegisterAttr deviceRegister = null;
             Integer busHandle = null;
-            int position = 0;
 
             for (Attribute a : defaultAttributes) {
                 logger.debug("def - " + a);
@@ -72,13 +71,14 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
             Map<Integer, PositionAttribute> ba = getBufferAttributes(src);
             ba.put(src.limit(), new PositionAttribute());
             logger.debug(ba.keySet().toString());
+            src.position(0);
             for (Integer nextPosition : ba.keySet()) {
-                int runLength = nextPosition - position;
-                logger.debug("Writing to [I2Cbus #" + busAddress + ":Address " + deviceAddress + "] [limit:" + src.limit() + "][capacity:" + src.capacity() + "][StartPos:" + position + "][Length:" + runLength + "]");
+                int runLength = nextPosition - src.position();
+                logger.debug("Writing to [I2Cbus #" + busAddress + ":Address " + deviceAddress + "] [limit:" + src.limit() + "][capacity:" + src.capacity() + "][StartPos:" + src.position() + "][Length:" + runLength + "]");
                 if (runLength > 0) {
                     byte[] run = new byte[runLength];
 //                logger.debug("Writing to [I2Cbus #"+busAddress.getAddress()+":Address 0x"+Integer.toHexString(deviceAddress.getAddress())+"] [limit:"+src.limit()+"][capacity:"+src.capacity()+"][StartPos:"+position+"][Length:"+runLength+"]");
-                    src.get(run, position, runLength);
+                    src.get(run, 0, runLength);
                     if (busHandle != null) {
                         if (deviceAddress != null) {
                             if (deviceRegister == null) {
@@ -109,7 +109,6 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
                     logger.debug("addr - " + deviceAddress);
                     logger.debug("reg - " + deviceRegister);
                 }
-                position = nextPosition;
             }
         } finally {
             bufferAttributes.remove(src);
