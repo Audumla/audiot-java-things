@@ -216,7 +216,7 @@ public class RPPIActivatorTest {
             bb.put((byte) 0xfc);
             d.setAttribute(bb, new SleepAttr(500));
             bb.put((byte) 0xfb);
-            logger.debug("Writting buffer - " + Arrays.asList(bb.get(new byte[bb.position(0).bb.limit()])));
+            logger.debug("Writting buffer ["+i+"] " + Arrays.asList(bb.get(new byte[bb.position(0).limit()])));
             d.write(bb);
         }
     }
