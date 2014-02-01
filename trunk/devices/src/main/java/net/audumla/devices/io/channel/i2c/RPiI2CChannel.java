@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -55,62 +56,64 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
 
     @Override
     public int write(ByteBuffer src) throws IOException {
-        // set the default bus to 0 for v1 or 1 for v2
-        ChannelAddressAttr busAddress = null;
-        DeviceAddressAttr deviceAddress = null;
-        DeviceRegisterAttr deviceRegister = null;
-        Integer busHandle = null;
         int bytesWritten = 0;
-        int position = 0;
+        try {
+            ChannelAddressAttr busAddress = null;
+            DeviceAddressAttr deviceAddress = null;
+            DeviceRegisterAttr deviceRegister = null;
+            Integer busHandle = null;
+            int position = 0;
 
-        for (Attribute a : defaultAttributes) {
-            logger.debug("def - "+a);
-            setAttribute(src, 0, a);
-        }
+            for (Attribute a : defaultAttributes) {
+                logger.debug("def - " + a);
+                setAttribute(src, 0, a);
+            }
 
-        Map<Integer, PositionAttribute> ba = getBufferAttributes(src);
-        ba.put(src.limit(),new PositionAttribute());
-        logger.debug(ba.keySet().toString());
-        for (Integer nextPosition : ba.keySet()) {
-            int runLength = nextPosition - position;
-            logger.debug("Writing to [I2Cbus #"+busAddress+":Address "+deviceAddress+"] [limit:"+src.limit()+"][capacity:"+src.capacity()+"][StartPos:"+position+"][Length:"+runLength+"]");
-            if (runLength > 0) {
-                byte[] run = new byte[runLength];
+            Map<Integer, PositionAttribute> ba = getBufferAttributes(src);
+            ba.put(src.limit(), new PositionAttribute());
+            logger.debug(ba.keySet().toString());
+            for (Integer nextPosition : ba.keySet()) {
+                int runLength = nextPosition - position;
+                logger.debug("Writing to [I2Cbus #" + busAddress + ":Address " + deviceAddress + "] [limit:" + src.limit() + "][capacity:" + src.capacity() + "][StartPos:" + position + "][Length:" + runLength + "]");
+                if (runLength > 0) {
+                    byte[] run = new byte[runLength];
 //                logger.debug("Writing to [I2Cbus #"+busAddress.getAddress()+":Address 0x"+Integer.toHexString(deviceAddress.getAddress())+"] [limit:"+src.limit()+"][capacity:"+src.capacity()+"][StartPos:"+position+"][Length:"+runLength+"]");
-                src.get(run, position, runLength);
-                if (busHandle != null) {
-                    if (deviceAddress != null) {
-                        if (deviceRegister == null) {
-                            logger.debug("Writing to [I2Cbus #"+busAddress.getAddress()+":Address 0x"+Integer.toHexString(deviceAddress.getAddress())+"] [limit:"+src.limit()+"][capacity:"+src.capacity()+"]");
-                            for (byte b : run) {
-                                I2C.i2cWriteByteDirect(busHandle, deviceAddress.getAddress(), b);
+                    src.get(run, position, runLength);
+                    if (busHandle != null) {
+                        if (deviceAddress != null) {
+                            if (deviceRegister == null) {
+                                logger.debug("Writing to [I2Cbus #" + busAddress.getAddress() + ":Address 0x" + Integer.toHexString(deviceAddress.getAddress()) + "] [limit:" + src.limit() + "][capacity:" + src.capacity() + "]");
+                                for (byte b : run) {
+                                    I2C.i2cWriteByteDirect(busHandle, deviceAddress.getAddress(), b);
+                                }
+                            } else {
+                                logger.debug("Writing to [I2Cbus #" + busAddress.getAddress() + ":Address 0x" + Integer.toHexString(deviceAddress.getAddress()) + ":Register 0x" + deviceRegister.getRegister() + "] [limit:" + src.limit() + "][capacity:" + src.capacity() + "]");
+                                for (byte b : run) {
+                                    I2C.i2cWriteByte(busHandle, deviceAddress.getAddress(), deviceRegister.getRegister(), b);
+                                }
                             }
-                        } else {
-                            logger.debug("Writing to [I2Cbus #"+busAddress.getAddress()+":Address 0x"+Integer.toHexString(deviceAddress.getAddress())+":Register 0x"+deviceRegister.getRegister()+"] [limit:"+src.limit()+"][capacity:"+src.capacity()+"]");
-                            for (byte b : run) {
-                                I2C.i2cWriteByte(busHandle, deviceAddress.getAddress(), deviceRegister.getRegister(), b);
-                            }
+                            bytesWritten += run.length;
                         }
-                        bytesWritten += run.length;
                     }
                 }
-            }
-            logger.debug("Attr:"+ba.get(nextPosition).getAttributeReferences());
-            for (Attribute a : ba.get(nextPosition).getAttributeReferences()) {
-                if ((busAddress = isAttribute(ChannelAddressAttr.class, a, busAddress)) == a) {
-                    busHandle = getBusHandle(busAddress.getAddress());
-                    continue;
+                logger.debug("Attr:" + ba.get(nextPosition).getAttributeReferences());
+                for (Attribute a : ba.get(nextPosition).getAttributeReferences()) {
+                    if ((busAddress = isAttribute(ChannelAddressAttr.class, a, busAddress)) == a) {
+                        busHandle = getBusHandle(busAddress.getAddress());
+                        continue;
+                    }
+                    if ((deviceAddress = isAttribute(DeviceAddressAttr.class, a, deviceAddress)) == a) continue;
+                    if ((deviceRegister = isAttribute(DeviceRegisterAttr.class, a, deviceRegister)) == a) continue;
+                    if (SleepAttr.class.isAssignableFrom(a.getClass())) ((SleepAttr) a).sleep();
+                    logger.debug("Bus - " + busAddress);
+                    logger.debug("addr - " + deviceAddress);
+                    logger.debug("reg - " + deviceRegister);
                 }
-                if ((deviceAddress = isAttribute(DeviceAddressAttr.class, a, deviceAddress)) == a) continue;
-                if ((deviceRegister = isAttribute(DeviceRegisterAttr.class, a, deviceRegister)) == a) continue;
-                if (SleepAttr.class.isAssignableFrom(a.getClass())) ((SleepAttr) a).sleep();
-                logger.debug("Bus - "+busAddress);
-                logger.debug("addr - "+deviceAddress);
-                logger.debug("reg - "+deviceRegister);
+                position = nextPosition;
             }
-            position = nextPosition;
+        } finally {
+            bufferAttributes.remove(src);
         }
-        bufferAttributes.remove(src);
         return bytesWritten;
     }
 
@@ -121,7 +124,10 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
 
     @Override
     public DeviceChannel createChannel(Attribute... attr) {
-        return new RPiI2CChannel(attr);
+        RPiI2CChannel dc = new RPiI2CChannel(attr);
+        Collection<Attribute> defaultAttributes = getDefaultAttributes();
+        dc.addDefaultAttribute(defaultAttributes.toArray(new Attribute[defaultAttributes.size()]));
+        return dc;
     }
 
     @Override
