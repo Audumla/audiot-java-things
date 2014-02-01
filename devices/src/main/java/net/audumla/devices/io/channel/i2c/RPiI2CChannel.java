@@ -64,6 +64,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
         int position = 0;
 
         for (Attribute a : defaultAttributes) {
+            logger.debug("def - "+a);
             setAttribute(src, 0, a);
         }
 
@@ -94,6 +95,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
                     }
                 }
             }
+            logger.debug("Attr:"+ba.get(nextPosition).getAttributeReferences());
             for (Attribute a : ba.get(nextPosition).getAttributeReferences()) {
                 if ((busAddress = isAttribute(ChannelAddressAttr.class, a, busAddress)) == a) {
                     busHandle = getBusHandle(busAddress.getAddress());
@@ -102,6 +104,9 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
                 if ((deviceAddress = isAttribute(DeviceAddressAttr.class, a, deviceAddress)) == a) continue;
                 if ((deviceRegister = isAttribute(DeviceRegisterAttr.class, a, deviceRegister)) == a) continue;
                 if (SleepAttr.class.isAssignableFrom(a.getClass())) ((SleepAttr) a).sleep();
+                logger.debug("Bus - "+busAddress);
+                logger.debug("addr - "+deviceAddress);
+                logger.debug("reg - "+deviceRegister);
             }
             position = nextPosition;
         }
