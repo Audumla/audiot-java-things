@@ -54,10 +54,11 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
     @Override
     public int write(ByteBuffer src) throws IOException {
 
-        logger.debug(Arrays.asList(src.get(new byte[src.limit()])).toString());
+        logger.debug(Arrays.asList(src.get(new byte[src.position(0).limit()])).toString());
         logger.debug(bufferAttributes.keySet().toString());
         int bytesWritten = 0;
         try {
+            src.position(0);
             ChannelAddressAttr busAddress = null;
             DeviceAddressAttr deviceAddress = null;
             DeviceRegisterAttr deviceRegister = null;
@@ -71,7 +72,6 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
             Map<Integer, PositionAttribute> ba = getBufferAttributes(src);
             ba.put(src.limit(), new PositionAttribute());
             logger.debug("Attributes at positions - " + ba.keySet().toString());
-            src.position(0);
             for (Integer nextPosition : ba.keySet()) {
                 int runLength = nextPosition - src.position();
 //                logger.debug("Writing to [I2Cbus #" + busAddress + ":Address " + deviceAddress + "] [limit:" + src.limit() + "][capacity:" + src.capacity() + "][StartPos:" + src.position() + "][Length:" + runLength + "]");
