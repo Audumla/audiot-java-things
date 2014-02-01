@@ -66,17 +66,18 @@ public abstract class  AbstractDeviceChannel implements DeviceChannel {
 
     }
 
-    protected Map<Buffer, Map<Integer, PositionAttribute>> bufferAttributes = new HashMap<>();
+//    protected Map<Buffer, Map<Integer, PositionAttribute>> bufferAttributes = new HashMap<>();
+    protected Map<Integer, PositionAttribute> bufferAttributes = new TreeMap<>();
     protected Collection<Attribute> defaultAttributes = new ArrayList<>();
 
-    protected Map<Integer, PositionAttribute> getBufferAttributes(Buffer buffer) {
-        Map<Integer, PositionAttribute> attrs = bufferAttributes.get(buffer);
-        if (attrs == null) {
-            attrs = new TreeMap<>();
-            bufferAttributes.put(buffer, attrs);
-        }
-        return attrs;
-    }
+//    protected Map<Integer, PositionAttribute> getBufferAttributes(Buffer buffer) {
+//        Map<Integer, PositionAttribute> attrs = bufferAttributes.get(buffer);
+//        if (attrs == null) {
+//            attrs = new TreeMap<>();
+//            bufferAttributes.put(buffer, attrs);
+//        }
+//        return attrs;
+//    }
 
     @Override
     public ByteBuffer setAttribute(ByteBuffer buffer, Attribute attr) {
@@ -84,10 +85,10 @@ public abstract class  AbstractDeviceChannel implements DeviceChannel {
     }
 
     protected ByteBuffer setAttribute(ByteBuffer buffer, int pos, Attribute attr) {
-        PositionAttribute posAttr = getBufferAttributes(buffer).get(pos);
+        PositionAttribute posAttr = bufferAttributes.get(pos);
         if (posAttr == null) {
             posAttr = attr instanceof PositionAttribute ? (PositionAttribute) attr : new PositionAttribute(pos, attr);
-            getBufferAttributes(buffer).put(posAttr.getPosition(), posAttr);
+            bufferAttributes.put(posAttr.getPosition(), posAttr);
         } else {
             posAttr.addAttribute(attr);
         }
@@ -96,9 +97,10 @@ public abstract class  AbstractDeviceChannel implements DeviceChannel {
     }
 
     @Override
-    public Collection<? extends Attribute> getAttributes(ByteBuffer buffer) {
-        Map<Integer, PositionAttribute> attrs = bufferAttributes.get(buffer);
-        return attrs == null ? null : attrs.values();
+    public Collection<? extends Attribute> getAttributes() {
+//        Map<Integer, PositionAttribute> attrs = bufferAttributes.get();
+//        return attrs == null ? null : attrs.values();
+        return bufferAttributes.values();
     }
 
     @Override

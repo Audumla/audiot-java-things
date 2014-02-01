@@ -52,10 +52,10 @@ public interface DeviceChannel extends ByteChannel {
      * Returns the associated attributes of the given buffer
      *
      *
-     * @param buffer the buffer to return attributes for
+//     * @param buffer the buffer to return attributes for
      * @return the collection of attributes
      */
-    Collection<? extends Attribute> getAttributes(ByteBuffer buffer);
+    Collection<? extends Attribute> getAttributes();
 
     /**
      * Associates all of the attributes in the given collection to the given buffer
