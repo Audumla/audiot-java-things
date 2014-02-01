@@ -23,7 +23,7 @@ import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.util.*;
 
-public abstract class AbstractDeviceChannel implements DeviceChannel {
+public abstract class  AbstractDeviceChannel implements DeviceChannel {
     private static final Logger logger = LoggerFactory.getLogger(AbstractDeviceChannel.class);
 
     public static class PositionAttribute implements Attribute {
