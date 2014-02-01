@@ -24,10 +24,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class RPiI2CChannel extends AbstractDeviceChannel {
     private static final Logger logger = LoggerFactory.getLogger(RPiI2CChannel.class);
@@ -81,12 +78,12 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
                     if (busHandle != null) {
                         if (deviceAddress != null) {
                             if (deviceRegister == null) {
-                                logger.debug("Writing to [I2Cbus #" + busAddress.getAddress() + ":Address 0x" + Integer.toHexString(deviceAddress.getAddress()) + "] [limit:" + src.limit() + "][capacity:" + src.capacity() + "] - "+run);
+                                logger.debug("Writing to [I2Cbus #" + busAddress.getAddress() + ":Address 0x" + Integer.toHexString(deviceAddress.getAddress()) + "] [limit:" + src.limit() + "][capacity:" + src.capacity() + "] - "+Arrays.asList(run));
                                 for (byte b : run) {
                                     I2C.i2cWriteByteDirect(busHandle, deviceAddress.getAddress(), b);
                                 }
                             } else {
-                                logger.debug("Writing to [I2Cbus #" + busAddress.getAddress() + ":Address 0x" + Integer.toHexString(deviceAddress.getAddress()) + ":Register 0x" + deviceRegister.getRegister() + "] [limit:" + src.limit() + "][capacity:" + src.capacity() + "] - "+run);
+                                logger.debug("Writing to [I2Cbus #" + busAddress.getAddress() + ":Address 0x" + Integer.toHexString(deviceAddress.getAddress()) + ":Register 0x" + deviceRegister.getRegister() + "] [limit:" + src.limit() + "][capacity:" + src.capacity() + "] - "+ Arrays.asList(run));
                                 for (byte b : run) {
                                     I2C.i2cWriteByte(busHandle, deviceAddress.getAddress(), deviceRegister.getRegister(), b);
                                 }

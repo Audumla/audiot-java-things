@@ -52,8 +52,8 @@ public class PCF8574GPIOActivatorFactory implements ActivatorFactory<PCF8574GPIO
     public static final int PCF8574A_0x3E = 0x3E; // 110
     public static final int PCF8574A_0x3F = 0x3F; // 111
 
-    protected static final int PCF8574_WRITE = 0x40;
-    protected static final int PCF8574_READ = 0x41;
+    public static final int PCF8574_WRITE = 0x40;
+    public static final int PCF8574_READ = 0x41;
 
     public static final int PCF8574_MAX_IO_PINS = 8;
 
