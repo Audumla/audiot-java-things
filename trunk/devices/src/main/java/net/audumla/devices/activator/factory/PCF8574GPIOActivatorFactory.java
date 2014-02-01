@@ -18,7 +18,6 @@ package net.audumla.devices.activator.factory;
 
 import net.audumla.devices.activator.ActivatorState;
 import net.audumla.devices.activator.DefaultActivator;
-import net.audumla.devices.io.DeviceByteChannelFactory;
 import net.audumla.devices.io.channel.DeviceChannel;
 import net.audumla.devices.io.channel.DeviceRegisterAttr;
 import org.slf4j.Logger;
@@ -26,7 +25,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.channels.ByteChannel;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Collection;
@@ -93,9 +91,9 @@ public class PCF8574GPIOActivatorFactory implements ActivatorFactory<PCF8574GPIO
         if (currentStates.get(activator.getPin()) == newState.equals(ActivatorState.DEACTIVATED)) {
             currentStates.set(activator.getPin(), !newState.equals(ActivatorState.DEACTIVATED));
             if (currentStates.toByteArray().length == 0) {
-                writeChannel.write(ByteBuffer.allocateDirect((byte) 0x00));
+                writeChannel.write(ByteBuffer.allocateDirect(1).put((byte) 0x00));
             } else {
-                writeChannel.write(ByteBuffer.allocateDirect(currentStates.toByteArray()[0]));
+                writeChannel.write(ByteBuffer.allocateDirect(1).put(currentStates.toByteArray()[0]));
             }
         }
 //        else {
