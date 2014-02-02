@@ -108,19 +108,21 @@ public class RPII2CLCD implements net.audumla.devices.lcd.LCD {
                 initChannel.setAttribute(bb, new DeviceRegisterAttr(MCP2308DeviceChannel.MCP23008_IODIR));
                 bb.put((byte) 0x00);
                 initChannel.setAttribute(bb, new DeviceRegisterAttr(MCP2308DeviceChannel.MCP23008_GPIO));
-                putCommand(bb, initChannel, (byte) (LCD_D4_PIN | LCD_D5_PIN));
+                putCommand8bits(bb, initChannel, LCD_COMMAND, (byte) (LCD_D4_PIN | LCD_D5_PIN));
                 initChannel.setAttribute(bb, new SleepAttr(5));
-                putCommand(bb, initChannel, (byte) (LCD_D4_PIN | LCD_D5_PIN));
+                putCommand8bits(bb, initChannel, LCD_COMMAND, (byte) (LCD_D4_PIN | LCD_D5_PIN));
                 initChannel.setAttribute(bb, new SleepAttr(5));
-                putCommand(bb, initChannel, (byte) (LCD_D4_PIN | LCD_D5_PIN));
+                putCommand8bits(bb, initChannel, LCD_COMMAND, (byte) (LCD_D4_PIN | LCD_D5_PIN));
                 initChannel.setAttribute(bb, new SleepAttr(1));
-                putCommand(bb, initChannel, LCD_D5_PIN,
+                putCommand8bits(bb, initChannel, LCD_COMMAND,
+                        LCD_D5_PIN,
                         LCD_D5_PIN,
                         (byte) (LCD_D6_PIN | LCD_D7_PIN),
                         LCD_NO_PIN, LCD_D7_PIN,
                         LCD_NO_PIN, LCD_D4_PIN,
                         LCD_NO_PIN,
-                        (byte) (LCD_D4_PIN | LCD_D5_PIN | LCD_D6_PIN),
+                        (byte) (LCD_D4_PIN | LCD_D5_PIN | LCD_D6_PIN));
+                putCommand4bits(bb,initChannel,LCD_COMMAND,
                         displayControl,
                         displayMode);
                 bb.flip();
@@ -152,30 +154,32 @@ public class RPII2CLCD implements net.audumla.devices.lcd.LCD {
         return name;
     }
 
-    protected void command4bits(byte... args) throws Exception {
-        for (byte v : args) {
-            send(v, LCD_COMMAND);
-        }
-    }
+//    protected void command4bits(byte... args) throws Exception {
+//        for (byte v : args) {
+//            send(v, LCD_COMMAND);
+//        }
+//    }
 
     protected void command(byte... args) throws Exception {
-        for (byte v : args) {
-            send4bits(v, LCD_COMMAND);
-        }
+        DeviceChannel wb = baseDeviceChannel.createChannel(new DeviceRegisterAttr(MCP2308DeviceChannel.MCP23008_GPIO));
+        ByteBuffer bb = ByteBuffer.allocate(args.length*5);
+        putCommand4bits(bb,wb,LCD_COMMAND,args);
+        bb.flip();
+        wb.write(bb);
     }
 
-    protected void putCommand(ByteBuffer bb, DeviceChannel ch, byte... values) throws Exception {
+    protected void putCommand8bits(ByteBuffer bb, DeviceChannel ch, byte mode, byte... values) throws Exception {
         for (byte value : values) {
             bb.put(backlightStatus).
-                    put((byte) (value | backlightStatus)).
-                    put((byte) (value | backlightStatus | LCD_ENABLE_PIN));
+                    put((byte) (value | backlightStatus | mode)).
+                    put((byte) (value | backlightStatus | LCD_ENABLE_PIN | mode));
             ch.setAttribute(bb, new SleepAttr(0, 500));
-            bb.put((byte) (value | backlightStatus));
+            bb.put((byte) (value | backlightStatus | mode));
             ch.setAttribute(bb, new SleepAttr(0, 50000));
         }
     }
 
-    protected void putCommand4bits(ByteBuffer bb, DeviceChannel ch, byte... values) throws Exception {
+    protected void putCommand4bits(ByteBuffer bb, DeviceChannel ch, byte mode, byte... values) throws Exception {
         for (byte value : values) {
             byte bitx4 = 0;
             for (int i = 0; i < LCD_DATA_4BITMASK.length; ++i) {
@@ -183,50 +187,50 @@ public class RPII2CLCD implements net.audumla.devices.lcd.LCD {
                     bitx4 |= LCD_DATA_4BITPIN[i];
                 }
                 if (i == 3) {
-                    putCommand(bb, ch, bitx4);
+                    putCommand8bits(bb, ch, mode, bitx4);
                     bitx4 = 0;
                 }
             }
-            putCommand(bb, ch, bitx4);
+            putCommand8bits(bb, ch, mode, bitx4);
         }
     }
 
-    protected void send(byte value, byte mode) throws Exception {
-        synchronized (Thread.currentThread()) {
-            digitalWrite(backlightStatus);
-            digitalWrite((value | backlightStatus | mode));
-            digitalWrite((value | backlightStatus | mode | LCD_ENABLE_PIN));
-            Thread.sleep(0, 500);
-            digitalWrite((value | backlightStatus | mode));
-            Thread.sleep(0, 50000);
-        }
-    }
-
-    protected void send4bits(byte value, byte mode) throws Exception {
-        byte bitx4 = 0;
-        for (int i = 0; i < LCD_DATA_4BITMASK.length; ++i) {
-            if ((LCD_DATA_4BITMASK[i] & value) > 0) {
-                bitx4 |= LCD_DATA_4BITPIN[i];
-            }
-            if (i == 3) {
-                send(bitx4, mode);
-                bitx4 = 0;
-            }
-        }
-        send(bitx4, mode);
-    }
+//    protected void send(byte value, byte mode) throws Exception {
+//        synchronized (Thread.currentThread()) {
+//            digitalWrite(backlightStatus);
+//            digitalWrite((value | backlightStatus | mode));
+//            digitalWrite((value | backlightStatus | mode | LCD_ENABLE_PIN));
+//            Thread.sleep(0, 500);
+//            digitalWrite((value | backlightStatus | mode));
+//            Thread.sleep(0, 50000);
+//        }
+//    }
+//
+//    protected void send4bits(byte value, byte mode) throws Exception {
+//        byte bitx4 = 0;
+//        for (int i = 0; i < LCD_DATA_4BITMASK.length; ++i) {
+//            if ((LCD_DATA_4BITMASK[i] & value) > 0) {
+//                bitx4 |= LCD_DATA_4BITPIN[i];
+//            }
+//            if (i == 3) {
+//                send(bitx4, mode);
+//                bitx4 = 0;
+//            }
+//        }
+//        send(bitx4, mode);
+//    }
 
     protected void write(byte... args) throws Exception {
-        for (byte v : args) {
-            send4bits(v, LCD_CHARACTER_WRITE);
-        }
+        DeviceChannel wb = baseDeviceChannel.createChannel(new DeviceRegisterAttr(MCP2308DeviceChannel.MCP23008_GPIO));
+        ByteBuffer bb = ByteBuffer.allocate(args.length*5);
+        putCommand4bits(bb,wb,LCD_CHARACTER_WRITE,args);
+        bb.flip();
+        wb.write(bb);
     }
 
     @Override
     public void write(String s) throws Exception {
-        for (byte v : s.getBytes()) {
-            send4bits(v, LCD_CHARACTER_WRITE);
-        }
+        write(s.getBytes());
     }
 
     @Override

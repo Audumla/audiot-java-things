@@ -34,20 +34,30 @@ public interface DeviceChannel extends ByteChannel {
 
     /**
      * Adds an attribute to the channel that applies to the current position of the given buffer
-     * When the buffer is being written or read to/from the channel the attribute will be enacted up at the appropriate
+     * When the buffer is being written or read to/from the channel the attribute will be enacted upon at the appropriate
      * position. This could be to change the state of the channel at a position in the buffer so that it writes
      * to a different location of the channel or pauses the channel for a set time to allow the channel to
      * receive the data correctly before moving on to the rest of the byte stream.
-     * A reference to The buffer may be stored within the channel so the the attribute list can be associated back
-     * to each Buffer.
-     * Once the buffer is written or read the reference will be removed and all associate attributes will be lost
-     * unless an external reference to the result of getAttributes is made
+     * All buffers written or read from this channel will have this attribute applied.
      *
-     * @param buffer the buffer to associate the Attribute to.
+     * @param buffer the buffer to use the position to associate the Attribute to.
      * @param attr   the attribute to associate to the buffer
      * @return the buffer
      */
     ByteBuffer setAttribute(ByteBuffer buffer, Attribute attr);
+
+    /**
+     * Adds an attribute to the channel that applies to the given position of any buffers passed to the channel
+     * When a buffer is being written or read to/from the channel the attribute will be enacted upon at the appropriate
+     * position. This could be to change the state of the channel at a position in the buffer so that it writes
+     * to a different location of the channel or pauses the channel for a set time to allow the channel to
+     * receive the data correctly before moving on to the rest of the byte stream.
+     * All buffers written or read from this channel will have this attribute applied.
+     *
+     * @param pos the position to associate the Attribute to.
+     * @param attr   the attribute to associate to the buffer
+     */
+    void setAttribute(int pos, Attribute attr);
 
     /**
      * Returns the associated attributes of the given buffer
