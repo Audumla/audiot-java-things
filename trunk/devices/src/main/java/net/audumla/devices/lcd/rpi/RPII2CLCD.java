@@ -167,6 +167,22 @@ public class RPII2CLCD implements net.audumla.devices.lcd.LCD {
         ch.setAttribute(bb, new SleepAttr(0, 50000));
     }
 
+    protected void putCommand4bits(ByteBuffer bb, DeviceChannel ch, byte value) throws Exception {
+        byte bitx4 = 0;
+        for (int i = 0; i < LCD_DATA_4BITMASK.length; ++i) {
+            if ((LCD_DATA_4BITMASK[i] & value) > 0) {
+                bitx4 |= LCD_DATA_4BITPIN[i];
+            }
+            if (i == 3) {
+                putCommand(bb,ch, bitx4);
+                putCommand(bb,ch, LCD_COMMAND);
+                bitx4 = 0;
+            }
+        }
+        putCommand(bb,ch, bitx4);
+        putCommand(bb,ch, LCD_COMMAND);
+    }
+
     protected void send(byte value, byte mode) throws Exception {
         synchronized (Thread.currentThread()) {
             digitalWrite(backlightStatus);

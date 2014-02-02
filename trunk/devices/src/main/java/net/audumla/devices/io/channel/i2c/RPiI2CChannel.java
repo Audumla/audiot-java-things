@@ -118,9 +118,11 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
                  nextPosition = it.hasNext() ? it.next() : src.reset().position();
             }
             catch (InvalidMarkException ex) {
+                logger.debug("No Mark using limit");
                 nextPosition = src.limit();
             }
             int runLength = nextPosition - currentPos;
+            logger.debug("CurrentPos:"+currentPos+" NextPosition:"+nextPosition+" RunLength:"+runLength);
             if (runLength > 0) {
                 byte[] run = new byte[runLength];
                 src.get(run, 0, runLength);
