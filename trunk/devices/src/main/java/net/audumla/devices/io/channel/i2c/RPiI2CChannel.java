@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.InvalidMarkException;
 import java.util.*;
 
 public class RPiI2CChannel extends AbstractDeviceChannel {
@@ -111,8 +112,15 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
         Set<Integer> ks = bufferAttributes.keySet();
         Iterator<Integer> it = ks.iterator();
         for (int i = 0; i < ks.size() + 1; ++i) {
-            int nextPosition = it.hasNext() ? it.next() : src.limit();
-            int runLength = nextPosition - src.position();
+            int currentPos =src.position();
+            int nextPosition;
+            try {
+                 nextPosition = it.hasNext() ? it.next() : src.reset().position();
+            }
+            catch (InvalidMarkException ex) {
+                nextPosition = src.limit();
+            }
+            int runLength = nextPosition - currentPos;
             if (runLength > 0) {
                 byte[] run = new byte[runLength];
                 src.get(run, 0, runLength);
