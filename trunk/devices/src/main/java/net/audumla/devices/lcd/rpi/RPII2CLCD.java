@@ -122,7 +122,7 @@ public class RPII2CLCD implements net.audumla.devices.lcd.LCD {
                         LCD_NO_PIN, LCD_D4_PIN,
                         LCD_NO_PIN,
                         (byte) (LCD_D4_PIN | LCD_D5_PIN | LCD_D6_PIN));
-                putCommand4bits(bb,initChannel,LCD_COMMAND,
+                putCommand4bits(bb, initChannel, LCD_COMMAND,
                         displayControl,
                         displayMode);
                 bb.flip();
@@ -162,7 +162,7 @@ public class RPII2CLCD implements net.audumla.devices.lcd.LCD {
 
     protected void command(byte... args) throws Exception {
         for (byte b : args) {
-            send4bits(b,LCD_COMMAND);
+            send4bits(b, LCD_COMMAND);
         }
     }
 
@@ -227,14 +227,14 @@ public class RPII2CLCD implements net.audumla.devices.lcd.LCD {
     }
 
     protected void write(byte... args) throws Exception {
-        for (byte v : args) {
-            send4bits(v, LCD_CHARACTER_WRITE);
-        }
-//        DeviceChannel wb = baseDeviceChannel.createChannel(new DeviceRegisterAttr(MCP2308DeviceChannel.MCP23008_GPIO));
-//        ByteBuffer bb = ByteBuffer.allocate(args.length*5);
-//        putCommand4bits(bb,wb,LCD_CHARACTER_WRITE,args);
-//        bb.flip();
-//        wb.write(bb);
+//        for (byte v : args) {
+//            send4bits(v, LCD_CHARACTER_WRITE);
+//        }
+        DeviceChannel wb = baseDeviceChannel.createChannel(new DeviceRegisterAttr(MCP2308DeviceChannel.MCP23008_GPIO));
+        ByteBuffer bb = ByteBuffer.allocate(args.length*4);
+        putCommand4bits(bb,wb,LCD_CHARACTER_WRITE,args);
+        bb.flip();
+        wb.write(bb);
     }
 
     @Override
