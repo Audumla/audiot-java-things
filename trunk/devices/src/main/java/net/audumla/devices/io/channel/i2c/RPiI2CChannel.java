@@ -64,12 +64,12 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
         src.position(0);
         ChannelContext ctxt = new ChannelContext();
 
-        bufferAttributes.put(src.limit(),new PositionAttribute());
-        for (int nextPosition : bufferAttributes.keySet()) {
-//        Set<Integer> ks = bufferAttributes.keySet();
-//        Iterator<Integer> it = ks.iterator();
-//        for (int i = 0; i <= ks.size(); ++i) {
-//            Integer nextPosition = it.hasNext() ? it.next() : src.limit();
+//        bufferAttributes.put(src.limit(),new PositionAttribute());
+//        for (int nextPosition : bufferAttributes.keySet()) {
+        Set<Integer> ks = bufferAttributes.keySet();
+        Iterator<Integer> it = ks.iterator();
+        for (int i = 0; i < ks.size() + 1; ++i) {
+            int nextPosition = it.hasNext() ? it.next() : src.limit();
             int runLength = nextPosition - src.position();
             if (runLength > 0) {
                 byte[] run = new byte[runLength];
@@ -89,7 +89,9 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
                     }
                 }
             }
-            applyAttributes(ctxt, bufferAttributes.get(nextPosition).getAttributeReferences());
+            if (i < ks.size()) {
+                applyAttributes(ctxt, bufferAttributes.get(nextPosition).getAttributeReferences());
+            }
         }
         return bytesWritten;
     }
