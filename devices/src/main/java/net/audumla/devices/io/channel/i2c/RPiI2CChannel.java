@@ -188,7 +188,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
         return open;
     }
 
-    synchronized protected int getBusHandle(int bus) throws IOException {
+    static synchronized public int getBusHandle(int bus) throws IOException {
         Integer handle = busHandleMap.get(bus);
         if (handle == null) {
             handle = I2C.i2cOpen("/dev/i2c-" + bus);
