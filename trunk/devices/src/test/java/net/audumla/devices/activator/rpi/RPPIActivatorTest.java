@@ -206,15 +206,21 @@ public class RPPIActivatorTest {
         Activator power = getPower(6, 7, rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO1));
         power.setState(ActivatorState.ACTIVATED);
         ByteBuffer bb = ByteBuffer.allocateDirect(5);
-        bb.put((byte) 0xff);
-        d.setAttribute(bb, new SleepAttr(10));
-        bb.put((byte) 0xfe);
-        d.setAttribute(bb, new SleepAttr(50));
-        bb.put((byte) 0xfd);
-        d.setAttribute(bb, new SleepAttr(100));
-        bb.put((byte) 0xfc);
-        d.setAttribute(bb, new SleepAttr(200));
-        bb.put((byte) 0xfb);
+        byte val = (byte) 0x01;
+        for (int i=0; i < 8;++i) {
+            bb.put((byte) ~val);
+            d.setAttribute(bb, new SleepAttr(10 * (i + 8)));
+            val = (byte) (val << 1);
+        }
+//        bb.put((byte) 0xff);
+//        d.setAttribute(bb, new SleepAttr(10));
+//        bb.put((byte) 0xfe);
+//        d.setAttribute(bb, new SleepAttr(50));
+//        bb.put((byte) 0xfd);
+//        d.setAttribute(bb, new SleepAttr(100));
+//        bb.put((byte) 0xfc);
+//        d.setAttribute(bb, new SleepAttr(200));
+//        bb.put((byte) 0xfb);
         for (int i = 0; i < 40; ++i) {
             logger.debug("Writting buffer [" + i + "] " + Arrays.asList(bb.get(new byte[bb.position(0).limit()])));
             d.write(bb);
