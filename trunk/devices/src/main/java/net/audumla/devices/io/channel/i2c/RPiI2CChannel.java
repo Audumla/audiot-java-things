@@ -24,7 +24,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.InvalidMarkException;
 import java.util.*;
 
 public class RPiI2CChannel extends AbstractDeviceChannel {
@@ -143,13 +142,16 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
 
     protected ChannelContext applyAttributes(ChannelContext ctxt, Collection<Attribute> attr) throws IOException {
         for (Attribute a : attr) {
+            if (SleepAttr.class.isAssignableFrom(a.getClass())) {
+                ((SleepAttr) a).sleep();
+                continue;
+            }
             if ((ctxt.busAddress = isAttribute(ChannelAddressAttr.class, a, ctxt.busAddress)) == a) {
                 ctxt.busHandle = getBusHandle(ctxt.busAddress.getAddress());
                 continue;
             }
             if ((ctxt.deviceAddress = isAttribute(DeviceAddressAttr.class, a, ctxt.deviceAddress)) == a) continue;
             if ((ctxt.deviceRegister = isAttribute(DeviceRegisterAttr.class, a, ctxt.deviceRegister)) == a) continue;
-            if (SleepAttr.class.isAssignableFrom(a.getClass())) ((SleepAttr) a).sleep();
         }
         return ctxt;
     }
@@ -221,9 +223,9 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
     @Override
     protected void addDefaultAttribute(Attribute... attr) {
         try {
-            applyAttributes(defaultContext,Arrays.asList(attr));
+            applyAttributes(defaultContext, Arrays.asList(attr));
         } catch (IOException e) {
-            logger.warn("Unable to set attribute on I2C Channel",e);
+            logger.warn("Unable to set attribute on I2C Channel", e);
         }
     }
 }
