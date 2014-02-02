@@ -96,6 +96,8 @@ public class RPII2CLCD implements net.audumla.devices.lcd.LCD {
     public boolean initialize() {
         try {
             synchronized (Thread.currentThread()) {
+                displayControl = LCD_DISPLAYCONTROL | LCD_DISPLAYON | LCD_CURSOROFF | LCD_BLINKOFF;
+                displayMode = LCD_ENTRYMODESET | LCD_ENTRYLEFT | LCD_ENTRYSHIFTDECREMENT;
                 // this will get the RPII2CLCD into the write state to start sending commands
 //                Thread.sleep(50, 0);
                 baseDeviceChannel.createChannel(new DeviceRegisterAttr(MCP2308DeviceChannel.MCP23008_IODIR)).write((byte) 0x00);
@@ -113,10 +115,16 @@ public class RPII2CLCD implements net.audumla.devices.lcd.LCD {
                 putCommand(bb, initChannel, (byte) (LCD_D4_PIN | LCD_D5_PIN));
                 initChannel.setAttribute(bb, new SleepAttr(1));
                 putCommand(bb, initChannel, LCD_D5_PIN);
+                putCommand(bb, initChannel, LCD_D5_PIN);
                 putCommand(bb, initChannel, (byte) (LCD_D6_PIN | LCD_D7_PIN));
+                putCommand(bb, initChannel, LCD_NO_PIN);
                 putCommand(bb, initChannel, LCD_D7_PIN);
+                putCommand(bb, initChannel, LCD_NO_PIN);
                 putCommand(bb, initChannel, LCD_D4_PIN);
+                putCommand(bb, initChannel, LCD_NO_PIN);
                 putCommand(bb, initChannel, (byte) (LCD_D4_PIN | LCD_D5_PIN | LCD_D6_PIN));
+                putCommand4bits(bb, initChannel,displayControl);
+                putCommand4bits(bb, initChannel,displayMode);
 
                 command4bits((byte) (LCD_D4_PIN | LCD_D5_PIN));
                 Thread.sleep(5, 0);
@@ -130,8 +138,6 @@ public class RPII2CLCD implements net.audumla.devices.lcd.LCD {
                 command4bits(LCD_NO_PIN, LCD_D4_PIN); // display clear
                 command4bits(LCD_NO_PIN, (byte) (LCD_D4_PIN | LCD_D5_PIN | LCD_D6_PIN));
 
-                displayControl = LCD_DISPLAYCONTROL | LCD_DISPLAYON | LCD_CURSOROFF | LCD_BLINKOFF;
-                displayMode = LCD_ENTRYMODESET | LCD_ENTRYLEFT | LCD_ENTRYSHIFTDECREMENT;
                 command(displayControl, displayMode);
                 // LCD_NO_PIN,0x1c, 0x00,0x18
             }
