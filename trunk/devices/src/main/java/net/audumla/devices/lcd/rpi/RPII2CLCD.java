@@ -101,22 +101,22 @@ public class RPII2CLCD implements net.audumla.devices.lcd.LCD {
                 baseDeviceChannel.createChannel(new DeviceRegisterAttr(MCP2308DeviceChannel.MCP23008_IODIR)).write((byte) 0x00);
 //                commandWrite(MCP2308DeviceChannel.MCP23008_IODIR, 0x00); // all pins to outputs
 
-//                ByteBuffer bb = ByteBuffer.allocate(100);
-//                DeviceChannel initChannel = baseDeviceChannel.createChannel();
-//                initChannel.setAttribute(bb,new DeviceRegisterAttr(MCP2308DeviceChannel.MCP23008_IODIR));
-//                bb.put((byte) 0x00);
-//                initChannel.setAttribute(bb, new DeviceRegisterAttr(MCP2308DeviceChannel.MCP23008_GPIO));
-//                putCommand(bb, initChannel, (byte) (LCD_D4_PIN | LCD_D5_PIN));
-//                initChannel.setAttribute(bb, new SleepAttr(5));
-//                putCommand(bb, initChannel, (byte) (LCD_D4_PIN | LCD_D5_PIN));
-//                initChannel.setAttribute(bb, new SleepAttr(5));
-//                putCommand(bb, initChannel, (byte) (LCD_D4_PIN | LCD_D5_PIN));
-//                initChannel.setAttribute(bb, new SleepAttr(1));
-//                putCommand(bb, initChannel, LCD_D5_PIN);
-//                putCommand(bb, initChannel, (byte) (LCD_D6_PIN | LCD_D7_PIN));
-//                putCommand(bb, initChannel, LCD_D7_PIN);
-//                putCommand(bb, initChannel, LCD_D4_PIN);
-//                putCommand(bb, initChannel, (byte) (LCD_D4_PIN | LCD_D5_PIN | LCD_D6_PIN));
+                ByteBuffer bb = ByteBuffer.allocate(100);
+                DeviceChannel initChannel = baseDeviceChannel.createChannel();
+                initChannel.setAttribute(bb,new DeviceRegisterAttr(MCP2308DeviceChannel.MCP23008_IODIR));
+                bb.put((byte) 0x00);
+                initChannel.setAttribute(bb, new DeviceRegisterAttr(MCP2308DeviceChannel.MCP23008_GPIO));
+                putCommand(bb, initChannel, (byte) (LCD_D4_PIN | LCD_D5_PIN));
+                initChannel.setAttribute(bb, new SleepAttr(5));
+                putCommand(bb, initChannel, (byte) (LCD_D4_PIN | LCD_D5_PIN));
+                initChannel.setAttribute(bb, new SleepAttr(5));
+                putCommand(bb, initChannel, (byte) (LCD_D4_PIN | LCD_D5_PIN));
+                initChannel.setAttribute(bb, new SleepAttr(1));
+                putCommand(bb, initChannel, LCD_D5_PIN);
+                putCommand(bb, initChannel, (byte) (LCD_D6_PIN | LCD_D7_PIN));
+                putCommand(bb, initChannel, LCD_D7_PIN);
+                putCommand(bb, initChannel, LCD_D4_PIN);
+                putCommand(bb, initChannel, (byte) (LCD_D4_PIN | LCD_D5_PIN | LCD_D6_PIN));
 
                 command4bits((byte) (LCD_D4_PIN | LCD_D5_PIN));
                 Thread.sleep(5, 0);
@@ -175,12 +175,10 @@ public class RPII2CLCD implements net.audumla.devices.lcd.LCD {
             }
             if (i == 3) {
                 putCommand(bb,ch, bitx4);
-                putCommand(bb,ch, LCD_COMMAND);
                 bitx4 = 0;
             }
         }
         putCommand(bb,ch, bitx4);
-        putCommand(bb,ch, LCD_COMMAND);
     }
 
     protected void send(byte value, byte mode) throws Exception {
