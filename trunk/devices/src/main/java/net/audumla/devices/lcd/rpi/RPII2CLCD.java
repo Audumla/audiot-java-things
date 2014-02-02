@@ -91,7 +91,7 @@ public class RPII2CLCD implements net.audumla.devices.lcd.LCD {
     private RPII2CLCD(String name, int address) {
         this.name = name;
         this.address = address;
-//        baseDeviceChannel = new MCP2308DeviceChannel()
+        baseDeviceChannel = new MCP2308DeviceChannel(new RPiI2CChannel().createChannel(new ChannelAddressAttr(1),new DeviceAddressAttr(address)));
         backlightStatus = LCD_BACKLIGHT;
     }
 
@@ -100,8 +100,10 @@ public class RPII2CLCD implements net.audumla.devices.lcd.LCD {
         try {
             synchronized (Thread.currentThread()) {
                 // this will get the RPII2CLCD into the write state to start sending commands
-                Thread.sleep(50, 0);
-                commandWrite(MCP2308DeviceChannel.MCP23008_IODIR, 0x00); // all pins to outputs
+//                Thread.sleep(50, 0);
+                baseDeviceChannel.createChannel(new DeviceRegisterAttr(MCP2308DeviceChannel.MCP23008_IODIR)).write((byte) 0x00);
+//                commandWrite(MCP2308DeviceChannel.MCP23008_IODIR, 0x00); // all pins to outputs
+                DeviceChannel initChannel = baseDeviceChannel.createChannel(new DeviceRegisterAttr(MCP2308DeviceChannel.MCP23008_GPIO));
                 command4bits((byte) (LCD_D4_PIN | LCD_D5_PIN));
                 Thread.sleep(5, 0);
                 command4bits((byte) (LCD_D4_PIN | LCD_D5_PIN));
@@ -304,7 +306,7 @@ public class RPII2CLCD implements net.audumla.devices.lcd.LCD {
         I2C.i2cWriteByte(RPiI2CChannel.getBusHandle(1), address, MCP2308DeviceChannel.MCP23008_GPIO, (byte) d);
     }
 
-    public void commandWrite(int reg, int d) throws IOException {
-        I2C.i2cWriteByte(RPiI2CChannel.getBusHandle(1), address, reg, (byte) d);
-    }
+//    public void commandWrite(int reg, int d) throws IOException {
+//        I2C.i2cWriteByte(RPiI2CChannel.getBusHandle(1), address, reg, (byte) d);
+//    }
 }
