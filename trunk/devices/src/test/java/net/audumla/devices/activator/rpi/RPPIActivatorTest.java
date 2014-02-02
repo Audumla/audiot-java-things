@@ -212,6 +212,8 @@ public class RPPIActivatorTest {
             d.setAttribute(bb, new SleepAttr(10 * (i + 8)));
             val = (byte) (val << 1);
         }
+        bb.position(0);
+        logger.debug("Capacity:"+bb.capacity()+" limit:"+bb.limit()+" remaining:"+bb.remaining()+" position:"+bb.position());
 //        bb.put((byte) 0xff);
 //        d.setAttribute(bb, new SleepAttr(10));
 //        bb.put((byte) 0xfe);
