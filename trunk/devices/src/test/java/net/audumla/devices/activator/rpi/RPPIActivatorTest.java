@@ -205,7 +205,7 @@ public class RPPIActivatorTest {
         DeviceChannel d = new RPiI2CChannel().createChannel(new ChannelAddressAttr(1), new DeviceAddressAttr(PCF8574GPIOActivatorFactory.PCF8574_0x21));
         Activator power = getPower(6, 7, rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO1));
         power.setState(ActivatorState.ACTIVATED);
-        ByteBuffer bb = ByteBuffer.allocateDirect(5);
+        ByteBuffer bb = ByteBuffer.allocateDirect(50);
         byte val = (byte) 0x01;
         for (int i=0; i < 8;++i) {
             bb.put((byte) ~val);
