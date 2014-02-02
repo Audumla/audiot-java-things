@@ -209,11 +209,13 @@ public class RPPIActivatorTest {
         byte val = (byte) 0x01;
         for (int i=0; i < 8;++i) {
             bb.put((byte) ~val);
-            d.setAttribute(bb, new SleepAttr(50 * (i+1)));
+            d.setAttribute(bb, new SleepAttr(10 * (i+1)));
             val = (byte) (val << 1);
         }
         bb.put((byte) 0xff);
         bb.mark();
+        bb.position(0);
+        bb.reset();
         for (int i = 0; i < 10; ++i) {
             d.write(bb);
         }
