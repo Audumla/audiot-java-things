@@ -40,12 +40,55 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
         }
     }
 
-    private class ChannelContext {
-        ChannelAddressAttr busAddress;
-        DeviceAddressAttr deviceAddress;
-        DeviceRegisterAttr deviceRegister;
-        Integer busHandle;
+    protected static class ChannelContext {
+        protected ChannelAddressAttr busAddress;
+        protected DeviceAddressAttr deviceAddress;
+        protected DeviceRegisterAttr deviceRegister;
+        protected Integer busHandle;
+
+        public ChannelAddressAttr getBusAddress() {
+            return busAddress;
+        }
+
+        public void setBusAddress(ChannelAddressAttr busAddress) {
+            this.busAddress = busAddress;
+        }
+
+        public DeviceAddressAttr getDeviceAddress() {
+            return deviceAddress;
+        }
+
+        public void setDeviceAddress(DeviceAddressAttr deviceAddress) {
+            this.deviceAddress = deviceAddress;
+        }
+
+        public DeviceRegisterAttr getDeviceRegister() {
+            return deviceRegister;
+        }
+
+        public void setDeviceRegister(DeviceRegisterAttr deviceRegister) {
+            this.deviceRegister = deviceRegister;
+        }
+
+        public Integer getBusHandle() {
+            return busHandle;
+        }
+
+        public void setBusHandle(Integer busHandle) {
+            this.busHandle = busHandle;
+        }
+
+        final protected ChannelContext clone() {
+            ChannelContext cc = new ChannelContext();
+            cc.setBusAddress(getBusAddress());
+            cc.setBusHandle(getBusHandle());
+            cc.setDeviceAddress(getDeviceAddress());
+            cc.setDeviceRegister(getDeviceRegister());
+            return cc;
+        }
     }
+
+    protected ChannelContext defaultContext = new ChannelContext();
 
     public RPiI2CChannel() {
     }
@@ -62,8 +105,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
     public int write(ByteBuffer src) throws IOException {
         int bytesWritten = 0;
         src.position(0);
-        ChannelContext ctxt = new ChannelContext();
-
+        ChannelContext ctxt = defaultContext.clone();
 //        bufferAttributes.put(src.limit(),new PositionAttribute());
 //        for (int nextPosition : bufferAttributes.keySet()) {
         Set<Integer> ks = bufferAttributes.keySet();
@@ -122,9 +164,8 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
     }
 
     @Override
-    public void write(byte b) throws IOException {
+    public int write(byte b) throws IOException {
         ChannelContext ctxt = new ChannelContext();
-        ctxt = applyAttributes(ctxt, bufferAttributes.get(0).getAttributeReferences());
         if (ctxt.busHandle != null) {
             if (ctxt.deviceAddress != null) {
                 if (ctxt.deviceRegister == null) {
@@ -132,8 +173,10 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
                 } else {
                     I2C.i2cWriteByte(ctxt.busHandle, ctxt.deviceAddress.getAddress(), ctxt.deviceRegister.getRegister(), b);
                 }
+                return 1;
             }
         }
+        return 0;
     }
 
     @Override
@@ -170,5 +213,14 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
     @Override
     public int read(ByteBuffer dst) throws IOException {
         return 0;
+    }
+
+    @Override
+    protected void addDefaultAttribute(Attribute... attr) {
+        try {
+            applyAttributes(defaultContext,Arrays.asList(attr));
+        } catch (IOException e) {
+            logger.warn("Unable to set attribute on I2C Channel",e);
+        }
     }
 }

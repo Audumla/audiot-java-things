@@ -85,6 +85,6 @@ public interface DeviceChannel extends ByteChannel {
      * Writes a single byte using only the primary attributes associated with this channel
      * @param b the byte to be written
      */
-    void write(byte b) throws IOException;
+    int write(byte b) throws IOException;
 
 }

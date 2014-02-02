@@ -4,6 +4,7 @@ import net.audumla.devices.io.channel.ChannelAddressAttr;
 import net.audumla.devices.io.channel.DeviceAddressAttr;
 import net.audumla.devices.io.channel.DeviceChannel;
 import net.audumla.devices.io.channel.DeviceRegisterAttr;
+import net.audumla.devices.io.channel.gpio.MCP2308DeviceChannel;
 import net.audumla.devices.io.channel.i2c.RPiI2CChannel;
 import net.audumla.devices.lcd.LCD;
 import org.apache.log4j.Logger;
@@ -69,10 +70,13 @@ public class RPII2CLCD implements net.audumla.devices.lcd.LCD {
     protected final static int[] LCD_DATA_4BITPIN = {LCD_D7_PIN, LCD_D6_PIN, LCD_D5_PIN, LCD_D4_PIN, LCD_D7_PIN, LCD_D6_PIN, LCD_D5_PIN, LCD_D4_PIN};
     private final String name;
 
-    protected PortExtender ext;
     protected byte backlightStatus;
     private byte displayControl;
     private byte displayMode;
+
+    protected DeviceChannel commandDevice;
+    protected DeviceChannel writeDevice;
+
 
     private static Map<Integer, net.audumla.devices.lcd.LCD> instances = new HashMap<Integer, net.audumla.devices.lcd.LCD>();
     public static Logger logger = Logger.getLogger(RPII2CLCD.class);
@@ -87,7 +91,8 @@ public class RPII2CLCD implements net.audumla.devices.lcd.LCD {
 
     private RPII2CLCD(String name, int address) {
         this.name = name;
-        ext = new PortExtender(address);
+        commandDevice = new RPiI2CChannel().createChannel(new ChannelAddressAttr(1), new DeviceAddressAttr(address));
+        writeDevice = commandDevice.createChannel(new DeviceRegisterAttr(MCP2308DeviceChannel.MCP23008_GPIO));
         backlightStatus = LCD_BACKLIGHT;
     }
 
@@ -97,7 +102,7 @@ public class RPII2CLCD implements net.audumla.devices.lcd.LCD {
             synchronized (Thread.currentThread()) {
                 // this will get the RPII2CLCD into the write state to start sending commands
                 Thread.sleep(50, 0);
-                ext.commandWrite(PortExtender.MCP23008_IODIR, (byte) 0x00); // all pins to outputs
+                commandDevice.createChannel(new DeviceRegisterAttr(MCP2308DeviceChannel.MCP23008_IODIR)).write((byte) 0x00); // all pins to outputs
                 command4bits((byte) (LCD_D4_PIN | LCD_D5_PIN));
                 Thread.sleep(5, 0);
                 command4bits((byte) (LCD_D4_PIN | LCD_D5_PIN));
@@ -140,11 +145,11 @@ public class RPII2CLCD implements net.audumla.devices.lcd.LCD {
 
     protected void send(byte value, byte mode) throws Exception {
         synchronized (Thread.currentThread()) {
-            ext.digitalWrite(backlightStatus);
-            ext.digitalWrite((byte) (value | backlightStatus | mode));
-            ext.digitalWrite((byte) (value | backlightStatus | mode | LCD_ENABLE_PIN));
+            writeDevice.write(backlightStatus);
+            writeDevice.write((byte) (value | backlightStatus | mode));
+            writeDevice.write((byte) (value | backlightStatus | mode | LCD_ENABLE_PIN));
             Thread.sleep(0, 500);
-            ext.digitalWrite((byte) (value | backlightStatus | mode));
+            writeDevice.write((byte) (value | backlightStatus | mode));
             Thread.sleep(0, 50000);
         }
     }
@@ -287,13 +292,13 @@ public class RPII2CLCD implements net.audumla.devices.lcd.LCD {
     @Override
     public void enableBacklight() throws IOException {
         backlightStatus = LCD_BACKLIGHT;
-        ext.digitalWrite(backlightStatus);
+        writeDevice.write(backlightStatus);
     }
 
     @Override
     public void disableBacklight() throws IOException {
         backlightStatus = 0x00;
-        ext.digitalWrite(backlightStatus);
+        writeDevice.write(backlightStatus);
     }
 
 //    @Override
@@ -301,40 +306,40 @@ public class RPII2CLCD implements net.audumla.devices.lcd.LCD {
 //        event.execute(this);
 //    }
 
-    protected static class PortExtender {
-
-        // registers
-        public static final int MCP23008_IODIR = 0x00;
-        public static final int MCP23008_IPOL = 0x01;
-        public static final int MCP23008_GPINTEN = 0x02;
-        public static final int MCP23008_DEFVAL = 0x03;
-        public static final int MCP23008_INTCON = 0x04;
-        public static final int MCP23008_IOCON = 0x05;
-        public static final int MCP23008_GPPU = 0x06;
-        public static final int MCP23008_INTF = 0x07;
-        public static final int MCP23008_INTCAP = 0x08;
-        public static final int MCP23008_GPIO = 0x09;
-        public static final int MCP23008_OLAT = 0x0A;
-
-        public static final String DESCRIPTION = "MCP23008 GPIO Provider";
-        private DeviceChannel commandDevice;
-        private DeviceChannel writeDevice;
-        private int address;
-
-        public PortExtender(int address) {
-            commandDevice = new RPiI2CChannel().createChannel(new ChannelAddressAttr(1), new DeviceAddressAttr(address));
-            writeDevice = commandDevice.createChannel(new DeviceRegisterAttr(MCP23008_GPIO));
-        }
-
-        public void digitalWrite(byte d) throws IOException {
-            writeDevice.write(ByteBuffer.allocateDirect(1).put((byte) d));
-        }
-
-        public void commandWrite(int reg, byte d) throws IOException {
-            ByteBuffer b = ByteBuffer.allocateDirect(1);
-            commandDevice.setAttribute(b, new DeviceRegisterAttr(reg));
-            commandDevice.write(b.put((byte) d));
-        }
-
-    }
+//    protected static class PortExtender {
+//
+//        // registers
+//        public static final int MCP23008_IODIR = 0x00;
+//        public static final int MCP23008_IPOL = 0x01;
+//        public static final int MCP23008_GPINTEN = 0x02;
+//        public static final int MCP23008_DEFVAL = 0x03;
+//        public static final int MCP23008_INTCON = 0x04;
+//        public static final int MCP23008_IOCON = 0x05;
+//        public static final int MCP23008_GPPU = 0x06;
+//        public static final int MCP23008_INTF = 0x07;
+//        public static final int MCP23008_INTCAP = 0x08;
+//        public static final int MCP23008_GPIO = 0x09;
+//        public static final int MCP23008_OLAT = 0x0A;
+//
+//        public static final String DESCRIPTION = "MCP23008 GPIO Provider";
+//        private DeviceChannel commandDevice;
+//        private DeviceChannel writeDevice;
+//        private int address;
+//
+//        public PortExtender(int address) {
+//            commandDevice = new RPiI2CChannel().createChannel(new ChannelAddressAttr(1), new DeviceAddressAttr(address));
+//            writeDevice = commandDevice.createChannel(new DeviceRegisterAttr(MCP23008_GPIO));
+//        }
+//
+//        public void digitalWrite(byte d) throws IOException {
+//            writeDevice.write(ByteBuffer.allocateDirect(1).put((byte) d));
+//        }
+//
+//        public void commandWrite(int reg, byte d) throws IOException {
+//            ByteBuffer b = ByteBuffer.allocateDirect(1);
+//            commandDevice.setAttribute(b, new DeviceRegisterAttr(reg));
+//            commandDevice.write(b.put((byte) d));
+//        }
+//
+//    }
 }
