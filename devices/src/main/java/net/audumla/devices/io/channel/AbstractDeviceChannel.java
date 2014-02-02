@@ -85,7 +85,8 @@ public abstract class  AbstractDeviceChannel implements DeviceChannel {
         return buffer;
     }
 
-    protected void setAttribute(int pos, Attribute attr) {
+    @Override
+    public void setAttribute(int pos, Attribute attr) {
         PositionAttribute posAttr = bufferAttributes.get(pos);
         if (posAttr == null) {
             posAttr = attr instanceof PositionAttribute ? (PositionAttribute) attr : new PositionAttribute(pos, attr);
