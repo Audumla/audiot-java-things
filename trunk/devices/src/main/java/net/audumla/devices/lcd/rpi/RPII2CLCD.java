@@ -100,7 +100,7 @@ public class RPII2CLCD implements net.audumla.devices.lcd.LCD {
                 displayMode = LCD_ENTRYMODESET | LCD_ENTRYLEFT | LCD_ENTRYSHIFTDECREMENT;
                 // this will get the RPII2CLCD into the write state to start sending commands
 //                Thread.sleep(50, 0);
-                baseDeviceChannel.createChannel(new DeviceRegisterAttr(MCP2308DeviceChannel.MCP23008_IODIR)).write((byte) 0x00);
+//                baseDeviceChannel.createChannel(new DeviceRegisterAttr(MCP2308DeviceChannel.MCP23008_IODIR)).write((byte) 0x00);
 //                commandWrite(MCP2308DeviceChannel.MCP23008_IODIR, 0x00); // all pins to outputs
 
                 ByteBuffer bb = ByteBuffer.allocate(100);
@@ -123,20 +123,22 @@ public class RPII2CLCD implements net.audumla.devices.lcd.LCD {
                         (byte) (LCD_D4_PIN | LCD_D5_PIN | LCD_D6_PIN),
                         displayControl,
                         displayMode);
+                bb.flip();
+                initChannel.write(bb);
 
-                command4bits((byte) (LCD_D4_PIN | LCD_D5_PIN));
-                Thread.sleep(5, 0);
-                command4bits((byte) (LCD_D4_PIN | LCD_D5_PIN));
-                Thread.sleep(5, 0);
-                command4bits((byte) (LCD_D4_PIN | LCD_D5_PIN));
-                Thread.sleep(1, 0);
-                command4bits(LCD_D5_PIN); // set to 4 bit
-                command4bits(LCD_D5_PIN, (byte) (LCD_D6_PIN | LCD_D7_PIN)); // set lines and character mode
-                command4bits(LCD_NO_PIN, LCD_D7_PIN); // display off
-                command4bits(LCD_NO_PIN, LCD_D4_PIN); // display clear
-                command4bits(LCD_NO_PIN, (byte) (LCD_D4_PIN | LCD_D5_PIN | LCD_D6_PIN));
-
-                command(displayControl, displayMode);
+//                command4bits((byte) (LCD_D4_PIN | LCD_D5_PIN));
+//                Thread.sleep(5, 0);
+//                command4bits((byte) (LCD_D4_PIN | LCD_D5_PIN));
+//                Thread.sleep(5, 0);
+//                command4bits((byte) (LCD_D4_PIN | LCD_D5_PIN));
+//                Thread.sleep(1, 0);
+//                command4bits(LCD_D5_PIN); // set to 4 bit
+//                command4bits(LCD_D5_PIN, (byte) (LCD_D6_PIN | LCD_D7_PIN)); // set lines and character mode
+//                command4bits(LCD_NO_PIN, LCD_D7_PIN); // display off
+//                command4bits(LCD_NO_PIN, LCD_D4_PIN); // display clear
+//                command4bits(LCD_NO_PIN, (byte) (LCD_D4_PIN | LCD_D5_PIN | LCD_D6_PIN));
+//
+//                command(displayControl, displayMode);
                 // LCD_NO_PIN,0x1c, 0x00,0x18
             }
         } catch (Exception ex) {
