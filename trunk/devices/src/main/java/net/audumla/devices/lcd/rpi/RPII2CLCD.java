@@ -72,9 +72,10 @@ public class RPII2CLCD implements net.audumla.devices.lcd.LCD {
     private final String name;
     private final int address;
 
-    protected byte backlightStatus;
+    private byte backlightStatus;
     private byte displayControl;
     private byte displayMode;
+    private DeviceChannel baseDeviceChannel;
 
     private static Map<Integer, net.audumla.devices.lcd.LCD> instances = new HashMap<Integer, net.audumla.devices.lcd.LCD>();
     public static Logger logger = Logger.getLogger(RPII2CLCD.class);
@@ -90,6 +91,7 @@ public class RPII2CLCD implements net.audumla.devices.lcd.LCD {
     private RPII2CLCD(String name, int address) {
         this.name = name;
         this.address = address;
+//        baseDeviceChannel = new MCP2308DeviceChannel()
         backlightStatus = LCD_BACKLIGHT;
     }
 
