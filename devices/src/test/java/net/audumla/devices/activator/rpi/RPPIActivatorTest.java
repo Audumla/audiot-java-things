@@ -213,9 +213,7 @@ public class RPPIActivatorTest {
             val = (byte) (val << 1);
         }
         bb.put((byte) 0xff);
-        bb.mark();
-        bb.position(0);
-        bb.reset();
+        bb.flip();
         for (int i = 0; i < 10; ++i) {
             d.write(bb);
         }

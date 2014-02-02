@@ -112,15 +112,8 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
         Set<Integer> ks = bufferAttributes.keySet();
         Iterator<Integer> it = ks.iterator();
         for (int i = 0; i < ks.size() + 1; ++i) {
-            int currentPos =src.position();
-            int nextPosition;
-            try {
-                 nextPosition = it.hasNext() ? it.next() : src.reset().position();
-            }
-            catch (InvalidMarkException ex) {
-                logger.debug("No Mark using limit",ex);
-                nextPosition = src.limit();
-            }
+            int currentPos = src.position();
+            int nextPosition = it.hasNext() ? it.next() : src.limit();
             int runLength = nextPosition - currentPos;
             logger.debug("CurrentPos:"+currentPos+" NextPosition:"+nextPosition+" RunLength:"+runLength);
             if (runLength > 0) {
