@@ -53,6 +53,7 @@ public class SleepAttr implements DeviceChannel.Attribute {
     public void sleep() {
         synchronized (Thread.currentThread()) {
             try {
+                logger.debug("Sleeping for "+getMillis()+" millis "+getNanos()+" nanos");
                 Thread.sleep(getMillis(), getNanos());
             } catch (InterruptedException e) {
                 logger.warn("Unable to execute sleep attribute", e);

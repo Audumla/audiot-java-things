@@ -209,9 +209,10 @@ public class RPPIActivatorTest {
         byte val = (byte) 0x01;
         for (int i=0; i < 8;++i) {
             bb.put((byte) ~val);
-            d.setAttribute(bb, new SleepAttr(10 * (i + 8)));
+            d.setAttribute(bb, new SleepAttr(100 * (i *2)));
             val = (byte) (val << 1);
         }
+        bb.mark();
         bb.position(0);
         logger.debug("Capacity:"+bb.capacity()+" limit:"+bb.limit()+" remaining:"+bb.remaining()+" position:"+bb.position());
 //        bb.put((byte) 0xff);
@@ -224,7 +225,7 @@ public class RPPIActivatorTest {
 //        d.setAttribute(bb, new SleepAttr(200));
 //        bb.put((byte) 0xfb);
         for (int i = 0; i < 40; ++i) {
-            logger.debug("Writting buffer [" + i + "] " + Arrays.asList(bb.get(new byte[bb.position(0).limit()])));
+//            logger.debug("Writting buffer [" + i + "] " + Arrays.asList(bb.get(new byte[bb.position(0).limit()])));
             d.write(bb);
 
         }
