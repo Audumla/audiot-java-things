@@ -88,7 +88,7 @@ public class RPII2CLCD implements net.audumla.devices.lcd.LCD {
     private RPII2CLCD(String name, int address) {
         this.name = name;
         this.address = address;
-        baseDeviceChannel = new MCP2308DeviceChannel(new RPiI2CChannel().createChannel(new ChannelAddressAttr(1),new DeviceAddressAttr(address)));
+        baseDeviceChannel = new MCP2308DeviceChannel(new RPiI2CChannel().createChannel(new ChannelAddressAttr(1), new DeviceAddressAttr(address)));
         backlightStatus = LCD_BACKLIGHT;
     }
 
@@ -105,7 +105,7 @@ public class RPII2CLCD implements net.audumla.devices.lcd.LCD {
 
                 ByteBuffer bb = ByteBuffer.allocate(100);
                 DeviceChannel initChannel = baseDeviceChannel.createChannel();
-                initChannel.setAttribute(bb,new DeviceRegisterAttr(MCP2308DeviceChannel.MCP23008_IODIR));
+                initChannel.setAttribute(bb, new DeviceRegisterAttr(MCP2308DeviceChannel.MCP23008_IODIR));
                 bb.put((byte) 0x00);
                 initChannel.setAttribute(bb, new DeviceRegisterAttr(MCP2308DeviceChannel.MCP23008_GPIO));
                 putCommand(bb, initChannel, (byte) (LCD_D4_PIN | LCD_D5_PIN));
@@ -114,17 +114,15 @@ public class RPII2CLCD implements net.audumla.devices.lcd.LCD {
                 initChannel.setAttribute(bb, new SleepAttr(5));
                 putCommand(bb, initChannel, (byte) (LCD_D4_PIN | LCD_D5_PIN));
                 initChannel.setAttribute(bb, new SleepAttr(1));
-                putCommand(bb, initChannel, LCD_D5_PIN);
-                putCommand(bb, initChannel, LCD_D5_PIN);
-                putCommand(bb, initChannel, (byte) (LCD_D6_PIN | LCD_D7_PIN));
-                putCommand(bb, initChannel, LCD_NO_PIN);
-                putCommand(bb, initChannel, LCD_D7_PIN);
-                putCommand(bb, initChannel, LCD_NO_PIN);
-                putCommand(bb, initChannel, LCD_D4_PIN);
-                putCommand(bb, initChannel, LCD_NO_PIN);
-                putCommand(bb, initChannel, (byte) (LCD_D4_PIN | LCD_D5_PIN | LCD_D6_PIN));
-                putCommand4bits(bb, initChannel,displayControl);
-                putCommand4bits(bb, initChannel,displayMode);
+                putCommand(bb, initChannel, LCD_D5_PIN,
+                        LCD_D5_PIN,
+                        (byte) (LCD_D6_PIN | LCD_D7_PIN),
+                        LCD_NO_PIN, LCD_D7_PIN,
+                        LCD_NO_PIN, LCD_D4_PIN,
+                        LCD_NO_PIN,
+                        (byte) (LCD_D4_PIN | LCD_D5_PIN | LCD_D6_PIN),
+                        displayControl,
+                        displayMode);
 
                 command4bits((byte) (LCD_D4_PIN | LCD_D5_PIN));
                 Thread.sleep(5, 0);
@@ -164,27 +162,31 @@ public class RPII2CLCD implements net.audumla.devices.lcd.LCD {
         }
     }
 
-    protected void putCommand(ByteBuffer bb, DeviceChannel ch, byte value) throws Exception {
-        bb.put(backlightStatus).
-        put((byte) (value | backlightStatus)).
-        put((byte) (value | backlightStatus | LCD_ENABLE_PIN));
-        ch.setAttribute(bb, new SleepAttr(0, 500));
-        bb.put((byte) (value | backlightStatus));
-        ch.setAttribute(bb, new SleepAttr(0, 50000));
+    protected void putCommand(ByteBuffer bb, DeviceChannel ch, byte... values) throws Exception {
+        for (byte value : values) {
+            bb.put(backlightStatus).
+                    put((byte) (value | backlightStatus)).
+                    put((byte) (value | backlightStatus | LCD_ENABLE_PIN));
+            ch.setAttribute(bb, new SleepAttr(0, 500));
+            bb.put((byte) (value | backlightStatus));
+            ch.setAttribute(bb, new SleepAttr(0, 50000));
+        }
     }
 
-    protected void putCommand4bits(ByteBuffer bb, DeviceChannel ch, byte value) throws Exception {
-        byte bitx4 = 0;
-        for (int i = 0; i < LCD_DATA_4BITMASK.length; ++i) {
-            if ((LCD_DATA_4BITMASK[i] & value) > 0) {
-                bitx4 |= LCD_DATA_4BITPIN[i];
+    protected void putCommand4bits(ByteBuffer bb, DeviceChannel ch, byte... values) throws Exception {
+        for (byte value : values) {
+            byte bitx4 = 0;
+            for (int i = 0; i < LCD_DATA_4BITMASK.length; ++i) {
+                if ((LCD_DATA_4BITMASK[i] & value) > 0) {
+                    bitx4 |= LCD_DATA_4BITPIN[i];
+                }
+                if (i == 3) {
+                    putCommand(bb, ch, bitx4);
+                    bitx4 = 0;
+                }
             }
-            if (i == 3) {
-                putCommand(bb,ch, bitx4);
-                bitx4 = 0;
-            }
+            putCommand(bb, ch, bitx4);
         }
-        putCommand(bb,ch, bitx4);
     }
 
     protected void send(byte value, byte mode) throws Exception {
