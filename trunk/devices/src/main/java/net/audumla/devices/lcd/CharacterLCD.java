@@ -10,6 +10,7 @@ import java.io.IOException;
  * To change this template use File | Settings | File Templates.
  */
 public interface CharacterLCD {
+    void write(int row, int col, String s) throws Exception;
     void write(String s) throws Exception;
 
     void clear() throws Exception;
@@ -55,4 +56,6 @@ public interface CharacterLCD {
     void noBlink() throws Exception;
 
     boolean initialize();
+
+    void setDisplaySize(int rows, int cols);
 }

@@ -19,18 +19,18 @@ package net.audumla.devices.io.channel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SleepAttr implements DeviceChannel.Attribute {
-    private static final Logger logger = LoggerFactory.getLogger(SleepAttr.class);
+public class FixedWaitAttr implements WaitAttr {
+    private static final Logger logger = LoggerFactory.getLogger(FixedWaitAttr.class);
 
     protected long millis;
     protected int nanos;
 
-    public SleepAttr(long millis, int nanos) {
+    public FixedWaitAttr(long millis, int nanos) {
         this.millis = millis;
         this.nanos = nanos;
     }
 
-    public SleepAttr(long millis) {
+    public FixedWaitAttr(long millis) {
         this.millis = millis;
     }
 
@@ -50,6 +50,7 @@ public class SleepAttr implements DeviceChannel.Attribute {
         this.nanos = nanos;
     }
 
+    @Override
     public void sleep() {
         synchronized (Thread.currentThread()) {
             try {

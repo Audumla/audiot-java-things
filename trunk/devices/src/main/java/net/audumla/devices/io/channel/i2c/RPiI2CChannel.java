@@ -147,8 +147,8 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
     protected ChannelContext applyAttributes(ChannelContext ctxt, Collection<Attribute> attr) throws IOException {
         for (Attribute a : attr) {
 //            logger.debug(a.toString());
-            if (SleepAttr.class.isAssignableFrom(a.getClass())) {
-                ((SleepAttr) a).sleep();
+            if (FixedWaitAttr.class.isAssignableFrom(a.getClass())) {
+                ((WaitAttr) a).sleep();
                 continue;
             }
             if ((ctxt.busAddress = isAttribute(ChannelAddressAttr.class, a, ctxt.busAddress)) == a) {
@@ -163,7 +163,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
 
     @Override
     public boolean supportsAttribute(Class<? extends Attribute> attr) {
-        return DeviceAddressAttr.class.isAssignableFrom(attr) || DeviceRegisterAttr.class.isAssignableFrom(attr) || ChannelAddressAttr.class.isAssignableFrom(attr) || SleepAttr.class.isAssignableFrom(attr);
+        return DeviceAddressAttr.class.isAssignableFrom(attr) || DeviceRegisterAttr.class.isAssignableFrom(attr) || ChannelAddressAttr.class.isAssignableFrom(attr) || FixedWaitAttr.class.isAssignableFrom(attr);
     }
 
     @Override

@@ -22,10 +22,7 @@ import net.audumla.devices.activator.AggregateActivator;
 import net.audumla.devices.activator.factory.PCF8574GPIOActivatorFactory;
 import net.audumla.devices.activator.factory.RPIGPIOActivatorFactory;
 import net.audumla.devices.activator.factory.SainsSmartRelayActivatorFactory;
-import net.audumla.devices.io.channel.ChannelAddressAttr;
-import net.audumla.devices.io.channel.DeviceAddressAttr;
-import net.audumla.devices.io.channel.DeviceChannel;
-import net.audumla.devices.io.channel.SleepAttr;
+import net.audumla.devices.io.channel.*;
 import net.audumla.devices.io.channel.i2c.RPiI2CChannel;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -33,7 +30,6 @@ import org.slf4j.LoggerFactory;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Properties;
 
@@ -209,7 +205,7 @@ public class RPPIActivatorTest {
         byte val = (byte) 0x01;
         for (int i=0; i < 8;++i) {
             bb.put((byte) ~val);
-            d.setAttribute(bb, new SleepAttr(10 * (i+1)));
+            d.setAttribute(bb, new FixedWaitAttr(10 * (i+1)));
             val = (byte) (val << 1);
         }
         bb.put((byte) 0xff);

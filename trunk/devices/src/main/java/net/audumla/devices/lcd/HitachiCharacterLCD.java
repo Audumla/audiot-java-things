@@ -1,9 +1,8 @@
-package net.audumla.devices.lcd.rpi;
+package net.audumla.devices.lcd;
 
 import net.audumla.devices.io.channel.*;
 import net.audumla.devices.io.channel.gpio.MCP2308DeviceChannel;
 import net.audumla.devices.io.channel.i2c.RPiI2CChannel;
-import net.audumla.devices.lcd.CharacterLCD;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
@@ -11,7 +10,7 @@ import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RPII2CLCD implements CharacterLCD {
+public class HitachiCharacterLCD implements CharacterLCD {
     public static final byte DEFAULT_ADDRESS = 0x20;
 
     protected final static byte LCD_FUNCTIONSET_COMMAND = 0x20;
@@ -33,7 +32,9 @@ public class RPII2CLCD implements CharacterLCD {
 
     // commands
     protected final static byte LCD_CLEARDISPLAY_COMMAND = 0x01;
+
     protected final static byte LCD_RETURNHOME_COMMAND = 0x02;
+
     protected final static byte LCD_SETCGRAMADDR_COMMAND = 0x40;
     protected final static byte LCD_SETDDRAMADDR_COMMAND = (byte) 0x80;
 
@@ -61,12 +62,12 @@ public class RPII2CLCD implements CharacterLCD {
     protected final static byte LCD_D6_PIN = 0x08;
     protected final static byte LCD_D7_PIN = 0x04;
     protected final static byte LCD_NO_PIN = 0x00;
+    protected final static byte LCD_READWRITE = 0x01;
     // used to identify each active bit from an 8 bit character
     protected final static int[] LCD_DATA_4BITMASK = {0x80, 0x40, 0x20, 0x10, 0x8, 0x4, 0x2, 0x1};
     // maps matched bits to 4 bit pins
     protected final static int[] LCD_DATA_4BITPIN = {LCD_D7_PIN, LCD_D6_PIN, LCD_D5_PIN, LCD_D4_PIN, LCD_D7_PIN, LCD_D6_PIN, LCD_D5_PIN, LCD_D4_PIN};
     private final String name;
-    private final int address;
 
     private byte backlightStatus;
     private byte displayControl;
@@ -74,38 +75,39 @@ public class RPII2CLCD implements CharacterLCD {
     private DeviceChannel baseDeviceChannel;
 
     private static Map<Integer, CharacterLCD> instances = new HashMap<Integer, CharacterLCD>();
-    public static Logger logger = Logger.getLogger(RPII2CLCD.class);
+    public static Logger logger = Logger.getLogger(HitachiCharacterLCD.class);
+    private int columns = 20;
+    private int rows = 4;
 
     public static CharacterLCD instance(String name, int address) {
         CharacterLCD instance = instances.get(address);
         if (instance == null) {
-            instance = new RPII2CLCD(name, address);
+            instance = new HitachiCharacterLCD(name, address);
         }
         return instance;
     }
 
-    private RPII2CLCD(String name, int address) {
+    private HitachiCharacterLCD(String name, int address) {
         this.name = name;
-        this.address = address;
         baseDeviceChannel = new RPiI2CChannel().createChannel(new ChannelAddressAttr(1), new DeviceAddressAttr(address));
         backlightStatus = LCD_BACKLIGHT;
     }
 
     protected void reset(ByteBuffer bb,DeviceChannel ch) {
         bb.put((byte) 0xFF);
-        ch.setAttribute(bb,new SleepAttr(20));
+        ch.setAttribute(bb,new FixedWaitAttr(20));
         bb.put((byte) (LCD_D4_PIN | LCD_D5_PIN | LCD_ENABLE_PIN));
         bb.put((byte) (LCD_D4_PIN | LCD_D5_PIN));
-        ch.setAttribute(bb,new SleepAttr(5));
+        ch.setAttribute(bb,new FixedWaitAttr(5));
         bb.put((byte) (LCD_D4_PIN | LCD_D5_PIN| LCD_ENABLE_PIN));
         bb.put((byte) (LCD_D4_PIN | LCD_D5_PIN));
-        ch.setAttribute(bb, new SleepAttr(0,100));
+        ch.setAttribute(bb, new FixedWaitAttr(0,100));
         bb.put((byte) (LCD_D4_PIN | LCD_D5_PIN| LCD_ENABLE_PIN));
         bb.put((byte) (LCD_D4_PIN | LCD_D5_PIN));
-//        ch.setAttribute(bb, new SleepAttr(0,1));
+//        ch.setAttribute(bb, new WaitAttr(0,1));
         bb.put((byte) (LCD_D5_PIN | LCD_ENABLE_PIN));
         bb.put((byte) (LCD_D5_PIN ));
-//        ch.setAttribute(bb,new SleepAttr(1));
+//        ch.setAttribute(bb,new WaitAttr(1));
     }
 
     protected void init(ByteBuffer bb,DeviceChannel ch) throws Exception {
@@ -122,11 +124,8 @@ public class RPII2CLCD implements CharacterLCD {
         try {
             synchronized (Thread.currentThread()) {
                 displayControl = LCD_DISPLAYCONTROL_COMMAND | LCD_DISPLAYON | LCD_CURSOROFF | LCD_BLINKOFF;
-//                displayMode = LCD_ENTRYMODESET_COMMAND | LCD_ENTRYSHIFTLEFT | LCD_ENTRYSHIFTDECREMENT;
                 displayMode = LCD_ENTRYMODESET_COMMAND | LCD_ENTRYSHIFTINCREMENT | LCD_ENTRYSHIFTRIGHT;
-
                 //see http://www.adafruit.com/datasheets/HD44780.pdf page 46 for initialization of 4 bit interface
-
                 ByteBuffer bb = ByteBuffer.allocate(100);
                 DeviceChannel initChannel = baseDeviceChannel.createChannel(new DeviceRegisterAttr(MCP2308DeviceChannel.MCP23008_IODIR));
                 bb.put((byte) 0x00); // set MCP to output pins
@@ -136,42 +135,7 @@ public class RPII2CLCD implements CharacterLCD {
                 bb.flip();
                 initChannel.write(bb);
 
-//                bb.put((byte) (LCD_D4_PIN | LCD_D5_PIN));
-//                initChannel.setAttribute(bb, new SleepAttr(5));
-//                bb.put((byte) (LCD_D4_PIN | LCD_D5_PIN));
-//                initChannel.setAttribute(bb, new SleepAttr(0,200));
-//                bb.put((byte) (LCD_D4_PIN | LCD_D5_PIN));
-//                initChannel.setAttribute(bb, new SleepAttr(1));
-//                bb.put(LCD_D5_PIN);
-//                bb.put(LCD_D5_PIN);
-//                bb.put((byte) (LCD_D6_PIN | LCD_D7_PIN));        // pin 6 (0=5×8 dot character font;1=5×10 dot character font) pin 7 (0=1x40 chars;1=2x40 char) pin 4 (1=8bit;0=4bit)
-//                bb.put(LCD_NO_PIN);
-//                bb.put(LCD_D7_PIN);
-//                bb.put(LCD_NO_PIN);
-//                bb.put(LCD_D4_PIN);
-//                bb.put(LCD_NO_PIN);
-//                bb.put((byte) (LCD_D4_PIN | LCD_D5_PIN | LCD_D6_PIN));
-//                putCommand4bits(bb, initChannel, LCD_COMMAND,
-//                        displayControl,
-//                        displayMode);
-//                bb.flip();
-//                initChannel.write(bb);
 
-
-//                command4bits((byte) (LCD_D4_PIN | LCD_D5_PIN));
-//                Thread.sleep(5, 0);
-//                command4bits((byte) (LCD_D4_PIN | LCD_D5_PIN));
-//                Thread.sleep(5, 0);
-//                command4bits((byte) (LCD_D4_PIN | LCD_D5_PIN));
-//                Thread.sleep(1, 0);
-//                command4bits(LCD_D5_PIN); // set to 4 bit
-//                command4bits(LCD_D5_PIN, (byte) (LCD_D6_PIN | LCD_D7_PIN)); // set lines and character mode
-//                command4bits(LCD_NO_PIN, LCD_D7_PIN); // display off
-//                command4bits(LCD_NO_PIN, LCD_D4_PIN); // display clear
-//                command4bits(LCD_NO_PIN, (byte) (LCD_D4_PIN | LCD_D5_PIN | LCD_D6_PIN));
-//
-//                command(displayControl, displayMode);
-                // LCD_NO_PIN,0x1c, 0x00,0x18
             }
         } catch (Exception ex) {
             logger.error("Cannot initialize LCD [" + getName() + "]", ex);
@@ -180,21 +144,16 @@ public class RPII2CLCD implements CharacterLCD {
         return true;
     }
 
+    @Override
+    public void setDisplaySize(int rows, int cols) {
+        this.rows = rows;
+        this.columns = cols;
+    }
+
     private String getName() {
         return name;
     }
 
-//    protected void command4bits(byte... args) throws Exception {
-//        for (byte v : args) {
-//            send(v, LCD_COMMAND);
-//        }
-//    }
-
-//    protected void command(byte... args) throws Exception {
-//        for (byte b : args) {
-//            send4bits(b, LCD_COMMAND);
-//        }
-//    }
 
 
     protected void putCommand8bits(ByteBuffer bb, DeviceChannel ch, byte mode, byte... values) throws Exception {
@@ -202,9 +161,9 @@ public class RPII2CLCD implements CharacterLCD {
             bb.put(backlightStatus).
                     put((byte) (value | backlightStatus | mode)).
                     put((byte) (value | backlightStatus | LCD_ENABLE_PIN | mode));
-            ch.setAttribute(bb, new SleepAttr(0, 500));
+            ch.setAttribute(bb, new FixedWaitAttr(0, 500));
             bb.put((byte) (value | backlightStatus | mode));
-            ch.setAttribute(bb, new SleepAttr(0, 50000));
+            ch.setAttribute(bb, new FixedWaitAttr(0, 50000));
         }
     }
 
@@ -224,33 +183,6 @@ public class RPII2CLCD implements CharacterLCD {
         }
     }
 
-//    protected void send(byte value, byte mode) throws Exception {
-//        synchronized (Thread.currentThread()) {
-//            digitalWrite(backlightStatus);
-//            digitalWrite((value | backlightStatus | mode));
-//            digitalWrite((value | backlightStatus | mode | LCD_ENABLE_PIN));
-//            logger.debug("Pause 0:500");
-//            Thread.sleep(0, 500);
-//            digitalWrite((value | backlightStatus | mode));
-//            logger.debug("Pause 0:50000");
-//            Thread.sleep(0, 50000);
-//        }
-//    }
-
-//    protected void send4bits(byte value, byte mode) throws Exception {
-//        byte bitx4 = 0;
-//        for (int i = 0; i < LCD_DATA_4BITMASK.length; ++i) {
-//            if ((LCD_DATA_4BITMASK[i] & value) > 0) {
-//                bitx4 |= LCD_DATA_4BITPIN[i];
-//            }
-//            if (i == 3) {
-//                send(bitx4, mode);
-//                bitx4 = 0;
-//            }
-//        }
-//        send(bitx4, mode);
-//    }
-
     protected void commandByMode(byte mode, byte ... args) throws Exception {
         DeviceChannel wb = baseDeviceChannel.createChannel(new DeviceRegisterAttr(MCP2308DeviceChannel.MCP23008_GPIO));
         ByteBuffer bb = ByteBuffer.allocate(args.length*8);
@@ -265,15 +197,24 @@ public class RPII2CLCD implements CharacterLCD {
 
     protected void write(byte... args) throws Exception {
         commandByMode(LCD_CHARACTER_WRITE,args);
-//        for (byte v : args) {
-//            send4bits(v, LCD_CHARACTER_WRITE);
-//        }
     }
 
     @Override
     public void write(String s) throws Exception {
-        logger.debug("LCD Write - '"+s+"'");
         write(s.getBytes());
+    }
+
+    @Override
+    public void write(int row, int col, String s) throws Exception {
+        if (s.length() > columns) {
+            for (int i = 0; i < rows; ++i) {
+                setCursor(col,row+i);
+                write(s.substring(i*columns,(i+1)*columns-1).getBytes());
+            }
+        }
+        else {
+            write(s.getBytes());
+        }
     }
 
     @Override
@@ -289,8 +230,8 @@ public class RPII2CLCD implements CharacterLCD {
     @Override
     public void setCursor(int col, int row) throws Exception {
         int row_offsets[] = {0x00, 0x40, 0x14, 0x54};
-        if (row > 4) {
-            row = 3; // we count rows starting w/0
+        if (row >= rows) {
+            row = rows-1; // we count rows starting w/0
         }
 
         command((byte) (LCD_SETDDRAMADDR_COMMAND | (col + row_offsets[row])));
@@ -388,23 +329,12 @@ public class RPII2CLCD implements CharacterLCD {
     public void enableBacklight() throws IOException {
         backlightStatus = LCD_BACKLIGHT;
         baseDeviceChannel.createChannel(new DeviceRegisterAttr(MCP2308DeviceChannel.MCP23008_GPIO)).write(backlightStatus);
-//        digitalWrite(backlightStatus);
     }
 
     @Override
     public void disableBacklight() throws IOException {
         backlightStatus = 0x00;
         baseDeviceChannel.createChannel(new DeviceRegisterAttr(MCP2308DeviceChannel.MCP23008_GPIO)).write(backlightStatus);
-//        digitalWrite(backlightStatus);
     }
 
-//    public void digitalWrite(int d) throws IOException {
-//        logger.debug("Write GPIO "+(byte)d);
-//
-//        I2C.i2cWriteByte(RPiI2CChannel.getBusHandle(1), address, MCP2308DeviceChannel.MCP23008_GPIO, (byte) d);
-//    }
-
-//    public void commandWrite(int reg, int d) throws IOException {
-//        I2C.i2cWriteByte(RPiI2CChannel.getBusHandle(1), address, reg, (byte) d);
-//    }
 }
