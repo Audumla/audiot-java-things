@@ -35,4 +35,11 @@ public class DeviceRegisterAttr implements DeviceChannel.Attribute{
     public int getRegister() {
         return register;
     }
+
+    @Override
+    public String toString() {
+        return "DeviceRegister{" +
+                "register=" + register +
+                '}';
+    }
 }

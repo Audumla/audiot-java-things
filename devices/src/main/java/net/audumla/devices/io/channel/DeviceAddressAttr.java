@@ -35,4 +35,11 @@ public class DeviceAddressAttr implements DeviceChannel.Attribute{
     public int getAddress() {
         return address;
     }
+
+    @Override
+    public String toString() {
+        return "DeviceAddress{" +
+                "address=" + address +
+                '}';
+    }
 }
