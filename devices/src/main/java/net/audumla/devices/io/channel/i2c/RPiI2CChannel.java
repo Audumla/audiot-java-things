@@ -119,6 +119,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
             if (runLength > 0) {
                 byte[] run = new byte[runLength];
                 src.get(run, 0, runLength);
+                logger.debug("bus:"+ctxt.getBusAddress()+" Addr:"+ctxt.deviceAddress+ " Reg:"+ctxt.getDeviceRegister());
                 if (ctxt.busHandle != null) {
                     if (ctxt.deviceAddress != null) {
                         if (ctxt.deviceRegister == null) {
@@ -167,9 +168,10 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
 
     @Override
     public DeviceChannel createChannel(Attribute... attr) {
-        RPiI2CChannel dc = new RPiI2CChannel(attr);
+        RPiI2CChannel dc = new RPiI2CChannel();
         dc.bufferAttributes.putAll(bufferAttributes);
         dc.defaultContext = defaultContext;
+        dc.addDefaultAttribute(attr);
         return dc;
     }
 
