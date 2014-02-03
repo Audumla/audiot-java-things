@@ -207,12 +207,14 @@ public class HitachiCharacterLCD implements CharacterLCD {
     @Override
     public void write(int row, int col, String s) throws Exception {
         if (s.length() > columns) {
-            for (int i = 0; i < rows; ++i) {
+
+            for (int i = 0; i < Math.ceil((double)s.length()/(double)columns); ++i) {
                 setCursor(col,row+i);
-                write(s.substring(i*columns,(i+1)*columns-1).getBytes());
+                write(s.substring(i*columns,Math.min((i+1)*columns,s.length())).getBytes());
             }
         }
         else {
+            setCursor(col,row);
             write(s.getBytes());
         }
     }
