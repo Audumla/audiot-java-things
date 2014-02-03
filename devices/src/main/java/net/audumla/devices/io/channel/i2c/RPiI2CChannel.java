@@ -119,7 +119,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
             if (runLength > 0) {
                 byte[] run = new byte[runLength];
                 src.get(run, 0, runLength);
-                logger.debug(ctxt.getBusAddress()+" "+ctxt.deviceAddress+ " "+ctxt.getDeviceRegister());
+//                logger.debug(ctxt.getBusAddress()+" "+ctxt.deviceAddress+ " "+ctxt.getDeviceRegister());
                 if (ctxt.busHandle != null) {
                     if (ctxt.deviceAddress != null) {
                         if (ctxt.deviceRegister == null) {
