@@ -199,19 +199,17 @@ public class HitachiCharacterLCD implements CharacterLCD {
 
     @Override
     public void write(int row, int col, String s) throws Exception {
-        logger.debug("write: " + s);
+//        logger.debug("write: " + s);
         if (s.length() > columns) {
-              s = s.substring(0, Math.min(columns,s.length()));
-//            for (int i = 0; i < Math.ceil((double) s.length() / (double) (columns)); ++i) {
-//                setCursor(col, row + i);
-//                String ss = s.substring(i * (columns), Math.min((i + 1) * (columns), s.length()));
-//                logger.debug("Row:" + (row + i) + " col:" + col + " '" + ss + "'");
-//                write(ss.getBytes());
+            for (int i = 0; i < Math.ceil((double) s.length() / (double) (columns)); ++i) {
+                setCursor(col, row + i);
+                String ss = s.substring(i * (columns), Math.min((i + 1) * (columns), s.length()));
+                write(ss.getBytes());
             }
-//        } else {
+        } else {
             setCursor(col, row);
             write(s.getBytes());
-//        }
+        }
     }
 
     @Override
