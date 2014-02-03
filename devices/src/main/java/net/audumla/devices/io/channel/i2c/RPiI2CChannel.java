@@ -103,6 +103,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
 
     @Override
     public int write(ByteBuffer src) throws IOException {
+        logger.debug("RPiChannel write number of bytes - "+src.limit());
         int bytesWritten = 0;
         src.position(0);
         ChannelContext ctxt = defaultContext.clone();
