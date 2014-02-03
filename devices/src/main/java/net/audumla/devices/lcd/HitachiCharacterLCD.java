@@ -39,18 +39,16 @@ public class HitachiCharacterLCD implements CharacterLCD {
     protected final static byte LCD_SETDDRAMADDR_COMMAND = (byte) 0x80;
 
     // flags for display/cursor shift
-    protected final static byte LCD_CURSORDISPLAYSHIFT_COMMAND = 0x10;
-    protected final static byte LCD_SHIFTDISPLAY = 0x08;
-    protected final static byte LCD_SHIFTCURSOR = 0x00;
-    protected final static byte LCD_SHIFTRIGHT = 0x04;
-    protected final static byte LCD_SHIFTLEFT = 0x00;
+    protected final static byte LCD_CURSORDISPLAY_SHIFT_COMMAND = 0x10;
+    protected final static byte LCD_SHIFT_DISPLAY_RIGHT = 0x08 + 0x04;
+    protected final static byte LCD_SHIFT_DISPLAY_LEFT = 0x08;
+    protected final static byte LCD_SHIFT_CURSOR_LEFT = 0x00;
+    protected final static byte LCD_SHIFT_CURSOR_RIGHT = 0x04;
 
     // flags for display entry mode
     protected final static byte LCD_ENTRYMODESET_COMMAND = 0x04;
-    protected final static byte LCD_ENTRYSHIFTRIGHT = 0x00;
-    protected final static byte LCD_ENTRYSHIFTLEFT = 0x02;
-    protected final static byte LCD_ENTRYSHIFTINCREMENT = 0x01;
-    protected final static byte LCD_ENTRYSHIFTDECREMENT = 0x00;
+    protected final static byte LCD_ENTRYMODE_SHIFT_CURSOR = 0x02;
+    protected final static byte LCD_ENTRYMODE_SHIFT_DISPLAY = 0x01;
 
     // the I/O expander pinout
     protected final static byte LCD_CHARACTER_WRITE = (byte) 0x80;
@@ -111,10 +109,8 @@ public class HitachiCharacterLCD implements CharacterLCD {
     protected void init(ByteBuffer bb, DeviceChannel ch) throws Exception {
         putCommand4bits(bb, ch, LCD_COMMAND, (byte) (LCD_FUNCTIONSET_COMMAND | LCD_2LINE | LCD_5x10DOTS)); // set to 4 bit interface - 2 lines - 5x10 font
         putCommand4bits(bb, ch, LCD_COMMAND, (byte) (LCD_DISPLAYCONTROL_COMMAND | LCD_DISPLAYOFF)); // display off - no cursor - no blink
-        putCommand4bits(bb, ch, LCD_COMMAND, (byte) (LCD_RETURNHOME_COMMAND)); // display off - no cursor - no blink
+        putCommand4bits(bb, ch, LCD_COMMAND, (byte) (LCD_RETURNHOME_COMMAND));
         putCommand4bits(bb, ch, LCD_COMMAND, (byte) (LCD_CLEARDISPLAY_COMMAND)); // display clear
-        putCommand4bits(bb, ch, LCD_COMMAND, (byte) (LCD_DISPLAYCONTROL_COMMAND | LCD_DISPLAYON | LCD_CURSOROFF | LCD_BLINKOFF)); // display on - no cursor - no blink
-        putCommand4bits(bb, ch, LCD_COMMAND, (byte) (LCD_ENTRYMODESET_COMMAND | LCD_ENTRYSHIFTINCREMENT | LCD_ENTRYSHIFTRIGHT)); // display on - no cursor - no blink
     }
 
     @Override
@@ -122,7 +118,7 @@ public class HitachiCharacterLCD implements CharacterLCD {
         try {
             synchronized (Thread.currentThread()) {
                 displayControl = LCD_DISPLAYCONTROL_COMMAND | LCD_DISPLAYON | LCD_CURSOROFF | LCD_BLINKOFF;
-                displayMode = LCD_ENTRYMODESET_COMMAND | LCD_ENTRYSHIFTINCREMENT | LCD_ENTRYSHIFTRIGHT;
+                displayMode = LCD_ENTRYMODESET_COMMAND | LCD_ENTRYMODE_SHIFT_CURSOR ;
                 //see http://www.adafruit.com/datasheets/HD44780.pdf page 46 for initialization of 4 bit interface
                 ByteBuffer bb = ByteBuffer.allocate(100);
                 DeviceChannel initChannel = baseDeviceChannel.createChannel(new DeviceRegisterAttr(MCP2308DeviceChannel.MCP23008_IODIR));
@@ -130,6 +126,8 @@ public class HitachiCharacterLCD implements CharacterLCD {
                 initChannel.setAttribute(bb, new DeviceRegisterAttr(MCP2308DeviceChannel.MCP23008_GPIO));
                 reset(bb, initChannel);
                 init(bb, initChannel);
+                putCommand4bits(bb, initChannel, LCD_COMMAND, (byte) displayControl);
+                putCommand4bits(bb, initChannel, LCD_COMMAND, (byte) displayMode);
                 bb.flip();
                 initChannel.write(bb);
 
@@ -278,39 +276,39 @@ public class HitachiCharacterLCD implements CharacterLCD {
     // These commands scroll the display without changing the RAM
     @Override
     public void scrollDisplayLeft() throws Exception {
-        command((byte) (LCD_CURSORDISPLAYSHIFT_COMMAND | LCD_SHIFTDISPLAY | LCD_SHIFTLEFT));
+        command((byte) (LCD_CURSORDISPLAY_SHIFT_COMMAND | LCD_SHIFT_DISPLAY_LEFT));
     }
 
     @Override
     public void scrollDisplayRight() throws Exception {
-        command((byte) (LCD_CURSORDISPLAYSHIFT_COMMAND | LCD_SHIFTDISPLAY | LCD_SHIFTRIGHT));
+        command((byte) (LCD_CURSORDISPLAY_SHIFT_COMMAND | LCD_SHIFT_DISPLAY_RIGHT));
     }
 
     // This is for text that flows Left to Right
     @Override
     public void leftToRight() throws Exception {
-        displayMode |= LCD_ENTRYSHIFTLEFT;
+        displayMode |= LCD_ENTRYMODE_SHIFT_CURSOR;
         command(displayMode);
     }
 
     // This is for text that flows Right to Left
     @Override
     public void rightToLeft() throws Exception {
-        displayMode &= ~LCD_ENTRYSHIFTLEFT;
+        displayMode &= ~LCD_ENTRYMODE_SHIFT_CURSOR;
         command(displayMode);
     }
 
     // This will 'right justify' text from the cursor
     @Override
     public void autoscroll() throws Exception {
-        displayMode |= LCD_ENTRYSHIFTINCREMENT;
+        displayMode |= LCD_ENTRYMODE_SHIFT_DISPLAY;
         command(displayMode);
     }
 
     // This will 'left justify' text from the cursor
     @Override
     public void noAutoscroll() throws Exception {
-        displayMode &= ~LCD_ENTRYSHIFTINCREMENT;
+        displayMode &= ~LCD_ENTRYMODE_SHIFT_DISPLAY;
         command(displayMode);
     }
 
