@@ -159,19 +159,12 @@ public class RPII2CLCD implements net.audumla.devices.lcd.LCD {
 //        }
 //    }
 
-    protected void command(byte... args) throws Exception {
-        for (byte b : args) {
-            send4bits(b, LCD_COMMAND);
-        }
-    }
-
 //    protected void command(byte... args) throws Exception {
-//        DeviceChannel wb = baseDeviceChannel.createChannel(new DeviceRegisterAttr(MCP2308DeviceChannel.MCP23008_GPIO));
-//        ByteBuffer bb = ByteBuffer.allocate(args.length*5);
-//        putCommand4bits(bb,wb,LCD_COMMAND,args);
-//        bb.flip();
-//        wb.write(bb);
+//        for (byte b : args) {
+//            send4bits(b, LCD_COMMAND);
+//        }
 //    }
+
 
     protected void putCommand8bits(ByteBuffer bb, DeviceChannel ch, byte mode, byte... values) throws Exception {
         for (byte value : values) {
@@ -200,43 +193,50 @@ public class RPII2CLCD implements net.audumla.devices.lcd.LCD {
         }
     }
 
-    protected void send(byte value, byte mode) throws Exception {
-        synchronized (Thread.currentThread()) {
-            digitalWrite(backlightStatus);
-            digitalWrite((value | backlightStatus | mode));
-            digitalWrite((value | backlightStatus | mode | LCD_ENABLE_PIN));
-            logger.debug("Pause 0:500");
-            Thread.sleep(0, 500);
-            digitalWrite((value | backlightStatus | mode));
-            logger.debug("Pause 0:50000");
-            Thread.sleep(0, 50000);
-        }
+//    protected void send(byte value, byte mode) throws Exception {
+//        synchronized (Thread.currentThread()) {
+//            digitalWrite(backlightStatus);
+//            digitalWrite((value | backlightStatus | mode));
+//            digitalWrite((value | backlightStatus | mode | LCD_ENABLE_PIN));
+//            logger.debug("Pause 0:500");
+//            Thread.sleep(0, 500);
+//            digitalWrite((value | backlightStatus | mode));
+//            logger.debug("Pause 0:50000");
+//            Thread.sleep(0, 50000);
+//        }
+//    }
+
+//    protected void send4bits(byte value, byte mode) throws Exception {
+//        byte bitx4 = 0;
+//        for (int i = 0; i < LCD_DATA_4BITMASK.length; ++i) {
+//            if ((LCD_DATA_4BITMASK[i] & value) > 0) {
+//                bitx4 |= LCD_DATA_4BITPIN[i];
+//            }
+//            if (i == 3) {
+//                send(bitx4, mode);
+//                bitx4 = 0;
+//            }
+//        }
+//        send(bitx4, mode);
+//    }
+
+    protected void commandByMode(byte mode, byte ... args) throws Exception {
+        DeviceChannel wb = baseDeviceChannel.createChannel(new DeviceRegisterAttr(MCP2308DeviceChannel.MCP23008_GPIO));
+        ByteBuffer bb = ByteBuffer.allocate(args.length*8);
+        putCommand4bits(bb,wb,mode,args);
+        bb.flip();
+        wb.write(bb);
     }
 
-    protected void send4bits(byte value, byte mode) throws Exception {
-        byte bitx4 = 0;
-        for (int i = 0; i < LCD_DATA_4BITMASK.length; ++i) {
-            if ((LCD_DATA_4BITMASK[i] & value) > 0) {
-                bitx4 |= LCD_DATA_4BITPIN[i];
-            }
-            if (i == 3) {
-                send(bitx4, mode);
-                bitx4 = 0;
-            }
-        }
-        send(bitx4, mode);
+    protected void command(byte... args) throws Exception {
+        commandByMode(LCD_COMMAND,args);
     }
 
     protected void write(byte... args) throws Exception {
+        commandByMode(LCD_CHARACTER_WRITE,args);
 //        for (byte v : args) {
 //            send4bits(v, LCD_CHARACTER_WRITE);
 //        }
-        DeviceChannel wb = baseDeviceChannel.createChannel(new DeviceRegisterAttr(MCP2308DeviceChannel.MCP23008_GPIO));
-        ByteBuffer bb = ByteBuffer.allocate(args.length*8);
-        putCommand4bits(bb,wb,LCD_CHARACTER_WRITE,args);
-        bb.flip();
-        logger.debug("Write to "+wb);
-        wb.write(bb);
     }
 
     @Override
@@ -356,20 +356,22 @@ public class RPII2CLCD implements net.audumla.devices.lcd.LCD {
     @Override
     public void enableBacklight() throws IOException {
         backlightStatus = LCD_BACKLIGHT;
-        digitalWrite(backlightStatus);
+        baseDeviceChannel.createChannel(new DeviceRegisterAttr(MCP2308DeviceChannel.MCP23008_GPIO)).write(backlightStatus);
+//        digitalWrite(backlightStatus);
     }
 
     @Override
     public void disableBacklight() throws IOException {
         backlightStatus = 0x00;
-        digitalWrite(backlightStatus);
+        baseDeviceChannel.createChannel(new DeviceRegisterAttr(MCP2308DeviceChannel.MCP23008_GPIO)).write(backlightStatus);
+//        digitalWrite(backlightStatus);
     }
 
-    public void digitalWrite(int d) throws IOException {
-        logger.debug("Write GPIO "+(byte)d);
-
-        I2C.i2cWriteByte(RPiI2CChannel.getBusHandle(1), address, MCP2308DeviceChannel.MCP23008_GPIO, (byte) d);
-    }
+//    public void digitalWrite(int d) throws IOException {
+//        logger.debug("Write GPIO "+(byte)d);
+//
+//        I2C.i2cWriteByte(RPiI2CChannel.getBusHandle(1), address, MCP2308DeviceChannel.MCP23008_GPIO, (byte) d);
+//    }
 
 //    public void commandWrite(int reg, int d) throws IOException {
 //        I2C.i2cWriteByte(RPiI2CChannel.getBusHandle(1), address, reg, (byte) d);
