@@ -22,7 +22,7 @@ import akka.actor.Props;
 import akka.pattern.AskTimeoutException;
 import akka.pattern.Patterns;
 import net.audumla.akka.CMTargetCreator;
-import net.audumla.devices.lcd.LCD;
+import net.audumla.devices.lcd.CharacterLCD;
 import net.audumla.devices.lcd.akka.*;
 import net.audumla.devices.lcd.rpi.RPII2CLCD;
 import org.apache.log4j.Logger;
@@ -44,7 +44,7 @@ public class LCDJUnitListener extends RunListener {
 
     public LCDJUnitListener() {
         actorSystem = ActorSystem.create();
-        Props lcpProps = Props.create(new CMTargetCreator<LCD>(RPII2CLCD.instance("LCD JUnit Logger",RPII2CLCD.DEFAULT_ADDRESS))).withDispatcher("junit-dispatcher");
+        Props lcpProps = Props.create(new CMTargetCreator<CharacterLCD>(RPII2CLCD.instance("LCD JUnit Logger",RPII2CLCD.DEFAULT_ADDRESS))).withDispatcher("junit-dispatcher");
         target = actorSystem.actorOf(lcpProps, "lcd");
         target.tell(new LCDInitializeCommand(),null);
         logger.debug("Loaded JUnit LCD Listener");

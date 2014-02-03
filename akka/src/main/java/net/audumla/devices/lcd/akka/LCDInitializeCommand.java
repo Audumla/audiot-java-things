@@ -17,16 +17,16 @@ package net.audumla.devices.lcd.akka;
  */
 
 import net.audumla.akka.CommandEvent;
-import net.audumla.devices.lcd.LCD;
+import net.audumla.devices.lcd.CharacterLCD;
 
-public class LCDInitializeCommand implements CommandEvent<LCD> {
+public class LCDInitializeCommand implements CommandEvent<CharacterLCD> {
 
     public LCDInitializeCommand() {
 
     }
 
     @Override
-    public boolean execute(LCD lcd) {
+    public boolean execute(CharacterLCD lcd) {
         lcd.initialize();
         return true;
     }

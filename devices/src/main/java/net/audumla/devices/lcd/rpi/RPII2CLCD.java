@@ -3,7 +3,7 @@ package net.audumla.devices.lcd.rpi;
 import net.audumla.devices.io.channel.*;
 import net.audumla.devices.io.channel.gpio.MCP2308DeviceChannel;
 import net.audumla.devices.io.channel.i2c.RPiI2CChannel;
-import net.audumla.devices.lcd.LCD;
+import net.audumla.devices.lcd.CharacterLCD;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
@@ -11,7 +11,7 @@ import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RPII2CLCD implements net.audumla.devices.lcd.LCD {
+public class RPII2CLCD implements CharacterLCD {
     public static final byte DEFAULT_ADDRESS = 0x20;
 
     protected final static byte LCD_FUNCTIONSET_COMMAND = 0x20;
@@ -73,11 +73,11 @@ public class RPII2CLCD implements net.audumla.devices.lcd.LCD {
     private byte displayMode;
     private DeviceChannel baseDeviceChannel;
 
-    private static Map<Integer, net.audumla.devices.lcd.LCD> instances = new HashMap<Integer, net.audumla.devices.lcd.LCD>();
+    private static Map<Integer, CharacterLCD> instances = new HashMap<Integer, CharacterLCD>();
     public static Logger logger = Logger.getLogger(RPII2CLCD.class);
 
-    public static LCD instance(String name, int address) {
-        LCD instance = instances.get(address);
+    public static CharacterLCD instance(String name, int address) {
+        CharacterLCD instance = instances.get(address);
         if (instance == null) {
             instance = new RPII2CLCD(name, address);
         }
@@ -96,16 +96,16 @@ public class RPII2CLCD implements net.audumla.devices.lcd.LCD {
         ch.setAttribute(bb,new SleepAttr(20));
         bb.put((byte) (LCD_D4_PIN | LCD_D5_PIN | LCD_ENABLE_PIN));
         bb.put((byte) (LCD_D4_PIN | LCD_D5_PIN));
-        ch.setAttribute(bb,new SleepAttr(10));
+        ch.setAttribute(bb,new SleepAttr(5));
         bb.put((byte) (LCD_D4_PIN | LCD_D5_PIN| LCD_ENABLE_PIN));
         bb.put((byte) (LCD_D4_PIN | LCD_D5_PIN));
-        ch.setAttribute(bb, new SleepAttr(1));
+        ch.setAttribute(bb, new SleepAttr(0,100));
         bb.put((byte) (LCD_D4_PIN | LCD_D5_PIN| LCD_ENABLE_PIN));
         bb.put((byte) (LCD_D4_PIN | LCD_D5_PIN));
-        ch.setAttribute(bb, new SleepAttr(1));
+//        ch.setAttribute(bb, new SleepAttr(0,1));
         bb.put((byte) (LCD_D5_PIN | LCD_ENABLE_PIN));
         bb.put((byte) (LCD_D5_PIN ));
-        ch.setAttribute(bb,new SleepAttr(1));
+//        ch.setAttribute(bb,new SleepAttr(1));
     }
 
     protected void init(ByteBuffer bb,DeviceChannel ch) throws Exception {

@@ -17,11 +17,11 @@ package net.audumla.devices.lcd.akka;
  */
 
 import net.audumla.akka.CommandEvent;
-import net.audumla.devices.lcd.LCD;
+import net.audumla.devices.lcd.CharacterLCD;
 
 import java.io.IOException;
 
-public class LCDSetBacklightCommand implements CommandEvent<LCD> {
+public class LCDSetBacklightCommand implements CommandEvent<CharacterLCD> {
 
     protected boolean backlight;
 
@@ -42,7 +42,7 @@ public class LCDSetBacklightCommand implements CommandEvent<LCD> {
     }
 
     @Override
-    public boolean execute(LCD lcd) throws IOException {
+    public boolean execute(CharacterLCD lcd) throws IOException {
         if (backlight)
             lcd.enableBacklight();
         else

@@ -17,9 +17,9 @@ package net.audumla.devices.lcd.akka;
  */
 
 import net.audumla.akka.CommandEvent;
-import net.audumla.devices.lcd.LCD;
+import net.audumla.devices.lcd.CharacterLCD;
 
-public class LCDSetCursorCommand implements CommandEvent<LCD> {
+public class LCDSetCursorCommand implements CommandEvent<CharacterLCD> {
 
     protected int col;
     protected int row;
@@ -49,7 +49,7 @@ public class LCDSetCursorCommand implements CommandEvent<LCD> {
     }
 
     @Override
-    public boolean execute(LCD lcd) throws Exception {
+    public boolean execute(CharacterLCD lcd) throws Exception {
         lcd.setCursor(col, row);
         return true;
     }

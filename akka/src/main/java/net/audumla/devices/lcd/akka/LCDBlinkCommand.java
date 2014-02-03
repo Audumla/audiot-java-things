@@ -17,9 +17,9 @@ package net.audumla.devices.lcd.akka;
  */
 
 import net.audumla.akka.CommandEvent;
-import net.audumla.devices.lcd.LCD;
+import net.audumla.devices.lcd.CharacterLCD;
 
-public class LCDBlinkCommand implements CommandEvent<LCD> {
+public class LCDBlinkCommand implements CommandEvent<CharacterLCD> {
 
     protected boolean blink;
 
@@ -39,7 +39,7 @@ public class LCDBlinkCommand implements CommandEvent<LCD> {
     }
 
     @Override
-    public boolean execute(LCD lcd) throws Exception {
+    public boolean execute(CharacterLCD lcd) throws Exception {
         if (blink)
             lcd.blink();
         else
