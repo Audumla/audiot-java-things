@@ -126,6 +126,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
                             }
                         } else {
                             for (byte b : run) {
+                                logger.debug("Write GPIO "+b);
                                 I2C.i2cWriteByte(ctxt.busHandle, ctxt.deviceAddress.getAddress(), ctxt.deviceRegister.getRegister(), b);
                             }
                         }
