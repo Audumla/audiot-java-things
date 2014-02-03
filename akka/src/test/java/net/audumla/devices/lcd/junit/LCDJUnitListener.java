@@ -52,19 +52,19 @@ public class LCDJUnitListener extends RunListener {
 
     protected void displayTestStatus(String desc, String status) {
         target.tell(new LCDClearCommand(), null);
-        target.tell(new LCDPositionedWriteCommand(0,0,desc), null);
-        target.tell(new LCDPositionedWriteCommand(0,2,status), null);
+        target.tell(new LCDPositionedWriteCommand(0,0,status), null);
+        target.tell(new LCDPositionedWriteCommand(0,1,desc), null);
         target.tell(new LCDPauseCommand(), null);
     }
 
     @Override
     public void testFinished(Description description) throws Exception {
-        displayTestStatus("Test: " + description.getMethodName(), "Completed");
+        displayTestStatus("Test: " + description.getMethodName(), "Test Completed");
     }
 
     @Override
     public void testFailure(Failure failure) throws Exception {
-        displayTestStatus("Test: " + failure.getDescription().getMethodName(), "Failed");
+        displayTestStatus("Test: " + failure.getDescription().getMethodName(), "Test Failed");
     }
 
     @Override
@@ -74,7 +74,7 @@ public class LCDJUnitListener extends RunListener {
 
     @Override
     public void testStarted(Description description) throws Exception {
-        displayTestStatus("Test: " + description.getMethodName(), "Started");
+        displayTestStatus("Test: " + description.getMethodName(), "Test Started");
     }
 
     @Override

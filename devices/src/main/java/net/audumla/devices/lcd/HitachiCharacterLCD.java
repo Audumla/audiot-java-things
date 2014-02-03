@@ -104,10 +104,8 @@ public class HitachiCharacterLCD implements CharacterLCD {
         ch.setAttribute(bb, new FixedWaitAttr(0,100));
         bb.put((byte) (LCD_D4_PIN | LCD_D5_PIN| LCD_ENABLE_PIN));
         bb.put((byte) (LCD_D4_PIN | LCD_D5_PIN));
-//        ch.setAttribute(bb, new WaitAttr(0,1));
         bb.put((byte) (LCD_D5_PIN | LCD_ENABLE_PIN));
         bb.put((byte) (LCD_D5_PIN ));
-//        ch.setAttribute(bb,new WaitAttr(1));
     }
 
     protected void init(ByteBuffer bb,DeviceChannel ch) throws Exception {
