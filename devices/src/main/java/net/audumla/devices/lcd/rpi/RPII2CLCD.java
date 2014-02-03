@@ -227,7 +227,7 @@ public class RPII2CLCD implements net.audumla.devices.lcd.LCD {
         send(bitx4, mode);
     }
 
-    protected void write(byte... args) throws Exception {
+    protected void write(byte... args) {
 //        for (byte v : args) {
 //            send4bits(v, LCD_CHARACTER_WRITE);
 //        }

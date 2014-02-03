@@ -44,6 +44,7 @@ public class CommandMessageTarget<T, M extends CommandEvent<T>> extends Abstract
                         logger.debug("["+self().path().name()+"] received command ["+c.getClass()+"]");
                         c.execute(reference);
                     } catch (Throwable throwable) {
+                        logger.debug("Unhandled Command",throwable);
                         unhandled(c);
                     }
                 }).
