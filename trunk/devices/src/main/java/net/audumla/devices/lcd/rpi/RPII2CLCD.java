@@ -241,6 +241,7 @@ public class RPII2CLCD implements net.audumla.devices.lcd.LCD {
 
     @Override
     public void write(String s) throws Exception {
+        logger.debug("LCD Write "+s);
         write(s.getBytes());
     }
 
