@@ -39,7 +39,7 @@ public class DeviceAddressAttr implements DeviceChannel.Attribute{
     @Override
     public String toString() {
         return "DeviceAddress{" +
-                "address=" + address +
+                "address=0x" + Integer.toHexString(address) +
                 '}';
     }
 }

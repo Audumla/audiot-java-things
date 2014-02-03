@@ -60,4 +60,12 @@ public class SleepAttr implements DeviceChannel.Attribute {
             }
         }
     }
+
+    @Override
+    public String toString() {
+        return "Sleep{" +
+                "millis=" + millis +
+                ", nanos=" + nanos +
+                '}';
+    }
 }

@@ -235,6 +235,7 @@ public class RPII2CLCD implements net.audumla.devices.lcd.LCD {
         ByteBuffer bb = ByteBuffer.allocate(args.length*4);
         putCommand4bits(bb,wb,LCD_CHARACTER_WRITE,args);
         bb.flip();
+        logger.debug("Write to "+wb);
         wb.write(bb);
     }
 

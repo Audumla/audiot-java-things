@@ -124,12 +124,12 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
                     if (ctxt.deviceAddress != null) {
                         if (ctxt.deviceRegister == null) {
                             for (byte b : run) {
-                                logger.debug("No Register Write GPIO "+b);
+                                logger.debug("No Register Write GPIO "+Integer.toBinaryString(b));
                                 I2C.i2cWriteByteDirect(ctxt.busHandle, ctxt.deviceAddress.getAddress(), b);
                             }
                         } else {
                             for (byte b : run) {
-                                logger.debug("0x"+Integer.toHexString(ctxt.getDeviceRegister().getRegister())+" Write GPIO "+b);
+                                logger.debug("0x"+Integer.toHexString(ctxt.getDeviceRegister().getRegister())+" Write GPIO "+Integer.toBinaryString(b));
                                 I2C.i2cWriteByte(ctxt.busHandle, ctxt.deviceAddress.getAddress(), ctxt.deviceRegister.getRegister(), b);
                             }
                         }
@@ -146,7 +146,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
 
     protected ChannelContext applyAttributes(ChannelContext ctxt, Collection<Attribute> attr) throws IOException {
         for (Attribute a : attr) {
-            logger.debug("Attr:"+a.getClass());
+            logger.debug(a.toString());
             if (SleepAttr.class.isAssignableFrom(a.getClass())) {
                 ((SleepAttr) a).sleep();
                 continue;
