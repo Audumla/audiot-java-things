@@ -16,7 +16,6 @@ package net.audumla.devices.io.channel.gpio;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import com.ftdichip.ftd2xx.Device;
 import net.audumla.devices.io.channel.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,7 +46,7 @@ public class MCP2308DeviceChannel extends AbstractDeviceChannel {
 
     @Override
     public boolean supportsAttribute(Class<? extends Attribute> attr) {
-        return DeviceRegisterAttr.class.isAssignableFrom(attr) || SleepAttr.class.isAssignableFrom(attr);
+        return DeviceRegisterAttr.class.isAssignableFrom(attr) || FixedWaitAttr.class.isAssignableFrom(attr);
     }
     @Override
     public DeviceChannel createChannel(Attribute... attr) {
