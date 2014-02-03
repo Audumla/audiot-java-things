@@ -103,7 +103,6 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
 
     @Override
     public int write(ByteBuffer src) throws IOException {
-        logger.debug("RPiChannel write number of bytes - "+src.limit());
         int bytesWritten = 0;
         src.position(0);
         ChannelContext ctxt = defaultContext.clone();
@@ -111,6 +110,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
 //        for (int nextPosition : bufferAttributes.keySet()) {
         Set<Integer> ks = bufferAttributes.keySet();
         Iterator<Integer> it = ks.iterator();
+        logger.debug("RPiChannel write number of bytes - "+src.limit()+" Attributes:"+ks.size());
         for (int i = 0; i < ks.size() + 1; ++i) {
             int currentPos = src.position();
             int nextPosition = it.hasNext() ? it.next() : src.limit();
@@ -145,6 +145,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
 
     protected ChannelContext applyAttributes(ChannelContext ctxt, Collection<Attribute> attr) throws IOException {
         for (Attribute a : attr) {
+            logger.debug("Attr:"+a.getClass());
             if (SleepAttr.class.isAssignableFrom(a.getClass())) {
                 ((SleepAttr) a).sleep();
                 continue;
