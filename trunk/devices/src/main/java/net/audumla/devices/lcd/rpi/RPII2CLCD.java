@@ -1,6 +1,5 @@
 package net.audumla.devices.lcd.rpi;
 
-import com.pi4j.jni.I2C;
 import net.audumla.devices.io.channel.*;
 import net.audumla.devices.io.channel.gpio.MCP2308DeviceChannel;
 import net.audumla.devices.io.channel.i2c.RPiI2CChannel;
@@ -15,6 +14,7 @@ import java.util.Map;
 public class RPII2CLCD implements net.audumla.devices.lcd.LCD {
     public static final byte DEFAULT_ADDRESS = 0x20;
 
+    protected final static byte LCD_FUNCTIONSET_COMMAND = 0x20;
     protected final static byte LCD_8BITMODE = 0x10;
     protected final static byte LCD_4BITMODE = 0x00;
     protected final static byte LCD_2LINE = 0x08;
@@ -23,6 +23,7 @@ public class RPII2CLCD implements net.audumla.devices.lcd.LCD {
     protected final static byte LCD_5x8DOTS = 0x00;
 
     // flags for display on/off control
+    protected final static byte LCD_DISPLAYCONTROL_COMMAND = 0x08;
     protected final static byte LCD_DISPLAYON = 0x04;
     protected final static byte LCD_DISPLAYOFF = 0x00;
     protected final static byte LCD_CURSORON = 0x02;
@@ -31,24 +32,22 @@ public class RPII2CLCD implements net.audumla.devices.lcd.LCD {
     protected final static byte LCD_BLINKOFF = 0x00;
 
     // commands
-    protected final static byte LCD_FUNCTIONSET = 0x20;
-    protected final static byte LCD_CLEARDISPLAY = 0x01;
-    protected final static byte LCD_RETURNHOME = 0x02;
-    protected final static byte LCD_ENTRYMODESET = 0x04;
-    protected final static byte LCD_DISPLAYCONTROL = 0x08;
-    protected final static byte LCD_CURSORSHIFT = 0x10;
-    protected final static byte LCD_SETCGRAMADDR = 0x40;
-    protected final static byte LCD_SETDDRAMADDR = (byte) 0x80;
+    protected final static byte LCD_CLEARDISPLAY_COMMAND = 0x01;
+    protected final static byte LCD_RETURNHOME_COMMAND = 0x02;
+    protected final static byte LCD_SETCGRAMADDR_COMMAND = 0x40;
+    protected final static byte LCD_SETDDRAMADDR_COMMAND = (byte) 0x80;
 
     // flags for display/cursor shift
-    protected final static byte LCD_DISPLAYMOVE = 0x08;
-    protected final static byte LCD_CURSORMOVE = 0x00;
-    protected final static byte LCD_MOVERIGHT = 0x04;
-    protected final static byte LCD_MOVELEFT = 0x00;
+    protected final static byte LCD_CURSORDISPLAYSHIFT_COMMAND = 0x10;
+    protected final static byte LCD_SHIFTDISPLAY = 0x08;
+    protected final static byte LCD_SHIFTCURSOR = 0x00;
+    protected final static byte LCD_SHIFTRIGHT = 0x04;
+    protected final static byte LCD_SHIFTLEFT = 0x00;
 
     // flags for display entry mode
-    protected final static byte LCD_ENTRYRIGHT = 0x00;
-    protected final static byte LCD_ENTRYLEFT = 0x02;
+    protected final static byte LCD_ENTRYMODESET_COMMAND = 0x04;
+    protected final static byte LCD_ENTRYSHIFTRIGHT = 0x00;
+    protected final static byte LCD_ENTRYSHIFTLEFT = 0x02;
     protected final static byte LCD_ENTRYSHIFTINCREMENT = 0x01;
     protected final static byte LCD_ENTRYSHIFTDECREMENT = 0x00;
 
@@ -92,40 +91,72 @@ public class RPII2CLCD implements net.audumla.devices.lcd.LCD {
         backlightStatus = LCD_BACKLIGHT;
     }
 
+    protected void reset(ByteBuffer bb,DeviceChannel ch) {
+        bb.put((byte) 0xFF);
+        ch.setAttribute(bb,new SleepAttr(20));
+        bb.put((byte) (LCD_D4_PIN | LCD_D5_PIN | LCD_ENABLE_PIN));
+        bb.put((byte) (LCD_D4_PIN | LCD_D5_PIN));
+        ch.setAttribute(bb,new SleepAttr(10));
+        bb.put((byte) (LCD_D4_PIN | LCD_D5_PIN| LCD_ENABLE_PIN));
+        bb.put((byte) (LCD_D4_PIN | LCD_D5_PIN));
+        ch.setAttribute(bb, new SleepAttr(1));
+        bb.put((byte) (LCD_D4_PIN | LCD_D5_PIN| LCD_ENABLE_PIN));
+        bb.put((byte) (LCD_D4_PIN | LCD_D5_PIN));
+        ch.setAttribute(bb, new SleepAttr(1));
+        bb.put((byte) (LCD_D5_PIN | LCD_ENABLE_PIN));
+        bb.put((byte) (LCD_D5_PIN ));
+        ch.setAttribute(bb,new SleepAttr(1));
+    }
+
+    protected void init(ByteBuffer bb,DeviceChannel ch) throws Exception {
+        putCommand4bits(bb,ch,LCD_COMMAND,(byte) (LCD_FUNCTIONSET_COMMAND | LCD_2LINE | LCD_5x10DOTS)); // set to 4 bit interface - 2 lines - 5x10 font
+        putCommand4bits(bb,ch,LCD_COMMAND,(byte) (LCD_DISPLAYCONTROL_COMMAND | LCD_DISPLAYOFF)); // display off - no cursor - no blink
+        putCommand4bits(bb,ch,LCD_COMMAND,(byte) (LCD_RETURNHOME_COMMAND)); // display off - no cursor - no blink
+        putCommand4bits(bb,ch,LCD_COMMAND,(byte) (LCD_CLEARDISPLAY_COMMAND)); // display clear
+        putCommand4bits(bb,ch,LCD_COMMAND,(byte) (LCD_DISPLAYCONTROL_COMMAND | LCD_DISPLAYON | LCD_CURSOROFF | LCD_BLINKOFF)); // display on - no cursor - no blink
+        putCommand4bits(bb,ch,LCD_COMMAND,(byte) (LCD_ENTRYMODESET_COMMAND| LCD_ENTRYSHIFTINCREMENT| LCD_ENTRYSHIFTRIGHT)); // display on - no cursor - no blink
+    }
+
     @Override
     public boolean initialize() {
         try {
             synchronized (Thread.currentThread()) {
-                displayControl = LCD_DISPLAYCONTROL | LCD_DISPLAYON | LCD_CURSOROFF | LCD_BLINKOFF;
-                displayMode = LCD_ENTRYMODESET | LCD_ENTRYLEFT | LCD_ENTRYSHIFTDECREMENT;
-                // this will get the RPII2CLCD into the write state to start sending commands
-//                Thread.sleep(50, 0);
-//                baseDeviceChannel.createChannel(new DeviceRegisterAttr(MCP2308DeviceChannel.MCP23008_IODIR)).write((byte) 0x00);
-//                commandWrite(MCP2308DeviceChannel.MCP23008_IODIR, 0x00); // all pins to outputs
+                displayControl = LCD_DISPLAYCONTROL_COMMAND | LCD_DISPLAYON | LCD_CURSOROFF | LCD_BLINKOFF;
+//                displayMode = LCD_ENTRYMODESET_COMMAND | LCD_ENTRYSHIFTLEFT | LCD_ENTRYSHIFTDECREMENT;
+                displayMode = LCD_ENTRYMODESET_COMMAND | LCD_ENTRYSHIFTINCREMENT | LCD_ENTRYSHIFTRIGHT;
+
+                //see http://www.adafruit.com/datasheets/HD44780.pdf page 46 for initialization of 4 bit interface
 
                 ByteBuffer bb = ByteBuffer.allocate(100);
                 DeviceChannel initChannel = baseDeviceChannel.createChannel(new DeviceRegisterAttr(MCP2308DeviceChannel.MCP23008_IODIR));
-                bb.put((byte) 0x00);
+                bb.put((byte) 0x00); // set MCP to output pins
                 initChannel.setAttribute(bb, new DeviceRegisterAttr(MCP2308DeviceChannel.MCP23008_GPIO));
-                putCommand8bits(bb, initChannel, LCD_COMMAND, (byte) (LCD_D4_PIN | LCD_D5_PIN));
-                initChannel.setAttribute(bb, new SleepAttr(5));
-                putCommand8bits(bb, initChannel, LCD_COMMAND, (byte) (LCD_D4_PIN | LCD_D5_PIN));
-                initChannel.setAttribute(bb, new SleepAttr(5));
-                putCommand8bits(bb, initChannel, LCD_COMMAND, (byte) (LCD_D4_PIN | LCD_D5_PIN));
-                initChannel.setAttribute(bb, new SleepAttr(1));
-                putCommand8bits(bb, initChannel, LCD_COMMAND,
-                        LCD_D5_PIN,
-                        LCD_D5_PIN,
-                        (byte) (LCD_D6_PIN | LCD_D7_PIN),
-                        LCD_NO_PIN, LCD_D7_PIN,
-                        LCD_NO_PIN, LCD_D4_PIN,
-                        LCD_NO_PIN,
-                        (byte) (LCD_D4_PIN | LCD_D5_PIN | LCD_D6_PIN));
-                putCommand4bits(bb, initChannel, LCD_COMMAND,
-                        displayControl,
-                        displayMode);
+                reset(bb, initChannel);
+                init(bb, initChannel);
                 bb.flip();
                 initChannel.write(bb);
+
+//                bb.put((byte) (LCD_D4_PIN | LCD_D5_PIN));
+//                initChannel.setAttribute(bb, new SleepAttr(5));
+//                bb.put((byte) (LCD_D4_PIN | LCD_D5_PIN));
+//                initChannel.setAttribute(bb, new SleepAttr(0,200));
+//                bb.put((byte) (LCD_D4_PIN | LCD_D5_PIN));
+//                initChannel.setAttribute(bb, new SleepAttr(1));
+//                bb.put(LCD_D5_PIN);
+//                bb.put(LCD_D5_PIN);
+//                bb.put((byte) (LCD_D6_PIN | LCD_D7_PIN));        // pin 6 (0=5×8 dot character font;1=5×10 dot character font) pin 7 (0=1x40 chars;1=2x40 char) pin 4 (1=8bit;0=4bit)
+//                bb.put(LCD_NO_PIN);
+//                bb.put(LCD_D7_PIN);
+//                bb.put(LCD_NO_PIN);
+//                bb.put(LCD_D4_PIN);
+//                bb.put(LCD_NO_PIN);
+//                bb.put((byte) (LCD_D4_PIN | LCD_D5_PIN | LCD_D6_PIN));
+//                putCommand4bits(bb, initChannel, LCD_COMMAND,
+//                        displayControl,
+//                        displayMode);
+//                bb.flip();
+//                initChannel.write(bb);
+
 
 //                command4bits((byte) (LCD_D4_PIN | LCD_D5_PIN));
 //                Thread.sleep(5, 0);
@@ -247,12 +278,12 @@ public class RPII2CLCD implements net.audumla.devices.lcd.LCD {
 
     @Override
     public void clear() throws Exception {
-        command(LCD_CLEARDISPLAY); // clear display, set cursor position to zero
+        command(LCD_CLEARDISPLAY_COMMAND); // clear display, set cursor position to zero
     }
 
     @Override
     public void home() throws Exception {
-        command(LCD_RETURNHOME); // set cursor position to zero
+        command(LCD_RETURNHOME_COMMAND); // set cursor position to zero
     }
 
     @Override
@@ -262,7 +293,7 @@ public class RPII2CLCD implements net.audumla.devices.lcd.LCD {
             row = 3; // we count rows starting w/0
         }
 
-        command((byte) (LCD_SETDDRAMADDR | (col + row_offsets[row])));
+        command((byte) (LCD_SETDDRAMADDR_COMMAND | (col + row_offsets[row])));
     }
 
     // Turn the display on/off (quickly)
@@ -307,25 +338,25 @@ public class RPII2CLCD implements net.audumla.devices.lcd.LCD {
     // These commands scroll the display without changing the RAM
     @Override
     public void scrollDisplayLeft() throws Exception {
-        command((byte) (LCD_CURSORSHIFT | LCD_DISPLAYMOVE | LCD_MOVELEFT));
+        command((byte) (LCD_CURSORDISPLAYSHIFT_COMMAND | LCD_SHIFTDISPLAY | LCD_SHIFTLEFT));
     }
 
     @Override
     public void scrollDisplayRight() throws Exception {
-        command((byte) (LCD_CURSORSHIFT | LCD_DISPLAYMOVE | LCD_MOVERIGHT));
+        command((byte) (LCD_CURSORDISPLAYSHIFT_COMMAND | LCD_SHIFTDISPLAY | LCD_SHIFTRIGHT));
     }
 
     // This is for text that flows Left to Right
     @Override
     public void leftToRight() throws Exception {
-        displayMode |= LCD_ENTRYLEFT;
+        displayMode |= LCD_ENTRYSHIFTLEFT;
         command(displayMode);
     }
 
     // This is for text that flows Right to Left
     @Override
     public void rightToLeft() throws Exception {
-        displayMode &= ~LCD_ENTRYLEFT;
+        displayMode &= ~LCD_ENTRYSHIFTLEFT;
         command(displayMode);
     }
 
@@ -347,7 +378,7 @@ public class RPII2CLCD implements net.audumla.devices.lcd.LCD {
     // with custom characters
     public void createChar(int location, byte charmap[]) throws Exception {
         location &= 0x7; // we only have 8 locations 0-7
-        command((byte) (LCD_SETCGRAMADDR | (location << 3)));
+        command((byte) (LCD_SETCGRAMADDR_COMMAND | (location << 3)));
         for (byte i = 0; i < 8; i++) {
             write(charmap[i]);
         }
