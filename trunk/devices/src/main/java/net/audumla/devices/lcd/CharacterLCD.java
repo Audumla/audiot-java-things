@@ -9,7 +9,7 @@ import java.io.IOException;
  * Time: 2:29 PM
  * To change this template use File | Settings | File Templates.
  */
-public interface LCD  {
+public interface CharacterLCD {
     void write(String s) throws Exception;
 
     void clear() throws Exception;

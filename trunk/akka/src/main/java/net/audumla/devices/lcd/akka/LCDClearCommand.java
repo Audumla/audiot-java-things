@@ -17,16 +17,16 @@ package net.audumla.devices.lcd.akka;
  */
 
 import net.audumla.akka.CommandEvent;
-import net.audumla.devices.lcd.LCD;
+import net.audumla.devices.lcd.CharacterLCD;
 
-public class LCDClearCommand implements CommandEvent<LCD> {
+public class LCDClearCommand implements CommandEvent<CharacterLCD> {
 
     public LCDClearCommand() {
 
     }
 
     @Override
-    public boolean execute(LCD lcd) throws Exception {
+    public boolean execute(CharacterLCD lcd) throws Exception {
         lcd.clear();
         return true;
     }

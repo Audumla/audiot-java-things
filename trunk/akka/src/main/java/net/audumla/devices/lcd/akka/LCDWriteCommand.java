@@ -17,9 +17,9 @@ package net.audumla.devices.lcd.akka;
  */
 
 import net.audumla.akka.CommandEvent;
-import net.audumla.devices.lcd.LCD;
+import net.audumla.devices.lcd.CharacterLCD;
 
-public class LCDWriteCommand implements CommandEvent<LCD> {
+public class LCDWriteCommand implements CommandEvent<CharacterLCD> {
     protected String value;
 
     public LCDWriteCommand(String v) {
@@ -38,7 +38,7 @@ public class LCDWriteCommand implements CommandEvent<LCD> {
     }
 
     @Override
-    public boolean execute(LCD lcd) throws Exception {
+    public boolean execute(CharacterLCD lcd) throws Exception {
         lcd.write(value);
         return true;
     }
