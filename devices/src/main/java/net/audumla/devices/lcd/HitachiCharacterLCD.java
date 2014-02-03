@@ -93,28 +93,28 @@ public class HitachiCharacterLCD implements CharacterLCD {
         backlightStatus = LCD_BACKLIGHT;
     }
 
-    protected void reset(ByteBuffer bb,DeviceChannel ch) {
+    protected void reset(ByteBuffer bb, DeviceChannel ch) {
         bb.put((byte) 0xFF);
-        ch.setAttribute(bb,new FixedWaitAttr(20));
+        ch.setAttribute(bb, new FixedWaitAttr(20));
         bb.put((byte) (LCD_D4_PIN | LCD_D5_PIN | LCD_ENABLE_PIN));
         bb.put((byte) (LCD_D4_PIN | LCD_D5_PIN));
-        ch.setAttribute(bb,new FixedWaitAttr(5));
-        bb.put((byte) (LCD_D4_PIN | LCD_D5_PIN| LCD_ENABLE_PIN));
+        ch.setAttribute(bb, new FixedWaitAttr(5));
+        bb.put((byte) (LCD_D4_PIN | LCD_D5_PIN | LCD_ENABLE_PIN));
         bb.put((byte) (LCD_D4_PIN | LCD_D5_PIN));
-        ch.setAttribute(bb, new FixedWaitAttr(0,100));
-        bb.put((byte) (LCD_D4_PIN | LCD_D5_PIN| LCD_ENABLE_PIN));
+        ch.setAttribute(bb, new FixedWaitAttr(0, 100));
+        bb.put((byte) (LCD_D4_PIN | LCD_D5_PIN | LCD_ENABLE_PIN));
         bb.put((byte) (LCD_D4_PIN | LCD_D5_PIN));
         bb.put((byte) (LCD_D5_PIN | LCD_ENABLE_PIN));
-        bb.put((byte) (LCD_D5_PIN ));
+        bb.put((byte) (LCD_D5_PIN));
     }
 
-    protected void init(ByteBuffer bb,DeviceChannel ch) throws Exception {
-        putCommand4bits(bb,ch,LCD_COMMAND,(byte) (LCD_FUNCTIONSET_COMMAND | LCD_2LINE | LCD_5x10DOTS)); // set to 4 bit interface - 2 lines - 5x10 font
-        putCommand4bits(bb,ch,LCD_COMMAND,(byte) (LCD_DISPLAYCONTROL_COMMAND | LCD_DISPLAYOFF)); // display off - no cursor - no blink
-        putCommand4bits(bb,ch,LCD_COMMAND,(byte) (LCD_RETURNHOME_COMMAND)); // display off - no cursor - no blink
-        putCommand4bits(bb,ch,LCD_COMMAND,(byte) (LCD_CLEARDISPLAY_COMMAND)); // display clear
-        putCommand4bits(bb,ch,LCD_COMMAND,(byte) (LCD_DISPLAYCONTROL_COMMAND | LCD_DISPLAYON | LCD_CURSOROFF | LCD_BLINKOFF)); // display on - no cursor - no blink
-        putCommand4bits(bb,ch,LCD_COMMAND,(byte) (LCD_ENTRYMODESET_COMMAND| LCD_ENTRYSHIFTINCREMENT| LCD_ENTRYSHIFTRIGHT)); // display on - no cursor - no blink
+    protected void init(ByteBuffer bb, DeviceChannel ch) throws Exception {
+        putCommand4bits(bb, ch, LCD_COMMAND, (byte) (LCD_FUNCTIONSET_COMMAND | LCD_2LINE | LCD_5x10DOTS)); // set to 4 bit interface - 2 lines - 5x10 font
+        putCommand4bits(bb, ch, LCD_COMMAND, (byte) (LCD_DISPLAYCONTROL_COMMAND | LCD_DISPLAYOFF)); // display off - no cursor - no blink
+        putCommand4bits(bb, ch, LCD_COMMAND, (byte) (LCD_RETURNHOME_COMMAND)); // display off - no cursor - no blink
+        putCommand4bits(bb, ch, LCD_COMMAND, (byte) (LCD_CLEARDISPLAY_COMMAND)); // display clear
+        putCommand4bits(bb, ch, LCD_COMMAND, (byte) (LCD_DISPLAYCONTROL_COMMAND | LCD_DISPLAYON | LCD_CURSOROFF | LCD_BLINKOFF)); // display on - no cursor - no blink
+        putCommand4bits(bb, ch, LCD_COMMAND, (byte) (LCD_ENTRYMODESET_COMMAND | LCD_ENTRYSHIFTINCREMENT | LCD_ENTRYSHIFTRIGHT)); // display on - no cursor - no blink
     }
 
     @Override
@@ -153,12 +153,9 @@ public class HitachiCharacterLCD implements CharacterLCD {
     }
 
 
-
     protected void putCommand8bits(ByteBuffer bb, DeviceChannel ch, byte mode, byte... values) throws Exception {
         for (byte value : values) {
-            bb.put(backlightStatus).
-                    put((byte) (value | backlightStatus | mode)).
-                    put((byte) (value | backlightStatus | LCD_ENABLE_PIN | mode));
+            bb.put((byte) (value | backlightStatus | LCD_ENABLE_PIN | mode)).put((byte) (value | backlightStatus | mode));
             ch.setAttribute(bb, new FixedWaitAttr(0, 500));
             bb.put((byte) (value | backlightStatus | mode));
             ch.setAttribute(bb, new FixedWaitAttr(0, 50000));
@@ -181,20 +178,20 @@ public class HitachiCharacterLCD implements CharacterLCD {
         }
     }
 
-    protected void commandByMode(byte mode, byte ... args) throws Exception {
+    protected void commandByMode(byte mode, byte... args) throws Exception {
         DeviceChannel wb = baseDeviceChannel.createChannel(new DeviceRegisterAttr(MCP2308DeviceChannel.MCP23008_GPIO));
-        ByteBuffer bb = ByteBuffer.allocate(args.length*8);
-        putCommand4bits(bb,wb,mode,args);
+        ByteBuffer bb = ByteBuffer.allocate(args.length * 8);
+        putCommand4bits(bb, wb, mode, args);
         bb.flip();
         wb.write(bb);
     }
 
     protected void command(byte... args) throws Exception {
-        commandByMode(LCD_COMMAND,args);
+        commandByMode(LCD_COMMAND, args);
     }
 
     protected void write(byte... args) throws Exception {
-        commandByMode(LCD_CHARACTER_WRITE,args);
+        commandByMode(LCD_CHARACTER_WRITE, args);
     }
 
     @Override
@@ -204,17 +201,16 @@ public class HitachiCharacterLCD implements CharacterLCD {
 
     @Override
     public void write(int row, int col, String s) throws Exception {
-        logger.debug("write: "+s);
-        if (s.length() > columns) {
-            for (int i = 0; i < Math.ceil((double)s.length()/(double)columns); ++i) {
+        logger.debug("write: " + s);
+        if (s.length() > columns-1) {
+            for (int i = 0; i < Math.ceil((double) s.length() / (double) (columns-1)); ++i) {
                 setCursor(col, row + i);
-                String ss = s.substring(i*columns,Math.min((i+1)*columns,s.length()));
-                        logger.debug("Row:"+(row+i)+" col:"+col+" '"+ss+"'");
+                String ss = s.substring(i * (columns-1), Math.min((i + 1) * (columns-1), s.length()));
+                logger.debug("Row:" + (row + i) + " col:" + col + " '" + ss + "'");
                 write(ss.getBytes());
             }
-        }
-        else {
-            setCursor(col,row);
+        } else {
+            setCursor(col, row);
             write(s.getBytes());
         }
     }
@@ -233,7 +229,7 @@ public class HitachiCharacterLCD implements CharacterLCD {
     public void setCursor(int col, int row) throws Exception {
         int row_offsets[] = {0x00, 0x40, 0x14, 0x54};
         if (row >= rows) {
-            row = rows-1; // we count rows starting w/0
+            row = rows - 1; // we count rows starting w/0
         }
 
         command((byte) (LCD_SETDDRAMADDR_COMMAND | (col + row_offsets[row])));
