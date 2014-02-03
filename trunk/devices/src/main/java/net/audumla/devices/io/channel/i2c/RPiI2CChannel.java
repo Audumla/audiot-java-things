@@ -115,7 +115,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
             int currentPos = src.position();
             int nextPosition = it.hasNext() ? it.next() : src.limit();
             int runLength = nextPosition - currentPos;
-//            logger.debug("CurrentPos:"+currentPos+" NextPosition:"+nextPosition+" RunLength:"+runLength);
+            logger.debug("CurrentPos:"+currentPos+" NextPosition:"+nextPosition+" RunLength:"+runLength);
             if (runLength > 0) {
                 byte[] run = new byte[runLength];
                 src.get(run, 0, runLength);
@@ -169,6 +169,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
     public DeviceChannel createChannel(Attribute... attr) {
         RPiI2CChannel dc = new RPiI2CChannel(attr);
         dc.bufferAttributes.putAll(bufferAttributes);
+        dc.defaultContext = defaultContext;
         return dc;
     }
 

@@ -88,7 +88,7 @@ public class RPII2CLCD implements net.audumla.devices.lcd.LCD {
     private RPII2CLCD(String name, int address) {
         this.name = name;
         this.address = address;
-        baseDeviceChannel = new MCP2308DeviceChannel(new RPiI2CChannel().createChannel(new ChannelAddressAttr(1), new DeviceAddressAttr(address)));
+        baseDeviceChannel = new RPiI2CChannel().createChannel(new ChannelAddressAttr(1), new DeviceAddressAttr(address));
         backlightStatus = LCD_BACKLIGHT;
     }
 
@@ -104,8 +104,7 @@ public class RPII2CLCD implements net.audumla.devices.lcd.LCD {
 //                commandWrite(MCP2308DeviceChannel.MCP23008_IODIR, 0x00); // all pins to outputs
 
                 ByteBuffer bb = ByteBuffer.allocate(100);
-                DeviceChannel initChannel = baseDeviceChannel.createChannel();
-                initChannel.setAttribute(bb, new DeviceRegisterAttr(MCP2308DeviceChannel.MCP23008_IODIR));
+                DeviceChannel initChannel = baseDeviceChannel.createChannel(new DeviceRegisterAttr(MCP2308DeviceChannel.MCP23008_IODIR));
                 bb.put((byte) 0x00);
                 initChannel.setAttribute(bb, new DeviceRegisterAttr(MCP2308DeviceChannel.MCP23008_GPIO));
                 putCommand8bits(bb, initChannel, LCD_COMMAND, (byte) (LCD_D4_PIN | LCD_D5_PIN));
