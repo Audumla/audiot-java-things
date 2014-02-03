@@ -232,7 +232,7 @@ public class RPII2CLCD implements net.audumla.devices.lcd.LCD {
 //            send4bits(v, LCD_CHARACTER_WRITE);
 //        }
         DeviceChannel wb = baseDeviceChannel.createChannel(new DeviceRegisterAttr(MCP2308DeviceChannel.MCP23008_GPIO));
-        ByteBuffer bb = ByteBuffer.allocate(args.length*4);
+        ByteBuffer bb = ByteBuffer.allocate(args.length*5);
         putCommand4bits(bb,wb,LCD_CHARACTER_WRITE,args);
         bb.flip();
         logger.debug("Write to "+wb);
@@ -241,7 +241,7 @@ public class RPII2CLCD implements net.audumla.devices.lcd.LCD {
 
     @Override
     public void write(String s) throws Exception {
-        logger.debug("LCD Write "+s);
+        logger.debug("LCD Write - '"+s+"'");
         write(s.getBytes());
     }
 
