@@ -206,8 +206,10 @@ public class RPII2CLCD implements net.audumla.devices.lcd.LCD {
             digitalWrite(backlightStatus);
             digitalWrite((value | backlightStatus | mode));
             digitalWrite((value | backlightStatus | mode | LCD_ENABLE_PIN));
+            logger.debug("Pause 0:500");
             Thread.sleep(0, 500);
             digitalWrite((value | backlightStatus | mode));
+            logger.debug("Pause 0:50000");
             Thread.sleep(0, 50000);
         }
     }
@@ -227,14 +229,14 @@ public class RPII2CLCD implements net.audumla.devices.lcd.LCD {
     }
 
     protected void write(byte... args) throws Exception {
-//        for (byte v : args) {
-//            send4bits(v, LCD_CHARACTER_WRITE);
-//        }
-        DeviceChannel wb = baseDeviceChannel.createChannel(new DeviceRegisterAttr(MCP2308DeviceChannel.MCP23008_GPIO));
-        ByteBuffer bb = ByteBuffer.allocate(args.length*4);
-        putCommand4bits(bb,wb,LCD_CHARACTER_WRITE,args);
-        bb.flip();
-        wb.write(bb);
+        for (byte v : args) {
+            send4bits(v, LCD_CHARACTER_WRITE);
+        }
+//        DeviceChannel wb = baseDeviceChannel.createChannel(new DeviceRegisterAttr(MCP2308DeviceChannel.MCP23008_GPIO));
+//        ByteBuffer bb = ByteBuffer.allocate(args.length*4);
+//        putCommand4bits(bb,wb,LCD_CHARACTER_WRITE,args);
+//        bb.flip();
+//        wb.write(bb);
     }
 
     @Override
@@ -363,6 +365,8 @@ public class RPII2CLCD implements net.audumla.devices.lcd.LCD {
     }
 
     public void digitalWrite(int d) throws IOException {
+        logger.debug("Write GPIO d");
+
         I2C.i2cWriteByte(RPiI2CChannel.getBusHandle(1), address, MCP2308DeviceChannel.MCP23008_GPIO, (byte) d);
     }
 
