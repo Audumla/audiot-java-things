@@ -365,7 +365,7 @@ public class RPII2CLCD implements net.audumla.devices.lcd.LCD {
     }
 
     public void digitalWrite(int d) throws IOException {
-        logger.debug("Write GPIO d");
+        logger.debug("Write GPIO "+(byte)d);
 
         I2C.i2cWriteByte(RPiI2CChannel.getBusHandle(1), address, MCP2308DeviceChannel.MCP23008_GPIO, (byte) d);
     }
