@@ -53,7 +53,7 @@ public class LCDJUnitListener extends RunListener {
     protected void displayTestStatus(String desc, String status) {
         target.tell(new LCDClearCommand(), null);
         target.tell(new LCDPositionedWriteCommand(0,0,status), null);
-//        target.tell(new LCDPositionedWriteCommand(0,1,desc), null);
+        target.tell(new LCDPositionedWriteCommand(0,1,desc), null);
         target.tell(new LCDPauseCommand(), null);
     }
 
