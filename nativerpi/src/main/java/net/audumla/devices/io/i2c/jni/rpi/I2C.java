@@ -39,160 +39,110 @@ public class I2C {
      * @param bus The bus number to open
      * @return file descriptor or i2c bus.
      */
-    public static native int open(int bus);
+    public static native int open(String bus,int deviceAddress);
 
     /**
      * Closes linux file.
      *
      * @param fd file descriptor
      */
-    public static native void close(int fd);
+    public static native int close(int fd);
 
     /**
      * Writes one byte to i2c. It uses ioctl to define device address and then writes one byte.
      *
      * @param fd            file descriptor of i2c bus
-     * @param deviceAddress device address
      * @param data          byte to be written to the device
      * @return result of operation. Zero if everything is OK, less than zero if there was an error.
      */
-    public static native int writeDirect(int fd, int deviceAddress, byte data);
+    public static native int writeByteDirect(int fd, byte data);
 
     /**
      * Writes several bytes to i2c. It uses ioctl to define device address and then writes number of bytes defined
      * in size argument.
      *
      * @param fd            file descriptor of i2c bus
-     * @param deviceAddress device address
      * @param size          number of bytes to be written
      * @param offset        offset in buffer to read from
      * @param buffer        data buffer to be written
      * @return result of operation. Zero if everything is OK, less than zero if there was an error.
      */
-    public static native int writeDirect(int fd, int deviceAddress, int size, int offset, byte[] buffer);
+    public static native int writeBytesDirect(int fd, int size, int offset, byte[] buffer);
 
     /**
      * Writes one 8 bit byte to i2c. It uses ioctl to define device address and then writes two bytes: address in
      * the device itself and value.
      *
      * @param fd            file descriptor of i2c bus
-     * @param deviceAddress device address
      * @param localAddress  address in the device
      * @param data          byte to be written to the device
      * @return result of operation. Zero if everything is OK, less than zero if there was an error.
      */
-    public static native int writeByte(int fd, int deviceAddress, int localAddress, byte data);
+    public static native int writeByte(int fd, int localAddress, byte data);
 
     /**
      * Writes one 16 bit word to i2c. It uses ioctl to define device address and then writes two bytes: address in
      * the device itself and value.
      *
      * @param fd            file descriptor of i2c bus
-     * @param deviceAddress device address
      * @param localAddress  address in the device
      * @param data          word to be written to the device
      * @return result of operation. Zero if everything is OK, less than zero if there was an error.
      */
-    public static native int writeWord(int fd, int deviceAddress, int localAddress, char data);
+    public static native int writeWord(int fd, int localAddress, char data);
 
     /**
      * Writes several bytes to i2c. It uses ioctl to define device address and then writes number of bytes defined
      * in size argument plus one.
      *
      * @param fd            file descriptor of i2c bus
-     * @param deviceAddress device address
      * @param localAddress  address in the device
      * @param size          number of bytes to be written
      * @param offset        offset in buffer to read from
      * @param buffer        data buffer to be written
      * @return result of operation. Zero if everything is OK, less than zero if there was an error.
      */
-    public static native int writeBytes(int fd, int deviceAddress, int localAddress, int size, int offset, byte[] buffer);
+    public static native int writeBytes(int fd, int localAddress, int size, int offset, byte[] buffer);
 
     /**
      * Writes several 16 bit words to i2c. It uses ioctl to define device address and then writes number of bytes defined
      * in size argument plus one.
      *
      * @param fd            file descriptor of i2c bus
-     * @param deviceAddress device address
      * @param localAddress  address in the device
      * @param size          number of bytes to be written
      * @param offset        offset in buffer to read from
      * @param buffer        data buffer to be written
      * @return result of operation. Zero if everything is OK, less than zero if there was an error.
      */
-    public static native int writeWord(int fd, int deviceAddress, int localAddress, int size, int offset, char[] buffer);
+    public static native int writeWords(int fd, int localAddress, int size, int offset, char[] buffer);
 
     /**
      * Reads one byte from i2c device. It uses ioctl to define device address and then reads one byte.
      *
      * @param fd            file descriptor of i2c bus
-     * @param deviceAddress device address
      * @return positive number (or zero) to 255 if read was successful. Negative number if reading failed.
      */
-    public static native int readByteDirect(int fd, int deviceAddress);
-
-    /**
-     * Reads more bytes from i2c device. It uses ioctl to define device address and then reads
-     * size number of bytes.
-     *
-     * @param fd            file descriptor of i2c bus
-     * @param deviceAddress device address
-     * @param size          number of bytes to be read
-     * @param offset        offset in buffer to stored read data
-     * @param buffer        buffer for data to be written to
-     * @return number of bytes read or negative number if reading failed.
-     */
-    public static native int readBytesDirect(int fd, int deviceAddress, int size, int offset, byte[] buffer);
+    public static native int readByteDirect(int fd);
 
     /**
      * Reads one byte from i2c device. It uses ioctl to define device address, writes addres in device and then reads
      * one byte.
      *
      * @param fd            file descriptor of i2c bus
-     * @param deviceAddress device address
      * @param localAddress  address in the device
      * @return positive number (or zero) to 255 if read was successful. Negative number if reading failed.
      */
-    public static native int readByte(int fd, int deviceAddress, int localAddress);
-
-    /**
-     * Reads more bytes from i2c device. It uses ioctl to define device address, writes addres in device and then reads
-     * size number of bytes.
-     *
-     * @param fd            file descriptor of i2c bus
-     * @param deviceAddress device address
-     * @param localAddress  address in the device
-     * @param size          number of bytes to be read
-     * @param offset        offset in buffer to stored read data
-     * @param buffer        buffer for data to be written to
-     * @return number of bytes read or negative number if reading failed.
-     */
-    public static native int readBytes(int fd, int deviceAddress, int localAddress, int size, int offset, byte[] buffer);
+    public static native int readByte(int fd, int localAddress);
 
     /**
      * Reads one 16 bit word from i2c device. It uses ioctl to define device address, writes addres in device and then reads
      * one byte.
      *
      * @param fd            file descriptor of i2c bus
-     * @param deviceAddress device address
      * @param localAddress  address in the device
      * @return positive number (or zero) to 255 if read was successful. Negative number if reading failed.
      */
-    public static native int readWord(int fd, int deviceAddress, int localAddress);
-
-    /**
-     * Reads multiple 16 bit words from i2c device. It uses ioctl to define device address, writes addres in device and then reads
-     * size number of bytes.
-     *
-     * @param fd            file descriptor of i2c bus
-     * @param deviceAddress device address
-     * @param localAddress  address in the device
-     * @param size          number of bytes to be read
-     * @param offset        offset in buffer to stored read data
-     * @param buffer        buffer for data to be written to
-     * @return number of bytes read or negative number if reading failed.
-     */
-    public static native int readWords(int fd, int deviceAddress, int localAddress, int size, int offset, char[] buffer);
+    public static native int readWord(int fd, int localAddress);
 
 }

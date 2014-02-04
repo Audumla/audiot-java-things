@@ -1,9 +1,9 @@
 #
 # Makefile:
-#	libpi4j - Java (JNI) library wrapper for WiringPi for the Raspberry Pi
+#	audumlaRPi - Java (JNI) library wrapper for Raspberry Pi io interfaces
 #
 
-TARGET=libpi4j.so
+TARGET=audumlaRPi.so
 
 #DEBUG	= -g -O0
 DEBUG	= -O3
@@ -11,38 +11,14 @@ CC	= gcc
 INCLUDE	= -I. -I/$(JAVA_HOME)/include -I/usr/local/include -I. -I/$(JAVA_HOME)/include/linux -I/usr/local/include/linux
 CFLAGS	= $(DEBUG) -Wall $(INCLUDE) -Winline -pipe $(LIBS) 
 
-LIBS    = -L/usr/local/lib /usr/local/lib/libwiringPi.a
+# LIBS    = -L/usr/local/lib /usr/local/lib/libwiringPi.a
 
 # Should not alter anything below this line
 ###############################################################################
 
-SRC	=   com_pi4j_jni_I2C.c            \
-	    com_pi4j_jni_Serial.c         \
-	    com_pi4j_wiringpi_Gpio.c      \
-        com_pi4j_wiringpi_Serial.c    \
-        com_pi4j_wiringpi_Lcd.c       \
-        com_pi4j_wiringpi_Shift.c     \
-        com_pi4j_wiringpi_SoftPwm.c   \
-        com_pi4j_wiringpi_Spi.c       \
-        com_pi4j_wiringpi_Gertboard.c \
-        com_pi4j_wiringpi_Nes.c       \
-        com_pi4j_wiringpi_GpioPin.c   \
-        com_pi4j_wiringpi_GpioUtil.c  \
-        com_pi4j_wiringpi_GpioInterrupt.c
+SRC	=   net_audumla_devices_io_i2c_jni_rpi_I2C.c
 
-OBJ	=   com_pi4j_jni_I2C.o            \
-	    com_pi4j_jni_Serial.o         \
-	    com_pi4j_wiringpi_Gpio.o      \
-        com_pi4j_wiringpi_Serial.o    \
-        com_pi4j_wiringpi_Lcd.o       \
-        com_pi4j_wiringpi_Shift.o     \
-        com_pi4j_wiringpi_SoftPwm.o   \
-        com_pi4j_wiringpi_Spi.o       \
-        com_pi4j_wiringpi_Gertboard.o \
-        com_pi4j_wiringpi_Nes.o       \
-        com_pi4j_wiringpi_GpioPin.o   \
-        com_pi4j_wiringpi_GpioUtil.o  \
-        com_pi4j_wiringpi_GpioInterrupt.o
+OBJ	=   net_audumla_devices_io_i2c_jni_rpi_I2C.o
 
 all:		$(TARGET)
 
@@ -70,25 +46,11 @@ install:	$(TARGET)
 	install -m 0755 -d /usr/local/lib
 	install -m 0755 -d /usr/local/include
 	install -m 0644 $(TARGET)	/usr/local/lib
-	# install -m 0644 pi4j.jar	/usr/share/java
 
 uninstall:
 	@echo [uninstall]
 	rm -f /usr/local/lib/$(TARGET)
-	# rm -f /usr/share/java/pi4j.jar
 
 
 # DO NOT DELETE
-com_pi4j_jni_I2C.o: com_pi4j_jni_I2C.h
-com_pi4j_jni_Serial.o: com_pi4j_jni_Serial.h
-com_pi4j_wiringpi_Gpio.o: com_pi4j_wiringpi_Gpio.h  
-com_pi4j_wiringpi_GpioPin.o: com_pi4j_wiringpi_GpioPin.h
-com_pi4j_wiringpi_GpioUtil.o: com_pi4j_wiringpi_GpioUtil.h
-com_pi4j_wiringpi_GpioInterrupt.o: com_pi4j_wiringpi_GpioInterrupt.h
-com_pi4j_wiringpi_Serial.o: com_pi4j_wiringpi_Serial.h
-com_pi4j_wiringpi_Lcd.o: com_pi4j_wiringpi_Lcd.h
-com_pi4j_wiringpi_Shift.o: com_pi4j_wiringpi_Shift.h
-com_pi4j_wiringpi_SoftPwm.o: com_pi4j_wiringpi_SoftPwm.h
-com_pi4j_wiringpi_Spi.o: com_pi4j_wiringpi_Spi.h
-com_pi4j_wiringpi_Gertboard.o: com_pi4j_wiringpi_Gertboard.h
-com_pi4j_wiringpi_Nes.o: com_pi4j_wiringpi_Nes.h
+net_audumla_devices_io_i2c_jni_rpi_I2C.o: net_audumla_devices_io_i2c_jni_rpi_I2C.h

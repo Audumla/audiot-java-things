@@ -91,9 +91,9 @@ public class PCF8574GPIOActivatorFactory implements ActivatorFactory<PCF8574GPIO
         if (currentStates.get(activator.getPin()) == newState.equals(ActivatorState.DEACTIVATED)) {
             currentStates.set(activator.getPin(), !newState.equals(ActivatorState.DEACTIVATED));
             if (currentStates.toByteArray().length == 0) {
-                writeChannel.write(ByteBuffer.allocateDirect(1).put((byte) 0x00));
+                writeChannel.write((byte) 0x00);
             } else {
-                writeChannel.write(ByteBuffer.allocateDirect(1).put(currentStates.toByteArray()[0]));
+                writeChannel.write(currentStates.toByteArray()[0]);
             }
         }
 //        else {
@@ -110,7 +110,7 @@ public class PCF8574GPIOActivatorFactory implements ActivatorFactory<PCF8574GPIO
             pins.add(a);
         }
         currentStates.set(0, PCF8574_MAX_IO_PINS, true);
-        writeChannel.write(ByteBuffer.allocateDirect(1).put((byte) 0xff));
+        writeChannel.write((byte) 0xff);
         for (PCF8547GPIOActivator a : getActivators()) {
             a.setState(ActivatorState.DEACTIVATED);
         }
