@@ -67,7 +67,7 @@
     <orderEntry type="library" name="Maven: com.pi4j:pi4j-device:0.0.5" level="project" />
     <orderEntry type="library" name="Maven: com.pi4j:pi4j-gpio-extension:0.0.5" level="project" />
     <orderEntry type="module" module-name="AudumlaFTD2xxj" />
-    <orderEntry type="library" name="Maven: net.java.dev.jna:jna:4.0.0" level="project" />
+    <orderEntry type="module" module-name="AudumlaRPiIO" />
     <orderEntry type="module" module-name="AudumlaDevices" scope="TEST" production-on-test="" />
     <orderEntry type="module" module-name="AudumlaCamelScheduler" />
     <orderEntry type="library" name="Maven: org.apache.camel:camel-quartz2:2.12.2" level="project" />
