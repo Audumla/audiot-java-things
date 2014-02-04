@@ -171,22 +171,23 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
 //                byte[] run = new byte[runLength];
 //                src.get(run, 0, runLength);
 //                logger.debug(ctxt.getBusAddress()+" "+ctxt.deviceAddress+ " "+ctxt.getDeviceRegister());
-                if (ctxt.busHandle != null) {
-                    if (ctxt.deviceAddress != null) {
-                        if (ctxt.deviceRegister == null) {
-                            for (int bi = 0; bi < runLength; ++bi) {
-//                                logger.debug("No Register Write GPIO "+Integer.toBinaryString(b));
-                                I2C.i2cWriteByteDirect(ctxt.busHandle, ctxt.deviceAddress.getAddress(), src.get());
-                            }
-                        } else {
-                            for (int bi = 0; bi < runLength; ++bi) {
-//                                logger.debug("0x"+Integer.toHexString(ctxt.getDeviceRegister().getRegister())+" Write GPIO "+Integer.toBinaryString(b));
-                                I2C.i2cWriteByte(ctxt.busHandle, ctxt.deviceAddress.getAddress(), ctxt.deviceRegister.getRegister(), src.get());
-                            }
-                        }
-                        bytesWritten += runLength;
-                    }
-                }
+                ctxt.writer.writeBuffer(ctxt,src,runLength);
+//                if (ctxt.busHandle != null) {
+//                    if (ctxt.deviceAddress != null) {
+//                        if (ctxt.deviceRegister == null) {
+//                            for (int bi = 0; bi < runLength; ++bi) {
+////                                logger.debug("No Register Write GPIO "+Integer.toBinaryString(b));
+//                                I2C.i2cWriteByteDirect(ctxt.busHandle, ctxt.deviceAddress.getAddress(), src.get());
+//                            }
+//                        } else {
+//                            for (int bi = 0; bi < runLength; ++bi) {
+////                                logger.debug("0x"+Integer.toHexString(ctxt.getDeviceRegister().getRegister())+" Write GPIO "+Integer.toBinaryString(b));
+//                                I2C.i2cWriteByte(ctxt.busHandle, ctxt.deviceAddress.getAddress(), ctxt.deviceRegister.getRegister(), src.get());
+//                            }
+//                        }
+//                        bytesWritten += runLength;
+//                    }
+//                }
             }
             if (i < ks.size()) {
                 ctxt = applyAttributes(ctxt, bufferAttributes.get(nextPosition).getAttributeReferences());
