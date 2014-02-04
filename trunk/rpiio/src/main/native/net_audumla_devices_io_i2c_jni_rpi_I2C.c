@@ -69,7 +69,7 @@ static inline int i2c_smbus_access (int fd, char rw, uint8_t command, int size, 
  * Signature: (I)I
  */
 JNIEXPORT jint JNICALL Java_net_audumla_devices_io_i2c_jni_rpi_I2C_open
-  (JNIEnv *env, jclass clazz, jstring str, jint devId);
+  (JNIEnv *env, jclass clazz, jstring str, jint devId) {
     char device[256];
     int len = (*env)->GetStringLength(env, str);
     (*env)->GetStringUTFRegion(env, str, 0, len, device);
