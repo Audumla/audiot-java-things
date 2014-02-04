@@ -44,9 +44,9 @@ public class LibraryLoader {
 
     public static synchronized void load(String libraryName, String fileName) {
         if (fileName == null || fileName.length() == 0) {
-            logger.trace("Load library [" + libraryName + "] (no alternate embedded file provided)");
+            logger.debug("Load library [" + libraryName + "] (no alternate embedded file provided)");
         } else {
-            logger.trace("Load library [" + libraryName + "] (alternate embedded file: " + fileName + ")");
+            logger.debug("Load library [" + libraryName + "] (alternate embedded file: " + fileName + ")");
         }
         // create instance if null
         if (loadedLibraries == null) {
@@ -55,7 +55,7 @@ public class LibraryLoader {
         // first, make sure that this library has not already been previously loaded
         if (loadedLibraries.contains(libraryName)) {
             // debug
-            logger.trace("Library [" + libraryName + "] has already been loaded; no need to load again.");
+            logger.debug("Library [" + libraryName + "] has already been loaded; no need to load again.");
         } else {
             // ---------------------------------------------
             // ATTEMPT LOAD FROM SYSTEM LIBS
@@ -65,29 +65,17 @@ public class LibraryLoader {
             loadedLibraries.add(libraryName);
 
             try {
-                // debug
-                logger.trace("Attempting to load library [" + libraryName + "] using the System.loadLibrary(name) method.");
-
                 // attempt to load the native library from the system classpath loader
                 System.loadLibrary(libraryName);
-
-                // debug
-                logger.trace("Library [" + libraryName + "] loaded successfully using the System.loadLibrary(name) method.");
+                logger.debug("Library [" + libraryName + "] loaded from default System.loadLibrary");
             } catch (UnsatisfiedLinkError e) {
-                // if a filename was not provided, then throw exception
                 if (fileName == null) {
                     // debug
-                    logger.error("Library [" + libraryName + "] could not be located using the System.loadLibrary(name) method and no embedded file path was provided as an auxillary lookup.");
-
+                    logger.error("Library [" + libraryName + "] could not be located and no embedded file path was provided as auxillary lookup");
                     // library load failed, remove from tracking collection
                     loadedLibraries.remove(libraryName);
                     throw e;
                 }
-
-                // debug
-                logger.trace("Library [" + libraryName + "] could not be located using the System.loadLibrary(name) method; attempting to resolve the library using embedded resources in the JAR file.");
-
-
                 // ---------------------------------------------
                 // ATTEMPT LOAD BASED ON EDUCATED GUESS OF ABI
                 // ---------------------------------------------
@@ -135,7 +123,6 @@ public class LibraryLoader {
                     try {
                         // load library file from embedded resource
                         loadLibraryFromResource(resourceUrlHardFloat, libraryName, fileName);
-
                         // debug
                         logger.info("Library [" + libraryName + "] loaded successfully using embedded resource file: [" + resourceUrlHardFloat.toString() + "] (ARMHF)");
                     } catch (UnsatisfiedLinkError ule_hard_float) {
@@ -157,7 +144,7 @@ public class LibraryLoader {
                             logger.info("Library [" + libraryName + "] loaded successfully using embedded resource file: [" + resourceUrlSoftFloat.toString() + "] (ARMEL)");
                         } catch (Throwable err) {
                             // debug
-                            logger.error("Failed to load library [" + libraryName + "] using the System.load(file) method using embedded resource file: [" + resourceUrlSoftFloat.toString() + "]", err);
+                            logger.error("Failed to load library [" + libraryName + "] using System.load(file) as embedded resource file: [" + resourceUrlSoftFloat.toString() + "]", err);
 
                             // library load failed, remove from tracking collection
                             loadedLibraries.remove(libraryName);
@@ -170,7 +157,7 @@ public class LibraryLoader {
                         }
                     } catch (Exception ex_hard_float) {
                         // debug
-                        logger.error("Failed to load library [" + libraryName + "] using the System.load(file) method using embedded resource file: [" + resourceUrlHardFloat.toString() + "]", ex_hard_float);
+                        logger.error("Failed to load library [" + libraryName + "] using System.load(file) with embedded resource file: [" + resourceUrlHardFloat.toString() + "]", ex_hard_float);
 
                         // library load failed, remove from tracking collection
                         loadedLibraries.remove(libraryName);
