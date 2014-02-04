@@ -24,7 +24,7 @@ public class I2C {
 
     static {
         // Load the platform library
-        System.loadLibrary("audumlaRPiI2C.so");
+        System.loadLibrary("audumlaRPi.so");
     }
 
     /**
