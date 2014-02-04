@@ -181,12 +181,12 @@ public class HitachiCharacterLCD implements CharacterLCD {
 //        logger.debug("write: " + s);
         if (s.length() > columns) {
             for (int i = 0; i < Math.ceil((double) s.length() / (double) (columns)); ++i) {
-                setCursorPosition(col, row + i);
+                setCursorPosition(row + i,col );
                 String ss = s.substring(i * (columns), Math.min((i + 1) * (columns), s.length()));
                 write(ss.getBytes());
             }
         } else {
-            setCursorPosition(col, row);
+            setCursorPosition(row,col);
             write(s.getBytes());
         }
     }
