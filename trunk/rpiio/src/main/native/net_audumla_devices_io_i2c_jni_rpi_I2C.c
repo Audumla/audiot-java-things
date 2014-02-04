@@ -183,7 +183,7 @@ JNIEXPORT jint JNICALL Java_net_audumla_devices_io_i2c_jni_rpi_I2C_writeBytes
  * Signature: (IIIII[C)I
  */
 JNIEXPORT jint JNICALL Java_net_audumla_devices_io_i2c_jni_rpi_I2C_writeWords
-  (JNIEnv *, jclass, jint, jint, jint, jint, jcharArray){
+  (JNIEnv *env, jclass clazz, jint fd, jint reg, jint size, jint offset, jcharArray bytes){
     union i2c_smbus_data data ;
     struct i2c_smbus_ioctl_data args ;
     args.read_write = I2C_SMBUS_WRITE;
