@@ -18,11 +18,12 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>native-maven-plugin</artifactId>
+                <version>1.0-alpha-7</version>
                 <extensions>true</extensions>
                 <executions>
                     <execution>
                         <id>javah-generate</id>
-                        <phase>generate-sources</phase>
+                        <phase>process-classes</phase>
                         <goals>
                             <goal>javah</goal>
                         </goals>
@@ -32,7 +33,6 @@
                             <javahClassNames>
                                 <javahClassName>net.audumla.devices.io.i2c.jni.rpi.I2C</javahClassName>
                             </javahClassNames>
-                            <javahSearchJNIFromDependencies>true</javahSearchJNIFromDependencies>
                             <javahOutputDirectory>src/main/native</javahOutputDirectory>
                         </configuration>
                     </execution>
