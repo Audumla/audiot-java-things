@@ -44,9 +44,9 @@ public class LibraryLoader {
 
     public static synchronized void load(String libraryName, String fileName) {
         if (fileName == null || fileName.length() == 0) {
-            logger.debug("Load library [" + libraryName + "] (no alternate embedded file provided)");
+            logger.debug("Load library [" + libraryName + "] (no embedded file provided)");
         } else {
-            logger.debug("Load library [" + libraryName + "] (alternate embedded file: " + fileName + ")");
+            logger.debug("Load library [" + libraryName + "] (embedded file: " + fileName + ")");
         }
         // create instance if null
         if (loadedLibraries == null) {
@@ -55,7 +55,7 @@ public class LibraryLoader {
         // first, make sure that this library has not already been previously loaded
         if (loadedLibraries.contains(libraryName)) {
             // debug
-            logger.debug("Library [" + libraryName + "] has already been loaded; no need to load again.");
+            logger.debug("Library [" + libraryName + "] has already been loaded");
         } else {
             // ---------------------------------------------
             // ATTEMPT LOAD FROM SYSTEM LIBS
