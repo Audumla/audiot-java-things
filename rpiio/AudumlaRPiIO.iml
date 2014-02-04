@@ -1,5 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule="true" type="JAVA_MODULE" version="4">
+  <component name="FacetManager">
+    <facet type="Osmorc" name="OSGi">
+      <configuration manifestGenerationMode="OsmorcControlled" manifestLocation="" jarfileLocation="rpiio-1.0-SNAPSHOT.jar" outputPathType="CompilerOutputPath" bndFileLocation="" bundlorFileLocation="" bundleActivator="" bundleSymbolicName="net.audumla.rpiio" bundleVersion="1.0.0" ignoreFilePattern="" useProjectDefaultManifestFileLocation="true" alwaysRebuildBundleJAR="false" doNotSynchronizeWithMaven="false">
+        <additionalProperties>
+          <property key="Bundle-Description" value="Raspberry Pi JNI IOLibrary" />
+          <property key="Bundle-Vendor" value="Audumla.net" />
+          <property key="Bundle-DocURL" value="http://www.audumla.net" />
+          <property key="Bundle-NativeCode" value="lib/audumlaRPi.so ; osname=Linux; processor=ARM" />
+          <property key="Bundle-Name" value="Raspberry Pi IO" />
+          <property key="Include-Resource" value="lib/audumlaRPi.so=$MODULE_DIR$/libraries/lib/audumlaRPi.so" />
+        </additionalProperties>
+        <additionalJARContents />
+      </configuration>
+    </facet>
+  </component>
   <component name="NewModuleRootManager" inherit-compiler-output="false">
     <output url="file://$MODULE_DIR$/target/classes" />
     <output-test url="file://$MODULE_DIR$/target/test-classes" />
