@@ -19,27 +19,15 @@ package net.audumla.devices.lcd.akka;
 import net.audumla.akka.CommandEvent;
 import net.audumla.devices.lcd.CharacterLCD;
 
-public class LCDInitializeCommand implements CommandEvent<CharacterLCD> {
+public class LCDClearDisplayCommand implements CommandEvent<CharacterLCD> {
 
-    private final int cols;
-    private final int rows;
+    public LCDClearDisplayCommand() {
 
-    public LCDInitializeCommand(int row, int col) {
-        this.rows = row;
-        this.cols = col;
-            }
-
-    public int getCols() {
-        return cols;
-    }
-
-    public int getRows() {
-        return rows;
     }
 
     @Override
-    public boolean execute(CharacterLCD lcd) {
-        lcd.initialize(getRows(),getCols());
+    public boolean execute(CharacterLCD lcd) throws Exception {
+        lcd.clear();
         return true;
     }
 

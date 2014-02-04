@@ -43,14 +43,14 @@ public class LCDSetCursorCommand implements CommandEvent<CharacterLCD> {
         this.row = row;
     }
 
-    public LCDSetCursorCommand(int c, int r) {
-        col = c;
-        row = r;
+    public LCDSetCursorCommand(int r, int c) {
+        col = r;
+        row = c;
     }
 
     @Override
     public boolean execute(CharacterLCD lcd) throws Exception {
-        lcd.setCursor(col, row);
+        lcd.setCursorPosition(row,col);
         return true;
     }
 

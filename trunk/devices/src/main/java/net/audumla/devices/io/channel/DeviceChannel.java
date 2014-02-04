@@ -40,11 +40,13 @@ public interface DeviceChannel extends ByteChannel {
      * receive the data correctly before moving on to the rest of the byte stream.
      * All buffers written or read from this channel will have this attribute applied.
      *
+     *
+     *
      * @param buffer the buffer to use the position to associate the Attribute to.
      * @param attr   the attribute to associate to the buffer
      * @return the buffer
      */
-    ByteBuffer setAttribute(ByteBuffer buffer, Attribute attr);
+    <T extends Buffer> T setAttribute(T buffer, Attribute attr);
 
     /**
      * Adds an attribute to the channel that applies to the given position of any buffers passed to the channel
@@ -67,14 +69,6 @@ public interface DeviceChannel extends ByteChannel {
      * @return the collection of attributes
      */
     Collection<? extends Attribute> getAttributes();
-
-    /**
-     * Associates all of the attributes in the given collection to the given buffer
-     *
-     * @param buffer the buffer of interest
-     * @param attributes the attributes that will be associated with the buffer
-     */
-    void setAttributes(ByteBuffer buffer, Collection<Attribute> attributes);
 
     /**
      *

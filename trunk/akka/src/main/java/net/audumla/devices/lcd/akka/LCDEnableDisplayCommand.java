@@ -1,5 +1,6 @@
 package net.audumla.devices.lcd.akka;
 
+
 /*
  * *********************************************************************
  *  ORGANIZATION : audumla.net
@@ -19,31 +20,28 @@ package net.audumla.devices.lcd.akka;
 import net.audumla.akka.CommandEvent;
 import net.audumla.devices.lcd.CharacterLCD;
 
-public class LCDBlinkCommand implements CommandEvent<CharacterLCD> {
+public class LCDEnableDisplayCommand implements CommandEvent<CharacterLCD> {
 
-    protected boolean blink;
+    protected boolean display;
 
-    public LCDBlinkCommand() {
+    public LCDEnableDisplayCommand() {
     }
 
-    public boolean isBlink() {
-        return blink;
+    public LCDEnableDisplayCommand(boolean d) {
+        this.display = d;
     }
 
-    public void setBlink(boolean blink) {
-        this.blink = blink;
+    public boolean isDisplay() {
+        return display;
     }
 
-    public LCDBlinkCommand(boolean b) {
-        blink = b;
+    public void setDisplay(boolean display) {
+        this.display = display;
     }
 
     @Override
     public boolean execute(CharacterLCD lcd) throws Exception {
-        if (blink)
-            lcd.blink();
-        else
-            lcd.noBlink();
+        lcd.enableDisplay(isDisplay());
         return true;
     }
 

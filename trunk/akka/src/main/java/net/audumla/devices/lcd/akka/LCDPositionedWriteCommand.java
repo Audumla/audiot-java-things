@@ -22,8 +22,8 @@ import net.audumla.devices.lcd.CharacterLCD;
 public class LCDPositionedWriteCommand extends LCDSetCursorCommand {
     protected String value;
 
-    public LCDPositionedWriteCommand(int c, int r, String value) {
-        super(c, r);
+    public LCDPositionedWriteCommand(int r, int c, String value) {
+        super(r, c);
         this.value = value;
     }
 

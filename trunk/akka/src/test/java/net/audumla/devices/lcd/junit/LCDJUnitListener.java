@@ -38,22 +38,21 @@ import java.util.concurrent.TimeUnit;
 
 public class LCDJUnitListener extends RunListener {
     private static final Logger logger = Logger.getLogger(LCDJUnitListener.class);
-    private ActorSystem actorSystem;
 
     private ActorRef target;
 
     public LCDJUnitListener() {
-        actorSystem = ActorSystem.create();
-        Props lcpProps = Props.create(new CMTargetCreator<CharacterLCD>(HitachiCharacterLCD.instance("LCD JUnit Logger", HitachiCharacterLCD.DEFAULT_ADDRESS))).withDispatcher("junit-dispatcher");
+        ActorSystem actorSystem = ActorSystem.create();
+        Props lcpProps = Props.create(new CMTargetCreator<CharacterLCD>(new HitachiCharacterLCD("LCD JUnit Logger", HitachiCharacterLCD.DEFAULT_ADDRESS))).withDispatcher("junit-dispatcher");
         target = actorSystem.actorOf(lcpProps, "lcd");
-        target.tell(new LCDInitializeCommand(),null);
+        target.tell(new LCDInitializeCommand(4,20),null);
         logger.debug("Loaded JUnit LCD Listener");
     }
 
     protected void displayTestStatus(String desc, String status) {
-        target.tell(new LCDClearCommand(), null);
+        target.tell(new LCDClearDisplayCommand(), null);
         target.tell(new LCDPositionedWriteCommand(0,0,status), null);
-        target.tell(new LCDPositionedWriteCommand(0,1,desc), null);
+        target.tell(new LCDPositionedWriteCommand(1,0,desc), null);
         target.tell(new LCDPauseCommand(), null);
     }
 
@@ -79,10 +78,10 @@ public class LCDJUnitListener extends RunListener {
 
     @Override
     public void testRunFinished(Result result) throws Exception {
-        target.tell(new LCDClearCommand(), null);
+        target.tell(new LCDClearDisplayCommand(), null);
         target.tell(new LCDPositionedWriteCommand(0,0,"Tests run: " + result.getRunCount()), null);
-        target.tell(new LCDPositionedWriteCommand(0,1,"Tests passed:" + (result.getRunCount() - result.getFailureCount())), null);
-        target.tell(new LCDPositionedWriteCommand(0,2,"Tests failed:" + result.getFailureCount()), null);
+        target.tell(new LCDPositionedWriteCommand(1,0,"Tests passed:" + (result.getRunCount() - result.getFailureCount())), null);
+        target.tell(new LCDPositionedWriteCommand(2,0,"Tests failed:" + result.getFailureCount()), null);
         target.tell(new LCDPauseCommand(), null);
         target.tell(akka.actor.PoisonPill.getInstance(),null);
         try {

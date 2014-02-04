@@ -1,4 +1,4 @@
-package net.audumla.devices.lcd.akka;
+package net.audumla.devices.lcd;
 
 /*
  * *********************************************************************
@@ -16,31 +16,10 @@ package net.audumla.devices.lcd.akka;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import net.audumla.akka.CommandEvent;
-import net.audumla.devices.lcd.CharacterLCD;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class LCDInitializeCommand implements CommandEvent<CharacterLCD> {
-
-    private final int cols;
-    private final int rows;
-
-    public LCDInitializeCommand(int row, int col) {
-        this.rows = row;
-        this.cols = col;
-            }
-
-    public int getCols() {
-        return cols;
-    }
-
-    public int getRows() {
-        return rows;
-    }
-
-    @Override
-    public boolean execute(CharacterLCD lcd) {
-        lcd.initialize(getRows(),getCols());
-        return true;
-    }
+public class DeviceChannelLCDBackLight {
+    private static final Logger logger = LoggerFactory.getLogger(DeviceChannelLCDBackLight.class);
 
 }

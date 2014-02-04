@@ -11,51 +11,39 @@ import java.io.IOException;
  */
 public interface CharacterLCD {
     void write(int row, int col, String s) throws Exception;
+
     void write(String s) throws Exception;
 
     void clear() throws Exception;
 
     void home() throws Exception;
 
-    void setCursor(int col, int row) throws Exception;
+    void setCursorPosition(int row, int col) throws Exception;
 
-    // Turn the display on/off (quickly)
-    void noDisplay() throws Exception;
+    void enableDisplay(boolean enable) throws Exception;
 
-    void display() throws Exception;
+    void displayCursor(boolean cursor) throws Exception;
 
-    // Turns the underline cursor on/off
-    void noCursor() throws Exception;
+    void blinkCursor(boolean blink) throws Exception;
 
-    void cursor() throws Exception;
-
-    void blink() throws Exception;
-
-    // These commands scroll the display without changing the RAM
     void scrollDisplayLeft() throws Exception;
 
     void scrollDisplayRight() throws Exception;
 
-    // This is for text that flows Left to Right
-    void leftToRight() throws Exception;
+    void autoIncrementCursor() throws Exception;
 
-    // This is for text that flows Right to Left
-    void rightToLeft() throws Exception;
+    void autoDecrementCursor() throws Exception;
 
-    // This will 'right justify' text from the cursor
-    void autoscroll() throws Exception;
+    void incrementCursor() throws Exception;
 
-    // This will 'left justify' text from the cursor
-    void noAutoscroll() throws Exception;
+    void decrementCursor() throws Exception;
+
+    void autoScrollDisplay(boolean scroll) throws Exception;
 
     void enableBacklight() throws IOException;
 
     void disableBacklight() throws IOException;
 
-    // Turn on and off the blinking cursor
-    void noBlink() throws Exception;
+    boolean initialize(int rows, int cols);
 
-    boolean initialize();
-
-    void setDisplaySize(int rows, int cols);
 }

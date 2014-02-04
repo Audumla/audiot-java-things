@@ -42,4 +42,16 @@ public class DeviceRegisterAttr implements DeviceChannel.Attribute{
                 "register=0x" + Integer.toHexString(register) +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        DeviceRegisterAttr that = (DeviceRegisterAttr) o;
+
+        return register == that.register;
+
+    }
+
 }
