@@ -44,8 +44,8 @@ public class LCDSetCursorCommand implements CommandEvent<CharacterLCD> {
     }
 
     public LCDSetCursorCommand(int r, int c) {
-        col = r;
-        row = c;
+        col = c;
+        row = r;
     }
 
     @Override
