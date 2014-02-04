@@ -16,6 +16,8 @@ package net.audumla.devices.io.i2c.jni.rpi;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
+import net.audumla.utils.jni.LibraryLoader;
+
 public class I2C {
     // private constructor
     private I2C() {
@@ -24,7 +26,7 @@ public class I2C {
 
     static {
         // Load the platform library
-        System.loadLibrary("audumlaRPi.so");
+        LibraryLoader.load("AudumlaRPi","audumlaRPi.so");
     }
 
     /**
