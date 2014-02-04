@@ -3,9 +3,9 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<!-- MAVEN ARTIFACT INFORMATION -->
-	<artifactId>pi4j-native</artifactId>
-	<name>Raspberry Pi JNI Native Library</name>
-	<description>Raspberry Pi JNI Native Library</description>
+	<artifactId>rpiio</artifactId>
+	<name>Raspberry Pi IO </name>
+	<description>Raspberry Pi JNI IOLibrary</description>
 	<parent>
 		<groupId>net.audumla</groupId>
 		<artifactId>core</artifactId>
