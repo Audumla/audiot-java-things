@@ -19,7 +19,7 @@ package net.audumla.devices.io.channel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class FixedWaitAttr implements WaitAttr {
+public class FixedWaitAttr implements ActionAttr {
     private static final Logger logger = LoggerFactory.getLogger(FixedWaitAttr.class);
 
     protected long millis;
@@ -51,7 +51,7 @@ public class FixedWaitAttr implements WaitAttr {
     }
 
     @Override
-    public void executeWait() {
+    public void performAction() {
         synchronized (Thread.currentThread()) {
             try {
 //                logger.debug("Pause "+getMillis()+":"+getNanos());
