@@ -49,7 +49,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
         protected ChannelAddressAttr busAddress;
         protected DeviceAddressAttr deviceAddress;
         protected DeviceRegisterAttr deviceRegister;
-        protected DeviceWidthAttr deviceWidth;
+        protected DeviceWidthAttr deviceWidth = new DeviceWidthAttr(DeviceWidthAttr.DeviceWidth.WIDTH8);
         protected Integer busHandle;
         protected ByteBufferWriter writer;
 
@@ -75,6 +75,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
 
         public void setDeviceRegister(DeviceRegisterAttr deviceRegister) {
             this.deviceRegister = deviceRegister;
+            setDeviceWidth(getDeviceWidth());
         }
 
         public DeviceWidthAttr getDeviceWidth() {
@@ -83,11 +84,18 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
 
         public void setDeviceWidth(DeviceWidthAttr deviceWidth) {
             switch (deviceWidth.getWidth()) {
+                case WIDTH16:
+                    break;
+                case WIDTH32:
+                    throw new UnsupportedOperationException(deviceWidth.getWidth().name());
+                case WIDTH864:
+                    throw new UnsupportedOperationException(deviceWidth.getWidth().name());
                 case WIDTH8:
+                default:
                     if (getDeviceRegister() != null) {
                         writer = (ctxt, buffer, length) -> {
                             for (int bi = 0; bi < length; ++bi) {
-                                I2C.i2cWriteByte(ctxt.busHandle, ctxt.deviceAddress.getAddress(), ctxt.getDeviceRegister().getRegister(),buffer.get());
+                                I2C.i2cWriteByte(ctxt.busHandle, ctxt.deviceAddress.getAddress(), ctxt.getDeviceRegister().getRegister(), buffer.get());
                             }
                         };
                     } else {
@@ -98,12 +106,6 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
                         };
                     }
                     break;
-                case WIDTH16:
-                    break;
-                case WIDTH32:
-                    throw new UnsupportedOperationException(deviceWidth.getWidth().name());
-                case WIDTH864:
-                    throw new UnsupportedOperationException(deviceWidth.getWidth().name());
             }
 
             this.deviceWidth = deviceWidth;
