@@ -17,5 +17,5 @@ package net.audumla.devices.io.channel;
  */
 
 public interface WaitAttr extends DeviceChannel.Attribute {
-    void sleep();
+    void executeWait();
 }

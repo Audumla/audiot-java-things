@@ -1,0 +1,247 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<!-- MAVEN ARTIFACT INFORMATION -->
+	<artifactId>pi4j-native</artifactId>
+	<name>Raspberry Pi JNI Native Library</name>
+	<description>Raspberry Pi JNI Native Library</description>
+	<parent>
+		<groupId>net.audumla</groupId>
+		<artifactId>core</artifactId>
+		<version>1.0-SNAPSHOT</version>
+	</parent>
+
+    <build>
+        <plugins>
+            <!-- Generate .h header files for JNI wrapper -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>native-maven-plugin</artifactId>
+                <extensions>true</extensions>
+                <executions>
+                    <execution>
+                        <id>javah-generate</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>javah</goal>
+                        </goals>
+                        <configuration>
+
+                            <!-- trigger javah execution -->
+                            <javahClassNames>
+                                <javahClassName>net.audumla.devices.io.i2c.jni.rpi.I2C</javahClassName>
+                            </javahClassNames>
+                            <javahSearchJNIFromDependencies>true</javahSearchJNIFromDependencies>
+                            <javahOutputDirectory>src/main/native</javahOutputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+	<!-- BUILD PROFILES -->
+	<profiles>
+
+		<!-- This profile is used to dynamically rebuild the native library .H 
+			header files from the defined JNI jar classes. This profile should only be 
+			used when changes have been made to the JNI Java wrapper classes and new 
+			native method signatures are required. To use this profile, simply include 
+			the "-generate-jni-headers" command argument with the maven build command. -->
+
+		<profile>
+			<id>soft-float</id>
+			<activation>
+			  <property>
+			    <name>release-build</name>
+			  </property>
+			</activation>			
+			<properties>
+				<pi.build.soft-float>true</pi.build.soft-float>
+			</properties>
+			<build>
+				<plugins>			
+					<!-- ATTACH COMPILED NATIVE LIBRARY -->
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>build-helper-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>attach-hard-soft-native-artifact</id>
+								<phase>package</phase>
+								<goals>
+									<goal>attach-artifact</goal>
+								</goals>
+								<configuration>
+									<artifacts>
+										<artifact>
+											<file>${project.build.directory}/soft-float/audumlaRPiI2C.so</file>
+											<type>so</type>
+											<classifier>soft-float</classifier>									
+										</artifact>
+									</artifacts>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>			
+				</plugins>
+			</build>			
+		</profile>
+
+		<profile>
+			<id>hard-float</id>
+			<activation>
+			  <property>
+			    <name>release-build</name>
+			  </property>
+			</activation>						
+			<properties>
+				<pi.build.hard-float>true</pi.build.hard-float>
+			</properties>
+			<build>
+				<plugins>			
+					<!-- ATTACH COMPILED NATIVE LIBRARY -->
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>build-helper-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>attach-hard-float-native-artifact</id>
+								<phase>package</phase>
+								<goals>
+									<goal>attach-artifact</goal>
+								</goals>
+								<configuration>
+									<artifacts>
+										<artifact>
+											<file>${project.build.directory}/hard-float/audumlaRPiI2C.so</file>
+											<type>so</type>
+											<classifier>hard-float</classifier>									
+										</artifact>
+									</artifacts>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>			
+				</plugins>
+			</build>			
+		</profile>
+				
+	</profiles>
+
+
+	<!--&lt;!&ndash; BUILD INSTRUCTIONS &ndash;&gt;-->
+	<!--<build>-->
+		<!--<finalName>libpi4j</finalName>-->
+
+		<!--<plugins>-->
+
+			<!--&lt;!&ndash; GENERATE LICENSE HEADERS IN SOURCE FILES &ndash;&gt;-->
+			<!--<plugin>-->
+				<!--<groupId>org.codehaus.mojo</groupId>-->
+				<!--<artifactId>license-maven-plugin</artifactId>-->
+			<!--</plugin>-->
+
+			<!--<plugin>-->
+				<!--<artifactId>maven-antrun-plugin</artifactId>-->
+				<!--<executions>-->
+
+					<!--&lt;!&ndash; ensure that a target directory has been created platform &ndash;&gt;-->
+					<!--<execution>-->
+						<!--<id>generate-sources</id>-->
+						<!--<phase>generate-sources</phase>-->
+						<!--<configuration>-->
+							<!--<tasks>-->
+								<!--<mkdir dir="target" />-->
+								<!--<mkdir dir="target/classes" />-->
+								<!---->
+								<!--<taskdef resource="net/sf/antcontrib/antcontrib.properties"-->
+								                  <!--classpathref="maven.plugin.classpath" />-->
+				                <!--<if>-->
+				                  <!--<equals arg1="${pi.build.hard-float}" arg2="true" />-->
+				                  <!--<then>-->
+								   <!--<mkdir dir="target/hard-float" />-->
+				                  <!--</then>-->
+				                <!--</if>							-->
+				                <!--<if>-->
+				                  <!--<equals arg1="${pi.build.soft-float}" arg2="true" />-->
+				                  <!--<then>-->
+								   <!--<mkdir dir="target/soft-float" />-->
+				                  <!--</then>-->
+				                <!--</if>-->
+							<!--</tasks>-->
+						<!--</configuration>-->
+						<!--<goals>-->
+							<!--<goal>run</goal>-->
+						<!--</goals>-->
+					<!--</execution>-->
+
+					<!--&lt;!&ndash; copy the native source files and compile them with gcc on the RaspberyPi -->
+						<!--platform &ndash;&gt;-->
+					<!--<execution>-->
+						<!--<id>build-native-so</id>-->
+						<!--<phase>compile</phase>-->
+						<!--<goals>-->
+							<!--<goal>run</goal>-->
+						<!--</goals>-->
+						<!--<configuration>-->
+							<!--<tasks>-->
+								<!--<taskdef resource="net/sf/antcontrib/antcontrib.properties"-->
+								                  <!--classpathref="maven.plugin.classpath" />-->
+				                <!--<property name="compile_classpath" -->
+				                          <!--refid="maven.compile.classpath"/>-->
+				                <!--<property name="project-build-directory"-->
+				                          <!--value="${project.build.directory}"/>		-->
+				                <!--<property name="pi-dirBuildTemp" value="${pi.dirBuildTemp}"/>-->
+				                <!--<if>-->
+				                  <!--<equals arg1="${pi.build.hard-float}" arg2="true" />-->
+				                  <!--<then>-->
+								    <!--<ant target="build-libpi4j.so" >-->
+								    	<!--<property name="pi-abi" value="hard-float"/>-->
+						                <!--<property name="pi-port" value="${pi.port.hard-float}"/>							-->
+						                <!--<property name="pi-host" value="${pi.host.hard-float}"/>							-->
+						                <!--<property name="pi-user" value="${pi.user.hard-float}"/>		-->
+						                <!--<property name="pi-password" value="${pi.password.hard-float}"/>-->
+								    <!--</ant>-->
+				                  <!--</then>-->
+				                <!--</if>							-->
+				                <!--<if>-->
+				                  <!--<equals arg1="${pi.build.soft-float}" arg2="true" />-->
+				                  <!--<then>-->
+								    <!--<ant target="build-libpi4j.so">-->
+								    	<!--<property name="pi-abi" value="soft-float"/> -->
+						                <!--<property name="pi-port" value="${pi.port.soft-float}"/>							-->
+						                <!--<property name="pi-host" value="${pi.host.soft-float}"/>							-->
+						                <!--<property name="pi-user" value="${pi.user.soft-float}"/>		-->
+						                <!--<property name="pi-password" value="${pi.password.soft-float}"/>-->
+								    <!--</ant>-->
+				                  <!--</then>-->
+				                <!--</if>							-->
+							<!--</tasks>-->
+						<!--</configuration>-->
+					<!--</execution>-->
+				<!--</executions>-->
+				<!--<dependencies>-->
+					<!--<dependency>-->
+						<!--<groupId>org.apache.ant</groupId>-->
+						<!--<artifactId>ant-jsch</artifactId>-->
+						<!--<version>1.7.1</version>-->
+					<!--</dependency>-->
+					<!--<dependency>-->
+						<!--<groupId>com.jcraft</groupId>-->
+						<!--<artifactId>jsch</artifactId>-->
+						<!--<version>0.1.42</version>-->
+					<!--</dependency>-->
+					<!--<dependency>-->
+						<!--<groupId>ant-contrib</groupId>-->
+						<!--<artifactId>ant-contrib</artifactId>-->
+						<!--<version>20020829</version>-->
+					<!--</dependency>-->
+				<!--</dependencies>-->
+			<!--</plugin>-->
+
+		<!--</plugins>-->
+
+	<!--</build>-->
+</project>

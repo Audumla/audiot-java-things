@@ -42,4 +42,16 @@ public class DeviceAddressAttr implements DeviceChannel.Attribute{
                 "address=0x" + Integer.toHexString(address) +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        DeviceAddressAttr that = (DeviceAddressAttr) o;
+
+        return address == that.address;
+
+    }
+
 }

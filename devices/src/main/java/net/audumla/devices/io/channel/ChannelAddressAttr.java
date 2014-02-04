@@ -42,4 +42,17 @@ public class ChannelAddressAttr implements DeviceChannel.Attribute {
                 "address=" + address +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ChannelAddressAttr)) return false;
+
+        ChannelAddressAttr that = (ChannelAddressAttr) o;
+
+        return address == that.address;
+
+    }
+
+
 }

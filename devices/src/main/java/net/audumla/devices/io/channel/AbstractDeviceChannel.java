@@ -20,7 +20,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.nio.Buffer;
-import java.nio.ByteBuffer;
 import java.util.*;
 
 public abstract class  AbstractDeviceChannel implements DeviceChannel {
@@ -66,21 +65,10 @@ public abstract class  AbstractDeviceChannel implements DeviceChannel {
 
     }
 
-//    protected Map<Buffer, Map<Integer, PositionAttribute>> bufferAttributes = new HashMap<>();
     protected Map<Integer, PositionAttribute> bufferAttributes = new TreeMap<>();
-//    protected Collection<Attribute> defaultAttributes = new ArrayList<>();
-
-//    protected Map<Integer, PositionAttribute> getBufferAttributes(Buffer buffer) {
-//        Map<Integer, PositionAttribute> attrs = bufferAttributes.get(buffer);
-//        if (attrs == null) {
-//            attrs = new TreeMap<>();
-//            bufferAttributes.put(buffer, attrs);
-//        }
-//        return attrs;
-//    }
 
     @Override
-    public ByteBuffer setAttribute(ByteBuffer buffer, Attribute attr) {
+    public <T extends Buffer> T setAttribute(T buffer, Attribute attr) {
         setAttribute(buffer.position(),attr);
         return buffer;
     }
@@ -98,16 +86,7 @@ public abstract class  AbstractDeviceChannel implements DeviceChannel {
 
     @Override
     public Collection<? extends Attribute> getAttributes() {
-//        Map<Integer, PositionAttribute> attrs = bufferAttributes.get();
-//        return attrs == null ? null : attrs.values();
         return bufferAttributes.values();
-    }
-
-    @Override
-    public void setAttributes(ByteBuffer buffer, Collection<Attribute> attributes) {
-        for (Attribute a : attributes) {
-            setAttribute(buffer, a);
-        }
     }
 
     protected void addDefaultAttribute(Attribute ... attr) {

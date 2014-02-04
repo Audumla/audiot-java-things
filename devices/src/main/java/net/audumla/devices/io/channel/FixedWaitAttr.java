@@ -51,13 +51,13 @@ public class FixedWaitAttr implements WaitAttr {
     }
 
     @Override
-    public void sleep() {
+    public void executeWait() {
         synchronized (Thread.currentThread()) {
             try {
 //                logger.debug("Pause "+getMillis()+":"+getNanos());
                 Thread.sleep(getMillis(), getNanos());
             } catch (InterruptedException e) {
-                logger.warn("Unable to execute sleep attribute", e);
+                logger.warn("Unable to execute wait attribute", e);
             }
         }
     }
@@ -69,4 +69,13 @@ public class FixedWaitAttr implements WaitAttr {
                 ", nanos=" + nanos +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        FixedWaitAttr that = (FixedWaitAttr) o;
+        return millis == that.millis && nanos == that.nanos;
+    }
+
 }

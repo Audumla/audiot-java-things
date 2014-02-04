@@ -1,4 +1,4 @@
-package net.audumla.devices.lcd.akka;
+package net.audumla.devices.io.channel;
 
 /*
  * *********************************************************************
@@ -16,31 +16,38 @@ package net.audumla.devices.lcd.akka;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import net.audumla.akka.CommandEvent;
-import net.audumla.devices.lcd.CharacterLCD;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class LCDInitializeCommand implements CommandEvent<CharacterLCD> {
+public class DeviceWidthAttr implements DeviceChannel.Attribute {
+    private static final Logger logger = LoggerFactory.getLogger(DeviceWidthAttr.class);
 
-    private final int cols;
-    private final int rows;
+    public enum DeviceWidth {WIDTH8, WIDTH16, WIDTH32, WIDTH864}
 
-    public LCDInitializeCommand(int row, int col) {
-        this.rows = row;
-        this.cols = col;
-            }
+    protected DeviceWidth width;
 
-    public int getCols() {
-        return cols;
+    public DeviceWidthAttr(DeviceWidth width) {
+        this.width = width;
     }
 
-    public int getRows() {
-        return rows;
+    public DeviceWidth getWidth() {
+        return width;
+    }
+
+    public void setWidth(DeviceWidth width) {
+        this.width = width;
     }
 
     @Override
-    public boolean execute(CharacterLCD lcd) {
-        lcd.initialize(getRows(),getCols());
-        return true;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DeviceWidthAttr that = (DeviceWidthAttr) o;
+        return width == that.width;
     }
 
+    @Override
+    public int hashCode() {
+        return width != null ? width.hashCode() : 0;
+    }
 }

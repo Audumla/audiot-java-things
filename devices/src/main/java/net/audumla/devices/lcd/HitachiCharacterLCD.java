@@ -47,8 +47,8 @@ public class HitachiCharacterLCD implements CharacterLCD {
 
     // flags for display entry mode
     protected final static byte LCD_ENTRYMODESET_COMMAND = 0x04;
-    protected final static byte LCD_ENTRYMODE_SHIFT_CURSOR = 0x02;
-    protected final static byte LCD_ENTRYMODE_SHIFT_DISPLAY = 0x01;
+    protected final static byte LCD_ENTRYMODE_INCREMENT_CURSOR = 0x02;
+    protected final static byte LCD_ENTRYMODE_SCROLL_DISPLAY = 0x01;
 
     // the I/O expander pinout
     protected final static byte LCD_CHARACTER_WRITE = (byte) 0x80;
@@ -69,25 +69,16 @@ public class HitachiCharacterLCD implements CharacterLCD {
 
     private byte backlightStatus;
     private byte displayControl;
-    private byte displayMode;
+    private byte writeMode;
     private DeviceChannel baseDeviceChannel;
 
-    private static Map<Integer, CharacterLCD> instances = new HashMap<Integer, CharacterLCD>();
     public static Logger logger = Logger.getLogger(HitachiCharacterLCD.class);
     private int columns = 20;
     private int rows = 4;
 
-    public static CharacterLCD instance(String name, int address) {
-        CharacterLCD instance = instances.get(address);
-        if (instance == null) {
-            instance = new HitachiCharacterLCD(name, address);
-        }
-        return instance;
-    }
-
-    private HitachiCharacterLCD(String name, int address) {
+    public HitachiCharacterLCD(String name, int address) {
         this.name = name;
-        baseDeviceChannel = new RPiI2CChannel().createChannel(new ChannelAddressAttr(1), new DeviceAddressAttr(address));
+        baseDeviceChannel = new RPiI2CChannel().createChannel(new ChannelAddressAttr(1), new DeviceAddressAttr(address),new DeviceRegisterAttr(MCP2308DeviceChannel.MCP23008_GPIO));
         backlightStatus = LCD_BACKLIGHT;
     }
 
@@ -106,33 +97,28 @@ public class HitachiCharacterLCD implements CharacterLCD {
         bb.put((byte) (LCD_D5_PIN));
     }
 
-    protected void init(ByteBuffer bb, DeviceChannel ch) throws Exception {
-        putCommand4bits(bb, ch, LCD_COMMAND, (byte) (LCD_FUNCTIONSET_COMMAND | LCD_2LINE | LCD_5x10DOTS)); // set to 4 bit interface - 2 lines - 5x10 font
-        putCommand4bits(bb, ch, LCD_COMMAND, (byte) (LCD_DISPLAYCONTROL_COMMAND | LCD_DISPLAYOFF)); // display off - no cursor - no blink
-        putCommand4bits(bb, ch, LCD_COMMAND, (byte) (LCD_RETURNHOME_COMMAND));
-        putCommand4bits(bb, ch, LCD_COMMAND, (byte) (LCD_CLEARDISPLAY_COMMAND)); // display clear
-    }
-
     @Override
-    public boolean initialize() {
+    public boolean initialize(int rows, int cols) {
         try {
-            synchronized (Thread.currentThread()) {
-                displayControl = LCD_DISPLAYCONTROL_COMMAND | LCD_DISPLAYON | LCD_CURSOROFF | LCD_BLINKOFF;
-                displayMode = LCD_ENTRYMODESET_COMMAND | LCD_ENTRYMODE_SHIFT_CURSOR ;
-                //see http://www.adafruit.com/datasheets/HD44780.pdf page 46 for initialization of 4 bit interface
-                ByteBuffer bb = ByteBuffer.allocate(100);
-                DeviceChannel initChannel = baseDeviceChannel.createChannel(new DeviceRegisterAttr(MCP2308DeviceChannel.MCP23008_IODIR));
-                bb.put((byte) 0x00); // set MCP to output pins
-                initChannel.setAttribute(bb, new DeviceRegisterAttr(MCP2308DeviceChannel.MCP23008_GPIO));
-                reset(bb, initChannel);
-                init(bb, initChannel);
-                putCommand4bits(bb, initChannel, LCD_COMMAND, (byte) displayControl);
-                putCommand4bits(bb, initChannel, LCD_COMMAND, (byte) displayMode);
-                bb.flip();
-                initChannel.write(bb);
+            this.rows = rows;
+            this.columns = cols;
+            displayControl = LCD_DISPLAYCONTROL_COMMAND | LCD_DISPLAYON;
+            writeMode = LCD_ENTRYMODESET_COMMAND | LCD_ENTRYMODE_INCREMENT_CURSOR;
+            //see http://www.adafruit.com/datasheets/HD44780.pdf page 46 for initialization of 4 bit interface
 
+            baseDeviceChannel.createChannel(new DeviceRegisterAttr(MCP2308DeviceChannel.MCP23008_IODIR)).write((byte) 0x00);
 
-            }
+            DeviceChannel initChannel = baseDeviceChannel.createChannel();
+            ByteBuffer bb = ByteBuffer.allocate(100);
+            reset(bb, initChannel);
+            putCommand4bits(bb, initChannel, LCD_COMMAND, (byte) (LCD_FUNCTIONSET_COMMAND | (rows > 1 ? LCD_2LINE : LCD_1LINE) | (rows > 1 ? LCD_5x8DOTS : LCD_5x10DOTS))); // set to 4 bit interface - 2 lines - 5x10 font
+            putCommand4bits(bb, initChannel, LCD_COMMAND, (byte) (LCD_DISPLAYCONTROL_COMMAND));
+            putCommand4bits(bb, initChannel, LCD_COMMAND, (byte) (LCD_RETURNHOME_COMMAND));
+            putCommand4bits(bb, initChannel, LCD_COMMAND, (byte) (LCD_CLEARDISPLAY_COMMAND)); // display clear
+            putCommand4bits(bb, initChannel, LCD_COMMAND, (byte) displayControl);
+            putCommand4bits(bb, initChannel, LCD_COMMAND, (byte) writeMode);
+            bb.flip();
+            initChannel.write(bb);
         } catch (Exception ex) {
             logger.error("Cannot initialize LCD [" + getName() + "]", ex);
             return false;
@@ -140,16 +126,9 @@ public class HitachiCharacterLCD implements CharacterLCD {
         return true;
     }
 
-    @Override
-    public void setDisplaySize(int rows, int cols) {
-        this.rows = rows;
-        this.columns = cols;
-    }
-
     private String getName() {
         return name;
     }
-
 
     protected void putCommand8bits(ByteBuffer bb, DeviceChannel ch, byte mode, byte... values) throws Exception {
         for (byte value : values) {
@@ -177,7 +156,7 @@ public class HitachiCharacterLCD implements CharacterLCD {
     }
 
     protected void commandByMode(byte mode, byte... args) throws Exception {
-        DeviceChannel wb = baseDeviceChannel.createChannel(new DeviceRegisterAttr(MCP2308DeviceChannel.MCP23008_GPIO));
+        DeviceChannel wb = baseDeviceChannel.createChannel();
         ByteBuffer bb = ByteBuffer.allocate(args.length * 8);
         putCommand4bits(bb, wb, mode, args);
         bb.flip();
@@ -202,12 +181,12 @@ public class HitachiCharacterLCD implements CharacterLCD {
 //        logger.debug("write: " + s);
         if (s.length() > columns) {
             for (int i = 0; i < Math.ceil((double) s.length() / (double) (columns)); ++i) {
-                setCursor(col, row + i);
+                setCursorPosition(col, row + i);
                 String ss = s.substring(i * (columns), Math.min((i + 1) * (columns), s.length()));
                 write(ss.getBytes());
             }
         } else {
-            setCursor(col, row);
+            setCursorPosition(col, row);
             write(s.getBytes());
         }
     }
@@ -223,52 +202,27 @@ public class HitachiCharacterLCD implements CharacterLCD {
     }
 
     @Override
-    public void setCursor(int col, int row) throws Exception {
+    public void setCursorPosition(int row, int col) throws Exception {
         int row_offsets[] = {0x00, 0x40, 0x14, 0x54};
         if (row >= rows) {
             row = rows - 1; // we count rows starting w/0
         }
-
         command((byte) (LCD_SETDDRAMADDR_COMMAND | (col + row_offsets[row])));
     }
 
-    // Turn the display on/off (quickly)
     @Override
-    public void noDisplay() throws Exception {
-        displayControl &= ~LCD_DISPLAYON;
-        command(displayControl);
+    public void enableDisplay(boolean enable) throws Exception {
+        command(enable ? (displayControl |= LCD_DISPLAYON) : (displayControl &= ~LCD_DISPLAYON));
     }
 
     @Override
-    public void display() throws Exception {
-        displayControl |= LCD_DISPLAYON;
-        command(displayControl);
-    }
-
-    // Turns the underline cursor on/off
-    @Override
-    public void noCursor() throws Exception {
-        displayControl &= ~LCD_CURSORON;
-        command(displayControl);
+    public void displayCursor(boolean cursor) throws Exception {
+        command(cursor ? (displayControl |= LCD_CURSORON) : (displayControl &= ~LCD_CURSORON));
     }
 
     @Override
-    public void cursor() throws Exception {
-        displayControl |= LCD_CURSORON;
-        command(displayControl);
-    }
-
-    // Turn on and off the blinking cursor
-    @Override
-    public void noBlink() throws Exception {
-        displayControl &= ~LCD_BLINKON;
-        command(displayControl);
-    }
-
-    @Override
-    public void blink() throws Exception {
-        displayControl |= LCD_BLINKON;
-        command(displayControl);
+    public void blinkCursor(boolean blink) throws Exception {
+        command(blink ? (displayControl |= LCD_BLINKON) : (displayControl &= ~LCD_BLINKON));
     }
 
     // These commands scroll the display without changing the RAM
@@ -284,30 +238,30 @@ public class HitachiCharacterLCD implements CharacterLCD {
 
     // This is for text that flows Left to Right
     @Override
-    public void leftToRight() throws Exception {
-        displayMode |= LCD_ENTRYMODE_SHIFT_CURSOR;
-        command(displayMode);
+    public void autoIncrementCursor() throws Exception {
+        command(writeMode |= LCD_ENTRYMODE_INCREMENT_CURSOR);
     }
 
     // This is for text that flows Right to Left
     @Override
-    public void rightToLeft() throws Exception {
-        displayMode &= ~LCD_ENTRYMODE_SHIFT_CURSOR;
-        command(displayMode);
+    public void autoDecrementCursor() throws Exception {
+        command(writeMode &= ~LCD_ENTRYMODE_INCREMENT_CURSOR);
+    }
+
+    @Override
+    public void incrementCursor() throws Exception {
+        command((byte) (LCD_CURSORDISPLAY_SHIFT_COMMAND | LCD_SHIFT_CURSOR_RIGHT));
+    }
+
+    @Override
+    public void decrementCursor() throws Exception {
+        command((byte) (LCD_CURSORDISPLAY_SHIFT_COMMAND));
     }
 
     // This will 'right justify' text from the cursor
     @Override
-    public void autoscroll() throws Exception {
-        displayMode |= LCD_ENTRYMODE_SHIFT_DISPLAY;
-        command(displayMode);
-    }
-
-    // This will 'left justify' text from the cursor
-    @Override
-    public void noAutoscroll() throws Exception {
-        displayMode &= ~LCD_ENTRYMODE_SHIFT_DISPLAY;
-        command(displayMode);
+    public void autoScrollDisplay(boolean scroll) throws Exception {
+        command(scroll ? (writeMode |= LCD_ENTRYMODE_SCROLL_DISPLAY) : (writeMode &= ~LCD_ENTRYMODE_SCROLL_DISPLAY));
     }
 
     // Allows us to fill the first 8 CGRAM locations

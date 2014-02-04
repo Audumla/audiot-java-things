@@ -1,4 +1,4 @@
-package net.audumla.devices.lcd.akka;
+package net.audumla.devices.lcd;
 
 /*
  * *********************************************************************
@@ -16,19 +16,9 @@ package net.audumla.devices.lcd.akka;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import net.audumla.akka.CommandEvent;
-import net.audumla.devices.lcd.CharacterLCD;
+import net.audumla.devices.io.channel.DeviceChannel;
 
-public class LCDClearCommand implements CommandEvent<CharacterLCD> {
-
-    public LCDClearCommand() {
-
-    }
-
-    @Override
-    public boolean execute(CharacterLCD lcd) throws Exception {
-        lcd.clear();
-        return true;
-    }
+public interface LCDBackLight {
+    void enableBackLight(boolean enable);
 
 }
