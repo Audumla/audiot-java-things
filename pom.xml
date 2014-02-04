@@ -86,7 +86,7 @@
         <module>raspberry</module>
         <module>astronomy</module>
         <module>akka</module>
-        <module>nativerpi</module>
+        <module>rpiio</module>
     </modules>
     <build>
         <plugins>
