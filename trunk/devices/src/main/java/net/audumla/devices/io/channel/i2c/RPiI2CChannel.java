@@ -84,7 +84,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
                 default:
                     if (getDeviceRegister() != null) {
                         writer = (ctxt, buffer, length) -> {
-                            logger.debug("Write I2C - ["+length+"] "+ctxt.getBusAddress()+" "+ctxt.getDeviceAddress() + " " + ctxt.getDeviceRegister());
+//                            logger.debug("Write I2C - ["+length+"] "+ctxt.getBusAddress()+" "+ctxt.getDeviceAddress() + " " + ctxt.getDeviceRegister());
                             if (buffer.hasArray()) {
                                 byte[] bytes = buffer.array();
                                 I2C.writeBytes(ctxt.getDeviceHandle(), ctxt.getDeviceRegister().getRegister(), length, buffer.position(), bytes);
@@ -97,7 +97,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
                         };
                     } else {
                         writer = (ctxt, buffer, length) -> {
-                            logger.debug("Write I2C Direct - ["+length+"] "+ctxt.getBusAddress()+" "+ctxt.getDeviceAddress());
+//                            logger.debug("Write I2C Direct - ["+length+"] "+ctxt.getBusAddress()+" "+ctxt.getDeviceAddress());
                             if (buffer.hasArray()) {
                                 byte[] bytes = buffer.array();
                                 I2C.writeBytesDirect(ctxt.getDeviceHandle(), length, buffer.position(), bytes);
@@ -232,7 +232,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
 
     @Override
     public int write(byte b) throws IOException {
-        logger.debug("Write byte I2C ["+b+"] - "+defaultContext.getBusAddress()+" "+defaultContext.getDeviceAddress() + " " + defaultContext.getDeviceRegister());
+//        logger.debug("Write byte I2C ["+b+"] - "+defaultContext.getBusAddress()+" "+defaultContext.getDeviceAddress() + " " + defaultContext.getDeviceRegister());
         if (defaultContext.getDeviceRegister() == null) {
             return I2C.writeByteDirect(defaultContext.getDeviceHandle(), b);
         } else {
