@@ -164,7 +164,16 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
             int runLength = nextPosition - currentPos;
 //            logger.debug("CurrentPos:"+currentPos+" NextPosition:"+nextPosition+" RunLength:"+runLength);
             if (runLength > 0) {
-                ctxt.writer.writeBuffer(ctxt, src, runLength);
+                if (ctxt.getDeviceRegister() == null) {
+                    for (int c = 0; c < runLength; ++c) {
+                        I2C.writeByteDirect(ctxt.getDeviceHandle(),src.get());
+                    }
+                } else {
+                    for (int c = 0; c < runLength; ++c) {
+                        I2C.writeByte(ctxt.getDeviceHandle(),ctxt.getDeviceRegister().getRegister(),src.get());
+                    }
+                }
+//                ctxt.writer.writeBuffer(ctxt, src, runLength);
             }
             if (i < ks.size()) {
                 ctxt = applyAttributes(ctxt, bufferAttributes.get(nextPosition).getAttributeReferences());
