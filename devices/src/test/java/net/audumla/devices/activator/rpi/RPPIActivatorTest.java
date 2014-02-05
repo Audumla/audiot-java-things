@@ -220,7 +220,7 @@ public class RPPIActivatorTest {
                 }
             }
             logger.debug("Speed test 2ms");
-            wait(20);
+            wait(1000);
             I2C.writeByteDirect(fd, (byte) 0xff);
             wait(20);
             for (int c = 0; c < 20; ++c) {
@@ -232,7 +232,7 @@ public class RPPIActivatorTest {
                 }
             }
 
-            wait(20);
+            wait(1000);
             I2C.writeByteDirect(fd, (byte) 0xff);
             wait(20);
             logger.debug("Speed test 0ms");

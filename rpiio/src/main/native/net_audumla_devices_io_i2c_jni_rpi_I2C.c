@@ -126,7 +126,7 @@ JNIEXPORT jint JNICALL Java_net_audumla_devices_io_i2c_jni_rpi_I2C_writeBytesDir
         ioctl(fd, I2C_SMBUS, &args);
     }
     (*env)->ReleasePrimitiveArrayCritical(env, bytes, body, 0);
-    return 0;
+    return i;
 }
 
 /*
