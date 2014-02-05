@@ -46,7 +46,7 @@ public class LibraryLoader {
         if (fileName == null || fileName.length() == 0) {
             logger.debug("Load library [" + libraryName + "] (no embedded file provided)");
         } else {
-            logger.debug("Load library  [" + libraryName + "] (embedded file: " + fileName + ")");
+            logger.debug("Load library [" + libraryName + "] (embedded file: " + fileName + ")");
         }
         // create instance if null
         if (loadedLibraries == null) {
