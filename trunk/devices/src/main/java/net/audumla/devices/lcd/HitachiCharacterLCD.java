@@ -82,74 +82,55 @@ public class HitachiCharacterLCD implements CharacterLCD {
 
     protected void reset(ByteBuffer bb, DeviceChannel ch) throws Exception {
 
-        synchronized (Thread.currentThread()) {
-            Thread.sleep(50, 0);
-            ch.write((byte) (LCD_D4_PIN | LCD_D5_PIN));
-            ch.write((byte) (LCD_D4_PIN | LCD_D5_PIN | LCD_ENABLE_PIN));
-            Thread.sleep(0, 500);
-            ch.write((byte) (LCD_D4_PIN | LCD_D5_PIN));
-            Thread.sleep(5, 0);
-            ch.write((byte) (LCD_D4_PIN | LCD_D5_PIN | LCD_ENABLE_PIN));
-            Thread.sleep(0, 500);
-            ch.write((byte) (LCD_D4_PIN | LCD_D5_PIN));
-            Thread.sleep(5, 0);
-            ch.write((byte) (LCD_D4_PIN | LCD_D5_PIN | LCD_ENABLE_PIN));
-            Thread.sleep(0, 500);
-            ch.write((byte) (LCD_D4_PIN | LCD_D5_PIN));
-            Thread.sleep(1, 0);
+//        synchronized (Thread.currentThread()) {
+//            Thread.sleep(50, 0);
+//            ch.write((byte) (LCD_D4_PIN | LCD_D5_PIN));
+//            ch.write((byte) (LCD_D4_PIN | LCD_D5_PIN | LCD_ENABLE_PIN));
+//            Thread.sleep(0, 500);
+//            ch.write((byte) (LCD_D4_PIN | LCD_D5_PIN));
+//            Thread.sleep(5, 0);
+//            ch.write((byte) (LCD_D4_PIN | LCD_D5_PIN | LCD_ENABLE_PIN));
+//            Thread.sleep(0, 500);
+//            ch.write((byte) (LCD_D4_PIN | LCD_D5_PIN));
+//            Thread.sleep(5, 0);
+//            ch.write((byte) (LCD_D4_PIN | LCD_D5_PIN | LCD_ENABLE_PIN));
+//            Thread.sleep(0, 500);
+//            ch.write((byte) (LCD_D4_PIN | LCD_D5_PIN));
+//            Thread.sleep(1, 0);
+//
+//            ch.write((byte) (LCD_D5_PIN));
+//            ch.write((byte) (LCD_D5_PIN | LCD_ENABLE_PIN));
+//            Thread.sleep(0, 500);
+//            ch.write((byte) (LCD_D5_PIN));
+//            Thread.sleep(1, 0);
+//
+//            ch.write((byte) (LCD_D5_PIN | LCD_ENABLE_PIN));
+//            Thread.sleep(0, 500);
+//            ch.write((byte) (LCD_D5_PIN));
+//            Thread.sleep(1, 0);
+//
+//            ch.write((byte) (LCD_D6_PIN | LCD_D7_PIN));
+//            ch.write((byte) (LCD_D6_PIN | LCD_D7_PIN | LCD_ENABLE_PIN));
+//            Thread.sleep(0, 500);
+//            ch.write((byte) (LCD_D6_PIN | LCD_D7_PIN));
+//            Thread.sleep(1, 0);
+//
+//            enableBacklight();
+//            enableDisplay(true);
+//
+//        }
 
-            ch.write((byte) (LCD_D5_PIN));
-            ch.write((byte) (LCD_D5_PIN | LCD_ENABLE_PIN));
-            Thread.sleep(0, 500);
-            ch.write((byte) (LCD_D5_PIN));
-            Thread.sleep(1, 0);
-
-            ch.write((byte) (LCD_D5_PIN | LCD_ENABLE_PIN));
-            Thread.sleep(0, 500);
-            ch.write((byte) (LCD_D5_PIN));
-            Thread.sleep(1, 0);
-
-            ch.write((byte) (LCD_D6_PIN | LCD_D7_PIN));
-            ch.write((byte) (LCD_D6_PIN | LCD_D7_PIN | LCD_ENABLE_PIN));
-            Thread.sleep(0, 500);
-            ch.write((byte) (LCD_D6_PIN | LCD_D7_PIN));
-            Thread.sleep(1, 0);
-
-            enableBacklight();
-            enableDisplay(true);
-
-        }
-
-//        ch.setAttribute(bb, new FixedWaitAttr(40));
-////        bb.put((byte) (LCD_D4_PIN | LCD_D5_PIN));
-//        bb.put((byte) (LCD_D4_PIN | LCD_D5_PIN | LCD_ENABLE_PIN));
-//        ch.setAttribute(bb, new FixedWaitAttr(0, 500));
-//        bb.put((byte) (LCD_D4_PIN | LCD_D5_PIN));
-//        ch.setAttribute(bb, new FixedWaitAttr(5));
-////        bb.put((byte) (LCD_D4_PIN | LCD_D5_PIN));
-//        bb.put((byte) (LCD_D4_PIN | LCD_D5_PIN | LCD_ENABLE_PIN));
-//        ch.setAttribute(bb, new FixedWaitAttr(0, 500));
-//        bb.put((byte) (LCD_D4_PIN | LCD_D5_PIN));
-//        ch.setAttribute(bb, new FixedWaitAttr(5));
-////        bb.put((byte) (LCD_D4_PIN | LCD_D5_PIN));
-//        bb.put((byte) (LCD_D4_PIN | LCD_D5_PIN | LCD_ENABLE_PIN));
-//        ch.setAttribute(bb, new FixedWaitAttr(0, 500));
-//        bb.put((byte) (LCD_D4_PIN | LCD_D5_PIN));
-//        ch.setAttribute(bb, new FixedWaitAttr(1));
-////        bb.put((byte) (LCD_D5_PIN));
-//        bb.put((byte) (LCD_D5_PIN | LCD_ENABLE_PIN));
-//        ch.setAttribute(bb, new FixedWaitAttr(0, 500));
-//        bb.put((byte) (LCD_D5_PIN));
-//        ch.setAttribute(bb, new FixedWaitAttr(0, 50000));
-//        bb.put((byte) (LCD_D5_PIN | LCD_ENABLE_PIN));
-//        ch.setAttribute(bb, new FixedWaitAttr(0, 500));
-//        bb.put((byte) (LCD_D5_PIN));
-//        ch.setAttribute(bb, new FixedWaitAttr(0, 50000));
-////        bb.put((byte) (LCD_D5_PIN | LCD_D6_PIN | LCD_D7_PIN));
-//        bb.put((byte) (LCD_D6_PIN | LCD_D7_PIN | LCD_ENABLE_PIN));
-//        ch.setAttribute(bb, new FixedWaitAttr(0, 500));
-//        bb.put((byte) (LCD_D6_PIN | LCD_D7_PIN));
-//        ch.setAttribute(bb, new FixedWaitAttr(0, 50000));
+        ch.setAttribute(bb, new FixedWaitAttr(20));
+        bb.put((byte) (LCD_D4_PIN | LCD_D5_PIN | LCD_ENABLE_PIN));
+        bb.put((byte) (LCD_D4_PIN | LCD_D5_PIN));
+        ch.setAttribute(bb, new FixedWaitAttr(5));
+        bb.put((byte) (LCD_D4_PIN | LCD_D5_PIN | LCD_ENABLE_PIN));
+        bb.put((byte) (LCD_D4_PIN | LCD_D5_PIN));
+        ch.setAttribute(bb, new FixedWaitAttr(0, 100));
+        bb.put((byte) (LCD_D4_PIN | LCD_D5_PIN | LCD_ENABLE_PIN));
+        bb.put((byte) (LCD_D4_PIN | LCD_D5_PIN));
+        bb.put((byte) (LCD_D5_PIN | LCD_ENABLE_PIN));
+        bb.put((byte) (LCD_D5_PIN));
     }
 
     @Override
@@ -188,8 +169,6 @@ public class HitachiCharacterLCD implements CharacterLCD {
     protected void putCommand8bits(ByteBuffer bb, DeviceChannel ch, byte mode, byte... values) throws Exception {
         for (byte value : values) {
             bb.put((byte) (value | backlightStatus | LCD_ENABLE_PIN | mode));
-            ch.setAttribute(bb, new FixedWaitAttr(0, 500));
-            bb.put((byte) (value | backlightStatus | mode));
             ch.setAttribute(bb, new FixedWaitAttr(0, 500));
             bb.put((byte) (value | backlightStatus | mode));
             ch.setAttribute(bb, new FixedWaitAttr(0, 50000));
