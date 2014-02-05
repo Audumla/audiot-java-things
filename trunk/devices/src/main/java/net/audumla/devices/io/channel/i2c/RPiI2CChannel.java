@@ -89,9 +89,9 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
 //                                I2C.writeBytes(ctxt.getDeviceHandle(),ctxt.getDeviceRegister().getRegister(),length,buffer.position(),bytes);
 //                                buffer.position(buffer.position()+length);
 //                            } else {
-                                for (int bi = 0; bi < length; ++bi) {
-                                    I2C.writeByte(ctxt.getDeviceHandle(), ctxt.getDeviceRegister().getRegister(), buffer.get());
-                                }
+                            for (int bi = 0; bi < length; ++bi) {
+                                I2C.writeByte(ctxt.getDeviceHandle(), ctxt.getDeviceRegister().getRegister(), buffer.get());
+                            }
 //                            }
                         };
                     } else {
@@ -182,7 +182,12 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
             }
             // clone the original context so that we do not upset any references to it
             ctxt = ctxt.clone();
-            if ((ctxt.busAddress = isAttribute(ChannelAddressAttr.class, a, ctxt.busAddress)) == a) continue;
+            if ((ctxt.busAddress = isAttribute(ChannelAddressAttr.class, a, ctxt.busAddress)) == a) {
+                if (ctxt.deviceAddress != null) {
+                    ctxt.setDeviceHandle(getDeviceHandle(ctxt.getBusAddress().getAddress(), ctxt.getDeviceAddress().getAddress()));
+                }
+                continue;
+            }
             if ((ctxt.deviceAddress = isAttribute(DeviceAddressAttr.class, a, ctxt.deviceAddress)) == a) {
                 if (ctxt.busAddress != null) {
                     ctxt.setDeviceHandle(getDeviceHandle(ctxt.getBusAddress().getAddress(), ctxt.getDeviceAddress().getAddress()));
@@ -248,6 +253,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
                     throw new IOException("Cannot open I2C Bus [/dev/i2c-" + bus + "] received " + handle);
                 }
                 deviceHandleMap.put(bus, handle);
+                logger.debug("Opened Device on '/dev/i2c-" + bus + "' at Address 0x" + Integer.toHexString(address));
             }
             return handle;
         }

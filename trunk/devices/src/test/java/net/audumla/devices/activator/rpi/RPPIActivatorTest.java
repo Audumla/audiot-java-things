@@ -204,7 +204,7 @@ public class RPPIActivatorTest {
         synchronized (this) {
             int fd = I2C.open("/dev/i2c-1", PCF8574GPIOActivatorFactory.PCF8574_0x21);
             Activator power = getPower(6, 7, rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO1));
-            int repeat = 100;
+            int repeat = 10;
             logger.debug("Speed test 5ms");
             power.setState(ActivatorState.ACTIVATED);
             wait(20);
@@ -237,12 +237,12 @@ public class RPPIActivatorTest {
             I2C.writeByteDirect(fd, (byte) 0xff);
             wait(20);
             logger.debug("Speed test 0ms");
-            for (int i = 0; i < repeat; ++i) {
+//            for (int i = 0; i < repeat; ++i) {
                 int v = I2C.writeBytesDirect(fd, bytes.length,0, bytes);
                 if (v < 0) {
                     throw new Exception("Failed Speed test - "+v);
                 }
-            }
+//            }
             I2C.close(fd);
             power.setState(ActivatorState.DEACTIVATED);
             logger.debug("Finshed Speed test");
