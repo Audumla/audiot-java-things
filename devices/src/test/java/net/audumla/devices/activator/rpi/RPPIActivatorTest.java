@@ -236,8 +236,8 @@ public class RPPIActivatorTest {
             I2C.writeByteDirect(fd, (byte) 0xff);
             wait(20);
             logger.debug("Speed test 0ms");
-            for (int i = 0; i < 200; ++i) {
-                int v = I2C.writeBytesDirect(fd, 0, bytes.length, bytes);
+            for (int i = 0; i < 2; ++i) {
+                int v = I2C.writeBytesDirect(fd, bytes.length,0, bytes);
                 if (v < 0) {
                     throw new Exception("Failed Speed test - "+v);
                 }
