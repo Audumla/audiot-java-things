@@ -178,9 +178,6 @@ public class LibraryLoader {
         byte[] buffer = new byte[1024];
         int byteCount = 0;
 
-        // debug
-        logger.error("Attempting to load library [" + libraryName + "] using the System.load(file) method using embedded resource file: [" + resourceUrl.toString() + "]");
-
         // open the resource file stream
         InputStream inputStream = resourceUrl.openStream();
 
