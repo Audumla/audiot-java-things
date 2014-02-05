@@ -201,37 +201,48 @@ public class RPPIActivatorTest {
 
     @Test
     public void testSainsSmartRelayFromPCF8574Direct() throws Exception {
-        int fd = I2C.open("/dev/i2c-1", PCF8574GPIOActivatorFactory.PCF8574_0x21);
-        Activator power = getPower(6, 7, rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO1));
-        power.setState(ActivatorState.ACTIVATED);
-        byte[] bytes = new byte[8 * 20];
-        for (int c = 0; c < 20; ++c) {
-            byte val = (byte) 0x01;
-            for (int i = 0; i < 8; ++i) {
-                bytes[(c * 8) + i] = (byte) ~val;
-                I2C.writeByteDirect(fd, (byte) ~val);
-                synchronized (this) {
+        synchronized (this) {
+            int fd = I2C.open("/dev/i2c-1", PCF8574GPIOActivatorFactory.PCF8574_0x21);
+            Activator power = getPower(6, 7, rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO1));
+            logger.debug("Speed test 5ms");
+            power.setState(ActivatorState.ACTIVATED);
+            wait(20);
+            I2C.writeByteDirect(fd, (byte) 0xff);
+            wait(20);
+            byte[] bytes = new byte[8 * 20];
+            for (int c = 0; c < 20; ++c) {
+                byte val = (byte) 0x01;
+                for (int i = 0; i < 8; ++i) {
+                    bytes[(c * 8) + i] = (byte) ~val;
+                    I2C.writeByteDirect(fd, (byte) ~val);
                     wait(5);
+                    val = (byte) (val << 1);
                 }
-                val = (byte) (val << 1);
             }
-        }
-        for (int c = 0; c < 20; ++c) {
-            byte val = (byte) 0x01;
-            for (int i = 0; i < 8; ++i) {
-                I2C.writeByteDirect(fd, (byte) ~val);
-                synchronized (this) {
-                    wait(1);
+            logger.debug("Speed test 2ms");
+            wait(20);
+            I2C.writeByteDirect(fd, (byte) 0xff);
+            wait(20);
+            for (int c = 0; c < 20; ++c) {
+                byte val = (byte) 0x01;
+                for (int i = 0; i < 8; ++i) {
+                    I2C.writeByteDirect(fd, (byte) ~val);
+                    wait(2);
+                    val = (byte) (val << 1);
                 }
-                val = (byte) (val << 1);
             }
-        }
 
-        for (int i = 0; i < 2000; ++i) {
-            I2C.writeBytesDirect(fd, 0, bytes.length, bytes);
+            wait(20);
+            I2C.writeByteDirect(fd, (byte) 0xff);
+            wait(20);
+            logger.debug("Speed test 0ms");
+            for (int i = 0; i < 2000; ++i) {
+                I2C.writeBytesDirect(fd, 0, bytes.length, bytes);
+            }
+            I2C.close(fd);
+            power.setState(ActivatorState.DEACTIVATED);
+
         }
-        I2C.close(fd);
-        power.setState(ActivatorState.DEACTIVATED);
     }
 
 
