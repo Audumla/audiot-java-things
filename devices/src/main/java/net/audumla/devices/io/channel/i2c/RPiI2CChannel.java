@@ -162,26 +162,13 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
         int bytesWritten = 0;
         src.position(0);
         ChannelContext ctxt = defaultContext;
-//        bufferAttributes.put(src.limit(),new PositionAttribute());
-//        for (int nextPosition : bufferAttributes.keySet()) {
         Set<Integer> ks = bufferAttributes.keySet();
         Iterator<Integer> it = ks.iterator();
-//        logger.debug("RPiChannel write number of bytes - "+src.limit()+" Attributes:"+ks.size());
         for (int i = 0; i < ks.size() + 1; ++i) {
             int currentPos = src.position();
             int nextPosition = it.hasNext() ? it.next() : src.limit();
             int runLength = nextPosition - currentPos;
-//            logger.debug("CurrentPos:"+currentPos+" NextPosition:"+nextPosition+" RunLength:"+runLength);
             if (runLength > 0) {
-//                if (ctxt.getDeviceRegister() == null) {
-//                    for (int c = 0; c < runLength; ++c) {
-//                        I2C.writeByteDirect(ctxt.getDeviceHandle(),src.get());
-//                    }
-//                } else {
-//                    for (int c = 0; c < runLength; ++c) {
-//                        I2C.writeByte(ctxt.getDeviceHandle(), ctxt.getDeviceRegister().getRegister(), src.get());
-//                    }
-//                }
                 ctxt.writer.writeBuffer(ctxt, src, runLength);
             }
             if (i < ks.size()) {
@@ -192,6 +179,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
     }
 
     protected ChannelContext applyAttributes(ChannelContext ctxt, Collection<Attribute> attr) throws IOException {
+        boolean deviceChange = false;
         for (Attribute a : attr) {
 //            logger.debug(a.toString());
             if (ActionAttr.class.isAssignableFrom(a.getClass())) {
@@ -200,11 +188,11 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
             }
             // clone the original context so that we do not upset any references to it
             ctxt = ctxt.clone();
-            if ((ctxt.busAddress = isAttribute(ChannelAddressAttr.class, a, ctxt.busAddress)) == a) continue;
-            if ((ctxt.deviceAddress = isAttribute(DeviceAddressAttr.class, a, ctxt.deviceAddress)) == a) continue;
-            if ((ctxt.deviceRegister = isAttribute(DeviceRegisterAttr.class, a, ctxt.deviceRegister)) == a) continue;
+            deviceChange = (ctxt.busAddress = isAttribute(ChannelAddressAttr.class, a, ctxt.busAddress)) == a;
+            deviceChange = (ctxt.deviceAddress = isAttribute(DeviceAddressAttr.class, a, ctxt.deviceAddress)) == a;
+            ctxt.deviceRegister = isAttribute(DeviceRegisterAttr.class, a, ctxt.deviceRegister);
         }
-        if (ctxt.deviceAddress != null && ctxt.busAddress != null) {
+        if (deviceChange && ctxt.deviceAddress != null && ctxt.busAddress != null) {
             ctxt.setDeviceHandle(getDeviceHandle(ctxt.getBusAddress().getAddress(), ctxt.getDeviceAddress().getAddress()));
         }
         // this may be a clone of the original if we modified it so it is up to the caller to ensure it
