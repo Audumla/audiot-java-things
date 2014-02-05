@@ -205,7 +205,7 @@ public class RPPIActivatorTest {
         Activator power = getPower(6, 7, rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO1));
         power.setState(ActivatorState.ACTIVATED);
         byte val = (byte) 0x01;
-        for (int c = 0; i < 200; ++i) {
+        for (int c = 0; c < 200; ++c) {
             for (int i = 0; i < 8; ++i) {
                 I2C.writeByteDirect(fd, (byte) ~val);
 
