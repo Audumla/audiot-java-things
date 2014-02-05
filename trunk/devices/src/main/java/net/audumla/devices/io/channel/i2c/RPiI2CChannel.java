@@ -28,7 +28,7 @@ import java.util.*;
 public class RPiI2CChannel extends AbstractDeviceChannel {
     private static final Logger logger = LoggerFactory.getLogger(RPiI2CChannel.class);
 
-    static protected final Map<Integer, Integer> deviceHandleMap = new HashMap<>();
+    static protected final Map<String, Integer> deviceHandleMap = new HashMap<>();
 
     protected static class ChannelContext {
 
@@ -170,7 +170,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
                     }
                 } else {
                     for (int c = 0; c < runLength; ++c) {
-                        I2C.writeByte(ctxt.getDeviceHandle(),ctxt.getDeviceRegister().getRegister(),src.get());
+                        I2C.writeByte(ctxt.getDeviceHandle(), ctxt.getDeviceRegister().getRegister(), src.get());
                     }
                 }
 //                ctxt.writer.writeBuffer(ctxt, src, runLength);
@@ -255,13 +255,14 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
 
     static public int getDeviceHandle(int bus, int address) throws IOException {
         synchronized (deviceHandleMap) {
-            Integer handle = deviceHandleMap.get(bus);
+            String id = String.valueOf(bus) + ":" + String.valueOf(address);
+            Integer handle = deviceHandleMap.get(id);
             if (handle == null) {
                 handle = net.audumla.devices.io.i2c.jni.rpi.I2C.open("/dev/i2c-" + bus, address);
                 if (handle < 0) {
                     throw new IOException("Cannot open I2C Bus [/dev/i2c-" + bus + "] received " + handle);
                 }
-                deviceHandleMap.put(bus, handle);
+                deviceHandleMap.put(id, handle);
                 logger.debug("Opened Device on '/dev/i2c-" + bus + "' at Address 0x" + Integer.toHexString(address));
             }
             return handle;
