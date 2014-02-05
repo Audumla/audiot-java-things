@@ -253,7 +253,7 @@ public class RPPIActivatorTest {
 
     @Test
     public void testSainsSmartRelayFromPCF8574Stream() throws Exception {
-        DeviceChannel d = new RPiI2CChannel(new ChannelAddressAttr(1), new DeviceAddressAttr(PCF8574GPIOActivatorFactory.PCF8574_0x21));
+        DeviceChannel d = new RPiI2CChannel().createChannel(new ChannelAddressAttr(1), new DeviceAddressAttr(PCF8574GPIOActivatorFactory.PCF8574_0x21));
         Activator power = getPower(6, 7, rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO1));
         power.setState(ActivatorState.ACTIVATED);
         ByteBuffer bb = ByteBuffer.allocate(50);
