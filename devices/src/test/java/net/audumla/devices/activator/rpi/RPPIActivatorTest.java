@@ -210,7 +210,7 @@ public class RPPIActivatorTest {
             I2C.writeByteDirect(fd, (byte) 0xff);
             wait(20);
             byte[] bytes = new byte[8 * 20];
-            for (int c = 0; c < 20; ++c) {
+            for (int c = 0; c < 200; ++c) {
                 byte val = (byte) 0x01;
                 for (int i = 0; i < 8; ++i) {
                     bytes[(c * 8) + i] = (byte) ~val;
@@ -223,7 +223,7 @@ public class RPPIActivatorTest {
             wait(1000);
             I2C.writeByteDirect(fd, (byte) 0xff);
             wait(20);
-            for (int c = 0; c < 20; ++c) {
+            for (int c = 0; c < 200; ++c) {
                 byte val = (byte) 0x01;
                 for (int i = 0; i < 8; ++i) {
                     I2C.writeByteDirect(fd, (byte) ~val);
@@ -236,11 +236,12 @@ public class RPPIActivatorTest {
             I2C.writeByteDirect(fd, (byte) 0xff);
             wait(20);
             logger.debug("Speed test 0ms");
-            for (int i = 0; i < 2000; ++i) {
+            for (int i = 0; i < 20000; ++i) {
                 I2C.writeBytesDirect(fd, 0, bytes.length, bytes);
             }
             I2C.close(fd);
             power.setState(ActivatorState.DEACTIVATED);
+            logger.debug("Finshed Speed test");
 
         }
     }
