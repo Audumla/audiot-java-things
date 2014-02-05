@@ -93,7 +93,8 @@ public class HitachiCharacterLCD implements CharacterLCD {
         ch.setAttribute(bb, new FixedWaitAttr(0,200));
 //        bb.put((byte) (LCD_D4_PIN | LCD_D5_PIN | LCD_ENABLE_PIN));
         bb.put((byte) (LCD_D4_PIN | LCD_D5_PIN));
-        bb.put((byte) (LCD_D5_PIN | LCD_ENABLE_PIN));
+//        bb.put((byte) (LCD_D5_PIN | LCD_ENABLE_PIN));
+        ch.setAttribute(bb, new FixedWaitAttr(0,100));
         bb.put((byte) (LCD_D5_PIN));
     }
 
@@ -134,8 +135,8 @@ public class HitachiCharacterLCD implements CharacterLCD {
         for (byte value : values) {
             bb.put((byte) (value | backlightStatus | LCD_ENABLE_PIN | mode)).put((byte) (value | backlightStatus | mode));
             ch.setAttribute(bb, new FixedWaitAttr(0, 500));
-//            bb.put((byte) (value | backlightStatus | mode));
-//            ch.setAttribute(bb, new FixedWaitAttr(0, 50000));
+            bb.put((byte) (value | backlightStatus | mode));
+            ch.setAttribute(bb, new FixedWaitAttr(0, 50000));
         }
     }
 
