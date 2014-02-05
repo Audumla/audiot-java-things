@@ -83,19 +83,32 @@ public class HitachiCharacterLCD implements CharacterLCD {
     }
 
     protected void reset(ByteBuffer bb, DeviceChannel ch) {
-        bb.put((byte) 0xFF);
         ch.setAttribute(bb, new FixedWaitAttr(40));
+        bb.put((byte) (LCD_D4_PIN | LCD_D5_PIN));
         bb.put((byte) (LCD_D4_PIN | LCD_D5_PIN | LCD_ENABLE_PIN));
+        ch.setAttribute(bb, new FixedWaitAttr(0,500));
         bb.put((byte) (LCD_D4_PIN | LCD_D5_PIN));
         ch.setAttribute(bb, new FixedWaitAttr(5));
-        bb.put((byte) (LCD_D4_PIN | LCD_D5_PIN | LCD_ENABLE_PIN));
         bb.put((byte) (LCD_D4_PIN | LCD_D5_PIN));
-        ch.setAttribute(bb, new FixedWaitAttr(0,200));
         bb.put((byte) (LCD_D4_PIN | LCD_D5_PIN | LCD_ENABLE_PIN));
+        ch.setAttribute(bb, new FixedWaitAttr(0,500));
         bb.put((byte) (LCD_D4_PIN | LCD_D5_PIN));
-        ch.setAttribute(bb, new FixedWaitAttr(0,100));
-        bb.put((byte) (LCD_D5_PIN | LCD_ENABLE_PIN));
+        ch.setAttribute(bb, new FixedWaitAttr(5));
+        bb.put((byte) (LCD_D4_PIN | LCD_D5_PIN));
+        bb.put((byte) (LCD_D4_PIN | LCD_D5_PIN | LCD_ENABLE_PIN));
+        ch.setAttribute(bb, new FixedWaitAttr(0,500));
+        bb.put((byte) (LCD_D4_PIN | LCD_D5_PIN));
+        ch.setAttribute(bb, new FixedWaitAttr(1));
         bb.put((byte) (LCD_D5_PIN));
+        bb.put((byte) (LCD_D5_PIN | LCD_ENABLE_PIN));
+        ch.setAttribute(bb, new FixedWaitAttr(0,500));
+        bb.put((byte) (LCD_D5_PIN));
+        ch.setAttribute(bb, new FixedWaitAttr(0,50000));
+        bb.put((byte) (LCD_D5_PIN | LCD_D6_PIN | LCD_D7_PIN));
+        bb.put((byte) (LCD_D5_PIN | LCD_D6_PIN | LCD_D7_PIN | LCD_ENABLE_PIN));
+        ch.setAttribute(bb, new FixedWaitAttr(0,500));
+        bb.put((byte) (LCD_D5_PIN | LCD_D6_PIN | LCD_D7_PIN));
+        ch.setAttribute(bb, new FixedWaitAttr(0,50000));
     }
 
     @Override

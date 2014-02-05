@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
 import java.util.*;
 
 public class RPiI2CChannel extends AbstractDeviceChannel {
@@ -84,20 +85,26 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
                 default:
                     if (getDeviceRegister() != null) {
                         writer = (ctxt, buffer, length) -> {
-//                            if (buffer.hasArray()) {
-//                                byte[] bytes = buffer.array();
-//                                I2C.writeBytes(ctxt.getDeviceHandle(),ctxt.getDeviceRegister().getRegister(),length,buffer.position(),bytes);
-//                                buffer.position(buffer.position()+length);
-//                            } else {
-                            for (int bi = 0; bi < length; ++bi) {
-                                I2C.writeByte(ctxt.getDeviceHandle(), ctxt.getDeviceRegister().getRegister(), buffer.get());
+                            if (buffer.hasArray()) {
+                                byte[] bytes = buffer.array();
+                                I2C.writeBytes(ctxt.getDeviceHandle(), ctxt.getDeviceRegister().getRegister(), length, buffer.position(), bytes);
+                                buffer.position(buffer.position() + length);
+                            } else {
+                                for (int bi = 0; bi < length; ++bi) {
+                                    I2C.writeByte(ctxt.getDeviceHandle(), ctxt.getDeviceRegister().getRegister(), buffer.get());
+                                }
                             }
-//                            }
                         };
                     } else {
                         writer = (ctxt, buffer, length) -> {
-                            for (int bi = 0; bi < length; ++bi) {
-                                I2C.writeByteDirect(ctxt.deviceHandle, buffer.get());
+                            if (buffer.hasArray()) {
+                                byte[] bytes = buffer.array();
+                                I2C.writeBytesDirect(ctxt.getDeviceHandle(), length, buffer.position(), bytes);
+                                buffer.position(buffer.position() + length);
+                            } else {
+                                for (int bi = 0; bi < length; ++bi) {
+                                    I2C.writeByteDirect(ctxt.getDeviceHandle(), buffer.get());
+                                }
                             }
                         };
                     }
@@ -164,16 +171,16 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
             int runLength = nextPosition - currentPos;
 //            logger.debug("CurrentPos:"+currentPos+" NextPosition:"+nextPosition+" RunLength:"+runLength);
             if (runLength > 0) {
-                if (ctxt.getDeviceRegister() == null) {
-                    for (int c = 0; c < runLength; ++c) {
-                        I2C.writeByteDirect(ctxt.getDeviceHandle(),src.get());
-                    }
-                } else {
-                    for (int c = 0; c < runLength; ++c) {
-                        I2C.writeByte(ctxt.getDeviceHandle(), ctxt.getDeviceRegister().getRegister(), src.get());
-                    }
-                }
-//                ctxt.writer.writeBuffer(ctxt, src, runLength);
+//                if (ctxt.getDeviceRegister() == null) {
+//                    for (int c = 0; c < runLength; ++c) {
+//                        I2C.writeByteDirect(ctxt.getDeviceHandle(),src.get());
+//                    }
+//                } else {
+//                    for (int c = 0; c < runLength; ++c) {
+//                        I2C.writeByte(ctxt.getDeviceHandle(), ctxt.getDeviceRegister().getRegister(), src.get());
+//                    }
+//                }
+                ctxt.writer.writeBuffer(ctxt, src, runLength);
             }
             if (i < ks.size()) {
                 ctxt = applyAttributes(ctxt, bufferAttributes.get(nextPosition).getAttributeReferences());
