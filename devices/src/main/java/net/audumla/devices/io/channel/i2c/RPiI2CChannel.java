@@ -84,15 +84,15 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
                 default:
                     if (getDeviceRegister() != null) {
                         writer = (ctxt, buffer, length) -> {
-                            if (buffer.hasArray()) {
-                                byte[] bytes = buffer.array();
-                                I2C.writeBytes(ctxt.getDeviceHandle(),ctxt.getDeviceRegister().getRegister(),length,buffer.position(),bytes);
-                                buffer.position(buffer.position()+length);
-                            } else {
+//                            if (buffer.hasArray()) {
+//                                byte[] bytes = buffer.array();
+//                                I2C.writeBytes(ctxt.getDeviceHandle(),ctxt.getDeviceRegister().getRegister(),length,buffer.position(),bytes);
+//                                buffer.position(buffer.position()+length);
+//                            } else {
                                 for (int bi = 0; bi < length; ++bi) {
                                     I2C.writeByte(ctxt.getDeviceHandle(), ctxt.getDeviceRegister().getRegister(), buffer.get());
                                 }
-                            }
+//                            }
                         };
                     } else {
                         writer = (ctxt, buffer, length) -> {
