@@ -119,8 +119,8 @@ JNIEXPORT jint JNICALL Java_net_audumla_devices_io_i2c_jni_rpi_I2C_writeBytesDir
     args.size       = I2C_SMBUS_BYTE;
     args.data       = NULL;
 
-//    jbyte *body = (*env)->GetPrimitiveArrayCritical(env, bytes, 0);
-    jbyte *body = (*env)->GetByteArrayElements(env, bytes, 0);
+    jbyte *body = (*env)->GetPrimitiveArrayCritical(env, bytes, 0);
+//    jbyte *body = (*env)->GetByteArrayElements(env, bytes, 0);
     int i;
     int ret = 0;
     for (i = 0; i < size; i++) {
@@ -128,8 +128,8 @@ JNIEXPORT jint JNICALL Java_net_audumla_devices_io_i2c_jni_rpi_I2C_writeBytesDir
         args.command = body[i + offset];
         if ((ret = ioctl(fd, I2C_SMBUS, &args)) < 0) break;
     }
-    (*env)->ReleaseByteArrayElements(env, bytes, body, 0);
-//    (*env)->ReleasePrimitiveArrayCritical(env, bytes, body, 0);
+//    (*env)->ReleaseByteArrayElements(env, bytes, body, 0);
+    (*env)->ReleasePrimitiveArrayCritical(env, bytes, body, 0);
     return ret;
 }
 
