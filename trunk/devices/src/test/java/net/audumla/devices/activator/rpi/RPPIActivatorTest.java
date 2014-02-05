@@ -209,7 +209,7 @@ public class RPPIActivatorTest {
             wait(20);
             I2C.writeByteDirect(fd, (byte) 0xff);
             wait(20);
-            byte[] bytes = new byte[8 * 20];
+            byte[] bytes = new byte[8 * 200];
             for (int c = 0; c < 200; ++c) {
                 byte val = (byte) 0x01;
                 for (int i = 0; i < 8; ++i) {
