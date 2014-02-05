@@ -208,7 +208,7 @@ public class RPPIActivatorTest {
         for (int c = 0; c < 20; ++c) {
             byte val = (byte) 0x01;
             for (int i = 0; i < 8; ++i) {
-                bytes[(c*8)+i] = (byte) ~val;
+                bytes[(c * 8) + i] = (byte) ~val;
                 I2C.writeByteDirect(fd, (byte) ~val);
                 synchronized (this) {
                     wait(5);
@@ -217,7 +217,9 @@ public class RPPIActivatorTest {
             }
         }
 
-        I2C.writeBytesDirect(fd, 0, bytes.length, bytes);
+        for (int i = 0; i < 200; ++i) {
+            I2C.writeBytesDirect(fd, 0, bytes.length, bytes);
+        }
         I2C.close(fd);
     }
 
