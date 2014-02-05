@@ -217,16 +217,7 @@ public class RPPIActivatorTest {
             }
         }
 
-        for (int c = 0; c < 20; ++c) {
-            byte val = (byte) 0x01;
-            for (int i = 0; i < 8; ++i) {
-                I2C.writeBytesDirect(fd, 0, bytes.length, bytes);
-                synchronized (this) {
-                    wait(5);
-                }
-                val = (byte) (val << 1);
-            }
-        }
+        I2C.writeBytesDirect(fd, 0, bytes.length, bytes);
         I2C.close(fd);
     }
 
