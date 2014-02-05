@@ -55,7 +55,7 @@ public class LibraryLoader {
         // first, make sure that this library has not already been previously loaded
         if (loadedLibraries.contains(libraryName)) {
             // debug
-            logger.debug("Library [" + libraryName + "] has already been loaded");
+            logger.debug("Library [" + libraryName + "] has been loaded");
         } else {
             // ---------------------------------------------
             // ATTEMPT LOAD FROM SYSTEM LIBS

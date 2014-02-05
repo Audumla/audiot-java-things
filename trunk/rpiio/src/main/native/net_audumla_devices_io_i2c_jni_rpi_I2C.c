@@ -124,7 +124,6 @@ JNIEXPORT jint JNICALL Java_net_audumla_devices_io_i2c_jni_rpi_I2C_writeBytesDir
     int i;
     int ret = 0;
     for (i = 0; i < size; i++) {
-        sleep(1);
         args.command = body[i + offset];
         if ((ret = ioctl(fd, I2C_SMBUS, &args)) < 0) break;
     }
