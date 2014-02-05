@@ -23,7 +23,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
 import java.util.*;
 
 public class RPiI2CChannel extends AbstractDeviceChannel {
@@ -211,7 +210,12 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
                 }
                 continue;
             }
-            if ((ctxt.deviceRegister = isAttribute(DeviceRegisterAttr.class, a, ctxt.deviceRegister)) == a) continue;
+            if ((ctxt.deviceRegister = isAttribute(DeviceRegisterAttr.class, a, ctxt.deviceRegister)) == a) {
+                if (ctxt.deviceAddress != null && ctxt.busAddress != null) {
+                    ctxt.setDeviceHandle(getDeviceHandle(ctxt.getBusAddress().getAddress(), ctxt.getDeviceAddress().getAddress()));
+                }
+                continue;
+            }
         }
         // this may be a clone of the original if we modified it so it is up to the caller to ensure it
         // references this returned value and not the one passed originally passed in
