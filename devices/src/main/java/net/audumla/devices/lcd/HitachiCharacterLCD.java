@@ -141,9 +141,7 @@ public class HitachiCharacterLCD implements CharacterLCD {
             displayControl = LCD_DISPLAYCONTROL_COMMAND | LCD_DISPLAYON;
             writeMode = LCD_ENTRYMODESET_COMMAND | LCD_ENTRYMODE_INCREMENT_CURSOR;
             //see http://www.adafruit.com/datasheets/HD44780.pdf page 46 for initialization of 4 bit interface
-
-            new RPiI2CChannel().createChannel(new ChannelAddressAttr(1), new DeviceAddressAttr(0x20), new DeviceRegisterAttr(MCP2308DeviceChannel.MCP23008_IODIR)).write((byte) 0x00);
-
+            baseDeviceChannel.createChannel(new DeviceRegisterAttr(MCP2308DeviceChannel.MCP23008_IODIR)).write((byte) 0x00);
             DeviceChannel initChannel = baseDeviceChannel.createChannel();
             ByteBuffer bb = ByteBuffer.allocateDirect(100);
             reset(bb, initChannel);

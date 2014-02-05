@@ -84,6 +84,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
                 default:
                     if (getDeviceRegister() != null) {
                         writer = (ctxt, buffer, length) -> {
+                            logger.debug("Write I2C - ["+length+"] "+ctxt.getBusAddress()+" "+ctxt.getDeviceAddress() + " " + ctxt.getDeviceRegister());
                             if (buffer.hasArray()) {
                                 byte[] bytes = buffer.array();
                                 I2C.writeBytes(ctxt.getDeviceHandle(), ctxt.getDeviceRegister().getRegister(), length, buffer.position(), bytes);
@@ -96,6 +97,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
                         };
                     } else {
                         writer = (ctxt, buffer, length) -> {
+                            logger.debug("Write I2C Direct - ["+length+"] "+ctxt.getBusAddress()+" "+ctxt.getDeviceAddress());
                             if (buffer.hasArray()) {
                                 byte[] bytes = buffer.array();
                                 I2C.writeBytesDirect(ctxt.getDeviceHandle(), length, buffer.position(), bytes);
@@ -198,24 +200,12 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
             }
             // clone the original context so that we do not upset any references to it
             ctxt = ctxt.clone();
-            if ((ctxt.busAddress = isAttribute(ChannelAddressAttr.class, a, ctxt.busAddress)) == a) {
-                if (ctxt.deviceAddress != null) {
-                    ctxt.setDeviceHandle(getDeviceHandle(ctxt.getBusAddress().getAddress(), ctxt.getDeviceAddress().getAddress()));
-                }
-                continue;
-            }
-            if ((ctxt.deviceAddress = isAttribute(DeviceAddressAttr.class, a, ctxt.deviceAddress)) == a) {
-                if (ctxt.busAddress != null) {
-                    ctxt.setDeviceHandle(getDeviceHandle(ctxt.getBusAddress().getAddress(), ctxt.getDeviceAddress().getAddress()));
-                }
-                continue;
-            }
-            if ((ctxt.deviceRegister = isAttribute(DeviceRegisterAttr.class, a, ctxt.deviceRegister)) == a) {
-                if (ctxt.deviceAddress != null && ctxt.busAddress != null) {
-                    ctxt.setDeviceHandle(getDeviceHandle(ctxt.getBusAddress().getAddress(), ctxt.getDeviceAddress().getAddress()));
-                }
-                continue;
-            }
+            if ((ctxt.busAddress = isAttribute(ChannelAddressAttr.class, a, ctxt.busAddress)) == a) continue;
+            if ((ctxt.deviceAddress = isAttribute(DeviceAddressAttr.class, a, ctxt.deviceAddress)) == a) continue;
+            if ((ctxt.deviceRegister = isAttribute(DeviceRegisterAttr.class, a, ctxt.deviceRegister)) == a) continue;
+        }
+        if (ctxt.deviceAddress != null && ctxt.busAddress != null) {
+            ctxt.setDeviceHandle(getDeviceHandle(ctxt.getBusAddress().getAddress(), ctxt.getDeviceAddress().getAddress()));
         }
         // this may be a clone of the original if we modified it so it is up to the caller to ensure it
         // references this returned value and not the one passed originally passed in
@@ -242,18 +232,12 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
 
     @Override
     public int write(byte b) throws IOException {
-        ChannelContext ctxt = new ChannelContext();
-        if (ctxt.deviceHandle != null) {
-            if (ctxt.deviceAddress != null) {
-                if (ctxt.deviceRegister == null) {
-                    I2C.writeByteDirect(ctxt.deviceHandle, b);
-                } else {
-                    I2C.writeByte(ctxt.deviceHandle, ctxt.deviceRegister.getRegister(), b);
-                }
-                return 1;
-            }
+        logger.debug("Write byte I2C ["+b+"] - "+defaultContext.getBusAddress()+" "+defaultContext.getDeviceAddress() + " " + defaultContext.getDeviceRegister());
+        if (defaultContext.getDeviceRegister() == null) {
+            return I2C.writeByteDirect(defaultContext.getDeviceHandle(), b);
+        } else {
+            return I2C.writeByte(defaultContext.getDeviceHandle(), defaultContext.getDeviceRegister().getRegister(), b);
         }
-        return 0;
     }
 
     @Override
