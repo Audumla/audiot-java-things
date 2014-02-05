@@ -204,12 +204,25 @@ public class RPPIActivatorTest {
         int fd = I2C.open("/dev/i2c-1", PCF8574GPIOActivatorFactory.PCF8574_0x21);
         Activator power = getPower(6, 7, rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO1));
         power.setState(ActivatorState.ACTIVATED);
-        for (int c = 0; c < 200; ++c) {
+        byte[] bytes = new byte[8 * 20];
+        for (int c = 0; c < 20; ++c) {
             byte val = (byte) 0x01;
             for (int i = 0; i < 8; ++i) {
+                bytes[(c*8)+i] = (byte) ~val;
                 I2C.writeByteDirect(fd, (byte) ~val);
                 synchronized (this) {
                     wait(10);
+                }
+                val = (byte) (val << 1);
+            }
+        }
+
+        for (int c = 0; c < 20; ++c) {
+            byte val = (byte) 0x01;
+            for (int i = 0; i < 8; ++i) {
+                I2C.writeBytesDirect(fd, 0, bytes.length, bytes);
+                synchronized (this) {
+                    wait(5);
                 }
                 val = (byte) (val << 1);
             }
