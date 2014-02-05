@@ -120,6 +120,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
 
         public void setDeviceHandle(Integer deviceHandle) {
             this.deviceHandle = deviceHandle;
+            setDeviceWidth(getDeviceWidth()); // reset write methods
         }
 
         final protected ChannelContext clone() {
