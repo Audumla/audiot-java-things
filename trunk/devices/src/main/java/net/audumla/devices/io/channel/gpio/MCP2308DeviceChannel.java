@@ -46,12 +46,11 @@ public class MCP2308DeviceChannel extends AbstractDeviceChannel {
 
     @Override
     public boolean supportsAttribute(Class<? extends Attribute> attr) {
-        return DeviceRegisterAttr.class.isAssignableFrom(attr) || FixedWaitAttr.class.isAssignableFrom(attr);
+        return DeviceWriteRegisterAttr.class.isAssignableFrom(attr) || FixedWaitAttr.class.isAssignableFrom(attr);
     }
     @Override
     public DeviceChannel createChannel(Attribute... attr) {
-        MCP2308DeviceChannel cc = new MCP2308DeviceChannel(targetChannel.createChannel(attr));
-        return cc;
+        return new MCP2308DeviceChannel(targetChannel.createChannel(attr));
     }
 
     @Override

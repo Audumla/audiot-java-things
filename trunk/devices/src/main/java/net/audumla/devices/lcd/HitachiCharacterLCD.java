@@ -70,13 +70,15 @@ public class HitachiCharacterLCD implements CharacterLCD {
     private byte writeMode;
     private DeviceChannel baseDeviceChannel;
 
+    private DeviceChannel ioChannel; // the channel used to read and write to the LCD interface
+
     public static Logger logger = Logger.getLogger(HitachiCharacterLCD.class);
     private int columns = 20;
     private int rows = 4;
 
     public HitachiCharacterLCD(String name, int address) {
         this.name = name;
-        baseDeviceChannel = new RPiI2CChannel().createChannel(new ChannelAddressAttr(1), new DeviceAddressAttr(address), new DeviceRegisterAttr(MCP2308DeviceChannel.MCP23008_GPIO));
+        baseDeviceChannel = new RPiI2CChannel().createChannel(new ChannelAddressAttr(1), new DeviceAddressAttr(address), new DeviceWriteRegisterAttr(MCP2308DeviceChannel.MCP23008_GPIO));
         backlightStatus = LCD_BACKLIGHT;
     }
 
@@ -102,7 +104,7 @@ public class HitachiCharacterLCD implements CharacterLCD {
             displayControl = LCD_DISPLAYCONTROL_COMMAND | LCD_DISPLAYON;
             writeMode = LCD_ENTRYMODESET_COMMAND | LCD_ENTRYMODE_INCREMENT_CURSOR;
             //see http://www.adafruit.com/datasheets/HD44780.pdf page 46 for initialization of 4 bit interface
-            baseDeviceChannel.createChannel(new DeviceRegisterAttr(MCP2308DeviceChannel.MCP23008_IODIR)).write((byte) 0x00);
+            baseDeviceChannel.createChannel(new DeviceWriteRegisterAttr(MCP2308DeviceChannel.MCP23008_IODIR)).write((byte) 0x00);
             DeviceChannel initChannel = baseDeviceChannel.createChannel();
             ByteBuffer bb = ByteBuffer.allocateDirect(100);
             reset(bb, initChannel);
@@ -130,7 +132,7 @@ public class HitachiCharacterLCD implements CharacterLCD {
         for (byte value : values) {
             bb.put((byte) (value | backlightStatus | LCD_ENABLE_PIN | mode));
             bb.put((byte) (value | backlightStatus | mode));
-            ch.setAttribute(bb, new FixedWaitAttr(0, 50));
+            ch.setAttribute(bb, new FixedWaitAttr(0, 400));
         }
     }
 

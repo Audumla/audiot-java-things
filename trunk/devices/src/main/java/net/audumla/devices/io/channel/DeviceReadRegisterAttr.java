@@ -19,12 +19,12 @@ package net.audumla.devices.io.channel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DeviceRegisterAttr implements DeviceChannel.Attribute{
-    private static final Logger logger = LoggerFactory.getLogger(DeviceRegisterAttr.class);
+public class DeviceReadRegisterAttr implements DeviceChannel.Attribute{
+    private static final Logger logger = LoggerFactory.getLogger(DeviceReadRegisterAttr.class);
 
     protected int register;
 
-    public DeviceRegisterAttr(int register) {
+    public DeviceReadRegisterAttr(int register) {
         this.register = register;
     }
 
@@ -38,7 +38,7 @@ public class DeviceRegisterAttr implements DeviceChannel.Attribute{
 
     @Override
     public String toString() {
-        return "DeviceRegister{" +
+        return "DeviceReadRegister{" +
                 "register=0x" + Integer.toHexString(register) +
                 '}';
     }
@@ -48,7 +48,7 @@ public class DeviceRegisterAttr implements DeviceChannel.Attribute{
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        DeviceRegisterAttr that = (DeviceRegisterAttr) o;
+        DeviceReadRegisterAttr that = (DeviceReadRegisterAttr) o;
 
         return register == that.register;
 
