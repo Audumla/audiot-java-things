@@ -9,7 +9,7 @@
           <property key="Bundle-DocURL" value="http://www.audumla.net" />
           <property key="Bundle-NativeCode" value="lib/audumlaRPi.so ; osname=Linux; processor=ARM" />
           <property key="Bundle-Name" value="Raspberry Pi IO" />
-          <property key="Include-Resource" value="lib/audumlaRPi.so=$MODULE_DIR$/libraries/lib/audumlaRPi.so" />
+          <property key="Include-Resource" value="lib/audumlaRPi.so=E:/Projects/audumla.net/trunk/rpiio/libraries/lib/audumlaRPi.so" />
         </additionalProperties>
         <additionalJARContents />
       </configuration>

@@ -19,35 +19,39 @@ package net.audumla.devices.io.channel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DeviceWidthAttr implements DeviceChannel.Attribute {
-    private static final Logger logger = LoggerFactory.getLogger(DeviceWidthAttr.class);
+public class DeviceWriteRegisterAttr implements DeviceChannel.Attribute{
+    private static final Logger logger = LoggerFactory.getLogger(DeviceWriteRegisterAttr.class);
 
-    public enum DeviceWidth {WIDTH8, WIDTH16, WIDTH32, WIDTH64}
+    protected int register;
 
-    protected DeviceWidth width;
-
-    public DeviceWidthAttr(DeviceWidth width) {
-        this.width = width;
+    public DeviceWriteRegisterAttr(int register) {
+        this.register = register;
     }
 
-    public DeviceWidth getWidth() {
-        return width;
+    public void setRegister(int register) {
+        this.register = register;
     }
 
-    public void setWidth(DeviceWidth width) {
-        this.width = width;
+    public int getRegister() {
+        return register;
+    }
+
+    @Override
+    public String toString() {
+        return "DeviceWriteRegister{" +
+                "register=0x" + Integer.toHexString(register) +
+                '}';
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        DeviceWidthAttr that = (DeviceWidthAttr) o;
-        return width == that.width;
+
+        DeviceWriteRegisterAttr that = (DeviceWriteRegisterAttr) o;
+
+        return register == that.register;
+
     }
 
-    @Override
-    public int hashCode() {
-        return width != null ? width.hashCode() : 0;
-    }
 }

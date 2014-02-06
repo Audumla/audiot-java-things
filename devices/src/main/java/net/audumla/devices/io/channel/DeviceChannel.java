@@ -86,9 +86,15 @@ public interface DeviceChannel extends ByteChannel {
     DeviceChannel createChannel(Attribute ... attr);
 
     /**
-     * Writes a single byte using only the primary attributes associated with this channel
+     * Writes a single byte or word (depending on the width set) using only the primary attributes associated with this channel
      * @param b the byte to be written
      */
     int write(byte b) throws IOException;
 
+    /**
+     * Reads a single byte or word (depending on the width set) using only the primary attributes associated with this channel
+     *
+     * @return the value that was read
+     */
+    int read() throws IOException;
 }

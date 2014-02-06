@@ -19,35 +19,20 @@ package net.audumla.devices.io.channel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DeviceWidthAttr implements DeviceChannel.Attribute {
-    private static final Logger logger = LoggerFactory.getLogger(DeviceWidthAttr.class);
+public class BitMaskAttr implements DeviceChannel.Attribute {
+    private static final Logger logger = LoggerFactory.getLogger(BitMaskAttr.class);
 
-    public enum DeviceWidth {WIDTH8, WIDTH16, WIDTH32, WIDTH64}
+    private int bitmask;
 
-    protected DeviceWidth width;
-
-    public DeviceWidthAttr(DeviceWidth width) {
-        this.width = width;
+    public BitMaskAttr(int bitmask) {
+        this.bitmask = bitmask;
     }
 
-    public DeviceWidth getWidth() {
-        return width;
+    public int getBitmask() {
+        return bitmask;
     }
 
-    public void setWidth(DeviceWidth width) {
-        this.width = width;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        DeviceWidthAttr that = (DeviceWidthAttr) o;
-        return width == that.width;
-    }
-
-    @Override
-    public int hashCode() {
-        return width != null ? width.hashCode() : 0;
+    public void setBitmask(int bitmask) {
+        this.bitmask = bitmask;
     }
 }

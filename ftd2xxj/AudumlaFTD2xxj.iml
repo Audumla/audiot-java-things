@@ -6,7 +6,7 @@
         <additionalProperties>
           <property key="Bundle-NativeCode" value="lib/ftd2xxj.dll ; osname=Win32 ; processor=x86" />
           <property key="Bundle-Name" value="Audumla FTD2xxj" />
-          <property key="Include-Resource" value="lib/ftd2xxj.dll=$MODULE_DIR$/libraries/lib/ftd2xxj.dll,lib/libftd2xxj.so=$MODULE_DIR$/libraries/lib/libftd2xxj.so" />
+          <property key="Include-Resource" value="lib/ftd2xxj.dll=E:/Projects/audumla.net/trunk/ftd2xxj/libraries/lib/ftd2xxj.dll,lib/libftd2xxj.so=E:/Projects/audumla.net/trunk/ftd2xxj/libraries/lib/libftd2xxj.so" />
         </additionalProperties>
         <additionalJARContents />
       </configuration>
