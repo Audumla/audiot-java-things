@@ -270,10 +270,12 @@ public class RPPIActivatorTest {
 
     @Test
     public void testSainsSmartRelayFromPCF8574StreamMask() throws Exception {
-        DeviceChannel d = new RPiI2CChannel().createChannel(new ChannelAddressAttr(1), new DeviceAddressAttr(PCF8574GPIOActivatorFactory.PCF8574_0x21),new BitMaskAttr(0xf0));
+        DeviceChannel d = new RPiI2CChannel().createChannel(new ChannelAddressAttr(1), new DeviceAddressAttr(PCF8574GPIOActivatorFactory.PCF8574_0x21));
+        d.write((byte) 0x01);
         Activator power = getPower(6, 7, rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO1));
         power.setState(ActivatorState.ACTIVATED);
         ByteBuffer bb = ByteBuffer.allocate(50);
+        d.setAttribute(bb,new BitMaskAttr(0xf0));
         byte val = (byte) 0x01;
         for (int i = 0; i < 8; ++i) {
             bb.put((byte) ~val);
