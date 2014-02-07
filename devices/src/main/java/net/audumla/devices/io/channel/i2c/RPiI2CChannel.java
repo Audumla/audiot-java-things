@@ -83,20 +83,37 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
         }
 
         public void setDeviceWidth(DeviceWidthAttr deviceWidth) {
+            //TODO: this needs to be simplified and most of the logic pushed down into the native code so that we can mask within a bulk write
             switch (deviceWidth.getWidth()) {
                 case WIDTH8:
-                    writer = (getDeviceWriteRegister() != null) ?
-                            (ctxt, buffer, length, masked) -> {
-                                for (int bi = 0; bi < length; ++bi) {
-                                    I2C.writeByte(ctxt.getDeviceHandle(), ctxt.getDeviceWriteRegister().getRegister(), buffer.get());
+                    if (getBitMask() == null) {
+                        final int mask = getBitMask().getBitmask();
+                        writer = (getDeviceWriteRegister() != null) ?
+                                (ctxt, buffer, length, masked) -> {
+                                    for (int bi = 0; bi < length; ++bi) {
+                                        I2C.writeByte(ctxt.getDeviceHandle(), ctxt.getDeviceWriteRegister().getRegister(), (byte) ((buffer.get() & mask) | masked));
+                                    }
                                 }
-                            }
-                            :
-                            (ctxt, buffer, length, masked) -> {
-                                for (int bi = 0; bi < length; ++bi) {
-                                    I2C.writeByteDirect(ctxt.getDeviceHandle(), buffer.get());
+                                :
+                                (ctxt, buffer, length, masked) -> {
+                                    for (int bi = 0; bi < length; ++bi) {
+                                        I2C.writeByteDirect(ctxt.getDeviceHandle(), (byte) ((buffer.get() & mask) | masked));
+                                    }
+                                };
+                    } else {
+                        writer = (getDeviceWriteRegister() != null) ?
+                                (ctxt, buffer, length, masked) -> {
+                                    for (int bi = 0; bi < length; ++bi) {
+                                        I2C.writeByte(ctxt.getDeviceHandle(), ctxt.getDeviceWriteRegister().getRegister(), buffer.get());
+                                    }
                                 }
-                            };
+                                :
+                                (ctxt, buffer, length, masked) -> {
+                                    for (int bi = 0; bi < length; ++bi) {
+                                        I2C.writeByteDirect(ctxt.getDeviceHandle(), buffer.get());
+                                    }
+                                };
+                    }
                     break;
                 case WIDTH16:
                 case WIDTH32:
@@ -182,12 +199,15 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
         ChannelContext ctxt = defaultContext;
         Set<Integer> ks = bufferAttributes.keySet();
         Iterator<Integer> it = ks.iterator();
-        int masked = defaultContext.getBitMask() != null ?  read() | ~defaultContext.getBitMask().getBitmask() : 0;
+        // if we have a mask then read the current value so that when we apply the mask to the write value we can fill in any unmasked bits
+        // with the existing bits that are on the device. This prevents us writting 0s over any existing 1s on the target device
+        // To get the masked value we need to invert the mask so that we only grab the values that are not to be overridden.
+        int masked = defaultContext.getBitMask() != null ? read() | ~defaultContext.getBitMask().getBitmask() : 0;
         for (int i = 0; i < ks.size() + 1; ++i) {
             int nextPosition = it.hasNext() ? it.next() : src.limit();
             int runLength = nextPosition - src.position();
             if (runLength > 0) {
-                ctxt.writer.writeBuffer(ctxt, src, runLength,masked);
+                ctxt.writer.writeBuffer(ctxt, src, runLength, masked);
             }
             if (i < ks.size()) {
                 ctxt = ctxt.applyAttributes(bufferAttributes.get(nextPosition).getAttributeReferences());
