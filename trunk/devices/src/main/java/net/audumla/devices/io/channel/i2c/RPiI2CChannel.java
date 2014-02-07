@@ -168,7 +168,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
                 }
                 if ((ctxt.bitMask = isAttribute(BitMaskAttr.class, a, ctxt.bitMask)) == a) continue;
                 // clone the original context so that we do not upset any references to it
-                ctxt = clone();
+                ctxt = ctxt.clone();
                 deviceChange |= (ctxt.busAddress = isAttribute(ChannelAddressAttr.class, a, ctxt.busAddress)) == a;
                 deviceChange |= (ctxt.deviceAddress = isAttribute(DeviceAddressAttr.class, a, ctxt.deviceAddress)) == a;
                 ctxt.deviceWriteRegister = isAttribute(DeviceWriteRegisterAttr.class, a, ctxt.deviceWriteRegister);
