@@ -87,8 +87,8 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
             switch (deviceWidth.getWidth()) {
                 case WIDTH8:
                     if (getBitMask() != null) {
-                        final int mask = getBitMask().getBitmask();
-                        logger.debug("Mask:"+Integer.toBinaryString(getBitMask().getBitmask()));
+                        final int mask = getBitMask().getMask();
+                        logger.debug("Mask:"+Integer.toBinaryString(getBitMask().getMask()));
                         writer = (getDeviceWriteRegister() != null) ?
                                 (ctxt, buffer, length, masked) -> {
                                     logger.debug("Masked:"+Integer.toBinaryString(masked));
@@ -142,6 +142,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
 
         public void setBitMask(BitMaskAttr bitMask) {
             this.bitMask = bitMask;
+            setDeviceWidth(getDeviceWidth()); // reset write methods
         }
 
         final protected ChannelContext clone() {
@@ -169,9 +170,9 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
                     ((ActionAttr) a).performAction();
                     continue;
                 }
-                if ((ctxt.bitMask = isAttribute(BitMaskAttr.class, a, ctxt.bitMask)) == a) continue;
                 // clone the original context so that we do not upset any references to it
                 ctxt = ctxt.clone();
+                if ((ctxt.bitMask = isAttribute(BitMaskAttr.class, a, ctxt.bitMask)) == a) continue;
                 deviceChange |= (ctxt.busAddress = isAttribute(ChannelAddressAttr.class, a, ctxt.busAddress)) == a;
                 deviceChange |= (ctxt.deviceAddress = isAttribute(DeviceAddressAttr.class, a, ctxt.deviceAddress)) == a;
                 ctxt.deviceWriteRegister = isAttribute(DeviceWriteRegisterAttr.class, a, ctxt.deviceWriteRegister);
@@ -205,7 +206,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
         // if we have a mask then read the current value so that when we apply the mask to the write value we can fill in any unmasked bits
         // with the existing bits that are on the device. This prevents us writting 0s over any existing 1s on the target device
         // To get the masked value we need to invert the mask so that we only grab the values that are not to be overridden.
-        int masked = defaultContext.getBitMask() != null ? read() | ~defaultContext.getBitMask().getBitmask() : 0;
+        int masked = defaultContext.getBitMask() != null ? read() | ~defaultContext.getBitMask().getMask() : 0;
         for (int i = 0; i < ks.size() + 1; ++i) {
             int nextPosition = it.hasNext() ? it.next() : src.limit();
             int runLength = nextPosition - src.position();
