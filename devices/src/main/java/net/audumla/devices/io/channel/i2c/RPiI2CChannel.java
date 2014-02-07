@@ -88,17 +88,17 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
                 case WIDTH8:
                     if (getBitMask() != null) {
                         final int mask = getBitMask().getMask();
-                        logger.debug("Mask:"+Integer.toBinaryString(getBitMask().getMask()));
+                        logger.debug("Mask:" + Integer.toBinaryString(getBitMask().getMask()));
                         writer = (getDeviceWriteRegister() != null) ?
                                 (ctxt, buffer, length, masked) -> {
-                                    logger.debug("Masked:"+Integer.toBinaryString(masked));
+                                    logger.debug("Masked:" + Integer.toBinaryString(masked));
                                     for (int bi = 0; bi < length; ++bi) {
                                         I2C.writeByte(ctxt.getDeviceHandle(), ctxt.getDeviceWriteRegister().getRegister(), (byte) ((buffer.get() & mask) | masked));
                                     }
                                 }
                                 :
                                 (ctxt, buffer, length, masked) -> {
-                                    logger.debug("Masked:"+Integer.toBinaryString(masked));
+                                    logger.debug("Masked:" + Integer.toBinaryString(masked));
                                     for (int bi = 0; bi < length; ++bi) {
                                         I2C.writeByteDirect(ctxt.getDeviceHandle(), (byte) ((buffer.get() & mask) | masked));
                                     }
@@ -172,7 +172,10 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
                 }
                 // clone the original context so that we do not upset any references to it
                 ctxt = ctxt.clone();
-                if ((ctxt.bitMask = isAttribute(BitMaskAttr.class, a, ctxt.bitMask)) == a) continue;
+                if ((ctxt.bitMask = isAttribute(BitMaskAttr.class, a, ctxt.bitMask)) == a) {
+                    ctxt.setDeviceWidth(getDeviceWidth());
+                    continue;
+                }
                 deviceChange |= (ctxt.busAddress = isAttribute(ChannelAddressAttr.class, a, ctxt.busAddress)) == a;
                 deviceChange |= (ctxt.deviceAddress = isAttribute(DeviceAddressAttr.class, a, ctxt.deviceAddress)) == a;
                 ctxt.deviceWriteRegister = isAttribute(DeviceWriteRegisterAttr.class, a, ctxt.deviceWriteRegister);
