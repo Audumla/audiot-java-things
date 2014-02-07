@@ -28,7 +28,7 @@ public class BitMaskAttr implements DeviceChannel.Attribute {
         this.bitmask = bitmask;
     }
 
-    public int getBitmask() {
+    public int getMask() {
         return bitmask;
     }
 
