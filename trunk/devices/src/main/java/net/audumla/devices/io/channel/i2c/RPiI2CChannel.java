@@ -86,7 +86,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
             //TODO: this needs to be simplified and most of the logic pushed down into the native code so that we can mask within a bulk write
             switch (deviceWidth.getWidth()) {
                 case WIDTH8:
-                    if (getBitMask() == null) {
+                    if (getBitMask() != null) {
                         final int mask = getBitMask().getBitmask();
                         writer = (getDeviceWriteRegister() != null) ?
                                 (ctxt, buffer, length, masked) -> {
