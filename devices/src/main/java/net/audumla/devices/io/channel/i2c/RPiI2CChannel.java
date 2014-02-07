@@ -238,7 +238,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
 
     @Override
     public int write(byte b) throws IOException {
-//        logger.debug("Write byte I2C ["+b+"] - "+defaultContext.getBusAddress()+" "+defaultContext.getDeviceAddress() + " " + defaultContext.getDeviceWriteRegister());
+        logger.debug("Write byte I2C ["+b+"] - "+defaultContext.getBusAddress()+" "+defaultContext.getDeviceAddress() + " " + defaultContext.getDeviceWriteRegister());
         if (defaultContext.getDeviceWriteRegister() == null) {
             return I2C.writeByteDirect(defaultContext.getDeviceHandle(), b);
         } else {
@@ -254,7 +254,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
                         I2C.readByteDirect(defaultContext.getDeviceHandle()) :
                         I2C.readByte(defaultContext.getDeviceHandle(), defaultContext.getDeviceReadRegister().getRegister());
             case WIDTH16:
-                if (defaultContext.getDeviceWriteRegister() != null)
+                if (defaultContext.getDeviceReadRegister() != null)
                     return I2C.readWord(defaultContext.getDeviceHandle(), defaultContext.getDeviceReadRegister().getRegister());
         }
         return -1;
