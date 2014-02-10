@@ -41,7 +41,7 @@ public class I2ctest {
         assert val == d.read();
         d.write((byte) ~val);
         logger.debug("Value : "+d.read());
-        assert ~val == d.read();
+        assert ((byte)~val) == d.read();
     }
 
 }
