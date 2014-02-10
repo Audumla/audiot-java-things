@@ -74,27 +74,74 @@ JNIEXPORT jint JNICALL Java_net_audumla_devices_io_i2c_jni_rpi_I2C_writeWords
 /*
  * Class:     net_audumla_devices_io_i2c_jni_rpi_I2C
  * Method:    readByteDirect
- * Signature: (I)I
+ * Signature: (I)B
  */
-JNIEXPORT jint JNICALL Java_net_audumla_devices_io_i2c_jni_rpi_I2C_readByteDirect
+JNIEXPORT jbyte JNICALL Java_net_audumla_devices_io_i2c_jni_rpi_I2C_readByteDirect
   (JNIEnv *, jclass, jint);
 
 /*
  * Class:     net_audumla_devices_io_i2c_jni_rpi_I2C
  * Method:    readByte
- * Signature: (II)I
+ * Signature: (II)B
  */
-JNIEXPORT jint JNICALL Java_net_audumla_devices_io_i2c_jni_rpi_I2C_readByte
+JNIEXPORT jbyte JNICALL Java_net_audumla_devices_io_i2c_jni_rpi_I2C_readByte
   (JNIEnv *, jclass, jint, jint);
 
 /*
  * Class:     net_audumla_devices_io_i2c_jni_rpi_I2C
  * Method:    readWord
- * Signature: (II)I
+ * Signature: (II)C
  */
-JNIEXPORT jint JNICALL Java_net_audumla_devices_io_i2c_jni_rpi_I2C_readWord
+JNIEXPORT jchar JNICALL Java_net_audumla_devices_io_i2c_jni_rpi_I2C_readWord
   (JNIEnv *, jclass, jint, jint);
 
+/*
+ * Class:     net_audumla_devices_io_i2c_jni_rpi_I2C
+ * Method:    writeByteDirectMask
+ * Signature: (IBB)I
+ */
+JNIEXPORT jint JNICALL Java_net_audumla_devices_io_i2c_jni_rpi_I2C_writeByteDirectMask
+  (JNIEnv *, jclass, jint, jbyte, jbyte);
+
+/*
+ * Class:     net_audumla_devices_io_i2c_jni_rpi_I2C
+ * Method:    writeBytesDirectMask
+ * Signature: (III[BB)I
+ */
+JNIEXPORT jint JNICALL Java_net_audumla_devices_io_i2c_jni_rpi_I2C_writeBytesDirectMask
+  (JNIEnv *, jclass, jint, jint, jint, jbyteArray, jbyte);
+
+/*
+ * Class:     net_audumla_devices_io_i2c_jni_rpi_I2C
+ * Method:    writeByteMask
+ * Signature: (IIBB)I
+ */
+JNIEXPORT jint JNICALL Java_net_audumla_devices_io_i2c_jni_rpi_I2C_writeByteMask
+  (JNIEnv *, jclass, jint, jint, jbyte, jbyte);
+
+/*
+ * Class:     net_audumla_devices_io_i2c_jni_rpi_I2C
+ * Method:    writeBytesMask
+ * Signature: (IIII[BB)I
+ */
+JNIEXPORT jint JNICALL Java_net_audumla_devices_io_i2c_jni_rpi_I2C_writeBytesMask
+  (JNIEnv *, jclass, jint, jint, jint, jint, jbyteArray, jbyte);
+
+/*
+ * Class:     net_audumla_devices_io_i2c_jni_rpi_I2C
+ * Method:    writeWordMask
+ * Signature: (IICC)I
+ */
+JNIEXPORT jint JNICALL Java_net_audumla_devices_io_i2c_jni_rpi_I2C_writeWordMask
+  (JNIEnv *, jclass, jint, jint, jchar, jchar);
+
+/*
+ * Class:     net_audumla_devices_io_i2c_jni_rpi_I2C
+ * Method:    writeWordsMask
+ * Signature: (IIII[CC)I
+ */
+JNIEXPORT jint JNICALL Java_net_audumla_devices_io_i2c_jni_rpi_I2C_writeWordsMask
+  (JNIEnv *, jclass, jint, jint, jint, jint, jcharArray, jchar);
 
 #ifdef __cplusplus
 }
