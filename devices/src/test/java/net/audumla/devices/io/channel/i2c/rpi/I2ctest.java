@@ -16,21 +16,16 @@ package net.audumla.devices.io.channel.i2c.rpi;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import net.audumla.devices.activator.Activator;
-import net.audumla.devices.activator.ActivatorState;
 import net.audumla.devices.activator.factory.PCF8574GPIOActivatorFactory;
-import net.audumla.devices.activator.factory.RPIGPIOActivatorFactory;
-import net.audumla.devices.io.channel.*;
+import net.audumla.devices.io.channel.BitMaskAttr;
+import net.audumla.devices.io.channel.ChannelAddressAttr;
+import net.audumla.devices.io.channel.DeviceAddressAttr;
+import net.audumla.devices.io.channel.DeviceChannel;
 import net.audumla.devices.io.channel.i2c.RPiI2CChannel;
 import org.junit.Assert;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.nio.ByteBuffer;
 
 public class I2ctest {
-    private static final Logger logger = LoggerFactory.getLogger(I2ctest.class);
 
 
     @Test
@@ -38,9 +33,22 @@ public class I2ctest {
         DeviceChannel d = new RPiI2CChannel().createChannel(new ChannelAddressAttr(1), new DeviceAddressAttr(PCF8574GPIOActivatorFactory.PCF8574_0x21));
         byte val = (byte) 0x01;
         d.write(val);
-        Assert.assertEquals(val,d.read());
+        Assert.assertEquals(val, d.read());
         d.write((byte) ~val);
-        Assert.assertEquals(~val,d.read());
+        Assert.assertEquals(~val, d.read());
     }
 
+    @Test
+    public void PCF8574RWMask8() throws Exception {
+        DeviceChannel d = new RPiI2CChannel().createChannel(
+                new ChannelAddressAttr(1),
+                new DeviceAddressAttr(PCF8574GPIOActivatorFactory.PCF8574_0x21),
+                new BitMaskAttr(0x0f));
+
+        byte val = (byte) 0xff;
+        d.write(val);
+        Assert.assertEquals(0x0f, d.read());
+        d.write((byte) ~val);
+        Assert.assertEquals(~val & 0x0f, d.read());
+    }
 }
