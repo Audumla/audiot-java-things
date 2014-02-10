@@ -121,10 +121,12 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
                 if (getBitMask() != null) {
                     switch (getDeviceWidth().getWidth()) {
                         case WIDTH8:
-                            atomicReader = (ctxt) -> I2C.readByte(ctxt.getDeviceHandle(), ctxt.getDeviceWriteRegister().getRegister()) & getBitMask().getMask();
+                            atomicReader = (ctxt) -> I2C.readByte(ctxt.getDeviceHandle(), ctxt.getDeviceReadRegister().getRegister()) & getBitMask().getMask();
                             bufferReader = (ctxt, buffer, length) -> {
-
-
+                                for (int bi = 0; bi < length; ++bi) {
+                                    buffer.put((byte) atomicReader.read(ctxt));
+                                }
+                                return length;
                             };
                             atomicWriter = (ctxt, value) -> I2C.writeByteMask(ctxt.getDeviceHandle(), ctxt.getDeviceWriteRegister().getRegister(), (byte) value, (byte) getBitMask().getMask());
                             bufferWriter = (ctxt, buffer, length) -> {
@@ -139,6 +141,13 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
                             };
                             break;
                         case WIDTH16:
+                            atomicReader = (ctxt) -> I2C.readWord(ctxt.getDeviceHandle(), ctxt.getDeviceReadRegister().getRegister()) & getBitMask().getMask();
+                            bufferReader = (ctxt, buffer, length) -> {
+                                for (int bi = 0; bi < length; ++bi) {
+                                    buffer.putChar((char) atomicReader.read(ctxt));
+                                }
+                                return length;
+                            };
                             atomicWriter = (ctxt, value) -> I2C.writeWordMask(ctxt.getDeviceHandle(), ctxt.getDeviceWriteRegister().getRegister(), (char) value, (char) getBitMask().getMask());
                             bufferWriter = (ctxt, buffer, length) -> {
                                 if (buffer.hasArray()) {
@@ -157,6 +166,13 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
                 } else {
                     switch (getDeviceWidth().getWidth()) {
                         case WIDTH8:
+                            atomicReader = (ctxt) -> I2C.readByte(ctxt.getDeviceHandle(), ctxt.getDeviceReadRegister().getRegister());
+                            bufferReader = (ctxt, buffer, length) -> {
+                                for (int bi = 0; bi < length; ++bi) {
+                                    buffer.put((byte) atomicReader.read(ctxt));
+                                }
+                                return length;
+                            };
                             atomicWriter = (ctxt, value) -> I2C.writeByte(ctxt.getDeviceHandle(), ctxt.getDeviceWriteRegister().getRegister(), (byte) value);
                             bufferWriter = (ctxt, buffer, length) -> {
                                 if (buffer.hasArray()) {
@@ -170,6 +186,13 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
                             };
                             break;
                         case WIDTH16:
+                            atomicReader = (ctxt) -> I2C.readWord(ctxt.getDeviceHandle(), ctxt.getDeviceReadRegister().getRegister());
+                            bufferReader = (ctxt, buffer, length) -> {
+                                for (int bi = 0; bi < length; ++bi) {
+                                    buffer.putChar((char) atomicReader.read(ctxt));
+                                }
+                                return length;
+                            };
                             atomicWriter = (ctxt, value) -> I2C.writeWord(ctxt.getDeviceHandle(), ctxt.getDeviceWriteRegister().getRegister(), (char) value);
                             bufferWriter = (ctxt, buffer, length) -> {
                                 if (buffer.hasArray()) {
@@ -187,7 +210,14 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
                     }
                 }
             } else {
+                bufferReader = (ctxt, buffer, length) -> {
+                    for (int bi = 0; bi < length; ++bi) {
+                        buffer.put((byte) atomicReader.read(ctxt));
+                    }
+                    return length;
+                };
                 if (getBitMask() != null) {
+                    atomicReader = (ctxt) -> I2C.readByteDirect(ctxt.getDeviceHandle()) & getBitMask().getMask();
                     atomicWriter = (ctxt, value) -> I2C.writeByteDirectMask(ctxt.getDeviceHandle(), (byte) value, (byte) getBitMask().getMask());
                     bufferWriter = (ctxt, buffer, length) -> {
                         if (buffer.hasArray()) {
@@ -200,6 +230,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
                         }
                     };
                 } else {
+                    atomicReader = (ctxt) -> I2C.readByteDirect(ctxt.getDeviceHandle());
                     atomicWriter = (ctxt, value) -> I2C.writeByteDirect(ctxt.getDeviceHandle(), (byte) value);
                     bufferWriter = (ctxt, buffer, length) -> {
                         if (buffer.hasArray()) {
@@ -320,9 +351,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
 
     @Override
     public byte read() throws IOException {
-        return defaultContext.getDeviceReadRegister() == null ?
-                I2C.readByteDirect(defaultContext.getDeviceHandle()) :
-                I2C.readByte(defaultContext.getDeviceHandle(), defaultContext.getDeviceReadRegister().getRegister());
+        return (byte) defaultContext.atomicReader.read(defaultContext);
     }
 
     @Override
@@ -364,27 +393,22 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
 
     @Override
     public int read(ByteBuffer dst) throws IOException {
-        int i = 0;
-        switch (defaultContext.getDeviceWidth().getWidth()) {
-            case WIDTH8:
-                for (i = 0; i < dst.position() - dst.limit(); ++i) {
-                    dst.put((byte) read());
-                }
-                break;
-            case WIDTH16:
-                for (i = 0; i < (dst.position() - dst.limit()) / 2; ++i) {
-                    dst.putChar((char) read());
-                }
-                break;
-            case WIDTH32:
-                for (i = 0; i < (dst.position() - dst.limit() / 4); ++i) {
-                    dst.putInt(read());
-                }
-                break;
-            default:
-                return -1;
+        int bytesRead = 0;
+        ChannelContext ctxt = defaultContext;
+        Set<Integer> ks = bufferAttributes.keySet();
+        Iterator<Integer> it = ks.iterator();
+        for (int i = 0; i < ks.size() + 1; ++i) {
+            int nextPosition = it.hasNext() ? it.next() : dst.limit();
+            int runLength = nextPosition - dst.position();
+            if (runLength > 0) {
+                ctxt.bufferReader.read(ctxt, dst, runLength);
+                bytesRead += runLength;
+            }
+            if (i < ks.size()) {
+                ctxt = ctxt.applyAttributes(bufferAttributes.get(nextPosition).getAttributeReferences());
+            }
         }
-        return i;
+        return bytesRead;
     }
 
     protected void addDefaultAttribute(Attribute... attr) {
