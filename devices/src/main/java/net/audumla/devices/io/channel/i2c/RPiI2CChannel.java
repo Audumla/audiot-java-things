@@ -254,17 +254,10 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
     }
 
     @Override
-    public int read() throws IOException {
-        switch (defaultContext.getDeviceWidth().getWidth()) {
-            case WIDTH8:
-                return defaultContext.getDeviceReadRegister() == null ?
-                        I2C.readByteDirect(defaultContext.getDeviceHandle()) :
-                        I2C.readByte(defaultContext.getDeviceHandle(), defaultContext.getDeviceReadRegister().getRegister());
-            case WIDTH16:
-                if (defaultContext.getDeviceReadRegister() != null)
-                    return I2C.readWord(defaultContext.getDeviceHandle(), defaultContext.getDeviceReadRegister().getRegister());
-        }
-        return -1;
+    public byte read() throws IOException {
+        return defaultContext.getDeviceReadRegister() == null ?
+                I2C.readByteDirect(defaultContext.getDeviceHandle()) :
+                I2C.readByte(defaultContext.getDeviceHandle(), defaultContext.getDeviceReadRegister().getRegister());
     }
 
     @Override

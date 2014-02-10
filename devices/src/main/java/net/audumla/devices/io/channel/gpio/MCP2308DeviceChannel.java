@@ -59,7 +59,7 @@ public class MCP2308DeviceChannel extends AbstractDeviceChannel {
     }
 
     @Override
-    public int read() throws IOException {
+    public byte read() throws IOException {
         return targetChannel.read();
     }
 

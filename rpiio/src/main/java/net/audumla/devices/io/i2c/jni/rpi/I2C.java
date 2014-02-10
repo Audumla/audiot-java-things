@@ -125,7 +125,7 @@ public class I2C {
      * @param fd            file descriptor of i2c bus
      * @return positive number (or zero) to 255 if read was successful. Negative number if reading failed.
      */
-    public static native int readByteDirect(int fd);
+    public static native byte readByteDirect(int fd);
 
     /**
      * Reads one byte from i2c device. It uses ioctl to define device address, writes addres in device and then reads
@@ -135,7 +135,7 @@ public class I2C {
      * @param localAddress  address in the device
      * @return positive number (or zero) to 255 if read was successful. Negative number if reading failed.
      */
-    public static native int readByte(int fd, int localAddress);
+    public static native byte readByte(int fd, int localAddress);
 
     /**
      * Reads one 16 bit word from i2c device. It uses ioctl to define device address, writes addres in device and then reads

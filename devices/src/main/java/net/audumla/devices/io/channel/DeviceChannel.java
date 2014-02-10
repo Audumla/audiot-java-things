@@ -92,9 +92,9 @@ public interface DeviceChannel extends ByteChannel {
     int write(byte b) throws IOException;
 
     /**
-     * Reads a single byte or word (depending on the width set) using only the primary attributes associated with this channel
+     * Reads a single byte using only the primary attributes associated with this channel
      *
      * @return the value that was read
      */
-    int read() throws IOException;
+    byte read() throws IOException;
 }
