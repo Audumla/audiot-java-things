@@ -147,4 +147,74 @@ public class I2C {
      */
     public static native int readWord(int fd, int localAddress);
 
+    /**
+     * Writes one byte to i2c with a bit mask applied so that only those bits in the mask are updated
+     *
+     * @param fd            file descriptor of i2c bus
+     * @param data          byte to be written to the device
+     * @param mask          the bit mask to apply
+     * @return result of operation. Zero if everything is OK, less than zero if there was an error.
+     */
+    public static native int writeByteDirectMask(int fd, byte data, byte mask);
+
+    /**
+     * Writes several bytes to i2c applying a bit mask to the bits written.
+     *
+     * @param fd            file descriptor of i2c bus
+     * @param size          number of bytes to be written
+     * @param offset        offset in buffer to read from
+     * @param buffer        data buffer to be written
+     * @param mask          the bit mask to apply
+     * @return result of operation. Zero if everything is OK, less than zero if there was an error.
+     */
+    public static native int writeBytesDirectMask(int fd, int size, int offset, byte[] buffer, byte mask);
+
+    /**
+     * Writes one byte to i2c with a bit mask applied so that only those bits in the mask are updated
+     *
+     * @param fd            file descriptor of i2c bus
+     * @param localAddress  address in the device
+     * @param data          byte to be written to the device
+     * @param mask          the bit mask to apply
+     * @return result of operation. Zero if everything is OK, less than zero if there was an error.
+     */
+    public static native int writeByteMask(int fd, int localAddress, byte data, byte mask);
+
+    /**
+     * Writes several bytes to i2c applying a bit mask to the bits written.
+     *
+     * @param fd            file descriptor of i2c bus
+     * @param localAddress  address in the device
+     * @param size          number of bytes to be written
+     * @param offset        offset in buffer to read from
+     * @param buffer        data buffer to be written
+     * @param mask          the bit mask to apply
+     * @return result of operation. Zero if everything is OK, less than zero if there was an error.
+     */
+    public static native int writeBytesMask(int fd, int localAddress, int size, int offset, byte[] buffer, byte mask);
+
+    /**
+     * Writes one 16 bit word to i2c applying a bit mask to the bits written.
+     *
+     * @param fd            file descriptor of i2c bus
+     * @param localAddress  address in the device
+     * @param data          word to be written to the device
+     * @param mask          the bit mask to apply
+     * @return result of operation. Zero if everything is OK, less than zero if there was an error.
+     */
+    public static native int writeWordMask(int fd, int localAddress, char data, byte mask);
+
+    /**
+     * Writes one 16 bit word to i2c applying a bit mask to the bits written.
+     *
+     * @param fd            file descriptor of i2c bus
+     * @param localAddress  address in the device
+     * @param size          number of bytes to be written
+     * @param offset        offset in buffer to read from
+     * @param buffer        data buffer to be written
+     * @param mask          the bit mask to apply
+     * @return result of operation. Zero if everything is OK, less than zero if there was an error.
+     */
+    public static native int writeWordsMask(int fd, int localAddress, int size, int offset, char[] buffer, byte mask);
 }
+
