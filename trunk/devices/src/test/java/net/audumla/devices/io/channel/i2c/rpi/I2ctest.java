@@ -22,6 +22,7 @@ import net.audumla.devices.activator.factory.PCF8574GPIOActivatorFactory;
 import net.audumla.devices.activator.factory.RPIGPIOActivatorFactory;
 import net.audumla.devices.io.channel.*;
 import net.audumla.devices.io.channel.i2c.RPiI2CChannel;
+import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,15 +34,13 @@ public class I2ctest {
 
 
     @Test
-    public void PCF8574readwrite() throws Exception {
+    public void PCF8574readwrite8() throws Exception {
         DeviceChannel d = new RPiI2CChannel().createChannel(new ChannelAddressAttr(1), new DeviceAddressAttr(PCF8574GPIOActivatorFactory.PCF8574_0x21));
         byte val = (byte) 0x01;
         d.write(val);
-        logger.debug("Value : "+d.read());
-        assert val == d.read();
+        Assert.assertEquals(val,d.read());
         d.write((byte) ~val);
-        logger.debug("Value : "+d.read());
-        assert ((byte)~val) == d.read();
+        Assert.assertEquals(~val,d.read());
     }
 
 }
