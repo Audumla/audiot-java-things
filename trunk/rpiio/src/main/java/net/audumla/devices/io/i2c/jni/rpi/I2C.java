@@ -145,7 +145,7 @@ public class I2C {
      * @param localAddress  address in the device
      * @return positive number (or zero) to 255 if read was successful. Negative number if reading failed.
      */
-    public static native int readWord(int fd, int localAddress);
+    public static native char readWord(int fd, int localAddress);
 
     /**
      * Writes one byte to i2c with a bit mask applied so that only those bits in the mask are updated
@@ -202,7 +202,7 @@ public class I2C {
      * @param mask          the bit mask to apply
      * @return result of operation. Zero if everything is OK, less than zero if there was an error.
      */
-    public static native int writeWordMask(int fd, int localAddress, char data, byte mask);
+    public static native int writeWordMask(int fd, int localAddress, char data, char mask);
 
     /**
      * Writes one 16 bit word to i2c applying a bit mask to the bits written.
@@ -215,6 +215,6 @@ public class I2C {
      * @param mask          the bit mask to apply
      * @return result of operation. Zero if everything is OK, less than zero if there was an error.
      */
-    public static native int writeWordsMask(int fd, int localAddress, int size, int offset, char[] buffer, byte mask);
+    public static native int writeWordsMask(int fd, int localAddress, int size, int offset, char[] buffer, char mask);
 }
 
