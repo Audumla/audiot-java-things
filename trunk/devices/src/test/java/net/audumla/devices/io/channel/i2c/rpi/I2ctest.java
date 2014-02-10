@@ -33,12 +33,14 @@ public class I2ctest {
 
 
     @Test
-    public void testSainsSmartRelayFromPCF8574StreamMask() throws Exception {
+    public void PCF8574readwrite() throws Exception {
         DeviceChannel d = new RPiI2CChannel().createChannel(new ChannelAddressAttr(1), new DeviceAddressAttr(PCF8574GPIOActivatorFactory.PCF8574_0x21));
         byte val = (byte) 0x01;
         d.write(val);
+        logger.debug("Value : "+d.read());
         assert val == d.read();
         d.write((byte) ~val);
+        logger.debug("Value : "+d.read());
         assert ~val == d.read();
     }
 
