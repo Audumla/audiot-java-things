@@ -89,10 +89,4 @@ public abstract class  AbstractDeviceChannel implements DeviceChannel {
         return bufferAttributes.values();
     }
 
-    protected void addDefaultAttribute(Attribute ... attr) {
-        for (Attribute a : attr) {
-            setAttribute(0,a);
-        }
-    }
-
 }
