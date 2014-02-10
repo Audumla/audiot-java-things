@@ -214,7 +214,7 @@ JNIEXPORT jint JNICALL Java_net_audumla_devices_io_i2c_jni_rpi_I2C_writeWords
  * Method:    readByteDirect
  * Signature: (II)I
  */
-JNIEXPORT jint JNICALL Java_net_audumla_devices_io_i2c_jni_rpi_I2C_readByteDirect
+JNIEXPORT jbyte JNICALL Java_net_audumla_devices_io_i2c_jni_rpi_I2C_readByteDirect
   (JNIEnv *env, jclass clazz, jint fd) {
     union i2c_smbus_data data ;
 
@@ -229,7 +229,7 @@ JNIEXPORT jint JNICALL Java_net_audumla_devices_io_i2c_jni_rpi_I2C_readByteDirec
  * Method:    readByte
  * Signature: (III)I
  */
-JNIEXPORT jint JNICALL Java_net_audumla_devices_io_i2c_jni_rpi_I2C_readByte
+JNIEXPORT jbyte JNICALL Java_net_audumla_devices_io_i2c_jni_rpi_I2C_readByte
   (JNIEnv *env, jclass clazz, jint fd, jint reg){
     union i2c_smbus_data data;
 
