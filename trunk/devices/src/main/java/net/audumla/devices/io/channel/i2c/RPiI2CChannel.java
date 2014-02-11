@@ -319,7 +319,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
                 ctxt.setDeviceHandle(openDevice(ctxt.getBusAddress().getAddress(), ctxt.getDeviceAddress().getAddress()));
             }
             if (writersChange) {
-                updateWriters();
+                ctxt.updateWriters();
             }
             // this may be a clone of the original if we modified it so it is up to the caller to ensure it
             // references this returned value and not the one passed originally passed in
