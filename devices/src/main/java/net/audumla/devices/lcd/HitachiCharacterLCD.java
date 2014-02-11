@@ -175,7 +175,7 @@ public class HitachiCharacterLCD implements CharacterLCD {
 
     @Override
     public void write(int row, int col, String s) throws Exception {
-//        logger.debug("write: " + s);
+//        logger.debug("collect: " + s);
         if (s.length() > columns) {
             for (int i = 0; i < Math.ceil((double) s.length() / (double) (columns)); ++i) {
                 setCursorPosition(row + i, col);
