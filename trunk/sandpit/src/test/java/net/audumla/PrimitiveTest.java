@@ -37,4 +37,13 @@ public class PrimitiveTest {
 //        System.out.println(ii);
 //        System.out.println(bb);
     }
+
+    @Test
+    public void testMask() throws Exception {
+        byte value = (byte) 0xff;
+        byte mask = 0x0f;
+        byte data = 0x00;
+        Assert.assertEquals((value & mask) | (data & ~mask),0x0f);
+
+    }
 }

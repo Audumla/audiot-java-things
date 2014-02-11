@@ -48,6 +48,7 @@ public class I2ctest {
         d.setAttribute(new BitMaskAttr(0x0f));
         byte val = (byte) 0xff;
         d.write(val);
+        d.setAttribute(new BitMaskAttr(0xff));
         Assert.assertEquals(0x0f, d.read());
         d.write((byte) ~val);
         Assert.assertEquals(~val & 0x0f, d.read());
