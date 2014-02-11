@@ -264,6 +264,7 @@ public class RPPIActivatorTest {
         bb.flip();
         for (int i = 0; i < 10; ++i) {
             d.write(bb);
+            bb.position(0);
         }
         power.setState(ActivatorState.DEACTIVATED);
     }
@@ -286,6 +287,7 @@ public class RPPIActivatorTest {
         bb.flip();
         for (int i = 0; i < 10; ++i) {
             d.write(bb);
+            bb.position(0);
         }
         power.setState(ActivatorState.DEACTIVATED);
     }
