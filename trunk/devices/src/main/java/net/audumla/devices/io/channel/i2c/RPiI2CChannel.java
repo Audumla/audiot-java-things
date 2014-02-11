@@ -246,7 +246,10 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
             cc.setDeviceReadRegister(getDeviceReadRegister());
             cc.setDeviceWidth(getDeviceWidth());
             cc.setBitMask(getBitMask());
-            cc.updateWriters();
+            cc.bufferWriter = bufferWriter;
+            cc.atomicWriter = atomicWriter;
+            cc.bufferReader = bufferReader;
+            cc.atomicReader = atomicReader;
             return cc;
         }
 
