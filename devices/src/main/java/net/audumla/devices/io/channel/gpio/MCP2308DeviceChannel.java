@@ -43,9 +43,9 @@ public class MCP2308DeviceChannel extends AbstractDeviceChannel {
     public MCP2308DeviceChannel(DeviceChannel targetChannel) {
         this.targetChannel = targetChannel;
         try {
-            // set resistors to pull up
+            // set resistors to pull up and all pins as outputs
             targetChannel.write((byte) 0xff,new DeviceRegisterAttr(MCP23008_GPPU));
-            targetChannel.write((byte) 0xff,new DeviceRegisterAttr(MCP23008_IODIR));
+            targetChannel.write((byte) 0xff, new DeviceRegisterAttr(MCP23008_IODIR));
             targetChannel.setAttribute(new DeviceRegisterAttr(MCP23008_GPIO));
         } catch (IOException e) {
             e.printStackTrace();

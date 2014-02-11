@@ -19,19 +19,21 @@ package net.audumla.devices.io.channel.gpio;
 import net.audumla.devices.io.channel.DeviceChannel;
 
 public interface GPIODeviceChannel {
-    public enum IOMode {DIGITAL_INPUT,DIGITAL_OUTPUT,ANALOG_INPUT,ANALOG_OUTPUT,PWM_OUTPUT}
-    public enum ResistorMode {PULL_UP,PULL_DOWN,NONE}
+    public enum IOMode {DIGITAL_INPUT, DIGITAL_OUTPUT, ANALOG_INPUT, ANALOG_OUTPUT, PWM_OUTPUT}
+
+    public enum ResistorMode {PULL_UP, PULL_DOWN, NONE}
 
     DeviceChannel createIOChannel();
 
-    void setIOModes(IOMode ... modes);
+    void setIOMode(IOMode mode, int... pins);
+
     IOMode[] getIOModes();
 
     int getIOCount();
 
-    void setResistorModes(ResistorMode ... modes);
-    ResistorMode[] getResistorModes();
+    void setResistorModes(ResistorMode mode, int... pins);
 
+    ResistorMode[] getResistorModes();
 
 
 }
