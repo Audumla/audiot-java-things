@@ -269,7 +269,7 @@ public class RPPIActivatorTest {
         power.setState(ActivatorState.DEACTIVATED);
     }
 
-//    @Test
+    @Test
     public void testSainsSmartRelayFromPCF8574StreamMask() throws Exception {
         DeviceChannel d = new RPiI2CChannel().createChannel(new ChannelAddressAttr(1), new DeviceAddressAttr(PCF8574GPIOActivatorFactory.PCF8574_0x21));
         d.write((byte) ~0x01);
