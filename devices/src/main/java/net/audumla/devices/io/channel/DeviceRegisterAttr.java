@@ -16,9 +16,42 @@ package net.audumla.devices.io.channel;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-public interface DeviceRegisterAttr extends DeviceChannel.Attribute {
-    void setRegister(int register);
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-    int getRegister();
+public class DeviceRegisterAttr implements DeviceChannel.Attribute {
+    private static final Logger logger = LoggerFactory.getLogger(DeviceRegisterAttr.class);
+
+    protected int register;
+
+    public DeviceRegisterAttr(int register) {
+        this.register = register;
+    }
+
+    public void setRegister(int register) {
+        this.register = register;
+    }
+
+    public int getRegister() {
+        return register;
+    }
+
+    @Override
+    public String toString() {
+        return "DeviceReadRegister{" +
+                "register=0x" + Integer.toHexString(register) +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        DeviceRegisterAttr that = (DeviceRegisterAttr) o;
+
+        return register == that.register;
+
+    }
 
 }

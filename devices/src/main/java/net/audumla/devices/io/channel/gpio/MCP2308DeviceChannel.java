@@ -42,6 +42,14 @@ public class MCP2308DeviceChannel extends AbstractDeviceChannel {
 
     public MCP2308DeviceChannel(DeviceChannel targetChannel) {
         this.targetChannel = targetChannel;
+        try {
+            // set resistors to pull up
+            targetChannel.write((byte) 0xff,new DeviceRegisterAttr(MCP23008_GPPU));
+            targetChannel.write((byte) 0xff,new DeviceRegisterAttr(MCP23008_IODIR));
+            targetChannel.setAttribute(new DeviceRegisterAttr(MCP23008_GPIO));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -53,18 +61,19 @@ public class MCP2308DeviceChannel extends AbstractDeviceChannel {
     public boolean supportsAttribute(Class<? extends Attribute> attr) {
         return DeviceWriteRegisterAttr.class.isAssignableFrom(attr) || FixedWaitAttr.class.isAssignableFrom(attr);
     }
+
     @Override
     public DeviceChannel createChannel(Attribute... attr) {
         return new MCP2308DeviceChannel(targetChannel.createChannel(attr));
     }
 
     @Override
-    public int write(byte b) throws IOException {
+    public int write(byte b, Attribute ... attr) throws IOException {
         return targetChannel.write(b);
     }
 
     @Override
-    public byte read() throws IOException {
+    public byte read(Attribute ... attr) throws IOException {
         return targetChannel.read();
     }
 
