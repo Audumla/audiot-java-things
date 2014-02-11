@@ -32,9 +32,9 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
 
     protected static class ChannelContext {
 
-//        public ChannelContext() {
-//            updateWriters();
-//        }
+        public ChannelContext() {
+            updateWriters();
+        }
 
         public ChannelContext(ChannelContext cc) {
             setBusAddress(cc.getBusAddress());
