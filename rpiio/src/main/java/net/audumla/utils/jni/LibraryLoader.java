@@ -48,7 +48,7 @@ public class LibraryLoader {
         } else {
             logger.debug("Load library [" + libraryName + "] (embedded file: " + fileName + ")");
         }
-        // create instance if null
+        // create instance if  null
         if (loadedLibraries == null) {
             loadedLibraries = Collections.synchronizedList(new ArrayList<String>());
         }
