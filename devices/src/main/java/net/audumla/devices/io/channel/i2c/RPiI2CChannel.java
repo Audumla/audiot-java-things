@@ -44,12 +44,16 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
             setDeviceReadRegister(cc.getDeviceReadRegister());
             setDeviceWidth(cc.getDeviceWidth());
             setBitMask(cc.getBitMask());
-//            bufferWriter = cc.bufferWriter;
-//            atomicWriter = cc.atomicWriter;
-//            bufferReader = cc.bufferReader;
-//            atomicReader = cc.atomicReader;
-            applyAttributes(Arrays.asList(attr));
-            updateWriters();
+            bufferWriter = cc.bufferWriter;
+            atomicWriter = cc.atomicWriter;
+            bufferReader = cc.bufferReader;
+            atomicReader = cc.atomicReader;
+            applyAttributes(Arrays.asList(attr), false);
+//            updateWriters();
+        }
+
+        public ChannelContext(Attribute... attr) throws IOException {
+            applyAttributes(Arrays.asList(attr), false);
         }
 
         private interface ByteBufferCollector {
@@ -152,7 +156,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
                                     return ret;
                                 } else {
                                     for (int bi = 0; bi < length; ++bi) {
-                                        atomicWriter.collect(ctxt,buffer.get());
+                                        atomicWriter.collect(ctxt, buffer.get());
                                     }
                                     return length;
                                 }
@@ -168,7 +172,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
                                     return ret;
                                 } else {
                                     for (int bi = 0; bi < length; ++bi) {
-                                        atomicWriter.collect(ctxt,buffer.get());
+                                        atomicWriter.collect(ctxt, buffer.get());
                                     }
                                     return length;
                                 }
@@ -186,7 +190,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
                                     return ret;
                                 } else {
                                     for (int bi = 0; bi < length; ++bi) {
-                                        atomicWriter.collect(ctxt,buffer.get());
+                                        atomicWriter.collect(ctxt, buffer.get());
                                     }
                                     return length;
                                 }
@@ -202,7 +206,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
                                     return ret;
                                 } else {
                                     for (int bi = 0; bi < length; ++bi) {
-                                        atomicWriter.collect(ctxt,buffer.get());
+                                        atomicWriter.collect(ctxt, buffer.get());
                                     }
                                     return length;
                                 }
@@ -228,7 +232,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
                                     return ret;
                                 } else {
                                     for (int bi = 0; bi < length; ++bi) {
-                                        atomicWriter.collect(ctxt,buffer.getChar());
+                                        atomicWriter.collect(ctxt, buffer.getChar());
                                     }
                                     return length;
                                 }
@@ -244,7 +248,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
                                     return ret;
                                 } else {
                                     for (int bi = 0; bi < length; ++bi) {
-                                        atomicWriter.collect(ctxt,buffer.getChar());
+                                        atomicWriter.collect(ctxt, buffer.getChar());
                                     }
                                     return length;
                                 }
@@ -267,7 +271,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
         }
 
 
-        public ChannelContext applyAttributes(Collection<Attribute> attr) throws IOException {
+        public ChannelContext applyAttributes(Collection<Attribute> attr, boolean clone) throws IOException {
             boolean deviceChange = false;
             boolean writersChange = false;
             ChannelContext ctxt = this;
@@ -278,37 +282,37 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
                     continue;
                 }
                 if (ChannelAddressAttr.class.isAssignableFrom(a.getClass())) {
-                    (ctxt = ctxt == this ? clone() : ctxt).setBusAddress((ChannelAddressAttr) a);
+                    (ctxt = (ctxt == this && clone) ? clone() : ctxt).setBusAddress((ChannelAddressAttr) a);
                     deviceChange = true;
                     continue;
                 }
                 if (DeviceAddressAttr.class.isAssignableFrom(a.getClass())) {
-                    (ctxt = ctxt == this ? clone() : ctxt).setDeviceAddress((DeviceAddressAttr) a);
+                    (ctxt = (ctxt == this && clone) ? clone() : ctxt).setDeviceAddress((DeviceAddressAttr) a);
                     deviceChange = true;
                     continue;
                 }
                 if (DeviceWidthAttr.class.isAssignableFrom(a.getClass())) {
-                    (ctxt = ctxt == this ? clone() : ctxt).setDeviceWidth((DeviceWidthAttr) a);
+                    (ctxt = (ctxt == this && clone) ? clone() : ctxt).setDeviceWidth((DeviceWidthAttr) a);
                     writersChange = true;
                     continue;
                 }
                 if (BitMaskAttr.class.isAssignableFrom(a.getClass())) {
-                    (ctxt = ctxt == this ? clone() : ctxt).setBitMask((BitMaskAttr) a);
+                    (ctxt = (ctxt == this && clone) ? clone() : ctxt).setBitMask((BitMaskAttr) a);
                     writersChange = true;
                     continue;
                 }
                 if (DeviceRegisterAttr.class.isAssignableFrom(a.getClass())) {
-                    (ctxt = ctxt == this ? clone() : ctxt).setDeviceWriteRegister((DeviceRegisterAttr) a);
+                    (ctxt = (ctxt == this && clone) ? clone() : ctxt).setDeviceWriteRegister((DeviceRegisterAttr) a);
                     writersChange = true;
                     continue;
                 }
                 if (DeviceRegisterAttr.class.isAssignableFrom(a.getClass())) {
-                    (ctxt = ctxt == this ? clone() : ctxt).setDeviceReadRegister((DeviceRegisterAttr) a);
+                    (ctxt = (ctxt == this && clone) ? clone() : ctxt).setDeviceReadRegister((DeviceRegisterAttr) a);
                     writersChange = true;
                     continue;
                 }
                 if (DeviceAddressAttr.class.isAssignableFrom(a.getClass())) {
-                    ctxt = ctxt == this ? clone() : ctxt;
+                    ctxt = (ctxt == this && clone) ? clone() : ctxt;
                     ctxt.setDeviceReadRegister((DeviceRegisterAttr) a);
                     ctxt.setDeviceWriteRegister((DeviceRegisterAttr) a);
                     writersChange = true;
@@ -330,13 +334,14 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
 
     }
 
-    protected ChannelContext defaultContext = new ChannelContext();
+    protected ChannelContext defaultContext;
 
     public RPiI2CChannel() {
+        defaultContext = new ChannelContext();
     }
 
-    public RPiI2CChannel(Attribute... attr) {
-        setAttribute(attr);
+    public RPiI2CChannel(Attribute... attr) throws IOException {
+        defaultContext = new ChannelContext(attr);
     }
 
     @Override
@@ -354,21 +359,24 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
     @Override
     public DeviceChannel createChannel(Attribute... attr) {
         RPiI2CChannel dc = new RPiI2CChannel();
-        dc.bufferAttributes.putAll(bufferAttributes);
-        dc.defaultContext = defaultContext.clone();
-        dc.setAttribute(attr);
+        try {
+            dc.bufferAttributes.putAll(bufferAttributes);
+            dc.defaultContext = dc.defaultContext.applyAttributes(Arrays.asList(attr), true);
+        } catch (IOException e) {
+            logger.error("Unable to create Channel ", e);
+        }
         return dc;
     }
 
     @Override
     public int write(byte b, Attribute... attr) throws IOException {
-        ChannelContext ctxt = attr.length > 0 ? defaultContext.applyAttributes(Arrays.asList(attr)) : defaultContext;
-        return ctxt.atomicWriter.collect(ctxt,b);
+        ChannelContext ctxt = attr.length > 0 ? defaultContext.applyAttributes(Arrays.asList(attr),true) : defaultContext;
+        return ctxt.atomicWriter.collect(ctxt, b);
     }
 
     @Override
     public byte read(Attribute... attr) throws IOException {
-        ChannelContext ctxt = attr.length > 0 ? defaultContext.applyAttributes(Arrays.asList(attr)) : defaultContext;
+        ChannelContext ctxt = attr.length > 0 ? defaultContext.applyAttributes(Arrays.asList(attr),true) : defaultContext;
         return (byte) ctxt.atomicReader.collect(ctxt);
     }
 
@@ -428,7 +436,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
             int runLength = nextPosition > src.limit() ? src.limit() - src.position() : nextPosition - src.position();
             if (runLength > 0) bytesCollected += collector.collect(ctxt, src, runLength);
             if (src.position() == src.limit()) break;
-            if (i < ks.size()) ctxt = ctxt.applyAttributes(bufferAttributes.get(nextPosition).getAttributeReferences());
+            if (i < ks.size()) ctxt = ctxt.applyAttributes(bufferAttributes.get(nextPosition).getAttributeReferences(),true);
         }
         return bytesCollected;
     }
@@ -436,7 +444,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
     @Override
     public void setAttribute(Attribute... attr) {
         try {
-            defaultContext = defaultContext.applyAttributes(Arrays.asList(attr));
+            defaultContext = defaultContext.applyAttributes(Arrays.asList(attr),true);
         } catch (IOException e) {
             logger.warn("Unable to set attribute on I2C Channel", e);
         }
