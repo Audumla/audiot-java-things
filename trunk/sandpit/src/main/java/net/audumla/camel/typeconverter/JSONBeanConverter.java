@@ -16,7 +16,6 @@ package net.audumla.camel.typeconverter;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import net.audumla.automate.event.activator.ActivatorCommand;
 import org.apache.camel.Converter;
 import org.apache.camel.Exchange;
 import org.codehaus.jackson.annotate.JsonTypeInfo;
@@ -56,13 +55,13 @@ public class JSONBeanConverter {
         return callable;
     }
 
-    @Converter
-    public static ActivatorCommand convertStringToActivatorCommand(String string, Exchange exchange) throws IOException {
-        ActivatorCommand callable = JSONBeanConverter.mapper.readValue(string, new TypeReference<ActivatorCommand>() {
-        });
-        //exchange.getFromEndpoint().getEndpointUri()
-
-
-        return callable;
-    }
+//    @Converter
+//    public static ActivatorCommand convertStringToActivatorCommand(String string, Exchange exchange) throws IOException {
+//        ActivatorCommand callable = JSONBeanConverter.mapper.readValue(string, new TypeReference<ActivatorCommand>() {
+//        });
+//        //exchange.getFromEndpoint().getEndpointUri()
+//
+//
+//        return callable;
+//    }
 }
