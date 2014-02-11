@@ -196,7 +196,7 @@ public class RPPIActivatorTest {
 
     }
 
-    @Test
+//    @Test
     public void testSainsSmartRelayFromPCF8574Direct() throws Exception {
         synchronized (this) {
             int fd = I2C.open("/dev/i2c-1", PCF8574GPIOActivatorFactory.PCF8574_0x21);
@@ -263,13 +263,13 @@ public class RPPIActivatorTest {
         bb.put((byte) 0xff);
         bb.flip();
         for (int i = 0; i < 10; ++i) {
-            d.write(bb);
             bb.position(0);
+            d.write(bb);
         }
         power.setState(ActivatorState.DEACTIVATED);
     }
 
-    @Test
+//    @Test
     public void testSainsSmartRelayFromPCF8574StreamMask() throws Exception {
         DeviceChannel d = new RPiI2CChannel().createChannel(new ChannelAddressAttr(1), new DeviceAddressAttr(PCF8574GPIOActivatorFactory.PCF8574_0x21));
         d.write((byte) ~0x01);
