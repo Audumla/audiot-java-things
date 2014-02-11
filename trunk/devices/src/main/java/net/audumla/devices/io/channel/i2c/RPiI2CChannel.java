@@ -127,7 +127,9 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
                             atomicWriter = (ctxt, value) -> I2C.writeByteMask(ctxt.getDeviceHandle(), ctxt.getDeviceWriteRegister().getRegister(), (byte) value, (byte) getBitMask().getMask());
                             bufferWriter = (ctxt, buffer, length) -> {
                                 if (buffer.hasArray()) {
-                                    return I2C.writeBytesMask(ctxt.getDeviceHandle(), ctxt.getDeviceWriteRegister().getRegister(), length, buffer.position(), buffer.array(), (byte) getBitMask().getMask());
+                                    int ret = I2C.writeBytesMask(ctxt.getDeviceHandle(), ctxt.getDeviceWriteRegister().getRegister(), length, buffer.position(), buffer.array(), (byte) getBitMask().getMask());
+                                    buffer.position(buffer.position()+length);
+                                    return ret;
                                 } else {
                                     for (int bi = 0; bi < length; ++bi) {
                                         atomicWriter.collect(ctxt, buffer.get());
@@ -141,7 +143,9 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
                             atomicWriter = (ctxt, value) -> I2C.writeByte(ctxt.getDeviceHandle(), ctxt.getDeviceWriteRegister().getRegister(), (byte) value);
                             bufferWriter = (ctxt, buffer, length) -> {
                                 if (buffer.hasArray()) {
-                                    return I2C.writeBytes(ctxt.getDeviceHandle(), ctxt.getDeviceWriteRegister().getRegister(), length, buffer.position(), buffer.array());
+                                    int ret = I2C.writeBytes(ctxt.getDeviceHandle(), ctxt.getDeviceWriteRegister().getRegister(), length, buffer.position(), buffer.array());
+                                    buffer.position(buffer.position()+length);
+                                    return ret;
                                 } else {
                                     for (int bi = 0; bi < length; ++bi) {
                                         atomicWriter.collect(ctxt, buffer.get());
@@ -157,7 +161,9 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
                             atomicWriter = (ctxt, value) -> I2C.writeByteDirectMask(ctxt.getDeviceHandle(), (byte) value, (byte) getBitMask().getMask());
                             bufferWriter = (ctxt, buffer, length) -> {
                                 if (buffer.hasArray()) {
-                                    return I2C.writeBytesDirectMask(ctxt.getDeviceHandle(), length, buffer.position(), buffer.array(), (byte) getBitMask().getMask());
+                                    int ret = I2C.writeBytesDirectMask(ctxt.getDeviceHandle(), length, buffer.position(), buffer.array(), (byte) getBitMask().getMask());
+                                    buffer.position(buffer.position()+length);
+                                    return ret;
                                 } else {
                                     for (int bi = 0; bi < length; ++bi) {
                                         atomicWriter.collect(ctxt, buffer.get());
@@ -171,7 +177,9 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
                             atomicWriter = (ctxt, value) -> I2C.writeByteDirect(ctxt.getDeviceHandle(), (byte) value);
                             bufferWriter = (ctxt, buffer, length) -> {
                                 if (buffer.hasArray()) {
-                                    return I2C.writeBytesDirect(ctxt.getDeviceHandle(), length, buffer.position(), buffer.array());
+                                    int ret = I2C.writeBytesDirect(ctxt.getDeviceHandle(), length, buffer.position(), buffer.array());
+                                    buffer.position(buffer.position()+length);
+                                    return ret;
                                 } else {
                                     for (int bi = 0; bi < length; ++bi) {
                                         atomicWriter.collect(ctxt, buffer.get());
@@ -195,7 +203,9 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
                             atomicWriter = (ctxt, value) -> I2C.writeWordMask(ctxt.getDeviceHandle(), ctxt.getDeviceWriteRegister().getRegister(), (char) value, (char) getBitMask().getMask());
                             bufferWriter = (ctxt, buffer, length) -> {
                                 if (buffer.hasArray()) {
-                                    return I2C.writeWordsMask(ctxt.getDeviceHandle(), ctxt.getDeviceWriteRegister().getRegister(), length, buffer.position(), buffer.asCharBuffer().array(), (char) getBitMask().getMask());
+                                    int ret = I2C.writeWordsMask(ctxt.getDeviceHandle(), ctxt.getDeviceWriteRegister().getRegister(), length, buffer.position(), buffer.asCharBuffer().array(), (char) getBitMask().getMask());
+                                    buffer.position(buffer.position()+length);
+                                    return ret;
                                 } else {
                                     for (int bi = 0; bi < length; ++bi) {
                                         atomicWriter.collect(ctxt, buffer.getChar());
@@ -209,7 +219,9 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
                             atomicWriter = (ctxt, value) -> I2C.writeWord(ctxt.getDeviceHandle(), ctxt.getDeviceWriteRegister().getRegister(), (char) value);
                             bufferWriter = (ctxt, buffer, length) -> {
                                 if (buffer.hasArray()) {
-                                    return I2C.writeWords(ctxt.getDeviceHandle(), ctxt.getDeviceWriteRegister().getRegister(), length, buffer.position(), buffer.asCharBuffer().array());
+                                    int ret = I2C.writeWords(ctxt.getDeviceHandle(), ctxt.getDeviceWriteRegister().getRegister(), length, buffer.position(), buffer.asCharBuffer().array());
+                                    buffer.position(buffer.position()+length);
+                                    return ret;
                                 } else {
                                     for (int bi = 0; bi < length; ++bi) {
                                         atomicWriter.collect(ctxt, buffer.getChar());
