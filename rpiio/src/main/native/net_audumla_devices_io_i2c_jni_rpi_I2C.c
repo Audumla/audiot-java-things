@@ -126,7 +126,7 @@ JNIEXPORT jint JNICALL Java_net_audumla_devices_io_i2c_jni_rpi_I2C_writeBytesDir
        args.command = body[i + offset];
        if (ioctl(fd, I2C_SMBUS, &args) < 0) {
             ret = -1;
-            break
+            break;
        }
    }
    (*env)->ReleasePrimitiveArrayCritical(env, bytes, body, 0);
@@ -179,7 +179,7 @@ JNIEXPORT jint JNICALL Java_net_audumla_devices_io_i2c_jni_rpi_I2C_writeBytes
        data.byte = body[i + offset];
        if (ioctl(fd, I2C_SMBUS, &args) < 0) {
             ret = -1;
-            break
+            break;
        }
    }
    (*env)->ReleasePrimitiveArrayCritical(env, bytes, body, 0);
@@ -207,7 +207,7 @@ JNIEXPORT jint JNICALL Java_net_audumla_devices_io_i2c_jni_rpi_I2C_writeWords
        data.word = body[i + offset];
        if (ioctl(fd, I2C_SMBUS, &args) < 0) {
             ret = -1;
-            break
+            break;
        };
    }
    (*env)->ReleasePrimitiveArrayCritical(env, bytes, body, 0);
@@ -295,7 +295,7 @@ JNIEXPORT jint JNICALL Java_net_audumla_devices_io_i2c_jni_rpi_I2C_writeBytesDir
            args.command = (body[i + offset] & mask) | masked;
            if (ioctl(fd, I2C_SMBUS, &args) < 0) {
                 ret = -1;
-                break
+                break;
            }
        }
        (*env)->ReleasePrimitiveArrayCritical(env, bytes, body, 0);
@@ -342,7 +342,7 @@ JNIEXPORT jint JNICALL Java_net_audumla_devices_io_i2c_jni_rpi_I2C_writeBytesMas
            data.byte = (body[i + offset] & mask) | masked;
            if (ioctl(fd, I2C_SMBUS, &args) < 0) {
                 ret = -1;
-                break
+                break;
            };
        }
        (*env)->ReleasePrimitiveArrayCritical(env, bytes, body, 0);
@@ -390,7 +390,7 @@ JNIEXPORT jint JNICALL Java_net_audumla_devices_io_i2c_jni_rpi_I2C_writeWordsMas
            data.word = (body[i + offset] & mask) | masked;
            if (ioctl(fd, I2C_SMBUS, &args) < 0) {
                 ret = -1;
-                break
+                break;
            }
        }
        (*env)->ReleasePrimitiveArrayCritical(env, bytes, body, 0);
