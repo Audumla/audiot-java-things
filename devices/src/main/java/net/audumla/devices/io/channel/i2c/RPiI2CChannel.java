@@ -230,6 +230,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
             cc.setDeviceReadRegister(getDeviceReadRegister());
             cc.setDeviceWidth(getDeviceWidth());
             cc.setBitMask(getBitMask());
+            cc.updateWriters();
             return cc;
         }
 
