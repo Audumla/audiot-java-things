@@ -32,20 +32,16 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
 
     protected static class ChannelContext {
 
-        private interface BufferWriter {
-            int write(ChannelContext ctxt, ByteBuffer buffer, int length);
+        private interface ByteBufferCollector {
+            int collect(ChannelContext ctxt, ByteBuffer buffer, int length);
         }
 
         private interface AtomicWriter {
-            int write(ChannelContext ctxt, int value);
-        }
-
-        private interface BufferReader {
-            int read(ChannelContext ctxt, ByteBuffer buffer, int length);
+            int collect(ChannelContext ctxt, int value);
         }
 
         private interface AtomicReader {
-            int read(ChannelContext ctxt);
+            int collect(ChannelContext ctxt);
         }
 
         private ChannelAddressAttr busAddress;
@@ -55,9 +51,9 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
         private DeviceWidthAttr deviceWidth = new DeviceWidthAttr(DeviceWidthAttr.DeviceWidth.WIDTH8);
         private Integer deviceHandle;
         private BitMaskAttr bitMask;
-        private BufferWriter bufferWriter;
+        private ByteBufferCollector bufferWriter;
         private AtomicWriter atomicWriter;
-        private BufferReader bufferReader;
+        private ByteBufferCollector bufferReader;
         private AtomicReader atomicReader;
 
         public BitMaskAttr getBitMask() {
@@ -121,7 +117,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
                 case WIDTH8:
                     bufferReader = (ctxt, buffer, length) -> {
                         for (int bi = 0; bi < length; ++bi) {
-                            buffer.put((byte) atomicReader.read(ctxt));
+                            buffer.put((byte) atomicReader.collect(ctxt));
                         }
                         return length;
                     };
@@ -134,7 +130,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
                                     return I2C.writeBytesMask(ctxt.getDeviceHandle(), ctxt.getDeviceWriteRegister().getRegister(), length, buffer.position(), buffer.array(), (byte) getBitMask().getMask());
                                 } else {
                                     for (int bi = 0; bi < length; ++bi) {
-                                        atomicWriter.write(ctxt, buffer.get());
+                                        atomicWriter.collect(ctxt, buffer.get());
                                     }
                                     return length;
                                 }
@@ -148,7 +144,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
                                     return I2C.writeBytes(ctxt.getDeviceHandle(), ctxt.getDeviceWriteRegister().getRegister(), length, buffer.position(), buffer.array());
                                 } else {
                                     for (int bi = 0; bi < length; ++bi) {
-                                        atomicWriter.write(ctxt, buffer.get());
+                                        atomicWriter.collect(ctxt, buffer.get());
                                     }
                                     return length;
                                 }
@@ -164,7 +160,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
                                     return I2C.writeBytesDirectMask(ctxt.getDeviceHandle(), length, buffer.position(), buffer.array(), (byte) getBitMask().getMask());
                                 } else {
                                     for (int bi = 0; bi < length; ++bi) {
-                                        atomicWriter.write(ctxt, buffer.get());
+                                        atomicWriter.collect(ctxt, buffer.get());
                                     }
                                     return length;
                                 }
@@ -177,7 +173,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
                                     return I2C.writeBytesDirect(ctxt.getDeviceHandle(), length, buffer.position(), buffer.array());
                                 } else {
                                     for (int bi = 0; bi < length; ++bi) {
-                                        atomicWriter.write(ctxt, buffer.get());
+                                        atomicWriter.collect(ctxt, buffer.get());
                                     }
                                     return length;
                                 }
@@ -187,7 +183,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
                 case WIDTH16:
                     bufferReader = (ctxt, buffer, length) -> {
                         for (int bi = 0; bi < length; ++bi) {
-                            buffer.putChar((char) atomicReader.read(ctxt));
+                            buffer.putChar((char) atomicReader.collect(ctxt));
                         }
                         return length;
                     };
@@ -199,7 +195,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
                                 return I2C.writeWordsMask(ctxt.getDeviceHandle(), ctxt.getDeviceWriteRegister().getRegister(), length, buffer.position(), buffer.asCharBuffer().array(), (char) getBitMask().getMask());
                             } else {
                                 for (int bi = 0; bi < length; ++bi) {
-                                    atomicWriter.write(ctxt, buffer.getChar());
+                                    atomicWriter.collect(ctxt, buffer.getChar());
                                 }
                                 return length;
                             }
@@ -213,7 +209,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
                                 return I2C.writeWords(ctxt.getDeviceHandle(), ctxt.getDeviceWriteRegister().getRegister(), length, buffer.position(), buffer.asCharBuffer().array());
                             } else {
                                 for (int bi = 0; bi < length; ++bi) {
-                                    atomicWriter.write(ctxt, buffer.getChar());
+                                    atomicWriter.collect(ctxt, buffer.getChar());
                                 }
                                 return length;
                             }
@@ -321,12 +317,12 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
 
     @Override
     public int write(byte b) throws IOException {
-        return defaultContext.atomicWriter.write(defaultContext, b);
+        return defaultContext.atomicWriter.collect(defaultContext, b);
     }
 
     @Override
     public byte read() throws IOException {
-        return (byte) defaultContext.atomicReader.read(defaultContext);
+        return (byte) defaultContext.atomicReader.collect(defaultContext);
     }
 
     @Override
@@ -367,42 +363,28 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
     }
 
     @Override
-    public int read(ByteBuffer dst) throws IOException {
-        int bytesRead = 0;
-        ChannelContext ctxt = defaultContext;
-        Set<Integer> ks = bufferAttributes.keySet();
-        Iterator<Integer> it = ks.iterator();
-        for (int i = 0; i < ks.size() + 1; ++i) {
-            int nextPosition = it.hasNext() ? it.next() : dst.limit();
-            int runLength = nextPosition - dst.position();
-            if (runLength > 0) {
-                ctxt.bufferReader.read(ctxt, dst, runLength);
-                bytesRead += runLength;
-            }
-            if (i < ks.size()) {
-                ctxt = ctxt.applyAttributes(bufferAttributes.get(nextPosition).getAttributeReferences());
-            }
-        }
-        return bytesRead;
+    public int read(ByteBuffer src) throws IOException {
+        return collectBytes(src,(ctxt, buff,length) -> ctxt.bufferReader.collect(ctxt,buff,length));
     }
 
     @Override
     public int write(ByteBuffer src) throws IOException {
-        int bytesWritten = 0;
+        return collectBytes(src,(ctxt, buff,length) -> ctxt.bufferWriter.collect(ctxt,buff,length));
+    }
+
+    private int collectBytes(ByteBuffer src, ChannelContext.ByteBufferCollector collector) throws IOException {
+        int bytesCollected = 0;
         ChannelContext ctxt = defaultContext;
         Set<Integer> ks = bufferAttributes.keySet();
         Iterator<Integer> it = ks.iterator();
         for (int i = 0; i < ks.size() + 1; ++i) {
             int nextPosition = it.hasNext() ? it.next() : src.limit();
             int runLength = nextPosition > src.limit() ? src.limit()-src.position() : nextPosition - src.position();
-            if (runLength > 0) {
-                ctxt.bufferWriter.write(ctxt, src, runLength);
-                bytesWritten += runLength;
-            }
+            if (runLength > 0) bytesCollected += collector.collect(ctxt, src, runLength);
             if (src.position() == src.limit()) break;
             if (i < ks.size()) ctxt = ctxt.applyAttributes(bufferAttributes.get(nextPosition).getAttributeReferences());
         }
-        return bytesWritten;
+        return bytesCollected;
     }
 
     protected void addDefaultAttribute(Attribute... attr) {
