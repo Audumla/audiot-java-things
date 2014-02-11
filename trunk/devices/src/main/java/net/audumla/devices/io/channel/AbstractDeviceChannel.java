@@ -84,9 +84,4 @@ public abstract class  AbstractDeviceChannel implements DeviceChannel {
         }
     }
 
-    @Override
-    public Collection<? extends Attribute> getAttributes() {
-        return bufferAttributes.values();
-    }
-
 }

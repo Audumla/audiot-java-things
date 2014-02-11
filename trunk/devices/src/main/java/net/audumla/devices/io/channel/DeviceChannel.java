@@ -70,15 +70,6 @@ public interface DeviceChannel extends ByteChannel {
     void setAttribute(Attribute ... attr);
 
     /**
-     * Returns the associated attributes of the given buffer
-     *
-     *
-//     * @param buffer the buffer to return attributes for
-     * @return the collection of attributes
-     */
-    Collection<? extends Attribute> getAttributes();
-
-    /**
      *
      * @param attr the attribute class to be tested
      * @return true if the attribute class is supported by the channel
@@ -95,14 +86,19 @@ public interface DeviceChannel extends ByteChannel {
 
     /**
      * Writes a single byte or word (depending on the width set) using only the primary attributes associated with this channel
+     * Any attributes passed in are utilized for this write only and have no effect on subsequent reads or writes
+     *
      * @param b the byte to be written
+     * @param attr attributes to associate with this write
      */
-    int write(byte b) throws IOException;
+    int write(byte b, Attribute ... attr) throws IOException;
 
     /**
      * Reads a single byte using only the primary attributes associated with this channel
+     * Any attributes passed in are utilized for this read only and have no effect on subsequent reads or writes
      *
+     * @param attr attributes to associate with this write
      * @return the value that was read
      */
-    byte read() throws IOException;
+    byte read(Attribute ... attr) throws IOException;
 }

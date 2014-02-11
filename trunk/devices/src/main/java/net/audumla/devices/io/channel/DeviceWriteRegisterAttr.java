@@ -19,41 +19,8 @@ package net.audumla.devices.io.channel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DeviceWriteRegisterAttr implements DeviceRegisterAttr {
-    private static final Logger logger = LoggerFactory.getLogger(DeviceWriteRegisterAttr.class);
-
-    protected int register;
-
+public class DeviceWriteRegisterAttr extends DeviceRegisterAttr {
     public DeviceWriteRegisterAttr(int register) {
-        this.register = register;
+        super(register);
     }
-
-    @Override
-    public void setRegister(int register) {
-        this.register = register;
-    }
-
-    @Override
-    public int getRegister() {
-        return register;
-    }
-
-    @Override
-    public String toString() {
-        return "DeviceWriteRegister{" +
-                "register=0x" + Integer.toHexString(register) +
-                '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        DeviceWriteRegisterAttr that = (DeviceWriteRegisterAttr) o;
-
-        return register == that.register;
-
-    }
-
 }
