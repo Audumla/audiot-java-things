@@ -337,7 +337,7 @@ JNIEXPORT jint JNICALL Java_net_audumla_devices_io_i2c_jni_rpi_I2C_writeBytesMas
 
        jbyte *body = (*env)->GetPrimitiveArrayCritical(env, bytes, 0);
        int i;
-       int ret = 0;
+       int ret = size;
        for (i = 0; i < size; i++) {
            data.byte = (body[i + offset] & mask) | masked;
            if (ioctl(fd, I2C_SMBUS, &args) < 0) {
@@ -385,7 +385,7 @@ JNIEXPORT jint JNICALL Java_net_audumla_devices_io_i2c_jni_rpi_I2C_writeWordsMas
 
        jbyte *body = (*env)->GetPrimitiveArrayCritical(env, bytes, 0);
        int i;
-       int ret = 0;
+       int ret = size;
        for (i = 0; i < size; i++) {
            data.word = (body[i + offset] & mask) | masked;
            if (ioctl(fd, I2C_SMBUS, &args) < 0) {
