@@ -131,6 +131,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
         }
 
         protected void updateWriters() {
+            final ChannelContext ctxt = this;
             switch (getDeviceWidth().getWidth()) {
                 case WIDTH8:
                     bufferReader = (buffer, length) -> {
@@ -191,11 +192,11 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
                             };
                             break;
                         } else {
-                            atomicReader = () -> I2C.readByteDirect(getDeviceHandle());
+                            atomicReader = () -> I2C.readByteDirect(ctxt.getDeviceHandle());
                             atomicWriter = (value) -> I2C.writeByteDirect(getDeviceHandle(), (byte) value);
                             bufferWriter = (buffer, length) -> {
                                 if (buffer.hasArray()) {
-                                    int ret = I2C.writeBytesDirect(getDeviceHandle(), length, buffer.position(), buffer.array());
+                                    int ret = I2C.writeBytesDirect(ctxt.getDeviceHandle(), length, buffer.position(), buffer.array());
                                     buffer.position(buffer.position() + length);
                                     return ret;
                                 } else {
