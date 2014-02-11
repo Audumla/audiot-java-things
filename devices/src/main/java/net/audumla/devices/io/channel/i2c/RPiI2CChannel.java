@@ -48,6 +48,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
             atomicWriter = cc.atomicWriter;
             bufferReader = cc.bufferReader;
             atomicReader = cc.atomicReader;
+            logger.debug("Handle "+getDeviceHandle());
         }
 
         private interface ByteBufferCollector {
