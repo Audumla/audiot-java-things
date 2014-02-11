@@ -277,32 +277,32 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
                     ((ActionAttr) a).performAction();
                     continue;
                 }
-                if (busAddress.getClass().isAssignableFrom(a.getClass())) {
+                if (ChannelAddressAttr.class.isAssignableFrom(a.getClass())) {
                     (ctxt = ctxt == this ? clone() : ctxt).setBusAddress((ChannelAddressAttr) a);
                     deviceChange = true;
                     continue;
                 }
-                if (deviceAddress.getClass().isAssignableFrom(a.getClass())) {
+                if (DeviceAddressAttr.class.isAssignableFrom(a.getClass())) {
                     (ctxt = ctxt == this ? clone() : ctxt).setDeviceAddress((DeviceAddressAttr) a);
                     deviceChange = true;
                     continue;
                 }
-                if (deviceWidth.getClass().isAssignableFrom(a.getClass())) {
+                if (DeviceWidthAttr.class.isAssignableFrom(a.getClass())) {
                     (ctxt = ctxt == this ? clone() : ctxt).setDeviceWidth((DeviceWidthAttr) a);
                     writersChange = true;
                     continue;
                 }
-                if (bitMask.getClass().isAssignableFrom(a.getClass())) {
+                if (BitMaskAttr.class.isAssignableFrom(a.getClass())) {
                     (ctxt = ctxt == this ? clone() : ctxt).setBitMask((BitMaskAttr) a);
                     writersChange = true;
                     continue;
                 }
-                if (deviceWriteRegister.getClass().isAssignableFrom(a.getClass())) {
+                if (DeviceRegisterAttr.class.isAssignableFrom(a.getClass())) {
                     (ctxt = ctxt == this ? clone() : ctxt).setDeviceWriteRegister((DeviceRegisterAttr) a);
                     writersChange = true;
                     continue;
                 }
-                if (deviceReadRegister.getClass().isAssignableFrom(a.getClass())) {
+                if (DeviceRegisterAttr.class.isAssignableFrom(a.getClass())) {
                     (ctxt = ctxt == this ? clone() : ctxt).setDeviceReadRegister((DeviceRegisterAttr) a);
                     writersChange = true;
                     continue;
