@@ -65,7 +65,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
         }
 
         public DeviceRegisterAttr getDeviceReadRegister() {
-            return deviceReadRegister == null ? getDeviceWriteRegister() : deviceReadRegister;
+            return deviceReadRegister == null ? deviceWriteRegister : deviceReadRegister;
         }
 
         private void setDeviceReadRegister(DeviceRegisterAttr deviceReadRegister) {
@@ -89,7 +89,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
         }
 
         public DeviceRegisterAttr getDeviceWriteRegister() {
-            return deviceWriteRegister == null ? getDeviceReadRegister() : deviceWriteRegister;
+            return deviceWriteRegister == null ? deviceReadRegister : deviceWriteRegister;
         }
 
         private void setDeviceWriteRegister(DeviceRegisterAttr deviceWriteRegister) {
