@@ -393,14 +393,24 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
 
     @Override
     public int read(ByteBuffer src) throws IOException {
-        ChannelContext ctxt = defaultContext.clone();
-        return collectBytes(src, ctxt, ctxt.bufferReader::collect);
+        final ChannelContext ctxt = defaultContext.clone();
+        return collectBytes(src, ctxt, new ChannelContext.ByteBufferCollector() {
+            @Override
+            public int collect(ByteBuffer buffer, int length) {
+                return ctxt.bufferReader.collect(buffer,length);
+            }
+        });
     }
 
     @Override
     public int write(ByteBuffer src) throws IOException {
-        ChannelContext ctxt = defaultContext.clone();
-        return collectBytes(src, ctxt, ctxt.bufferWriter::collect);
+        final ChannelContext ctxt = defaultContext.clone();
+        return collectBytes(src, ctxt, new ChannelContext.ByteBufferCollector() {
+            @Override
+            public int collect(ByteBuffer buffer, int length) {
+                return ctxt.bufferWriter.collect(buffer,length);
+            }
+        });
     }
 
     private int collectBytes(ByteBuffer src, ChannelContext ctxt, ChannelContext.ByteBufferCollector collector) throws IOException {
