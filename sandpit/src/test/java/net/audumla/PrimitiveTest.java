@@ -16,10 +16,25 @@ package net.audumla;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
+import junit.framework.Assert;
+import net.audumla.devices.rpi.SystemInfo;
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class PrimitiveTest {
     private static final Logger logger = LoggerFactory.getLogger(PrimitiveTest.class);
 
+    @Test
+    public void testByteComparison() throws Exception {
+        byte bb = (byte) 255;
+        byte hb = (byte) 0xff;
+        assert bb == hb;
+        Assert.assertEquals(Integer.toBinaryString((byte) bb), "11111111111111111111111111111111");
+        int ii = bb;
+        assert ii == bb;
+        Assert.assertEquals(Integer.toBinaryString(ii), "11111111111111111111111111111111");
+//        System.out.println(ii);
+//        System.out.println(bb);
+    }
 }
