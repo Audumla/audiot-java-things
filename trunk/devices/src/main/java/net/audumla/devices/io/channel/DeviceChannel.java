@@ -62,6 +62,14 @@ public interface DeviceChannel extends ByteChannel {
     void setAttribute(int pos, Attribute attr);
 
     /**
+     * Adds attributes to the channel that applies to any buffers or atomic read/writes passed to the channel
+     * All buffers written or read from this channel will have these attributes applied.
+     *
+     * @param attr   the attribute to associate to the buffer
+     */
+    void setAttribute(Attribute ... attr);
+
+    /**
      * Returns the associated attributes of the given buffer
      *
      *

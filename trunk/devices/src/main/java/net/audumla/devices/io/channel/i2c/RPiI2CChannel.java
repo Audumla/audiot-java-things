@@ -265,7 +265,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
                     continue;
                 }
                 // clone the original context so that we do not upset any references to it
-                ctxt = ctxt.clone();
+//                ctxt = ctxt.clone();
                 if ((ctxt.busAddress = isAttribute(ChannelAddressAttr.class, a, ctxt.busAddress)) == a) {
                     deviceChange = true;
                     continue;
@@ -310,7 +310,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
     }
 
     public RPiI2CChannel(Attribute... attr) {
-        addDefaultAttribute(attr);
+        setAttribute(attr);
     }
 
     @Override
@@ -328,7 +328,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
         RPiI2CChannel dc = new RPiI2CChannel();
         dc.bufferAttributes.putAll(bufferAttributes);
         dc.defaultContext = defaultContext.clone();
-        dc.addDefaultAttribute(attr);
+        dc.setAttribute(attr);
         return dc;
     }
 
@@ -391,7 +391,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
 
     private int collectBytes(ByteBuffer src, ChannelContext.ByteBufferCollector collector) throws IOException {
         int bytesCollected = 0;
-        ChannelContext ctxt = defaultContext;
+        ChannelContext ctxt = defaultContext.clone();
         Set<Integer> ks = bufferAttributes.keySet();
         Iterator<Integer> it = ks.iterator();
         for (int i = 0; i < ks.size() + 1; ++i) {
@@ -404,7 +404,8 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
         return bytesCollected;
     }
 
-    protected void addDefaultAttribute(Attribute... attr) {
+    @Override
+    public void setAttribute(Attribute ... attr) {
         try {
             defaultContext = defaultContext.applyAttributes(Arrays.asList(attr));
         } catch (IOException e) {
