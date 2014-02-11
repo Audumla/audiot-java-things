@@ -315,8 +315,8 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
                     continue;
                 }
             }
-            if (deviceChange && deviceAddress != null && busAddress != null) {
-                setDeviceHandle(openDevice(getBusAddress().getAddress(), getDeviceAddress().getAddress()));
+            if (deviceChange && ctxt.deviceAddress != null && ctxt.busAddress != null) {
+                ctxt.setDeviceHandle(openDevice(ctxt.getBusAddress().getAddress(), ctxt.getDeviceAddress().getAddress()));
             }
             if (writersChange) {
                 updateWriters();
