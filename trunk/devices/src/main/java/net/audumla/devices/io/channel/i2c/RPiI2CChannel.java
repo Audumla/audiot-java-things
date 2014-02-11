@@ -32,6 +32,24 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
 
     protected static class ChannelContext {
 
+        public ChannelContext() {
+            updateWriters();
+        }
+
+        public ChannelContext(ChannelContext cc) {
+            setBusAddress(cc.getBusAddress());
+            setDeviceHandle(cc.getDeviceHandle());
+            setDeviceAddress(cc.getDeviceAddress());
+            setDeviceWriteRegister(cc.getDeviceWriteRegister());
+            setDeviceReadRegister(cc.getDeviceReadRegister());
+            setDeviceWidth(cc.getDeviceWidth());
+            setBitMask(cc.getBitMask());
+            bufferWriter = cc.bufferWriter;
+            atomicWriter = cc.atomicWriter;
+            bufferReader = cc.bufferReader;
+            atomicReader = cc.atomicReader;
+        }
+
         private interface ByteBufferCollector {
             int collect(ByteBuffer buffer, int length);
         }
@@ -238,19 +256,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
         }
 
         final protected ChannelContext clone() {
-            ChannelContext cc = new ChannelContext();
-            cc.setBusAddress(getBusAddress());
-            cc.setDeviceHandle(getDeviceHandle());
-            cc.setDeviceAddress(getDeviceAddress());
-            cc.setDeviceWriteRegister(getDeviceWriteRegister());
-            cc.setDeviceReadRegister(getDeviceReadRegister());
-            cc.setDeviceWidth(getDeviceWidth());
-            cc.setBitMask(getBitMask());
-            cc.bufferWriter = bufferWriter;
-            cc.atomicWriter = atomicWriter;
-            cc.bufferReader = bufferReader;
-            cc.atomicReader = atomicReader;
-            return cc;
+            return new ChannelContext(this);
         }
 
         private <T> T isAttribute(Class<? extends T> t, Attribute newAttr, T currentAttr) {
@@ -397,7 +403,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
         return collectBytes(src, ctxt, new ChannelContext.ByteBufferCollector() {
             @Override
             public int collect(ByteBuffer buffer, int length) {
-                return ctxt.bufferReader.collect(buffer,length);
+                return ctxt.bufferReader.collect(buffer, length);
             }
         });
     }
@@ -408,7 +414,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
         return collectBytes(src, ctxt, new ChannelContext.ByteBufferCollector() {
             @Override
             public int collect(ByteBuffer buffer, int length) {
-                return ctxt.bufferWriter.collect(buffer,length);
+                return ctxt.bufferWriter.collect(buffer, length);
             }
         });
     }
