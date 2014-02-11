@@ -78,7 +78,11 @@ public class HitachiCharacterLCD implements CharacterLCD {
 
     public HitachiCharacterLCD(String name, int address) {
         this.name = name;
-        baseDeviceChannel = new RPiI2CChannel().createChannel(new ChannelAddressAttr(1), new DeviceAddressAttr(address), new DeviceWriteRegisterAttr(MCP2308DeviceChannel.MCP23008_GPIO));
+        try {
+            baseDeviceChannel = new RPiI2CChannel(new ChannelAddressAttr(1), new DeviceAddressAttr(address), new DeviceWriteRegisterAttr(MCP2308DeviceChannel.MCP23008_GPIO));
+        } catch (IOException e) {
+            logger.error("Unable to create channel",e);
+        }
         backlightStatus = LCD_BACKLIGHT;
     }
 
@@ -104,12 +108,11 @@ public class HitachiCharacterLCD implements CharacterLCD {
             displayControl = LCD_DISPLAYCONTROL_COMMAND | LCD_DISPLAYON;
             writeMode = LCD_ENTRYMODESET_COMMAND | LCD_ENTRYMODE_INCREMENT_CURSOR;
             //see http://www.adafruit.com/datasheets/HD44780.pdf page 46 for initialization of 4 bit interface
-            baseDeviceChannel.createChannel(new DeviceWriteRegisterAttr(MCP2308DeviceChannel.MCP23008_IODIR)).write((byte) 0x00);
+            baseDeviceChannel.write( (byte) 0x00, new DeviceWriteRegisterAttr(MCP2308DeviceChannel.MCP23008_IODIR));
             DeviceChannel initChannel = baseDeviceChannel.createChannel();
             ByteBuffer bb = ByteBuffer.allocateDirect(100);
             reset(bb, initChannel);
             putCommand4bits(bb, initChannel, LCD_COMMAND, (byte) (LCD_FUNCTIONSET_COMMAND | (rows > 1 ? LCD_2LINE : LCD_1LINE) | (rows > 1 ? LCD_5x8DOTS : LCD_5x10DOTS))); // set to 4 bit interface - 2 lines - 5x10 font
-
             putCommand4bits(bb, initChannel, LCD_COMMAND, (byte) (LCD_DISPLAYCONTROL_COMMAND));
             putCommand4bits(bb, initChannel, LCD_COMMAND, (byte) (LCD_RETURNHOME_COMMAND));
             putCommand4bits(bb, initChannel, LCD_COMMAND, (byte) (LCD_CLEARDISPLAY_COMMAND)); // display clear

@@ -263,6 +263,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
 
         final protected ChannelContext clone() {
             try {
+                logger.debug("Clone!");
                 return new ChannelContext(this);
             } catch (IOException e) {
                 logger.error("Unable to clone", e);
@@ -327,7 +328,6 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
             }
             // this may be a clone of the original if we modified it so it is up to the caller to ensure it
             // references this returned value and not the one passed originally passed in
-            logger.debug("Clone!");
             return this;
         }
 
