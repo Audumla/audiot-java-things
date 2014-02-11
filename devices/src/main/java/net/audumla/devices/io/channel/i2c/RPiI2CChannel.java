@@ -32,9 +32,9 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
 
     protected static class ChannelContext {
 
-        public ChannelContext() {
-            updateWriters();
-        }
+//        public ChannelContext() {
+//            updateWriters();
+//        }
 
         public ChannelContext(ChannelContext cc) {
             setBusAddress(cc.getBusAddress());
@@ -44,11 +44,11 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
             setDeviceReadRegister(cc.getDeviceReadRegister());
             setDeviceWidth(cc.getDeviceWidth());
             setBitMask(cc.getBitMask());
-            bufferWriter = cc.bufferWriter;
-            atomicWriter = cc.atomicWriter;
-            bufferReader = cc.bufferReader;
-            atomicReader = cc.atomicReader;
-            logger.debug("Handle "+getDeviceHandle());
+//            bufferWriter = cc.bufferWriter;
+//            atomicWriter = cc.atomicWriter;
+//            bufferReader = cc.bufferReader;
+//            atomicReader = cc.atomicReader;
+            updateWriters();
         }
 
         private interface ByteBufferCollector {
@@ -193,11 +193,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
                             break;
                         } else {
                             atomicReader = () -> I2C.readByteDirect(getDeviceHandle());
-                            atomicWriter = (value) -> {
-                                logger.debug(this.toString());
-                                logger.debug("" + getDeviceHandle());
-                                return I2C.writeByteDirect(getDeviceHandle(), (byte) value);
-                            };
+                            atomicWriter = (value) -> I2C.writeByteDirect(getDeviceHandle(), (byte) value);
                             bufferWriter = (buffer, length) -> {
                                 if (buffer.hasArray()) {
                                     int ret = I2C.writeBytesDirect(getDeviceHandle(), length, buffer.position(), buffer.array());
