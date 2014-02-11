@@ -42,9 +42,10 @@ public class I2ctest {
     public void PCF8574RWMask8() throws Exception {
         DeviceChannel d = new RPiI2CChannel().createChannel(
                 new ChannelAddressAttr(1),
-                new DeviceAddressAttr(PCF8574GPIOActivatorFactory.PCF8574_0x21),
-                new BitMaskAttr(0x0f));
+                new DeviceAddressAttr(PCF8574GPIOActivatorFactory.PCF8574_0x21));
 
+        d.write((byte) 0x00);
+        d.setAttribute(new BitMaskAttr(0x0f));
         byte val = (byte) 0xff;
         d.write(val);
         Assert.assertEquals(0x0f, d.read());
