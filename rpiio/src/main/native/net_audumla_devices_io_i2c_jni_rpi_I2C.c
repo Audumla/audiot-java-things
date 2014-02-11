@@ -267,7 +267,7 @@ JNIEXPORT jchar JNICALL Java_net_audumla_devices_io_i2c_jni_rpi_I2C_readWord
 JNIEXPORT jint JNICALL Java_net_audumla_devices_io_i2c_jni_rpi_I2C_writeByteDirectMask
  (JNIEnv *env, jclass clazz, jint fd, jbyte value, jbyte mask) {
      union i2c_smbus_data data ;
-     if (i2c_smbus_access (fd, I2C_SMBUS_READ, 0, I2C_SMBUS_BYTE, &data)) {
+     if (!i2c_smbus_access (fd, I2C_SMBUS_READ, 0, I2C_SMBUS_BYTE, &data)) {
            return i2c_smbus_access (fd, I2C_SMBUS_WRITE, (value & mask) | (data.byte & ~mask), I2C_SMBUS_BYTE, NULL);
      }
      return -1;
@@ -281,7 +281,7 @@ JNIEXPORT jint JNICALL Java_net_audumla_devices_io_i2c_jni_rpi_I2C_writeByteDire
 JNIEXPORT jint JNICALL Java_net_audumla_devices_io_i2c_jni_rpi_I2C_writeBytesDirectMask
  (JNIEnv *env, jclass clazz, jint fd, jint size, jint offset, jbyteArray bytes, jbyte mask) {
      union i2c_smbus_data data ;
-     if (i2c_smbus_access (fd, I2C_SMBUS_READ, 0, I2C_SMBUS_BYTE, &data)) {
+     if (!i2c_smbus_access (fd, I2C_SMBUS_READ, 0, I2C_SMBUS_BYTE, &data)) {
        uint8_t masked = (data.byte & ~mask);
        struct i2c_smbus_ioctl_data args ;
        args.read_write = I2C_SMBUS_WRITE;
@@ -312,7 +312,7 @@ JNIEXPORT jint JNICALL Java_net_audumla_devices_io_i2c_jni_rpi_I2C_writeBytesDir
 JNIEXPORT jint JNICALL Java_net_audumla_devices_io_i2c_jni_rpi_I2C_writeByteMask
  (JNIEnv *env, jclass clazz, jint fd, jint reg, jbyte value, jbyte mask) {
      union i2c_smbus_data data ;
-     if (i2c_smbus_access (fd, I2C_SMBUS_READ, reg, I2C_SMBUS_BYTE_DATA, &data)) {
+     if (!i2c_smbus_access (fd, I2C_SMBUS_READ, reg, I2C_SMBUS_BYTE_DATA, &data)) {
            data.byte = (value & mask) | (data.byte & ~mask);
            return i2c_smbus_access (fd, I2C_SMBUS_WRITE, reg, I2C_SMBUS_BYTE_DATA, &data) ;
      }
@@ -327,7 +327,7 @@ JNIEXPORT jint JNICALL Java_net_audumla_devices_io_i2c_jni_rpi_I2C_writeByteMask
 JNIEXPORT jint JNICALL Java_net_audumla_devices_io_i2c_jni_rpi_I2C_writeBytesMask
  (JNIEnv *env, jclass clazz, jint fd, jint reg, jint size, jint offset, jbyteArray bytes, jbyte mask) {
      union i2c_smbus_data data ;
-     if (i2c_smbus_access (fd, I2C_SMBUS_READ, reg, I2C_SMBUS_BYTE_DATA, &data)) {
+     if (!i2c_smbus_access (fd, I2C_SMBUS_READ, reg, I2C_SMBUS_BYTE_DATA, &data)) {
        uint8_t masked = (data.byte & ~mask);
        struct i2c_smbus_ioctl_data args ;
        args.read_write = I2C_SMBUS_WRITE;
@@ -359,7 +359,7 @@ JNIEXPORT jint JNICALL Java_net_audumla_devices_io_i2c_jni_rpi_I2C_writeBytesMas
 JNIEXPORT jint JNICALL Java_net_audumla_devices_io_i2c_jni_rpi_I2C_writeWordMask
  (JNIEnv *env, jclass clazz, jint fd, jint reg, jchar value, jchar mask) {
      union i2c_smbus_data data ;
-     if (i2c_smbus_access (fd, I2C_SMBUS_READ, reg, I2C_SMBUS_WORD_DATA, &data)) {
+     if (!i2c_smbus_access (fd, I2C_SMBUS_READ, reg, I2C_SMBUS_WORD_DATA, &data)) {
            data.word = (value & mask) | (data.word & ~mask);
            return i2c_smbus_access (fd, I2C_SMBUS_WRITE, reg, I2C_SMBUS_WORD_DATA, &data) ;
      }
@@ -375,7 +375,7 @@ JNIEXPORT jint JNICALL Java_net_audumla_devices_io_i2c_jni_rpi_I2C_writeWordMask
 JNIEXPORT jint JNICALL Java_net_audumla_devices_io_i2c_jni_rpi_I2C_writeWordsMask
  (JNIEnv *env, jclass clazz, jint fd, jint reg, jint size, jint offset, jcharArray bytes, jchar mask) {
      union i2c_smbus_data data ;
-     if (i2c_smbus_access (fd, I2C_SMBUS_READ, reg, I2C_SMBUS_WORD_DATA, &data)) {
+     if (!i2c_smbus_access (fd, I2C_SMBUS_READ, reg, I2C_SMBUS_WORD_DATA, &data)) {
        uint16_t masked = (data.word & ~mask);
        struct i2c_smbus_ioctl_data args ;
        args.read_write = I2C_SMBUS_WRITE;
