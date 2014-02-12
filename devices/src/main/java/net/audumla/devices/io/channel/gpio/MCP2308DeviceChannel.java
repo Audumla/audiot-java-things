@@ -63,7 +63,7 @@ public class MCP2308DeviceChannel extends AbstractDeviceChannel {
     }
 
     @Override
-    public DeviceChannel createChannel(Attribute... attr) {
+    public DeviceChannel createChannel(Attribute... attr) throws IOException {
         return new MCP2308DeviceChannel(targetChannel.createChannel(attr));
     }
 
