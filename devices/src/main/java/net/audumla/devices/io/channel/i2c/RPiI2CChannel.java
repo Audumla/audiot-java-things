@@ -426,16 +426,19 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
     }
 
     private int collectBytes(ByteBuffer src, ChannelContext ctxt, ChannelContext.ByteBufferCollector collector) throws IOException {
+        ChannelContext origCtxt = ctxt; // keep a reference to the original context so that we can ensure we only clone once in this method if necessary
         int bytesCollected = 0;
         Set<Integer> ks = bufferAttributes.keySet();
         Iterator<Integer> it = ks.iterator();
+        // for each attribute that has been assigned a position in the channel we execute the read/write command for the appropriate length
+        // and then apply the attribute. We then continue on until the next attribute position.
         for (int i = 0; i < ks.size() + 1; ++i) {
             int nextPosition = it.hasNext() ? it.next() : src.limit();
             int runLength = nextPosition > src.limit() ? src.limit() - src.position() : nextPosition - src.position();
             if (runLength > 0) bytesCollected += collector.collect(ctxt, src, runLength);
             if (src.position() == src.limit()) break;
             if (i < ks.size())
-                ctxt = ctxt.applyAttributes(bufferAttributes.get(nextPosition).getAttributeReferences(), true);
+                ctxt = ctxt.applyAttributes(bufferAttributes.get(nextPosition).getAttributeReferences(), ctxt == origCtxt); // only clone the context if we have not already done so.
         }
         return bytesCollected;
     }
