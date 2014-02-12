@@ -85,7 +85,7 @@
                         <version>2.16</version>
                         <configuration>
                             <includes>
-                                <include>**/rpi/**</include>
+                                <include>**/RPi*</include>
                             </includes>
                             <properties>
                                 <property>
