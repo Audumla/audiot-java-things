@@ -38,7 +38,7 @@ public class DeviceRegisterAttr implements DeviceChannel.Attribute {
 
     @Override
     public String toString() {
-        return "DeviceReadRegister{" +
+        return "DeviceRegister{" +
                 "register=0x" + Integer.toHexString(register) +
                 '}';
     }

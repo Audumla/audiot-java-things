@@ -18,6 +18,7 @@ package net.audumla.devices.io.channel.gpio;
 
 public interface GPIODeviceChannel {
     public enum IOMode {DIGITAL_INPUT, DIGITAL_OUTPUT, ANALOG_INPUT, ANALOG_OUTPUT, PWM_OUTPUT}
+
     public enum PullMode {PULL_UP, PULL_DOWN, NONE}
 
     void setIOMode(IOMode mode, int... pins);

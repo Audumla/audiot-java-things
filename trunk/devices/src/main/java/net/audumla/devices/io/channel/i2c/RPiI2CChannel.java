@@ -302,12 +302,12 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
                     writersChange = true;
                     continue;
                 }
-                if (DeviceRegisterAttr.class.isAssignableFrom(a.getClass())) {
+                if (DeviceWriteRegisterAttr.class.isAssignableFrom(a.getClass())) {
                     (ctxt = (ctxt == this && clone) ? clone() : ctxt).setDeviceWriteRegister((DeviceRegisterAttr) a);
                     writersChange = true;
                     continue;
                 }
-                if (DeviceRegisterAttr.class.isAssignableFrom(a.getClass())) {
+                if (DeviceReadRegisterAttr.class.isAssignableFrom(a.getClass())) {
                     (ctxt = (ctxt == this && clone) ? clone() : ctxt).setDeviceReadRegister((DeviceRegisterAttr) a);
                     writersChange = true;
                     continue;
@@ -328,7 +328,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
             }
             // this may be a clone of the original if we modified it so it is up to the caller to ensure it
             // references this returned value and not the one passed originally passed in
-            return this;
+            return ctxt;
         }
 
 
