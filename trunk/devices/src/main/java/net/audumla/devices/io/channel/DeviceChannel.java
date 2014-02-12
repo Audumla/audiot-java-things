@@ -82,7 +82,7 @@ public interface DeviceChannel extends ByteChannel {
      * All primary attributes of the current channel will be passed onto the new channel instance
      * @param attr the attributes to set as primary attributes for the new channel
      */
-    DeviceChannel createChannel(Attribute ... attr);
+    DeviceChannel createChannel(Attribute ... attr) throws IOException;
 
     /**
      * Writes a single byte or word (depending on the width set) using only the primary attributes associated with this channel
