@@ -45,12 +45,10 @@ public class I2ctest {
                 new DeviceAddressAttr(PCF8574GPIOActivatorFactory.PCF8574_0x21));
 
         d.write((byte) 0x00);
-        d.setAttribute(new BitMaskAttr(0x0f));
         byte val = (byte) 0xff;
-        d.write(val);
-        d.setAttribute(new BitMaskAttr(0xff));
+        d.write(val,new BitMaskAttr(0x0f));
         Assert.assertEquals(0x0f, d.read());
-        d.write((byte) ~val);
+        d.write((byte) ~val,new BitMaskAttr(0xff));
         Assert.assertEquals(~val & 0x0f, d.read());
     }
 }
