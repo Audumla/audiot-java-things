@@ -1,4 +1,4 @@
-package net.audumla.devices.io.channel.i2c.rpi;
+package net.audumla.devices.io.i2c;
 
 /*
  * *********************************************************************
@@ -26,7 +26,7 @@ import net.audumla.devices.io.i2c.RPiI2CDeviceFactory;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class I2ctest {
+public class RPiI2CTest {
 
 
     @Test
