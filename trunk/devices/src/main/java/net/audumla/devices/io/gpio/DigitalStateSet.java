@@ -27,6 +27,8 @@ public class DigitalStateSet implements GPIOState<DigitalStateSet.DigitalStateSe
 
     protected BitSet pinStates = new BitSet(MAX_PINS_STATES);
 
+
+
     public interface DigitalStateSetDevice {
         void setState(BitSet pinStates);
 
@@ -42,7 +44,7 @@ public class DigitalStateSet implements GPIOState<DigitalStateSet.DigitalStateSe
     }
 
     public DigitalStateSet(boolean state, Integer... pins) {
-        setStates(state, pins);
+        setState(state, pins);
     }
 
     void setStates(boolean state, long pinMask) {
@@ -53,7 +55,7 @@ public class DigitalStateSet implements GPIOState<DigitalStateSet.DigitalStateSe
         }
     }
 
-    void setStates(boolean state, Integer... pins) {
+    void setState(boolean state, Integer... pins) {
         Arrays.asList(pins).stream().forEach((t) -> {
             pinStates.set(t, state);
         });
@@ -77,11 +79,11 @@ public class DigitalStateSet implements GPIOState<DigitalStateSet.DigitalStateSe
         return !pinStates.get(pin);
     }
 
-    public BitSet getPinStates() {
+    public BitSet getStates() {
         return pinStates;
     }
 
-    public long getMaskedPinStates() {
+    public long getMaskedStates() {
         return pinStates.toLongArray()[0];
     }
 

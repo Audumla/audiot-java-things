@@ -22,45 +22,45 @@ import org.slf4j.LoggerFactory;
 import java.util.Arrays;
 import java.util.BitSet;
 
-public class AnalogState implements GPIOState<AnalogState.AnalogStateSetDevice> {
+public class AnalogState implements GPIOState<AnalogState.AnalogStateDevice> {
     private static final Logger logger = LoggerFactory.getLogger(AnalogState.class);
 
-    private Float[] pinStates = new Float[MAX_PINS_STATES];
+    private Float state;
+    private int pin;
 
-    public interface AnalogStateSetDevice {
-        void setState(Float[] states);
-        void getState(Float[] states);
+    public AnalogState(Float state, int pin) {
+        this.state = state;
+        this.pin = pin;
+    }
+
+    @Override
+    public void applyState(AnalogStateDevice device) {
+        device.setState(pin,state);
+    }
+
+    @Override
+    public void retrieveState(AnalogStateDevice device) {
+        state = device.getState(pin);
+    }
+
+    public interface AnalogStateDevice {
         Float getState(int pin);
         void setState(int pin, Float state);
     }
 
-    @Override
-    public void applyState(AnalogStateSetDevice device) {
-
+    public Float getState() {
+        return state;
     }
 
-    @Override
-    public void retrieveState(AnalogStateSetDevice device) {
-
+    public void setState(Float state) {
+        this.state = state;
     }
 
-    void setStates(Float state, Integer... pins) {
-        Arrays.asList(pins).stream().forEach((t) -> {
-            pinStates[t] = state;
-        });
+    public int getPin() {
+        return pin;
     }
 
-    public Float[] getPinStates() {
-        return pinStates;
+    public void setPin(int pin) {
+        this.pin = pin;
     }
-
-    void setStates(Float state, long pinMask) {
-        BitSet mask = BitSet.valueOf(new long[]{pinMask});
-        mask.stream().forEach( (t) -> {pinStates[t] = state;});
-    }
-
-    Float getState(int pin) {
-        return pinStates[pin];
-    }
-
 }
