@@ -74,6 +74,10 @@ public class I2CDeviceChannel extends AbstractDeviceChannel {
         public ChannelContext(I2CDeviceFactory factory, Attribute... attr) throws IOException {
             this.factory = factory;
             applyAttributes(Arrays.asList(attr), false);
+            if (bufferWriter == null) {
+                // if the attributes did not set the writers then manually call update
+                updateWriters();
+            }
         }
 
         private interface ByteBufferCollector {
