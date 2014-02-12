@@ -24,6 +24,7 @@ import net.audumla.devices.activator.factory.RPIGPIOActivatorFactory;
 import net.audumla.devices.activator.factory.SainsSmartRelayActivatorFactory;
 import net.audumla.devices.io.channel.*;
 import net.audumla.devices.io.channel.i2c.I2CDeviceChannel;
+import net.audumla.devices.io.i2c.RPiI2CDeviceFactory;
 import net.audumla.devices.io.i2c.jni.rpi.I2C;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -42,7 +43,7 @@ public class RPiActivatorTest {
 
     static {
         try {
-            DeviceChannel d = new I2CDeviceChannel().createChannel(new ChannelAddressAttr(1), new DeviceAddressAttr(0x27));
+            DeviceChannel d = new I2CDeviceChannel(new RPiI2CDeviceFactory()).createChannel(new ChannelAddressAttr(1), new DeviceAddressAttr(0x27));
             power5v = new PCF8574GPIOActivatorFactory(d);
             power5v.initialize();
 //            for (Activator a : power5v.getActivators()) {
@@ -166,7 +167,7 @@ public class RPiActivatorTest {
 
     SainsSmartRelayActivatorFactory getSSPCF(int addr, int pwr1, int pwr2, RPIGPIOActivatorFactory.GPIOName gpioPower) throws Exception {
 
-        DeviceChannel d = new I2CDeviceChannel().createChannel(new ChannelAddressAttr(1), new DeviceAddressAttr(addr));
+        DeviceChannel d = new I2CDeviceChannel(new RPiI2CDeviceFactory()).createChannel(new ChannelAddressAttr(1), new DeviceAddressAttr(addr));
         PCF8574GPIOActivatorFactory gpio = new PCF8574GPIOActivatorFactory(d);
         gpio.initialize();
 //        Activator power = rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO1);
@@ -250,7 +251,7 @@ public class RPiActivatorTest {
 
     @Test
     public void testSainsSmartRelayFromPCF8574Stream() throws Exception {
-        DeviceChannel d = new I2CDeviceChannel().createChannel(new ChannelAddressAttr(1), new DeviceAddressAttr(PCF8574GPIOActivatorFactory.PCF8574_0x21));
+        DeviceChannel d = new I2CDeviceChannel(new RPiI2CDeviceFactory()).createChannel(new ChannelAddressAttr(1), new DeviceAddressAttr(PCF8574GPIOActivatorFactory.PCF8574_0x21));
         Activator power = getPower(6, 7, rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO1));
         power.setState(ActivatorState.ACTIVATED);
         ByteBuffer bb = ByteBuffer.allocate(50);
@@ -271,7 +272,7 @@ public class RPiActivatorTest {
 
     @Test
     public void testSainsSmartRelayFromPCF8574StreamMask() throws Exception {
-        DeviceChannel d = new I2CDeviceChannel().createChannel(new ChannelAddressAttr(1), new DeviceAddressAttr(PCF8574GPIOActivatorFactory.PCF8574_0x21));
+        DeviceChannel d = new I2CDeviceChannel(new RPiI2CDeviceFactory()).createChannel(new ChannelAddressAttr(1), new DeviceAddressAttr(PCF8574GPIOActivatorFactory.PCF8574_0x21));
         d.write((byte) ~0x01);
         Activator power = getPower(6, 7, rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO1));
         power.setState(ActivatorState.ACTIVATED);
