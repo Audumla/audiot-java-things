@@ -21,7 +21,7 @@ import net.audumla.devices.io.channel.BitMaskAttr;
 import net.audumla.devices.io.channel.ChannelAddressAttr;
 import net.audumla.devices.io.channel.DeviceAddressAttr;
 import net.audumla.devices.io.channel.DeviceChannel;
-import net.audumla.devices.io.channel.i2c.I2CDeviceChannel;
+import net.audumla.devices.io.channel.I2CDeviceChannel;
 import net.audumla.devices.io.i2c.RPiI2CDeviceFactory;
 import org.junit.Assert;
 import org.junit.Test;

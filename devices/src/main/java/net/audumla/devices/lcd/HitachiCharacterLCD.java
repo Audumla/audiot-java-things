@@ -1,9 +1,9 @@
 package net.audumla.devices.lcd;
 
-import net.audumla.devices.io.channel.*;
-import net.audumla.devices.io.channel.gpio.MCP2308DeviceChannel;
-import net.audumla.devices.io.channel.i2c.I2CDeviceChannel;
-import net.audumla.devices.io.i2c.RPiI2CDeviceFactory;
+import net.audumla.devices.io.channel.DeviceChannel;
+import net.audumla.devices.io.channel.DeviceWriteRegisterAttr;
+import net.audumla.devices.io.channel.FixedWaitAttr;
+import net.audumla.devices.io.channel.MCP2308DeviceChannel;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
@@ -69,21 +69,15 @@ public class HitachiCharacterLCD implements CharacterLCD {
     private byte backlightStatus;
     private byte displayControl;
     private byte writeMode;
-    private DeviceChannel baseDeviceChannel;
-
-    private DeviceChannel ioChannel; // the channel used to read and write to the LCD interface
+    private DeviceChannel channel;
 
     public static Logger logger = Logger.getLogger(HitachiCharacterLCD.class);
     private int columns = 20;
     private int rows = 4;
 
-    public HitachiCharacterLCD(String name, int address) {
+    public HitachiCharacterLCD(DeviceChannel channel,String name) {
+        this.channel = channel;
         this.name = name;
-        try {
-            baseDeviceChannel = new I2CDeviceChannel(new RPiI2CDeviceFactory(),new ChannelAddressAttr(1), new DeviceAddressAttr(address), new DeviceWriteRegisterAttr(MCP2308DeviceChannel.MCP23008_GPIO));
-        } catch (IOException e) {
-            logger.error("Unable to create channel",e);
-        }
         backlightStatus = LCD_BACKLIGHT;
     }
 
@@ -109,8 +103,8 @@ public class HitachiCharacterLCD implements CharacterLCD {
             displayControl = LCD_DISPLAYCONTROL_COMMAND | LCD_DISPLAYON;
             writeMode = LCD_ENTRYMODESET_COMMAND | LCD_ENTRYMODE_INCREMENT_CURSOR;
             //see http://www.adafruit.com/datasheets/HD44780.pdf page 46 for initialization of 4 bit interface
-            baseDeviceChannel.write( (byte) 0x00, new DeviceWriteRegisterAttr(MCP2308DeviceChannel.MCP23008_IODIR));
-            DeviceChannel initChannel = baseDeviceChannel.createChannel();
+            channel.write((byte) 0x00, new DeviceWriteRegisterAttr(MCP2308DeviceChannel.MCP23008_IODIR));
+            DeviceChannel initChannel = channel.createChannel();
             ByteBuffer bb = ByteBuffer.allocateDirect(100);
             reset(bb, initChannel);
             putCommand4bits(bb, initChannel, LCD_COMMAND, (byte) (LCD_FUNCTIONSET_COMMAND | (rows > 1 ? LCD_2LINE : LCD_1LINE) | (rows > 1 ? LCD_5x8DOTS : LCD_5x10DOTS))); // set to 4 bit interface - 2 lines - 5x10 font
@@ -157,7 +151,7 @@ public class HitachiCharacterLCD implements CharacterLCD {
     }
 
     protected void commandByMode(byte mode, byte... args) throws Exception {
-        DeviceChannel wb = baseDeviceChannel.createChannel();
+        DeviceChannel wb = channel.createChannel();
         ByteBuffer bb = ByteBuffer.allocate(args.length * 8);
         putCommand4bits(bb, wb, mode, args);
         bb.flip();
@@ -278,13 +272,13 @@ public class HitachiCharacterLCD implements CharacterLCD {
     @Override
     public void enableBacklight() throws IOException {
         backlightStatus = LCD_BACKLIGHT;
-        baseDeviceChannel.write(backlightStatus);
+        channel.write(backlightStatus);
     }
 
     @Override
     public void disableBacklight() throws IOException {
         backlightStatus = 0x00;
-        baseDeviceChannel.write(backlightStatus);
+        channel.write(backlightStatus);
     }
 
 }

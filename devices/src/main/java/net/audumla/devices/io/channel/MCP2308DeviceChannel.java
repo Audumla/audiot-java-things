@@ -1,4 +1,4 @@
-package net.audumla.devices.io.channel.gpio;
+package net.audumla.devices.io.channel;
 
 /*
  * *********************************************************************
@@ -16,7 +16,6 @@ package net.audumla.devices.io.channel.gpio;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import net.audumla.devices.io.channel.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
