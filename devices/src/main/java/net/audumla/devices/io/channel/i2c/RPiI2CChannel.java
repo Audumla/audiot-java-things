@@ -344,6 +344,11 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
         defaultContext = new ChannelContext(attr);
     }
 
+    public RPiI2CChannel(RPiI2CChannel channel, Attribute... attr) throws IOException {
+        defaultContext = new ChannelContext(channel.defaultContext, attr);
+        bufferAttributes.putAll(channel.bufferAttributes);
+    }
+
     @Override
     public boolean supportsAttribute(Class<? extends Attribute> attr) {
         return DeviceAddressAttr.class.isAssignableFrom(attr) ||
@@ -357,26 +362,19 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
     }
 
     @Override
-    public DeviceChannel createChannel(Attribute... attr) {
-        RPiI2CChannel dc = new RPiI2CChannel();
-        try {
-            dc.bufferAttributes.putAll(bufferAttributes);
-            dc.defaultContext = dc.defaultContext.applyAttributes(Arrays.asList(attr), true);
-        } catch (IOException e) {
-            logger.error("Unable to create Channel ", e);
-        }
-        return dc;
+    public DeviceChannel createChannel(Attribute... attr) throws IOException {
+        return new RPiI2CChannel(this, attr);
     }
 
     @Override
     public int write(byte b, Attribute... attr) throws IOException {
-        ChannelContext ctxt = attr.length > 0 ? defaultContext.applyAttributes(Arrays.asList(attr),true) : defaultContext;
+        ChannelContext ctxt = attr.length > 0 ? defaultContext.applyAttributes(Arrays.asList(attr), true) : defaultContext;
         return ctxt.atomicWriter.collect(ctxt, b);
     }
 
     @Override
     public byte read(Attribute... attr) throws IOException {
-        ChannelContext ctxt = attr.length > 0 ? defaultContext.applyAttributes(Arrays.asList(attr),true) : defaultContext;
+        ChannelContext ctxt = attr.length > 0 ? defaultContext.applyAttributes(Arrays.asList(attr), true) : defaultContext;
         return (byte) ctxt.atomicReader.collect(ctxt);
     }
 
@@ -436,7 +434,8 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
             int runLength = nextPosition > src.limit() ? src.limit() - src.position() : nextPosition - src.position();
             if (runLength > 0) bytesCollected += collector.collect(ctxt, src, runLength);
             if (src.position() == src.limit()) break;
-            if (i < ks.size()) ctxt = ctxt.applyAttributes(bufferAttributes.get(nextPosition).getAttributeReferences(),true);
+            if (i < ks.size())
+                ctxt = ctxt.applyAttributes(bufferAttributes.get(nextPosition).getAttributeReferences(), true);
         }
         return bytesCollected;
     }
@@ -444,7 +443,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
     @Override
     public void setAttribute(Attribute... attr) {
         try {
-            defaultContext = defaultContext.applyAttributes(Arrays.asList(attr),true);
+            defaultContext = defaultContext.applyAttributes(Arrays.asList(attr), true);
         } catch (IOException e) {
             logger.warn("Unable to set attribute on I2C Channel", e);
         }
