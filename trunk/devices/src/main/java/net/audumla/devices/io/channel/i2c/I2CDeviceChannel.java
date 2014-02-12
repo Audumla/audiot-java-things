@@ -17,28 +17,48 @@ package net.audumla.devices.io.channel.i2c;
  */
 
 import net.audumla.devices.io.channel.*;
-import net.audumla.devices.io.i2c.jni.rpi.I2C;
+import net.audumla.devices.io.i2c.I2CDevice;
+import net.audumla.devices.io.i2c.I2CDeviceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Set;
 
-public class RPiI2CChannel extends AbstractDeviceChannel {
-    private static final Logger logger = LoggerFactory.getLogger(RPiI2CChannel.class);
+public class I2CDeviceChannel extends AbstractDeviceChannel {
+    private static final Logger logger = LoggerFactory.getLogger(I2CDeviceChannel.class);
 
-    static protected final Map<String, Integer> deviceHandleMap = new HashMap<>();
+    protected I2CDeviceFactory factory;
+    protected ChannelContext context;
 
     protected static class ChannelContext {
 
-        public ChannelContext() {
+        private ChannelAddressAttr busAddress;
+        private DeviceAddressAttr deviceAddress;
+        private DeviceRegisterAttr deviceWriteRegister;
+        private DeviceRegisterAttr deviceReadRegister;
+        private DeviceWidthAttr deviceWidth = new DeviceWidthAttr(DeviceWidthAttr.DeviceWidth.WIDTH8);
+        private I2CDevice device;
+        private BitMaskAttr bitMask;
+        private ByteBufferCollector bufferWriter;
+        private AtomicWriter atomicWriter;
+        private ByteBufferCollector bufferReader;
+        private AtomicReader atomicReader;
+        protected I2CDeviceFactory factory;
+
+        public ChannelContext(I2CDeviceFactory factory) {
+            this.factory = factory;
             updateWriters();
         }
 
         public ChannelContext(ChannelContext cc, Attribute... attr) throws IOException {
+            this.factory = cc.factory;
             setBusAddress(cc.getBusAddress());
-            setDeviceHandle(cc.getDeviceHandle());
+            setDevice(cc.getDevice());
             setDeviceAddress(cc.getDeviceAddress());
             setDeviceWriteRegister(cc.getDeviceWriteRegister());
             setDeviceReadRegister(cc.getDeviceReadRegister());
@@ -52,7 +72,8 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
 //            updateWriters();
         }
 
-        public ChannelContext(Attribute... attr) throws IOException {
+        public ChannelContext(I2CDeviceFactory factory, Attribute... attr) throws IOException {
+            this.factory = factory;
             applyAttributes(Arrays.asList(attr), false);
         }
 
@@ -67,18 +88,6 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
         private interface AtomicReader {
             int collect(ChannelContext ctxt);
         }
-
-        private ChannelAddressAttr busAddress;
-        private DeviceAddressAttr deviceAddress;
-        private DeviceRegisterAttr deviceWriteRegister;
-        private DeviceRegisterAttr deviceReadRegister;
-        private DeviceWidthAttr deviceWidth = new DeviceWidthAttr(DeviceWidthAttr.DeviceWidth.WIDTH8);
-        private Integer deviceHandle;
-        private BitMaskAttr bitMask;
-        private ByteBufferCollector bufferWriter;
-        private AtomicWriter atomicWriter;
-        private ByteBufferCollector bufferReader;
-        private AtomicReader atomicReader;
 
         public BitMaskAttr getBitMask() {
             return bitMask;
@@ -128,12 +137,12 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
             this.deviceWidth = deviceWidth;
         }
 
-        public Integer getDeviceHandle() {
-            return deviceHandle;
+        public I2CDevice getDevice() {
+            return device;
         }
 
-        private void setDeviceHandle(Integer deviceHandle) {
-            this.deviceHandle = deviceHandle;
+        private void setDevice(I2CDevice deviceHandle) {
+            this.device = deviceHandle;
         }
 
         protected void updateWriters() {
@@ -147,11 +156,11 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
                     };
                     if (getDeviceWriteRegister() != null) {
                         if (getBitMask() != null) {
-                            atomicReader = (ctxt) -> I2C.readByte(ctxt.getDeviceHandle(), ctxt.getDeviceReadRegister().getRegister()) & ctxt.getBitMask().getMask();
-                            atomicWriter = (ctxt, value) -> I2C.writeByteMask(ctxt.getDeviceHandle(), ctxt.getDeviceWriteRegister().getRegister(), (byte) value, (byte) ctxt.getBitMask().getMask());
+                            atomicReader = (ctxt) -> ctxt.getDevice().readByte(ctxt.getDeviceReadRegister().getRegister()) & ctxt.getBitMask().getMask();
+                            atomicWriter = (ctxt, value) -> ctxt.getDevice().writeByteMask(ctxt.getDeviceWriteRegister().getRegister(), (byte) value, (byte) ctxt.getBitMask().getMask());
                             bufferWriter = (ctxt, buffer, length) -> {
                                 if (buffer.hasArray()) {
-                                    int ret = I2C.writeBytesMask(ctxt.getDeviceHandle(), ctxt.getDeviceWriteRegister().getRegister(), length, buffer.position(), buffer.array(), (byte) ctxt.getBitMask().getMask());
+                                    int ret = ctxt.getDevice().writeBytesMask(ctxt.getDeviceWriteRegister().getRegister(), length, buffer.position(), buffer.array(), (byte) ctxt.getBitMask().getMask());
                                     buffer.position(buffer.position() + length);
                                     return ret;
                                 } else {
@@ -163,11 +172,11 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
                             };
                             break;
                         } else {
-                            atomicReader = (ctxt) -> I2C.readByte(ctxt.getDeviceHandle(), ctxt.getDeviceReadRegister().getRegister());
-                            atomicWriter = (ctxt, value) -> I2C.writeByte(ctxt.getDeviceHandle(), ctxt.getDeviceWriteRegister().getRegister(), (byte) value);
+                            atomicReader = (ctxt) -> ctxt.getDevice().readByte(ctxt.getDeviceReadRegister().getRegister());
+                            atomicWriter = (ctxt, value) -> ctxt.getDevice().writeByte(ctxt.getDeviceWriteRegister().getRegister(), (byte) value);
                             bufferWriter = (ctxt, buffer, length) -> {
                                 if (buffer.hasArray()) {
-                                    int ret = I2C.writeBytes(ctxt.getDeviceHandle(), ctxt.getDeviceWriteRegister().getRegister(), length, buffer.position(), buffer.array());
+                                    int ret = ctxt.getDevice().writeBytes(ctxt.getDeviceWriteRegister().getRegister(), length, buffer.position(), buffer.array());
                                     buffer.position(buffer.position() + length);
                                     return ret;
                                 } else {
@@ -181,11 +190,11 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
                         }
                     } else {
                         if (getBitMask() != null) {
-                            atomicReader = (ctxt) -> I2C.readByteDirect(ctxt.getDeviceHandle()) & ctxt.getBitMask().getMask();
-                            atomicWriter = (ctxt, value) -> I2C.writeByteDirectMask(ctxt.getDeviceHandle(), (byte) value, (byte) ctxt.getBitMask().getMask());
+                            atomicReader = (ctxt) -> ctxt.getDevice().readByteDirect() & ctxt.getBitMask().getMask();
+                            atomicWriter = (ctxt, value) -> ctxt.getDevice().writeByteDirectMask((byte) value, (byte) ctxt.getBitMask().getMask());
                             bufferWriter = (ctxt, buffer, length) -> {
                                 if (buffer.hasArray()) {
-                                    int ret = I2C.writeBytesDirectMask(ctxt.getDeviceHandle(), length, buffer.position(), buffer.array(), (byte) ctxt.getBitMask().getMask());
+                                    int ret = ctxt.getDevice().writeBytesDirectMask(length, buffer.position(), buffer.array(), (byte) ctxt.getBitMask().getMask());
                                     buffer.position(buffer.position() + length);
                                     return ret;
                                 } else {
@@ -197,11 +206,11 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
                             };
                             break;
                         } else {
-                            atomicReader = (ctxt) -> I2C.readByteDirect(ctxt.getDeviceHandle());
-                            atomicWriter = (ctxt, value) -> I2C.writeByteDirect(ctxt.getDeviceHandle(), (byte) value);
+                            atomicReader = (ctxt) -> ctxt.getDevice().readByteDirect();
+                            atomicWriter = (ctxt, value) -> ctxt.getDevice().writeByteDirect((byte) value);
                             bufferWriter = (ctxt, buffer, length) -> {
                                 if (buffer.hasArray()) {
-                                    int ret = I2C.writeBytesDirect(ctxt.getDeviceHandle(), length, buffer.position(), buffer.array());
+                                    int ret = ctxt.getDevice().writeBytesDirect(length, buffer.position(), buffer.array());
                                     buffer.position(buffer.position() + length);
                                     return ret;
                                 } else {
@@ -223,11 +232,11 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
                             return length;
                         };
                         if (getBitMask() != null) {
-                            atomicReader = (ctxt) -> I2C.readWord(ctxt.getDeviceHandle(), ctxt.getDeviceReadRegister().getRegister()) & ctxt.getBitMask().getMask();
-                            atomicWriter = (ctxt, value) -> I2C.writeWordMask(ctxt.getDeviceHandle(), ctxt.getDeviceWriteRegister().getRegister(), (char) value, (char) ctxt.getBitMask().getMask());
+                            atomicReader = (ctxt) -> ctxt.getDevice().readWord(ctxt.getDeviceReadRegister().getRegister()) & ctxt.getBitMask().getMask();
+                            atomicWriter = (ctxt, value) -> ctxt.getDevice().writeWordMask(ctxt.getDeviceWriteRegister().getRegister(), (char) value, (char) ctxt.getBitMask().getMask());
                             bufferWriter = (ctxt, buffer, length) -> {
                                 if (buffer.hasArray()) {
-                                    int ret = I2C.writeWordsMask(ctxt.getDeviceHandle(), ctxt.getDeviceWriteRegister().getRegister(), length, buffer.position(), buffer.asCharBuffer().array(), (char) ctxt.getBitMask().getMask());
+                                    int ret = ctxt.getDevice().writeWordsMask(ctxt.getDeviceWriteRegister().getRegister(), length, buffer.position(), buffer.asCharBuffer().array(), (char) ctxt.getBitMask().getMask());
                                     buffer.position(buffer.position() + length);
                                     return ret;
                                 } else {
@@ -239,11 +248,11 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
                             };
                             break;
                         } else {
-                            atomicReader = (ctxt) -> I2C.readWord(ctxt.getDeviceHandle(), ctxt.getDeviceReadRegister().getRegister());
-                            atomicWriter = (ctxt, value) -> I2C.writeWord(ctxt.getDeviceHandle(), ctxt.getDeviceWriteRegister().getRegister(), (char) value);
+                            atomicReader = (ctxt) -> ctxt.getDevice().readWord(ctxt.getDeviceReadRegister().getRegister());
+                            atomicWriter = (ctxt, value) -> ctxt.getDevice().writeWord(ctxt.getDeviceWriteRegister().getRegister(), (char) value);
                             bufferWriter = (ctxt, buffer, length) -> {
                                 if (buffer.hasArray()) {
-                                    int ret = I2C.writeWords(ctxt.getDeviceHandle(), ctxt.getDeviceWriteRegister().getRegister(), length, buffer.position(), buffer.asCharBuffer().array());
+                                    int ret = ctxt.getDevice().writeWords(ctxt.getDeviceWriteRegister().getRegister(), length, buffer.position(), buffer.asCharBuffer().array());
                                     buffer.position(buffer.position() + length);
                                     return ret;
                                 } else {
@@ -321,7 +330,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
                 }
             }
             if (deviceChange && ctxt.deviceAddress != null && ctxt.busAddress != null) {
-                ctxt.setDeviceHandle(openDevice(ctxt.getBusAddress().getAddress(), ctxt.getDeviceAddress().getAddress()));
+                ctxt.setDevice(factory.open(ctxt.getBusAddress().getAddress(), ctxt.getDeviceAddress().getAddress()));
             }
             if (writersChange) {
                 ctxt.updateWriters();
@@ -334,18 +343,19 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
 
     }
 
-    protected ChannelContext defaultContext;
-
-    public RPiI2CChannel() {
-        defaultContext = new ChannelContext();
+    public I2CDeviceChannel(I2CDeviceFactory factory) {
+        this.factory = factory;
+        context = new ChannelContext(factory);
     }
 
-    public RPiI2CChannel(Attribute... attr) throws IOException {
-        defaultContext = new ChannelContext(attr);
+    public I2CDeviceChannel(I2CDeviceFactory factory, Attribute... attr) throws IOException {
+        this.factory = factory;
+        context = new ChannelContext(factory,attr);
     }
 
-    public RPiI2CChannel(RPiI2CChannel channel, Attribute... attr) throws IOException {
-        defaultContext = new ChannelContext(channel.defaultContext, attr);
+    public I2CDeviceChannel(I2CDeviceChannel channel, Attribute... attr) throws IOException {
+        this.factory = channel.factory;
+        context = new ChannelContext(channel.context, attr);
         bufferAttributes.putAll(channel.bufferAttributes);
     }
 
@@ -363,66 +373,40 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
 
     @Override
     public DeviceChannel createChannel(Attribute... attr) throws IOException {
-        return new RPiI2CChannel(this, attr);
+        return new I2CDeviceChannel(this, attr);
     }
 
     @Override
     public int write(byte b, Attribute... attr) throws IOException {
-        ChannelContext ctxt = attr.length > 0 ? defaultContext.applyAttributes(Arrays.asList(attr), true) : defaultContext;
+        ChannelContext ctxt = attr.length > 0 ? context.applyAttributes(Arrays.asList(attr), true) : context;
         return ctxt.atomicWriter.collect(ctxt, b);
     }
 
     @Override
     public byte read(Attribute... attr) throws IOException {
-        ChannelContext ctxt = attr.length > 0 ? defaultContext.applyAttributes(Arrays.asList(attr), true) : defaultContext;
+        ChannelContext ctxt = attr.length > 0 ? context.applyAttributes(Arrays.asList(attr), true) : context;
         return (byte) ctxt.atomicReader.collect(ctxt);
     }
 
     @Override
     synchronized public boolean isOpen() {
-        return defaultContext.getDeviceHandle() != null;
-    }
-
-    static public int openDevice(int bus, int address) throws IOException {
-        synchronized (deviceHandleMap) {
-            String id = String.valueOf(bus) + ":" + String.valueOf(address);
-            Integer handle = deviceHandleMap.get(id);
-            if (handle == null) {
-                handle = net.audumla.devices.io.i2c.jni.rpi.I2C.open("/dev/i2c-" + bus, address);
-                if (handle < 0) {
-                    throw new IOException("Cannot open I2C Bus [/dev/i2c-" + bus + "] received " + handle);
-                }
-                deviceHandleMap.put(id, handle);
-                logger.debug("Opened Device on '/dev/i2c-" + bus + "' at Address 0x" + Integer.toHexString(address));
-            } else {
-                logger.debug("Found open Device on '/dev/i2c-" + bus + "' at Address 0x" + Integer.toHexString(address));
-            }
-            return handle;
-        }
+        return context.getDevice() != null;
     }
 
     @Override
-    synchronized public void close() throws IOException {
-        synchronized (deviceHandleMap) {
-            if (isOpen()) {
-                I2C.close(defaultContext.getDeviceHandle());
-                for (Map.Entry<String, Integer> i : new ArrayList<>(deviceHandleMap.entrySet())) {
-                    if (i.getValue().equals(defaultContext.getDeviceHandle())) {
-                        deviceHandleMap.remove(i.getKey());
-                    }
-                }
-            }
-        }
+    public void close() throws IOException {
+        context.device.close();
     }
+
 
     @Override
     public int read(ByteBuffer src) throws IOException {
-        return collectBytes(src, defaultContext, defaultContext.bufferReader::collect);
+        return collectBytes(src, context, context.bufferReader::collect);
     }
 
     @Override
     public int write(ByteBuffer src) throws IOException {
-        return collectBytes(src, defaultContext, defaultContext.bufferWriter::collect);
+        return collectBytes(src, context, context.bufferWriter::collect);
     }
 
     private int collectBytes(ByteBuffer src, ChannelContext ctxt, ChannelContext.ByteBufferCollector collector) throws IOException {
@@ -446,7 +430,7 @@ public class RPiI2CChannel extends AbstractDeviceChannel {
     @Override
     public void setAttribute(Attribute... attr) {
         try {
-            defaultContext = defaultContext.applyAttributes(Arrays.asList(attr), true);
+            context = context.applyAttributes(Arrays.asList(attr), true);
         } catch (IOException e) {
             logger.warn("Unable to set attribute on I2C Channel", e);
         }

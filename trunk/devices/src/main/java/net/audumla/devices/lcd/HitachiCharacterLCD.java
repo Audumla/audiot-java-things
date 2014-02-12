@@ -2,7 +2,8 @@ package net.audumla.devices.lcd;
 
 import net.audumla.devices.io.channel.*;
 import net.audumla.devices.io.channel.gpio.MCP2308DeviceChannel;
-import net.audumla.devices.io.channel.i2c.RPiI2CChannel;
+import net.audumla.devices.io.channel.i2c.I2CDeviceChannel;
+import net.audumla.devices.io.i2c.RPiI2CDeviceFactory;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
@@ -79,7 +80,7 @@ public class HitachiCharacterLCD implements CharacterLCD {
     public HitachiCharacterLCD(String name, int address) {
         this.name = name;
         try {
-            baseDeviceChannel = new RPiI2CChannel(new ChannelAddressAttr(1), new DeviceAddressAttr(address), new DeviceWriteRegisterAttr(MCP2308DeviceChannel.MCP23008_GPIO));
+            baseDeviceChannel = new I2CDeviceChannel(new RPiI2CDeviceFactory(),new ChannelAddressAttr(1), new DeviceAddressAttr(address), new DeviceWriteRegisterAttr(MCP2308DeviceChannel.MCP23008_GPIO));
         } catch (IOException e) {
             logger.error("Unable to create channel",e);
         }
