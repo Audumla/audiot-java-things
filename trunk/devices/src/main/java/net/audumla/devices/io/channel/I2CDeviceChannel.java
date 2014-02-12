@@ -1,4 +1,4 @@
-package net.audumla.devices.io.channel.i2c;
+package net.audumla.devices.io.channel;
 
 /*
  * *********************************************************************
@@ -16,7 +16,6 @@ package net.audumla.devices.io.channel.i2c;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import net.audumla.devices.io.channel.*;
 import net.audumla.devices.io.i2c.I2CDevice;
 import net.audumla.devices.io.i2c.I2CDeviceFactory;
 import org.slf4j.Logger;
@@ -272,7 +271,6 @@ public class I2CDeviceChannel extends AbstractDeviceChannel {
 
         final protected ChannelContext clone() {
             try {
-                logger.debug("Clone!");
                 return new ChannelContext(this);
             } catch (IOException e) {
                 logger.error("Unable to clone", e);

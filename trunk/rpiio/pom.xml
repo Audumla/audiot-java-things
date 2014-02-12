@@ -13,6 +13,13 @@
 	</parent>
     <packaging>bundle</packaging>
 
+    <dependencies>
+        <dependency>
+            <groupId>net.audumla</groupId>
+            <artifactId>devices</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
     <build>
         <resources>
             <resource>

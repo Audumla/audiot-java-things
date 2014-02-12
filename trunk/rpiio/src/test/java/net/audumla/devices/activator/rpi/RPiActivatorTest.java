@@ -23,7 +23,7 @@ import net.audumla.devices.activator.factory.PCF8574GPIOActivatorFactory;
 import net.audumla.devices.activator.factory.RPIGPIOActivatorFactory;
 import net.audumla.devices.activator.factory.SainsSmartRelayActivatorFactory;
 import net.audumla.devices.io.channel.*;
-import net.audumla.devices.io.channel.i2c.I2CDeviceChannel;
+import net.audumla.devices.io.channel.I2CDeviceChannel;
 import net.audumla.devices.io.i2c.RPiI2CDeviceFactory;
 import net.audumla.devices.io.i2c.jni.rpi.I2C;
 import org.junit.Test;

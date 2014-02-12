@@ -1,4 +1,4 @@
-package net.audumla.devices.io.channel.gpio;
+package net.audumla.devices.io.gpio;
 
 /*
  * *********************************************************************
@@ -33,7 +33,11 @@ public interface GPIODeviceChannel {
 
     float[] getIOStates();
 
-    void setIOStates(float value, int ... pins);
+    void setIOStates(float value, int... pins);
+
+    void setIOStates(int value, int... pins);
+
+    void setIOStates(int[] values, int[] pins);
 
 
 }
