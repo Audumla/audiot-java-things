@@ -16,28 +16,33 @@ package net.audumla.devices.io.gpio;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-public interface GPIODeviceChannel {
+public interface GPIODevice {
     public enum IOMode {DIGITAL_INPUT, DIGITAL_OUTPUT, ANALOG_INPUT, ANALOG_OUTPUT, PWM_OUTPUT}
 
     public enum PullMode {PULL_UP, PULL_DOWN, NONE}
 
-    void setIOMode(IOMode mode, int... pins);
+//    void setIOMode(IOMode mode, int... pins);
+//
+//    IOMode[] getIOModes();
+//
+//    IOMode getIOMode(int pin);
+//
+//    int getIOCount();
+//
+//    void setPullModes(PullMode mode, int... pins);
+//
+//    PullMode[] getPullModes();
+//
+//    PullMode getPullMode(int pin);
+//
+//    float[] getIOStates();
+//
+//    float getIOState(int pin);
+//
 
-    IOMode[] getIOModes();
 
-    int getIOCount();
+    <T extends GPIOState> void setState(T... state);
 
-    void setPullModes(PullMode mode, int... pins);
-
-    PullMode[] getPullModes();
-
-    float[] getIOStates();
-
-    void setIOStates(float value, int... pins);
-
-    void setIOStates(int value, int... pins);
-
-    void setIOStates(int[] values, int[] pins);
-
+    <T extends GPIOState> void getState(T... state);
 
 }

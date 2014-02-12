@@ -59,7 +59,7 @@ public interface Activator {
     Properties getId();
 
     /**
-     * Specifies whether this activator can recieve setState requests.
+     * Specifies whether this activator can recieve applyState requests.
      * If this is false then only get requests for states will be allowed with the result being determined by the activator implementation
      * If true then calls to set the state will be handled by the underlying activator implementation to store that state
      * @param set whether sets state is enabled
