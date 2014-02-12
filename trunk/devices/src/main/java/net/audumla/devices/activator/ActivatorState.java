@@ -17,21 +17,21 @@ package net.audumla.devices.activator;
  */
 
 public interface ActivatorState {
-    static final ActivatorState ACTIVATED = newInstance(Long.MAX_VALUE,"ACTIVATED");
-    static final ActivatorState DEACTIVATED = newInstance(0l,"DEACTIVATED");
-    static final ActivatorState UNKNOWN = newInstance(Long.MIN_VALUE,"UNKNOWN");
+    static final ActivatorState ACTIVATED = newInstance(1f,"ACTIVATED");
+    static final ActivatorState DEACTIVATED = newInstance(0f,"DEACTIVATED");
+    static final ActivatorState UNKNOWN = newInstance(Float.MIN_VALUE,"UNKNOWN");
 //    static final ActivatorState ACTIVATING = newInstance(0l,"ACTIVATING");
 //    static final ActivatorState DEACTIVATING = newInstance(Long.MAX_VALUE,"DEACTIVATING");
 
-    Long getValue();
+    Float getValue();
 
     String getName();
 
-    static ActivatorState newInstance(Long value, String name) {
+    static ActivatorState newInstance(Float value, String name) {
         return new ImmutableActivatorState(value, name);
     }
 
-    static ActivatorState newInstance(Long value) {
+    static ActivatorState newInstance(Float value) {
         return new ImmutableActivatorState(value);
     }
 

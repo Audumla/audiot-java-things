@@ -31,5 +31,9 @@ public interface GPIODeviceChannel {
 
     PullMode[] getPullModes();
 
+    float[] getIOStates();
+
+    void setIOStates(float value, int ... pins);
+
 
 }

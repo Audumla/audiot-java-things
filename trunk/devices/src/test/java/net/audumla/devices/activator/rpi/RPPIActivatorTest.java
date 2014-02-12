@@ -275,8 +275,8 @@ public class RPPIActivatorTest {
         d.write((byte) ~0x01);
         Activator power = getPower(6, 7, rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO1));
         power.setState(ActivatorState.ACTIVATED);
+        d.setAttribute(new BitMaskAttr(0xf0));
         ByteBuffer bb = ByteBuffer.allocate(50);
-        d.setAttribute(bb,new BitMaskAttr(0xf0));
         byte val = (byte) 0x01;
         for (int i = 0; i < 8; ++i) {
             bb.put((byte) ~val);

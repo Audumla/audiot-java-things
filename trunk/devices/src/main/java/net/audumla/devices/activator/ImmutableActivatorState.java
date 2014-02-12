@@ -16,25 +16,26 @@ package net.audumla.devices.activator;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
+import org.apache.commons.math3.util.Precision;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ImmutableActivatorState implements ActivatorState {
     private static final Logger logger = LoggerFactory.getLogger(ImmutableActivatorState.class);
-    private Long value;
+    private Float value;
     private String name;
 
-    public ImmutableActivatorState(Long value) {
+    public ImmutableActivatorState(Float value) {
         this.value = value;
     }
 
-    public ImmutableActivatorState(Long value, String name) {
+    public ImmutableActivatorState(Float value, String name) {
         this.value = value;
         this.name = name;
     }
 
     @Override
-    public Long getValue() {
+    public Float getValue() {
         return value;
     }
 
@@ -59,8 +60,7 @@ public class ImmutableActivatorState implements ActivatorState {
 
         ImmutableActivatorState that = (ImmutableActivatorState) o;
 
-        return value.equals(that.value);
-
+        return Precision.equals(value, that.value,5.96e-08);
     }
 
     @Override
