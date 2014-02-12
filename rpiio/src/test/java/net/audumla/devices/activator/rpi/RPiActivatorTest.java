@@ -47,7 +47,7 @@ public class RPiActivatorTest {
             power5v = new PCF8574GPIOActivatorFactory(d);
             power5v.initialize();
 //            for (Activator a : power5v.getActivators()) {
-//                a.setState(ActivatorState.ACTIVATED);
+//                a.applyState(ActivatorState.ACTIVATED);
 //            }
 
         } catch (Exception e) {
