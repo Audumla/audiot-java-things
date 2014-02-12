@@ -21,7 +21,8 @@ import net.audumla.devices.io.channel.BitMaskAttr;
 import net.audumla.devices.io.channel.ChannelAddressAttr;
 import net.audumla.devices.io.channel.DeviceAddressAttr;
 import net.audumla.devices.io.channel.DeviceChannel;
-import net.audumla.devices.io.channel.i2c.RPiI2CChannel;
+import net.audumla.devices.io.channel.i2c.I2CDeviceChannel;
+import net.audumla.devices.io.i2c.RPiI2CDeviceFactory;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -30,7 +31,7 @@ public class I2ctest {
 
     @Test
     public void PCF8574readwrite8() throws Exception {
-        DeviceChannel d = new RPiI2CChannel().createChannel(new ChannelAddressAttr(1), new DeviceAddressAttr(PCF8574GPIOActivatorFactory.PCF8574_0x21));
+        DeviceChannel d = new I2CDeviceChannel(new RPiI2CDeviceFactory()).createChannel(new ChannelAddressAttr(1), new DeviceAddressAttr(PCF8574GPIOActivatorFactory.PCF8574_0x21));
         byte val = (byte) 0x01;
         d.write(val);
         Assert.assertEquals(val, d.read());
@@ -40,13 +41,13 @@ public class I2ctest {
 
     @Test
     public void PCF8574RWMask8() throws Exception {
-        DeviceChannel d = new RPiI2CChannel().createChannel(
+        DeviceChannel d = new I2CDeviceChannel(new RPiI2CDeviceFactory()).createChannel(
                 new ChannelAddressAttr(1),
                 new DeviceAddressAttr(PCF8574GPIOActivatorFactory.PCF8574_0x21));
 
         d.write((byte) 0x00);
         byte val = (byte) 0xff;
-        d.write(val,new BitMaskAttr(0x0f));
+        d.write(val, new BitMaskAttr(0x0f));
         Assert.assertEquals(0x0f, d.read());
         d.write((byte) ~val,new BitMaskAttr(0xff));
         Assert.assertEquals(~val & 0x0f, d.read());
