@@ -25,7 +25,7 @@ public class PeripheralManager {
     public static final int UNSPECIFIED_ID = -1;
 
     private static Map<Class<?>, Collection<RegistrationListener>> listeners = new HashMap<>();
-    private static Collection<PeripheralDescriptor<? extends Peripheral> peripherals = new ArrayList<>();
+    private static Collection<PeripheralDescriptor<? extends Peripheral>> peripherals = new ArrayList<>();
     private static Collection<PeripheralProvider> providers = new ArrayList<>();
     private static int idCount = 0;
 
@@ -107,7 +107,7 @@ public class PeripheralManager {
     }
 
     public static <P extends Peripheral<? super P>> P open(PeripheralConfig<? super P> config) throws IOException, PeripheralConfigInvalidException, PeripheralTypeNotSupportedException, PeripheralNotFoundException, UnavailablePeripheralException {
-        open(config,EXCLUSIVE);
+        return open(config,EXCLUSIVE);
     }
 
     public static <P extends Peripheral<? super P>> P open(PeripheralConfig<? super P> config, int mode) throws IOException, PeripheralConfigInvalidException, PeripheralTypeNotSupportedException, PeripheralNotFoundException, UnavailablePeripheralException, UnsupportedAccessModeException {
