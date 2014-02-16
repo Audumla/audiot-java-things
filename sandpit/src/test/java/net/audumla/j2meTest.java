@@ -1,4 +1,4 @@
-package net.audumla.devices.io.gpio;
+package net.audumla;
 
 /*
  * *********************************************************************
@@ -16,30 +16,17 @@ package net.audumla.devices.io.gpio;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import net.audumla.devices.io.DeviceState;
+import com.oracle.deviceaccess.PeripheralManager;
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
+public class j2meTest {
+    private static final Logger logger = LoggerFactory.getLogger(j2meTest.class);
 
-public class AbstractGPIODevice implements GPIODevice {
-    private static final Logger logger = LoggerFactory.getLogger(AbstractGPIODevice.class);
+    @Test
+    public void testj2me() throws Exception {
+        PeripheralFactory
 
-    @Override
-    public <T extends DeviceState> void setState(T... state) {
-        try {
-            Arrays.asList(state).stream().forEach((t) -> t.applyState(this));
-        } catch (ClassCastException e) {
-            logger.error("Unable to set state " + state[0].getClass() + " on " + this.getClass());
-        }
-    }
-
-    @Override
-    public <T extends DeviceState> void getState(T... state) {
-        try {
-            Arrays.asList(state).stream().forEach((t) -> t.retrieveState(this));
-        } catch (ClassCastException e) {
-            logger.error("Unable to get state " + state[0].getClass() + " for " + this.getClass());
-        }
     }
 }

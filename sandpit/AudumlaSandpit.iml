@@ -98,6 +98,7 @@
     <orderEntry type="library" name="Maven: org.springframework:spring-test:4.0.0.RC2" level="project" />
     <orderEntry type="library" name="Maven: org.codehaus.jackson:jackson-core-asl:1.9.13" level="project" />
     <orderEntry type="library" name="Maven: org.codehaus.jackson:jackson-mapper-asl:1.9.13" level="project" />
+    <orderEntry type="library" name="Maven: net.audumla:j2me:8.0-EA" level="project" />
   </component>
 </module>
 

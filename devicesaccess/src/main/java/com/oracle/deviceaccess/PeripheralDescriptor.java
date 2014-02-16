@@ -1,4 +1,4 @@
-package net.audumla.devices.io.gpio;
+package com.oracle.deviceaccess;
 
 /*
  * *********************************************************************
@@ -16,35 +16,18 @@ package net.audumla.devices.io.gpio;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import net.audumla.devices.io.DeviceState;
 
-public interface GPIODevice {
-    public enum IOMode {DIGITAL_INPUT, DIGITAL_OUTPUT, ANALOG_INPUT, ANALOG_OUTPUT, PWM_OUTPUT}
+public abstract interface PeripheralDescriptor<A extends Peripheral<? super A>>
+{
+    public static final int UNDEFINED_ID = -1;
 
-    public enum PullMode {PULL_UP, PULL_DOWN, NONE}
+    public abstract <Z extends PeripheralConfig<? super A>> Z getConfiguration();
 
-//    void setIOMode(IOMode mode, int... pins);
-//
-//    IOMode[] getIOModes();
-//
-//    IOMode getIOMode(int pin);
-//
-//    int getIOCount();
-//
-//    void setPullModes(PullMode mode, int... pins);
-//
-//    PullMode[] getPullModes();
-//
-//    PullMode getPullMode(int pin);
-//
-//    float[] getIOStates();
-//
-//    float getIOState(int pin);
-//
+    public abstract int getID();
 
+    public abstract Class<A> getInterface();
 
-    <T extends DeviceState> void setState(T... state);
+    public abstract String getName();
 
-    <T extends DeviceState> void getState(T... state);
-
+    public abstract String[] getProperties();
 }

@@ -1,4 +1,4 @@
-package net.audumla.devices.io.gpio;
+package com.oracle.deviceaccess;
 
 /*
  * *********************************************************************
@@ -16,35 +16,24 @@ package net.audumla.devices.io.gpio;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import net.audumla.devices.io.DeviceState;
+import java.io.IOException;
+import java.nio.channels.Channel;
 
-public interface GPIODevice {
-    public enum IOMode {DIGITAL_INPUT, DIGITAL_OUTPUT, ANALOG_INPUT, ANALOG_OUTPUT, PWM_OUTPUT}
+public abstract interface Peripheral<A extends Peripheral<? super A>> extends Channel {
+    public static final int BIG_ENDIAN = 1;
+    public static final int LITTLE_ENDIAN = 0;
+    public static final int MIXED_ENDIAN = 2;
 
-    public enum PullMode {PULL_UP, PULL_DOWN, NONE}
+    public abstract <Z extends A> PeripheralDescriptor<Z> getDescriptor();
 
-//    void setIOMode(IOMode mode, int... pins);
-//
-//    IOMode[] getIOModes();
-//
-//    IOMode getIOMode(int pin);
-//
-//    int getIOCount();
-//
-//    void setPullModes(PullMode mode, int... pins);
-//
-//    PullMode[] getPullModes();
-//
-//    PullMode getPullMode(int pin);
-//
-//    float[] getIOStates();
-//
-//    float getIOState(int pin);
-//
+    public abstract boolean isOpen();
 
+    public abstract void close()
+            throws IOException;
 
-    <T extends DeviceState> void setState(T... state);
+    public abstract void tryLock(int paramInt)
+            throws IOException;
 
-    <T extends DeviceState> void getState(T... state);
-
+    public abstract void unlock()
+            throws IOException;
 }

@@ -1,4 +1,4 @@
-package net.audumla.devices.io.gpio;
+package net.audumla.devices.io;
 
 /*
  * *********************************************************************
@@ -19,10 +19,7 @@ package net.audumla.devices.io.gpio;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
-import java.util.BitSet;
-
-public class AnalogState implements GPIOState<AnalogState.AnalogStateDevice> {
+public class AnalogState implements DeviceState<AnalogStateDevice> {
     private static final Logger logger = LoggerFactory.getLogger(AnalogState.class);
 
     private Float state;
@@ -41,11 +38,6 @@ public class AnalogState implements GPIOState<AnalogState.AnalogStateDevice> {
     @Override
     public void retrieveState(AnalogStateDevice device) {
         state = device.getState(pin);
-    }
-
-    public interface AnalogStateDevice {
-        Float getState(int pin);
-        void setState(int pin, Float state);
     }
 
     public Float getState() {

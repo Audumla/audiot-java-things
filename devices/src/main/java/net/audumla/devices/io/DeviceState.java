@@ -1,4 +1,4 @@
-package net.audumla.devices.io.gpio;
+package net.audumla.devices.io;
 
 /*
  * *********************************************************************
@@ -16,30 +16,14 @@ package net.audumla.devices.io.gpio;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import net.audumla.devices.io.DeviceState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
+public interface DeviceState<T> {
 
-public class AbstractGPIODevice implements GPIODevice {
-    private static final Logger logger = LoggerFactory.getLogger(AbstractGPIODevice.class);
+    public static final int MAX_STATES = 64;
 
-    @Override
-    public <T extends DeviceState> void setState(T... state) {
-        try {
-            Arrays.asList(state).stream().forEach((t) -> t.applyState(this));
-        } catch (ClassCastException e) {
-            logger.error("Unable to set state " + state[0].getClass() + " on " + this.getClass());
-        }
-    }
+    void applyState(T device);
+    void retrieveState(T device);
 
-    @Override
-    public <T extends DeviceState> void getState(T... state) {
-        try {
-            Arrays.asList(state).stream().forEach((t) -> t.retrieveState(this));
-        } catch (ClassCastException e) {
-            logger.error("Unable to get state " + state[0].getClass() + " for " + this.getClass());
-        }
-    }
 }
