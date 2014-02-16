@@ -1,4 +1,4 @@
-package com.oracle.deviceaccess;
+package com.oracle.deviceaccess.gpio;
 
 /*
  * *********************************************************************
@@ -16,11 +16,16 @@ package com.oracle.deviceaccess;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import java.util.EventListener;
+import java.time.Instant;
 
-public interface RegistrationListener<A extends Peripheral<? super A>> extends EventListener
-{
-    void peripheralRegistered(RegistrationEvent<A> paramRegistrationEvent);
+public class PortEvent extends com.oracle.deviceaccess.PeripheralEvent<GPIOPort, Integer> {
 
-    void peripheralUnregistered(RegistrationEvent<A> paramRegistrationEvent);
+    public PortEvent(GPIOPort peripheral, Integer value) {
+        super(peripheral, value);
+    }
+
+    public PortEvent(GPIOPort peripheral, Integer value, Instant timeStamp) {
+        super(peripheral, value, timeStamp);
+    }
+
 }

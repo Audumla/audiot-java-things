@@ -19,11 +19,11 @@ package com.oracle.deviceaccess;
 import java.io.IOException;
 import java.nio.Buffer;
 
-public abstract interface BufferAccess<A extends Buffer>
+public interface BufferAccess<A extends Buffer>
 {
-    public abstract A getInputBuffer()
+    A getInputBuffer()
             throws IOException;
 
-    public abstract A getOutputBuffer()
+    A getOutputBuffer()
             throws IOException;
 }

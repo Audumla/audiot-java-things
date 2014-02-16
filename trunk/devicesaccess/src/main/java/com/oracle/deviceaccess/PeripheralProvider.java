@@ -16,11 +16,14 @@ package com.oracle.deviceaccess;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import java.util.EventListener;
+import java.io.IOException;
 
-public interface RegistrationListener<A extends Peripheral<? super A>> extends EventListener
-{
-    void peripheralRegistered(RegistrationEvent<A> paramRegistrationEvent);
+public interface PeripheralProvider<P extends Peripheral<? super P>> {
+    P open(PeripheralConfig<? super P> config, String[] properties, int mode) throws PeripheralNotFoundException, UnavailablePeripheralException, PeripheralConfigInvalidException, UnsupportedAccessModeException, IOException;
 
-    void peripheralUnregistered(RegistrationEvent<A> paramRegistrationEvent);
+    Class<? extends PeripheralConfig<? super P>> getConfigType();
+
+    Class<P> getType();
+
+    boolean matches(String[] properties);
 }

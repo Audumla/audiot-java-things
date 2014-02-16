@@ -26,36 +26,39 @@ import java.nio.ByteBuffer;
 import java.nio.channels.ByteChannel;
 
 
-public abstract interface I2CDevice extends BufferAccess<ByteBuffer>, Peripheral<I2CDevice>, Transactional, ByteChannel
+public interface I2CDevice extends BufferAccess<ByteBuffer>, Peripheral<I2CDevice>, Transactional, ByteChannel
 {
+    static interface Bus {
+        I2CCombinedMessage	createCombinedMessage();
+    }
 
-    public abstract int read()
+    int read()
             throws IOException;
 
-    public abstract int read(int paramInt1, int paramInt2, int paramInt3, ByteBuffer paramByteBuffer)
+    int read(int subAddress, int subAddressSize, int skip, ByteBuffer dst)
             throws IOException;
 
-    public abstract int read(int paramInt1, int paramInt2, ByteBuffer paramByteBuffer)
+    int read(int subAddress, int subAddressSize, ByteBuffer dst)
             throws IOException;
 
-    public abstract int read(int paramInt, ByteBuffer paramByteBuffer)
+    int read(int skip, ByteBuffer dst)
             throws IOException;
 
-    public abstract int read(ByteBuffer paramByteBuffer)
+    int read(ByteBuffer dst)
             throws IOException;
 
-    public abstract int write(int paramInt1, int paramInt2, ByteBuffer paramByteBuffer)
+    int write(int subAddress, int subAddressSize, ByteBuffer dst)
             throws IOException;
 
-    public abstract int write(ByteBuffer paramByteBuffer)
+    int write(ByteBuffer dst)
             throws IOException;
 
-    public abstract void begin()
+    void begin()
             throws IOException;
 
-    public abstract void end()
+    void end()
             throws IOException;
 
-    public abstract void write(int paramInt)
+    void write(int data)
             throws IOException;
 }

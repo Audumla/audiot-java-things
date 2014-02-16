@@ -20,23 +20,27 @@ import java.util.EventObject;
 
 public class RegistrationEvent<A extends Peripheral<? super A>> extends EventObject
 {
-    public RegistrationEvent(PeripheralDescriptor<A> paramPeripheralDescriptor)
+    private final PeripheralDescriptor<A> desc;
+
+    public RegistrationEvent(PeripheralDescriptor<A> desc)
     {
-        super((Object)null);
+        super(desc.getID());
+        this.desc = desc;
     }
 
-    public RegistrationEvent(String paramString, PeripheralDescriptor<A> paramPeripheralDescriptor)
+    public RegistrationEvent(String initiator, PeripheralDescriptor<A> desc)
     {
-        super((Object)null);
+        super(initiator);
+        this.desc = desc;
     }
 
     public PeripheralDescriptor<A> getDescriptor()
     {
-        return null;
+        return desc;
     }
 
     public String getInitiator()
     {
-        return null;
+        return getSource().toString();
     }
 }

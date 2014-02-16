@@ -16,11 +16,7 @@ package com.oracle.deviceaccess;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import java.util.EventListener;
+public interface PeripheralEventListener<P extends Peripheral<? super P>,E extends PeripheralEvent<P,?>> {
+    void valueChanged(E portEvent);
 
-public interface RegistrationListener<A extends Peripheral<? super A>> extends EventListener
-{
-    void peripheralRegistered(RegistrationEvent<A> paramRegistrationEvent);
-
-    void peripheralUnregistered(RegistrationEvent<A> paramRegistrationEvent);
 }

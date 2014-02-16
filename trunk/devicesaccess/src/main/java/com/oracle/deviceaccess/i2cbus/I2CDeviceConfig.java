@@ -83,8 +83,4 @@ public class I2CDeviceConfig implements PeripheralConfig.HardwareAddressing, Per
         this.addressSize = addressSize;
     }
 
-    @Override
-    public Class<? super I2CDevice> getPeripheralClass() {
-        return I2CDevice.class;
-    }
 }

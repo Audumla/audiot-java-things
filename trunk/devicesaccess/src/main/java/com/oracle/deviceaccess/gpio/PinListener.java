@@ -1,4 +1,4 @@
-package com.oracle.deviceaccess;
+package com.oracle.deviceaccess.gpio;
 
 /*
  * *********************************************************************
@@ -16,11 +16,5 @@ package com.oracle.deviceaccess;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import java.util.EventListener;
-
-public interface RegistrationListener<A extends Peripheral<? super A>> extends EventListener
-{
-    void peripheralRegistered(RegistrationEvent<A> paramRegistrationEvent);
-
-    void peripheralUnregistered(RegistrationEvent<A> paramRegistrationEvent);
+public interface PinListener extends com.oracle.deviceaccess.PeripheralEventListener<GPIOPin,PinEvent> {
 }
