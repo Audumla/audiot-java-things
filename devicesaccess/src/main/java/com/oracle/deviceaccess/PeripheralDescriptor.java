@@ -17,17 +17,17 @@ package com.oracle.deviceaccess;
  */
 
 
-public abstract interface PeripheralDescriptor<A extends Peripheral<? super A>>
+public interface PeripheralDescriptor<P extends Peripheral<? super P>>
 {
     public static final int UNDEFINED_ID = -1;
 
-    public abstract <Z extends PeripheralConfig<? super A>> Z getConfiguration();
+    <C extends PeripheralConfig<? super P>> C getConfiguration();
 
-    public abstract int getID();
+    int getID();
 
-    public abstract Class<A> getInterface();
+    Class<P> getInterface();
 
-    public abstract String getName();
+    String getName();
 
-    public abstract String[] getProperties();
+    String[] getProperties();
 }

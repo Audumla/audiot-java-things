@@ -16,11 +16,14 @@ package com.oracle.deviceaccess;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import java.util.EventListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public interface RegistrationListener<A extends Peripheral<? super A>> extends EventListener
-{
-    void peripheralRegistered(RegistrationEvent<A> paramRegistrationEvent);
+public class PeripheralExistsException extends PeripheralException {
+    public PeripheralExistsException() {
+    }
 
-    void peripheralUnregistered(RegistrationEvent<A> paramRegistrationEvent);
+    public PeripheralExistsException(java.lang.String s) {
+        super(s);
+    }
 }

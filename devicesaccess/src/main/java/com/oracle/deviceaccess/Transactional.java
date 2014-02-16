@@ -15,13 +15,11 @@ package com.oracle.deviceaccess;
  *  "AS IS BASIS", WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and limitations under the License.
  */
+
 import java.io.IOException;
 
-public abstract interface Transactional
-{
-    public abstract void begin()
-            throws IOException;
+public interface Transactional {
+    void begin() throws IOException;
 
-    public abstract void end()
-            throws IOException;
+    void end() throws IOException;
 }

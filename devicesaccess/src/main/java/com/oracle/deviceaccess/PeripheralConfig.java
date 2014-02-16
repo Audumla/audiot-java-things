@@ -16,13 +16,11 @@ package com.oracle.deviceaccess;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-public abstract interface PeripheralConfig<A extends Peripheral<? super A>>
+public interface PeripheralConfig<A extends Peripheral<? super A>>
 {
     public static final int DEFAULT = -1;
 
-    public Class<? super A> getPeripheralClass();
-
-    public static abstract interface HardwareAddressing
+    public static interface HardwareAddressing
     {
         public abstract int getDeviceNumber();
 

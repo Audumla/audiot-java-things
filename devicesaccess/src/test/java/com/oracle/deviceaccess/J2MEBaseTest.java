@@ -16,6 +16,9 @@ package com.oracle.deviceaccess;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
+import com.oracle.deviceaccess.gpio.GPIOPinConfig;
+import com.oracle.deviceaccess.gpio.GPIOPortConfig;
+import com.oracle.deviceaccess.gpio.PortListener;
 import com.oracle.deviceaccess.i2cbus.I2CCombinedMessage;
 import com.oracle.deviceaccess.i2cbus.I2CDevice;
 import org.junit.Test;
@@ -99,7 +102,6 @@ public class J2MEBaseTest {
                 return null;
             }
 
-            @inheritdoc
             @Override
             public boolean isOpen() {
                 logger.debug("Open");
@@ -121,13 +123,13 @@ public class J2MEBaseTest {
 
             }
         };
-        I2CDeviceConfig dc = new I2CDeviceConfig(1,2,3,1000);
-        ByteBuffer b = ByteBuffer.allocate(10);
-        b.put(new byte[] {1,2,3,4,5,6,7,8,9});
-        I2CCombinedMessage m = new I2CCombinedMessage();
-        m.appendRead(d, b);
-        RegistrationListener
-        m.transfer();
+//        I2CDeviceConfig dc = new I2CDeviceConfig(1,2,3,1000);
+//        ByteBuffer b = ByteBuffer.allocate(10);
+//        b.put(new byte[] {1,2,3,4,5,6,7,8,9});
+//        I2CCombinedMessage m = new I2CCombinedMessage();
+//        m.appendRead(d, b);
+//        PortListener
+//        m.transfer();
 //        assert dc.getDeviceNumber() == 1;
 //        assert dc.getAddress() == 2;
 //        assert dc.getAddressSize() == 3;
