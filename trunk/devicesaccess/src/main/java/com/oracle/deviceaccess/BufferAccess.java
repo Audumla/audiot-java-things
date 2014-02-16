@@ -1,4 +1,4 @@
-package net.audumla.devices.io.gpio;
+package com.oracle.deviceaccess;
 
 /*
  * *********************************************************************
@@ -16,35 +16,14 @@ package net.audumla.devices.io.gpio;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import net.audumla.devices.io.DeviceState;
+import java.io.IOException;
+import java.nio.Buffer;
 
-public interface GPIODevice {
-    public enum IOMode {DIGITAL_INPUT, DIGITAL_OUTPUT, ANALOG_INPUT, ANALOG_OUTPUT, PWM_OUTPUT}
+public abstract interface BufferAccess<A extends Buffer>
+{
+    public abstract A getInputBuffer()
+            throws IOException;
 
-    public enum PullMode {PULL_UP, PULL_DOWN, NONE}
-
-//    void setIOMode(IOMode mode, int... pins);
-//
-//    IOMode[] getIOModes();
-//
-//    IOMode getIOMode(int pin);
-//
-//    int getIOCount();
-//
-//    void setPullModes(PullMode mode, int... pins);
-//
-//    PullMode[] getPullModes();
-//
-//    PullMode getPullMode(int pin);
-//
-//    float[] getIOStates();
-//
-//    float getIOState(int pin);
-//
-
-
-    <T extends DeviceState> void setState(T... state);
-
-    <T extends DeviceState> void getState(T... state);
-
+    public abstract A getOutputBuffer()
+            throws IOException;
 }

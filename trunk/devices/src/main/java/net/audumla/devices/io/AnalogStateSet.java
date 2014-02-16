@@ -1,4 +1,4 @@
-package net.audumla.devices.io.gpio;
+package net.audumla.devices.io;
 
 /*
  * *********************************************************************
@@ -22,17 +22,10 @@ import org.slf4j.LoggerFactory;
 import java.util.Arrays;
 import java.util.BitSet;
 
-public class AnalogStateSet implements GPIOState<AnalogStateSet.AnalogStateSetDevice> {
+public class AnalogStateSet implements DeviceState<AnalogStateDevice> {
     private static final Logger logger = LoggerFactory.getLogger(AnalogStateSet.class);
 
-    private Float[] pinStates = new Float[MAX_PINS_STATES];
-
-    public interface AnalogStateSetDevice {
-        void setState(Float[] states);
-        void getState(Float[] states);
-        Float getState(int pin);
-        void setState(int pin, Float state);
-    }
+    private Float[] pinStates;
 
     public AnalogStateSet(Float[] pinStates) {
         this.pinStates = pinStates;
@@ -47,18 +40,19 @@ public class AnalogStateSet implements GPIOState<AnalogStateSet.AnalogStateSetDe
     }
 
     @Override
-    public void applyState(AnalogStateSetDevice device) {
+    public void applyState(AnalogStateDevice device) {
         device.setState(pinStates);
     }
 
     @Override
-    public void retrieveState(AnalogStateSetDevice device) {
+    public void retrieveState(AnalogStateDevice device) {
         device.getState(pinStates);
     }
 
-    void setState(Float state, Integer... pins) {
+    public void setState(Float state, Integer... pins) {
+        final Float[] pinArray = getPinStateArray(pins.length);
         Arrays.asList(pins).stream().forEach((t) -> {
-            pinStates[t] = state;
+            pinArray[t] = state;
         });
     }
 
@@ -66,13 +60,29 @@ public class AnalogStateSet implements GPIOState<AnalogStateSet.AnalogStateSetDe
         return pinStates;
     }
 
-    void setStates(Float state, long pinMask) {
-        BitSet mask = BitSet.valueOf(new long[]{pinMask});
-        mask.stream().forEach( (t) -> {pinStates[t] = state;});
+    public void setStates(Float state, long pinMask) {
+        final BitSet mask = BitSet.valueOf(new long[]{pinMask});
+        final Float[] pinArray = getPinStateArray(64);
+        mask.stream().forEach( (t) -> {pinArray[t] = state;});
     }
 
-    Float getState(int pin) {
+    public Float getState(int pin) {
+        if (pinStates == null || pin > pinStates.length) {
+            return null;
+        }
         return pinStates[pin];
+    }
+
+    private Float[] getPinStateArray(int size) {
+        if (pinStates == null) {
+            pinStates = new Float[size];
+        }
+        else {
+            if (size > pinStates.length) {
+                pinStates = Arrays.copyOf(pinStates,size);
+            }
+        }
+        return pinStates;
     }
 
 }

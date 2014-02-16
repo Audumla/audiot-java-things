@@ -76,6 +76,7 @@
     </dependencies>
     <modules>
         <module>devices</module>
+        <module>deviceaccess</module>
         <module>climate</module>
         <!--<module>irrigation</module>-->
         <module>commons</module>
@@ -87,6 +88,7 @@
         <module>astronomy</module>
         <module>akka</module>
         <module>rpiio</module>
+        <!--<module>rpime</module>-->
     </modules>
     <build>
         <plugins>

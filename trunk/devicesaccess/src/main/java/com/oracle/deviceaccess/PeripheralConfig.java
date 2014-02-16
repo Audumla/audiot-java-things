@@ -1,4 +1,4 @@
-package net.audumla.devices.io.gpio;
+package com.oracle.deviceaccess;
 
 /*
  * *********************************************************************
@@ -16,14 +16,16 @@ package net.audumla.devices.io.gpio;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+public abstract interface PeripheralConfig<A extends Peripheral<? super A>>
+{
+    public static final int DEFAULT = -1;
 
-public interface GPIOState<T> {
+    public Class<? super A> getPeripheralClass();
 
-    public static final int MAX_PINS_STATES = 64;
+    public static abstract interface HardwareAddressing
+    {
+        public abstract int getDeviceNumber();
 
-    void applyState(T device);
-    void retrieveState(T device);
-
+        public abstract String getDeviceName();
+    }
 }

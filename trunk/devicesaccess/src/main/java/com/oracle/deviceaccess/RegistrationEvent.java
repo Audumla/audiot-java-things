@@ -1,4 +1,4 @@
-package net.audumla.devices.io.gpio;
+package com.oracle.deviceaccess;
 
 /*
  * *********************************************************************
@@ -16,35 +16,27 @@ package net.audumla.devices.io.gpio;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import net.audumla.devices.io.DeviceState;
+import java.util.EventObject;
 
-public interface GPIODevice {
-    public enum IOMode {DIGITAL_INPUT, DIGITAL_OUTPUT, ANALOG_INPUT, ANALOG_OUTPUT, PWM_OUTPUT}
+public class RegistrationEvent<A extends Peripheral<? super A>> extends EventObject
+{
+    public RegistrationEvent(PeripheralDescriptor<A> paramPeripheralDescriptor)
+    {
+        super((Object)null);
+    }
 
-    public enum PullMode {PULL_UP, PULL_DOWN, NONE}
+    public RegistrationEvent(String paramString, PeripheralDescriptor<A> paramPeripheralDescriptor)
+    {
+        super((Object)null);
+    }
 
-//    void setIOMode(IOMode mode, int... pins);
-//
-//    IOMode[] getIOModes();
-//
-//    IOMode getIOMode(int pin);
-//
-//    int getIOCount();
-//
-//    void setPullModes(PullMode mode, int... pins);
-//
-//    PullMode[] getPullModes();
-//
-//    PullMode getPullMode(int pin);
-//
-//    float[] getIOStates();
-//
-//    float getIOState(int pin);
-//
+    public PeripheralDescriptor<A> getDescriptor()
+    {
+        return null;
+    }
 
-
-    <T extends DeviceState> void setState(T... state);
-
-    <T extends DeviceState> void getState(T... state);
-
+    public String getInitiator()
+    {
+        return null;
+    }
 }
