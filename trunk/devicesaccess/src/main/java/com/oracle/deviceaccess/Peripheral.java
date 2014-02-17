@@ -19,21 +19,18 @@ package com.oracle.deviceaccess;
 import java.io.IOException;
 import java.nio.channels.Channel;
 
-public abstract interface Peripheral<A extends Peripheral<? super A>> extends Channel {
+public interface Peripheral<P extends Peripheral<? super P, ? super C>, C extends PeripheralConfig<? super P>> extends Channel {
     public static final int BIG_ENDIAN = 1;
     public static final int LITTLE_ENDIAN = 0;
     public static final int MIXED_ENDIAN = 2;
 
-    public abstract <Z extends A> PeripheralDescriptor<Z> getDescriptor();
+    PeripheralDescriptor<P,C> getDescriptor();
 
-    public abstract boolean isOpen();
+    boolean isOpen();
 
-    public abstract void close()
-            throws IOException;
+    void close() throws IOException;
 
-    public abstract void tryLock(int paramInt)
-            throws IOException;
+    void tryLock(int paramInt) throws IOException;
 
-    public abstract void unlock()
-            throws IOException;
+    void unlock() throws IOException;
 }

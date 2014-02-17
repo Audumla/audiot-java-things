@@ -25,11 +25,11 @@ public class PeripheralManager {
     public static final int UNSPECIFIED_ID = -1;
 
     private static Map<Class<?>, Collection<RegistrationListener>> listeners = new HashMap<>();
-    private static Collection<PeripheralDescriptor<? extends Peripheral>> peripherals = new ArrayList<>();
+    private static Collection<PeripheralDescriptor<? extends Peripheral, ? extends PeripheralConfig>> peripherals = new ArrayList<>();
     private static Collection<PeripheralProvider> providers = new ArrayList<>();
     private static int idCount = 0;
 
-    static class ReferencedPeripheralDescriptor<P extends Peripheral<? super P>, C extends PeripheralConfig<? super P>> implements PeripheralDescriptor<P> {
+    static class ReferencedPeripheralDescriptor<P extends Peripheral<? super P, ? super C>, C extends PeripheralConfig<? super P>> implements PeripheralDescriptor<P, C> {
 
         private C configuration;
         private int id;
@@ -72,79 +72,91 @@ public class PeripheralManager {
     PeripheralManager() {
     }
 
-    public static Iterator<PeripheralDescriptor<? extends Peripheral>> list() {
+    public static Iterator<PeripheralDescriptor<? extends Peripheral, ? extends PeripheralConfig>> list() {
         return peripherals.iterator();
     }
 
-    public static <P extends Peripheral<? super P>> Iterator<PeripheralDescriptor<? extends Peripheral>> list(Class<P> paramClass) throws PeripheralTypeNotSupportedException {
+    public static <P extends Peripheral<? super P, ? extends PeripheralConfig>> Iterator<PeripheralDescriptor<? extends Peripheral, ? extends PeripheralConfig>> list(Class<P> paramClass) throws PeripheralTypeNotSupportedException {
         return peripherals.stream().filter(p -> paramClass.isAssignableFrom(p.getInterface())).iterator();
     }
 
-    public static <P extends Peripheral<? super P>> P open(Class<P> peripheralClass, PeripheralConfig<? super P> config) throws IOException, PeripheralConfigInvalidException, PeripheralTypeNotSupportedException, PeripheralNotFoundException, UnavailablePeripheralException {
-        return open(peripheralClass, config,EXCLUSIVE);
+    public static <P extends Peripheral<? super P, ? super C>, C extends PeripheralConfig<? super P>> P open(Class<P> peripheralClass, C config) throws IOException, PeripheralConfigInvalidException, PeripheralTypeNotSupportedException, PeripheralNotFoundException, UnavailablePeripheralException {
+        return open(peripheralClass, config, EXCLUSIVE);
     }
 
-    public static <P extends Peripheral<? super P>> P open(Class<P> peripheralClass, PeripheralConfig<? super P> config, int mode) throws IOException, PeripheralConfigInvalidException, PeripheralTypeNotSupportedException, PeripheralNotFoundException, UnavailablePeripheralException, UnsupportedAccessModeException {
-        PeripheralProvider<P> p = getProvider(peripheralClass, config.getClass(), null);
+    public static <P extends Peripheral<? super P, ? super C>, C extends PeripheralConfig<? super P>> P open(Class<P> peripheralClass, C config, int mode) throws IOException, PeripheralConfigInvalidException, PeripheralTypeNotSupportedException, PeripheralNotFoundException, UnavailablePeripheralException, UnsupportedAccessModeException {
+        PeripheralProvider<P, C> p = getProvider(peripheralClass, config.getClass(), null);
         return openPeripheral(p, config, null, mode, UNSPECIFIED_ID, null);
     }
 
-    public static <P extends Peripheral<? super P>> P open(int id) throws IOException, PeripheralNotFoundException, UnavailablePeripheralException {
-        return open(id, null, EXCLUSIVE);
+//    public static <P extends Peripheral<? super P, ? super C>, C extends PeripheralConfig<? super P>> P open(int id) throws IOException, PeripheralNotFoundException, UnavailablePeripheralException {
+//        return open(id, Class<?>, EXCLUSIVE);
+//        return null;
+//    }
+
+    public static <P extends Peripheral<? super P, ? super C>, C extends PeripheralConfig<? super P>> P open(int id, Class<P> peripheralClass) throws IOException, PeripheralTypeNotSupportedException, PeripheralNotFoundException, UnavailablePeripheralException {
+        return open(id, peripheralClass, EXCLUSIVE);
     }
 
-    public static <P extends Peripheral<? super P>> P open(int id, Class<P> peripheralClass) throws IOException, PeripheralTypeNotSupportedException, PeripheralNotFoundException, UnavailablePeripheralException {
-        return open(id,peripheralClass,EXCLUSIVE);
+    public static <P extends Peripheral<? super P, ? super C>, C extends PeripheralConfig<? super P>> P open(int id, Class<P> peripheralClass, int mode) throws IOException, PeripheralTypeNotSupportedException, PeripheralNotFoundException, UnavailablePeripheralException, UnsupportedAccessModeException {
+        if (id != UNSPECIFIED_ID) {
+            Optional<PeripheralDescriptor<? extends Peripheral, ? extends PeripheralConfig>> opt = peripherals.stream().filter(p -> p.getID() == id).findFirst();
+            if (opt.isPresent()) {
+                PeripheralDescriptor<? extends Peripheral, ? extends PeripheralConfig> desc = opt.get();
+                PeripheralProvider<P, C> p = getProvider(desc.getInterface(), desc.getConfiguration().getClass(), desc.getProperties());
+                return openPeripheral(p, (C) desc.getConfiguration(), desc.getProperties(), mode, desc.getID(), desc.getName());
+            } else {
+                throw new PeripheralNotFoundException();
+            }
+        } else {
+            throw new IllegalArgumentException();
+        }
     }
 
-    public static <P extends Peripheral<? super P>> P open(int id, Class<P> peripheralClass, int mode) throws IOException, PeripheralTypeNotSupportedException, PeripheralNotFoundException, UnavailablePeripheralException, UnsupportedAccessModeException {
-        PeripheralProvider<P> p = getProvider(peripheralClass, null, null);
-        return openPeripheral(p, null, null, mode, id, null);
+//    public static <P extends Peripheral<? super P, ? super C>, C extends PeripheralConfig<? super P>> P open(int id, int mode) throws IOException, PeripheralNotFoundException, UnavailablePeripheralException, UnsupportedAccessModeException {
+//        return open(id, null, mode);
+//        return null;
+//    }
+
+    public static <P extends Peripheral<? super P, ? super C>, C extends PeripheralConfig<? super P>> P open(C config) throws IOException, PeripheralConfigInvalidException, PeripheralTypeNotSupportedException, PeripheralNotFoundException, UnavailablePeripheralException {
+        return open(config, EXCLUSIVE);
     }
 
-    public static <P extends Peripheral<? super P>> P open(int id, int mode) throws IOException, PeripheralNotFoundException, UnavailablePeripheralException, UnsupportedAccessModeException {
-        return open(id,null,mode);
-    }
-
-    public static <P extends Peripheral<? super P>> P open(PeripheralConfig<? super P> config) throws IOException, PeripheralConfigInvalidException, PeripheralTypeNotSupportedException, PeripheralNotFoundException, UnavailablePeripheralException {
-        return open(config,EXCLUSIVE);
-    }
-
-    public static <P extends Peripheral<? super P>> P open(PeripheralConfig<? super P> config, int mode) throws IOException, PeripheralConfigInvalidException, PeripheralTypeNotSupportedException, PeripheralNotFoundException, UnavailablePeripheralException, UnsupportedAccessModeException {
-        PeripheralProvider<P> p = getProvider(null, config.getClass(), null);
+    public static <P extends Peripheral<? super P, ? super C>, C extends PeripheralConfig<? super P>> P open(C config, int mode) throws IOException, PeripheralConfigInvalidException, PeripheralTypeNotSupportedException, PeripheralNotFoundException, UnavailablePeripheralException, UnsupportedAccessModeException {
+        PeripheralProvider<P, C> p = getProvider(null, config.getClass(), null);
         return openPeripheral(p, config, null, mode, UNSPECIFIED_ID, null);
     }
 
-    public static <P extends Peripheral<? super P>> P open(String name, Class<P> peripheralClass, int mode, String... properties) throws IOException, PeripheralTypeNotSupportedException, PeripheralNotFoundException, UnavailablePeripheralException, UnsupportedAccessModeException {
-        PeripheralProvider<P> p = getProvider(peripheralClass, null, properties);
+    public static <P extends Peripheral<? super P, ? super C>, C extends PeripheralConfig<? super P>> P open(String name, Class<P> peripheralClass, String... properties) throws IOException, PeripheralTypeNotSupportedException, PeripheralNotFoundException, UnavailablePeripheralException {
+        return open(name, peripheralClass, EXCLUSIVE, properties);
+    }
+
+    public static <P extends Peripheral<? super P, ? super C>, C extends PeripheralConfig<? super P>> P open(String name, Class<P> peripheralClass, int mode, String... properties) throws IOException, PeripheralTypeNotSupportedException, PeripheralNotFoundException, UnavailablePeripheralException, UnsupportedAccessModeException {
+        PeripheralProvider<P, C> p = getProvider(peripheralClass, null, properties);
         return openPeripheral(p, null, properties, mode, UNSPECIFIED_ID, name);
     }
 
-    public static <P extends Peripheral<? super P>> P open(String name, Class<P> peripheralClass, String... properties) throws IOException, PeripheralTypeNotSupportedException, PeripheralNotFoundException, UnavailablePeripheralException {
-        return open(name,peripheralClass,EXCLUSIVE,properties);
-    }
 
-    private static <P extends Peripheral<? super P>> int register(int id, Class<? extends Peripheral> peripheralClass, PeripheralConfig<? super P> config, String name, String[] properties) throws IOException, PeripheralTypeNotSupportedException, PeripheralConfigInvalidException, PeripheralNotFoundException, PeripheralExistsException {
+    private static <P extends Peripheral<? super P, ? super C>, C extends PeripheralConfig<? super P>> int register(int id, Class<? extends Peripheral> peripheralClass, C config, String name, String[] properties) throws IOException, PeripheralTypeNotSupportedException, PeripheralConfigInvalidException, PeripheralNotFoundException, PeripheralExistsException {
         if (id == UNSPECIFIED_ID) {
-            while (peripherals.stream().anyMatch( p -> p.getID() == idCount)) {
+            while (peripherals.stream().anyMatch(p -> p.getID() == idCount)) {
                 ++idCount;
             }
             id = idCount++;
-        }
-        else {
+        } else {
             final int i = id;
-            if (peripherals.stream().anyMatch( p -> p.getID() == i)) {
+            if (peripherals.stream().anyMatch(p -> p.getID() == i)) {
                 throw new PeripheralExistsException();
             }
         }
-        if (config == null ) {
+        if (config == null) {
             throw new java.lang.NullPointerException();
         }
         if (id < 0) {
             throw new java.lang.IllegalArgumentException();
         }
-        PeripheralProvider<P> provider = getProvider(peripheralClass, config.getClass(), properties);
-        openPeripheral(provider,config,properties,EXCLUSIVE,id,name);
+        PeripheralProvider<P, C> provider = getProvider(peripheralClass, config.getClass(), properties);
+        openPeripheral(provider, config, properties, EXCLUSIVE, id, name);
         final int i = id;
         peripherals.stream().filter(p -> p.getID() == i).forEach(p -> listeners.entrySet().stream().filter(l -> l.getKey().isAssignableFrom(p.getInterface())).forEach(l -> l.getValue().forEach(n -> n.peripheralRegistered(new RegistrationEvent(p)))));
         return id;
@@ -154,7 +166,7 @@ public class PeripheralManager {
         peripherals.stream().filter(p -> p.getID() == id).forEach(p -> listeners.entrySet().stream().filter(l -> l.getKey().isAssignableFrom(p.getInterface())).forEach(l -> l.getValue().forEach(n -> n.peripheralUnregistered(new RegistrationEvent(p)))));
     }
 
-    public static <P extends Peripheral<? super P>> void addRegistrationListener(RegistrationListener<P> paramRegistrationListener, Class<P> paramClass) {
+    public static <P extends Peripheral<? super P, ? super C>, C extends PeripheralConfig<? super P>> void addRegistrationListener(RegistrationListener<P, C> paramRegistrationListener, Class<P> paramClass) {
         Collection<RegistrationListener> ll = listeners.get(paramClass);
         if (ll == null) {
             ll = new ArrayList<>();
@@ -163,7 +175,7 @@ public class PeripheralManager {
         ll.add(paramRegistrationListener);
     }
 
-    public static <P extends Peripheral<? super P>> void removeRegistrationListener(RegistrationListener<P> paramRegistrationListener, Class<P> paramClass) {
+    public static <P extends Peripheral<? super P, ? super C>, C extends PeripheralConfig<? super P>> void removeRegistrationListener(RegistrationListener<P, C> paramRegistrationListener, Class<P> paramClass) {
         Collection<RegistrationListener> ll = listeners.get(paramClass);
         if (ll != null) {
             ll.remove(paramRegistrationListener);
@@ -174,8 +186,8 @@ public class PeripheralManager {
         providers.add(provider);
     }
 
-    protected static <P extends Peripheral<? super P>, C> PeripheralProvider<P> getProvider(Class<?> peripheralClass, Class<?> configClass, String[] properties) throws PeripheralTypeNotSupportedException {
-        PeripheralProvider<P> provider = null;
+    protected static <P extends Peripheral<? super P, ? super C>, C extends PeripheralConfig<? super P>> PeripheralProvider<P, C> getProvider(Class<?> peripheralClass, Class<?> configClass, String[] properties) throws PeripheralTypeNotSupportedException {
+        PeripheralProvider<P, C> provider = null;
         if (peripheralClass != null) {
             Optional<PeripheralProvider> found = providers.stream().filter(p -> p.getType().equals(peripheralClass)).findFirst();
             if (found.isPresent()) {
@@ -200,11 +212,11 @@ public class PeripheralManager {
         return provider;
     }
 
-    protected static <P extends Peripheral<? super P>> P openPeripheral(PeripheralProvider<P> provider, PeripheralConfig<? super P> config, java.lang.String[] properties, int mode, int id, String name) throws IOException {
+    protected static <P extends Peripheral<? super P, ? super C>, C extends PeripheralConfig<? super P>> P openPeripheral(PeripheralProvider<P, C> provider, C config, java.lang.String[] properties, int mode, int id, String name) throws IOException {
         if (provider != null) {
             P p = provider.open(config, properties, mode);
             if (p != null) {
-                ReferencedPeripheralDescriptor<P, PeripheralConfig<? super P>> desc = new ReferencedPeripheralDescriptor<P, PeripheralConfig<? super P>>(config,id,name,properties);
+                ReferencedPeripheralDescriptor<P, C> desc = new ReferencedPeripheralDescriptor<P, C>(config, id, name, properties);
                 peripherals.add(desc);
                 return p;
             }

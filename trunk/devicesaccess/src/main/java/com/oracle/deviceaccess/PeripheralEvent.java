@@ -23,7 +23,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.TemporalAmount;
 
-public class PeripheralEvent<P extends Peripheral<? super P>, V> {
+public class PeripheralEvent<P extends Peripheral<? super P,? super C>,C extends PeripheralConfig<? super P>, V> {
     private static final Logger logger = LoggerFactory.getLogger(PeripheralEvent.class);
 
     private Instant firstTimeStamp;

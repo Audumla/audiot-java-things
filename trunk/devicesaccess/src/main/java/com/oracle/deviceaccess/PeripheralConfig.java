@@ -16,7 +16,7 @@ package com.oracle.deviceaccess;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-public interface PeripheralConfig<A extends Peripheral<? super A>>
+public interface PeripheralConfig<A extends Peripheral<? super A, ? extends PeripheralConfig>>
 {
     public static final int DEFAULT = -1;
 

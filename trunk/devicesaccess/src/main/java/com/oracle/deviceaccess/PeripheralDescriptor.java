@@ -17,11 +17,11 @@ package com.oracle.deviceaccess;
  */
 
 
-public interface PeripheralDescriptor<P extends Peripheral<? super P>>
+public interface PeripheralDescriptor<P extends Peripheral<? super P, ? super C>, C extends PeripheralConfig<? super P>>
 {
     public static final int UNDEFINED_ID = -1;
 
-    <C extends PeripheralConfig<? super P>> C getConfiguration();
+    C getConfiguration();
 
     int getID();
 

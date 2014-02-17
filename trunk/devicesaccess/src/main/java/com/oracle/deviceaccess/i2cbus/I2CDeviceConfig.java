@@ -29,14 +29,14 @@ public class I2CDeviceConfig implements PeripheralConfig.HardwareAddressing, Per
     private int addressSize;
 
 
-    I2CDeviceConfig(java.lang.String deviceName, int address, int addressSize, int clockFrequency) {
+    public I2CDeviceConfig(java.lang.String deviceName, int address, int addressSize, int clockFrequency) {
         this.address = address;
         this.addressSize = addressSize;
         this.clockFrequency = clockFrequency;
         this.deviceName = deviceName;
     }
 
-    I2CDeviceConfig(int deviceNumber, int address, int addressSize, int clockFrequency) {
+    public I2CDeviceConfig(int deviceNumber, int address, int addressSize, int clockFrequency) {
         this.address = address;
         this.clockFrequency = clockFrequency;
         this.deviceNumber = deviceNumber;

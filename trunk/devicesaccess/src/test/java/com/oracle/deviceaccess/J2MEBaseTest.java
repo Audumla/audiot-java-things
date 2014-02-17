@@ -16,15 +16,11 @@ package com.oracle.deviceaccess;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import com.oracle.deviceaccess.gpio.GPIOPinConfig;
-import com.oracle.deviceaccess.gpio.GPIOPortConfig;
-import com.oracle.deviceaccess.gpio.PortListener;
-import com.oracle.deviceaccess.i2cbus.I2CCombinedMessage;
 import com.oracle.deviceaccess.i2cbus.I2CDevice;
+import com.oracle.deviceaccess.i2cbus.I2CDeviceConfig;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.oracle.deviceaccess.i2cbus.I2CDeviceConfig;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -135,6 +131,12 @@ public class J2MEBaseTest {
 //        assert dc.getAddressSize() == 3;
 //        assert dc.getClockFrequency() == 1000;
 
+
+        I2CDevice i1 = PeripheralManager.open(5, I2CDevice.class,PeripheralManager.EXCLUSIVE);
+        I2CDevice i2 = PeripheralManager.open(5, I2CDevice.class);
+        I2CDevice i3 = PeripheralManager.open(new I2CDeviceConfig(0,0,0,0));
+        I2CDevice i4 = PeripheralManager.open(new I2CDeviceConfig(0,0,0,0),PeripheralManager.EXCLUSIVE);
+        I2CDevice i5 = PeripheralManager.open();
 
     }
 }

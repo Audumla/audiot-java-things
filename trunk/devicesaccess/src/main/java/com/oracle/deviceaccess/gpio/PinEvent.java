@@ -18,7 +18,7 @@ package com.oracle.deviceaccess.gpio;
 
 import java.time.Instant;
 
-public class PinEvent extends com.oracle.deviceaccess.PeripheralEvent<GPIOPin, Boolean> {
+public class PinEvent extends com.oracle.deviceaccess.PeripheralEvent<GPIOPin,GPIOPinConfig, Boolean> {
 
     public PinEvent(GPIOPin peripheral, Boolean value) {
         super(peripheral, value);

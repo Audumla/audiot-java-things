@@ -16,5 +16,5 @@ package com.oracle.deviceaccess.gpio;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-public interface PinListener extends com.oracle.deviceaccess.PeripheralEventListener<GPIOPin,PinEvent> {
+public interface PinListener extends com.oracle.deviceaccess.PeripheralEventListener<GPIOPin,GPIOPinConfig,PinEvent> {
 }

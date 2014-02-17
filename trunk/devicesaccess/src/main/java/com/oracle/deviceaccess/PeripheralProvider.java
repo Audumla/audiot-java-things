@@ -18,10 +18,10 @@ package com.oracle.deviceaccess;
 
 import java.io.IOException;
 
-public interface PeripheralProvider<P extends Peripheral<? super P>> {
+public interface PeripheralProvider<P extends Peripheral<? super P,? super C>,C extends PeripheralConfig<? super P>> {
     P open(PeripheralConfig<? super P> config, String[] properties, int mode) throws PeripheralNotFoundException, UnavailablePeripheralException, PeripheralConfigInvalidException, UnsupportedAccessModeException, IOException;
 
-    Class<? extends PeripheralConfig<? super P>> getConfigType();
+    Class<? super C> getConfigType();
 
     Class<P> getType();
 

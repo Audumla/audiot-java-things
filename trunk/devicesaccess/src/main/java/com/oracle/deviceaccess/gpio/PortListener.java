@@ -16,5 +16,5 @@ package com.oracle.deviceaccess.gpio;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-public interface PortListener extends com.oracle.deviceaccess.PeripheralEventListener<GPIOPort,PortEvent> {
+public interface PortListener extends com.oracle.deviceaccess.PeripheralEventListener<GPIOPort,GPIOPortConfig,PortEvent> {
 }

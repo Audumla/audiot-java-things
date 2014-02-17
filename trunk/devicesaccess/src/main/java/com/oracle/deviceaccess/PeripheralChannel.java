@@ -16,7 +16,12 @@ package com.oracle.deviceaccess;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-public interface PeripheralEventListener<P extends Peripheral<? super P,? super C>,C extends PeripheralConfig<? super P>,E extends PeripheralEvent<P,C,?>> {
-    void valueChanged(E portEvent);
+import java.io.IOException;
+import java.nio.channels.ByteChannel;
 
+public interface PeripheralChannel<P extends PeripheralChannel<? super P, ? super C>,C extends PeripheralConfig<? super P>> extends Peripheral<P,C>, ByteChannel {
+
+    int read() throws IOException;
+
+    void write(int data) throws IOException;
 }
