@@ -19,7 +19,7 @@ package com.oracle.deviceaccess.gpio;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public interface GPIOPin extends com.oracle.deviceaccess.Peripheral<com.oracle.deviceaccess.gpio.GPIOPin> {
+public interface GPIOPin extends com.oracle.deviceaccess.Peripheral<com.oracle.deviceaccess.gpio.GPIOPin, GPIOPinConfig> {
     int INPUT = 0;
     int OUTPUT = 1;
     int TRIGGER_BOTH_EDGES = 3;

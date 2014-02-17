@@ -16,7 +16,17 @@ package com.oracle.deviceaccess;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-public interface PeripheralEventListener<P extends Peripheral<? super P,? super C>,C extends PeripheralConfig<? super P>,E extends PeripheralEvent<P,C,?>> {
-    void valueChanged(E portEvent);
+import java.time.Duration;
 
+public interface PeripheralMessage<P extends PeripheralChannel<? super P,? super C>,C extends PeripheralConfig<? super P>, M extends PeripheralMessage> {
+
+    M appendRead(P peripheral, java.nio.ByteBuffer byteBuffer) throws ClosedPeripheralException;
+
+    M appendWrite(P peripheral, java.nio.ByteBuffer byteBuffer) throws java.io.IOException, ClosedPeripheralException;
+
+    M appendWrite(P peripheral, int value) throws java.io.IOException, ClosedPeripheralException;
+
+    M appendSleep(Duration duration);
+
+    int[] transfer() throws java.io.IOException, UnavailablePeripheralException, ClosedPeripheralException;
 }

@@ -16,7 +16,9 @@ package com.oracle.deviceaccess.gpio;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-public final class GPIOPinConfig implements com.oracle.deviceaccess.PeripheralConfig<com.oracle.deviceaccess.gpio.GPIOPin>, com.oracle.deviceaccess.PeripheralConfig.HardwareAddressing {
+import com.oracle.deviceaccess.PeripheralConfig;
+
+public final class GPIOPinConfig implements PeripheralConfig<GPIOPin>, PeripheralConfig.HardwareAddressing {
     public static final int DIR_BOTH_INIT_INPUT = 2;
     public static final int DIR_BOTH_INIT_OUTPUT = 3;
     public static final int DIR_INPUT_ONLY = 0;

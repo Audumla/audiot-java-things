@@ -16,9 +16,11 @@ package com.oracle.deviceaccess.gpio;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import java.nio.channels.ByteChannel;
+import com.oracle.deviceaccess.PeripheralChannel;
+import com.oracle.deviceaccess.PeripheralMessage;
 
-public interface GPIOPort extends com.oracle.deviceaccess.Peripheral<com.oracle.deviceaccess.gpio.GPIOPort>, ByteChannel {
+public interface GPIOPort extends PeripheralChannel<GPIOPort, GPIOPortConfig> {
+
     int INPUT = 0;
     int OUTPUT = 1;
 

@@ -18,7 +18,7 @@ package com.oracle.deviceaccess.gpio;
 
 import java.time.Instant;
 
-public class PortEvent extends com.oracle.deviceaccess.PeripheralEvent<GPIOPort, Integer> {
+public class PortEvent extends com.oracle.deviceaccess.PeripheralEvent<GPIOPort, GPIOPortConfig, Integer> {
 
     public PortEvent(GPIOPort peripheral, Integer value) {
         super(peripheral, value);

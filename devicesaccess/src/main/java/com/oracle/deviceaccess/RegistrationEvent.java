@@ -18,23 +18,23 @@ package com.oracle.deviceaccess;
 
 import java.util.EventObject;
 
-public class RegistrationEvent<A extends Peripheral<? super A>> extends EventObject
+public class RegistrationEvent<P extends Peripheral<? super P,? super C>,C extends PeripheralConfig<? super P>> extends EventObject
 {
-    private final PeripheralDescriptor<A> desc;
+    private final PeripheralDescriptor<P,C> desc;
 
-    public RegistrationEvent(PeripheralDescriptor<A> desc)
+    public RegistrationEvent(PeripheralDescriptor<P,C> desc)
     {
         super(desc.getID());
         this.desc = desc;
     }
 
-    public RegistrationEvent(String initiator, PeripheralDescriptor<A> desc)
+    public RegistrationEvent(String initiator, PeripheralDescriptor<P,C> desc)
     {
         super(initiator);
         this.desc = desc;
     }
 
-    public PeripheralDescriptor<A> getDescriptor()
+    public PeripheralDescriptor<P,C> getDescriptor()
     {
         return desc;
     }

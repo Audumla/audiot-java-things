@@ -17,48 +17,15 @@ package com.oracle.deviceaccess.i2cbus;
  */
 
 
-import com.oracle.deviceaccess.BufferAccess;
-import com.oracle.deviceaccess.Peripheral;
-import com.oracle.deviceaccess.Transactional;
+import com.oracle.deviceaccess.*;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.ByteChannel;
 
 
-public interface I2CDevice extends BufferAccess<ByteBuffer>, Peripheral<I2CDevice>, Transactional, ByteChannel
+public interface I2CDevice extends BufferAccess<ByteBuffer>, AddressablePeripheralChannel<I2CDevice,I2CDeviceConfig>
 {
-    static interface Bus {
-        I2CCombinedMessage	createCombinedMessage();
-    }
 
-    int read()
-            throws IOException;
-
-    int read(int subAddress, int subAddressSize, int skip, ByteBuffer dst)
-            throws IOException;
-
-    int read(int subAddress, int subAddressSize, ByteBuffer dst)
-            throws IOException;
-
-    int read(int skip, ByteBuffer dst)
-            throws IOException;
-
-    int read(ByteBuffer dst)
-            throws IOException;
-
-    int write(int subAddress, int subAddressSize, ByteBuffer dst)
-            throws IOException;
-
-    int write(ByteBuffer dst)
-            throws IOException;
-
-    void begin()
-            throws IOException;
-
-    void end()
-            throws IOException;
-
-    void write(int data)
-            throws IOException;
 }
+

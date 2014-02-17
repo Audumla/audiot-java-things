@@ -16,7 +16,9 @@ package com.oracle.deviceaccess.gpio;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-public final class GPIOPortConfig implements com.oracle.deviceaccess.PeripheralConfig<com.oracle.deviceaccess.gpio.GPIOPort> {
+import com.oracle.deviceaccess.PeripheralConfig;
+
+public final class GPIOPortConfig implements PeripheralConfig<GPIOPort> {
     public static final int DIR_BOTH_INIT_INPUT = 2;
     public static final int DIR_BOTH_INIT_OUTPUT = 3;
     public static final int DIR_INPUT_ONLY = 0;

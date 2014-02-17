@@ -18,9 +18,9 @@ package com.oracle.deviceaccess;
 
 import java.util.EventListener;
 
-public interface RegistrationListener<A extends Peripheral<? super A>> extends EventListener
+public interface RegistrationListener<P extends Peripheral<? super P,? super C>,C extends PeripheralConfig<? super P>> extends EventListener
 {
-    void peripheralRegistered(RegistrationEvent<A> paramRegistrationEvent);
+    void peripheralRegistered(RegistrationEvent<P,C> paramRegistrationEvent);
 
-    void peripheralUnregistered(RegistrationEvent<A> paramRegistrationEvent);
+    void peripheralUnregistered(RegistrationEvent<P,C> paramRegistrationEvent);
 }

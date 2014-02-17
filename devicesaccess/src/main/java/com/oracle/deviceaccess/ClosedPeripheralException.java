@@ -16,7 +16,11 @@ package com.oracle.deviceaccess;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-public interface PeripheralEventListener<P extends Peripheral<? super P,? super C>,C extends PeripheralConfig<? super P>,E extends PeripheralEvent<P,C,?>> {
-    void valueChanged(E portEvent);
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+public class ClosedPeripheralException extends java.nio.channels.ClosedChannelException {
+
+    public ClosedPeripheralException() {
+    }
 }
