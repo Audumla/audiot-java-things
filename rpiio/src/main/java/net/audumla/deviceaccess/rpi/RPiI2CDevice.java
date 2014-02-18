@@ -33,6 +33,10 @@ public class RPiI2CDevice extends DefaultPeripheralAddressableChannel<I2CDevice,
 
     private Integer handle;
 
+    public RPiI2CDevice(PeripheralDescriptor<I2CDevice, I2CDeviceConfig> descriptor, Integer handle) {
+        super(descriptor);
+        this.handle = handle;
+    }
 
     @Override
     public int read(int subAddress) throws IOException {
