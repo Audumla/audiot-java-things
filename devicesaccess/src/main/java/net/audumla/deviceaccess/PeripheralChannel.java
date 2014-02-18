@@ -33,7 +33,7 @@ public interface PeripheralChannel<P extends PeripheralChannel<? super P, ? supe
         protected int bytes;
     }
 
-    int write(int ... data) throws IOException;
+    int write(byte... data) throws IOException;
 
     int write(ByteBuffer dst, int mask) throws IOException;
 

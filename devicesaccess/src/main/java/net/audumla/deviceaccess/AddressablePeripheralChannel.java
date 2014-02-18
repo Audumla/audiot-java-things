@@ -35,7 +35,7 @@ public interface AddressablePeripheralChannel<P extends AddressablePeripheralCha
 
     int write(int subAddress, ByteBuffer dst, int offset, int size, int mask) throws IOException;
 
-    int write(int subAddress, int ... data) throws IOException;
+    int write(int subAddress, byte... data) throws IOException;
 
     void setReadAddress(Integer addr);
 

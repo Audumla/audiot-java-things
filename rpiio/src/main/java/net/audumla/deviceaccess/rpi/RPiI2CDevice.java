@@ -96,18 +96,14 @@ public class RPiI2CDevice extends DefaultPeripheralAddressableChannel<I2CDevice,
     }
 
     @Override
-    public int write(int subAddress, int... data) throws IOException {
-        for (int aData : data) {
-            I2C.writeByte(handle, subAddress, (byte) (aData));
-        }
+    public int write(int subAddress, byte... data) throws IOException {
+        I2C.writeBytes(handle, subAddress, data.length, 0, data);
         return data.length;
     }
 
     @Override
-    public int write(int... data) throws IOException {
-        for (int aData : data) {
-            I2C.writeByteDirect(handle, (byte) (aData));
-        }
+    public int write(byte... data) throws IOException {
+        I2C.writeBytesDirect(handle, data.length, 0, data);
         return data.length;
     }
 
@@ -159,17 +155,28 @@ public class RPiI2CDevice extends DefaultPeripheralAddressableChannel<I2CDevice,
 
     @Override
     public int read(ByteBuffer dst, int offset, int size, int mask) throws IOException {
-        return 0;
+        if (dst.hasArray()) {
+            return I2C.writeBytesDirectMask(handle, size, offset, dst.array(), (byte) mask);
+        }
+        else {
+            for (int i = 0; i < size; ++i) {
+                I2C.writeByteDirect(handle, (byte) (dst.get(offset+i)&mask));
+            }
+            return size;
+        }
     }
 
     @Override
     public int read(ByteBuffer dst, int offset, int size) throws IOException {
-        return 0;
+        for (int i = 0; i < size; ++i) {
+            dst.put(offset + i, I2C.readByteDirect(handle));
+        }
+        return size;
     }
 
     @Override
     public int write(ByteBuffer src) throws IOException {
-        return 0;
+        return write(src,0,src.limit());
     }
 
     @Override
