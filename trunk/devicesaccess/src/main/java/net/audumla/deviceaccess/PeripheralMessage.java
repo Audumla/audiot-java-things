@@ -25,33 +25,23 @@ public interface PeripheralMessage<P extends PeripheralChannel<? super P, ? supe
 
     Integer[] transfer(ByteBuffer txBuffer, ByteBuffer rxBuffer) throws IOException, UnavailablePeripheralException, ClosedPeripheralException;
 
-    public static interface MessageContext {
+    public static interface MessageContextModifier<P extends Peripheral> {
         public static int NO_TRANSFER = Integer.MAX_VALUE;
 
-        public int apply(ByteBuffer txBuffer, ByteBuffer rxBuffer) throws IOException;
+        public int apply(ByteBuffer txBuffer, ByteBuffer rxBuffer, P peripheral) throws IOException;
     }
 
     M appendRead(java.nio.ByteBuffer byteBuffer) throws ClosedPeripheralException;
 
-    M appendRead(java.nio.ByteBuffer byteBuffer, int mask) throws ClosedPeripheralException;
-
     M appendWrite(java.nio.ByteBuffer byteBuffer) throws java.io.IOException, ClosedPeripheralException;
 
-    M appendWrite(java.nio.ByteBuffer byteBuffer, int mask) throws java.io.IOException, ClosedPeripheralException;
-
-    M appendWrite(int ... value) throws java.io.IOException, ClosedPeripheralException;
+    M appendWrite(byte... value) throws java.io.IOException, ClosedPeripheralException;
 
     M appendSizedWrite(int size);
 
-    M appendSizedWrite(int size, int mask);
-
     M appendSizedRead(int size);
 
-    M appendSizedRead(int size, int mask);
-
     M appendPeripheral(P peripheral);
-
-    M appendMask(int mask);
 
     M appendWait(Duration duration);
 
