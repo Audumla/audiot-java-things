@@ -23,13 +23,11 @@ import net.audumla.deviceaccess.PeripheralMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.nio.ByteBuffer;
-
 public abstract class DefaultPeripheralChannel<P extends PeripheralChannel<? super P, ? super C, ? super M>,C extends PeripheralConfig<? super P>, M extends PeripheralMessage<? super P, ? super C, ? super M>> implements PeripheralChannel<P,C,M> {
     private static final Logger logger = LoggerFactory.getLogger(DefaultPeripheralChannel.class);
 
     private ChannelWidth width = ChannelWidth.WIDTH8;
+    private Integer mask;
     private PeripheralDescriptor<P,C> descriptor;
 
     protected DefaultPeripheralChannel(PeripheralDescriptor<P, C> descriptor) {
@@ -44,6 +42,16 @@ public abstract class DefaultPeripheralChannel<P extends PeripheralChannel<? sup
     @Override
     public ChannelWidth getWidth() {
         return width;
+    }
+
+    @Override
+    public Integer getMask() {
+        return mask;
+    }
+
+    @Override
+    public void setMask(Integer mask) {
+        this.mask = mask;
     }
 
     @Override

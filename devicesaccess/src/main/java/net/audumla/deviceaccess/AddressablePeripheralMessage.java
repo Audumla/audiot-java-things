@@ -16,27 +16,19 @@ package net.audumla.deviceaccess;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-public interface AddressablePeripheralMessage<P extends AddressablePeripheralChannel<? super P,? super C, ? super M>,C extends PeripheralConfig<? super P>, M extends AddressablePeripheralMessage<? super P, ? super C, ? super M>> extends PeripheralMessage<P,C,M> {
+public interface AddressablePeripheralMessage<P extends AddressablePeripheralChannel<? super P, ? super C, ? super M>, C extends PeripheralConfig<? super P>, M extends AddressablePeripheralMessage<? super P, ? super C, ? super M>> extends PeripheralMessage<P, C, M> {
 
     M appendWriteAddress(int address);
 
     M appendRead(int address, java.nio.ByteBuffer byteBuffer) throws ClosedPeripheralException;
 
-    M appendRead(int address, java.nio.ByteBuffer byteBuffer, int mask) throws ClosedPeripheralException;
-
     M appendWrite(int address, java.nio.ByteBuffer byteBuffer) throws java.io.IOException, ClosedPeripheralException;
 
-    M appendWrite(int address, java.nio.ByteBuffer byteBuffer, int mask) throws java.io.IOException, ClosedPeripheralException;
-
-    M appendWrite(int address, int ... value) throws java.io.IOException, ClosedPeripheralException;
+    M appendWrite(int address, byte... value) throws java.io.IOException, ClosedPeripheralException;
 
     M appendSizedAddressWrite(int address, int size);
 
-    M appendSizedAddressWrite(int address, int size, int mask);
-
     M appendSizedAddressRead(int address, int size);
-
-    M appendSizedAddressRead(int address, int size, int mask);
 
     M appendReadAddress(int address);
 }

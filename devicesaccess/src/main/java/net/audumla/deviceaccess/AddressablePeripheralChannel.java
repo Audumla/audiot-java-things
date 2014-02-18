@@ -27,13 +27,9 @@ public interface AddressablePeripheralChannel<P extends AddressablePeripheralCha
 
     int read(int subAddress, ByteBuffer dst, int offset, int size) throws IOException;
 
-    int read(int subAddress, ByteBuffer dst, int offset, int size, int mask) throws IOException;
-
     int write(int subAddress, ByteBuffer dst) throws IOException;
 
     int write(int subAddress, ByteBuffer dst, int offset, int size) throws IOException;
-
-    int write(int subAddress, ByteBuffer dst, int offset, int size, int mask) throws IOException;
 
     int write(int subAddress, byte... data) throws IOException;
 

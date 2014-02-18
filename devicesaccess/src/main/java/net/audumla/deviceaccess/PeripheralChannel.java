@@ -35,25 +35,21 @@ public interface PeripheralChannel<P extends PeripheralChannel<? super P, ? supe
 
     int write(byte... data) throws IOException;
 
-    int write(ByteBuffer dst, int mask) throws IOException;
-
-    int write(ByteBuffer dst, int offset, int size, int mask) throws IOException;
-
     int write(ByteBuffer dst, int offset, int size) throws IOException;
 
     int read() throws IOException;
 
-    int read(ByteBuffer dst, int mask) throws IOException;
-
     int read(ByteBuffer dst) throws IOException;
-
-    int read(ByteBuffer dst, int offset, int size, int mask) throws IOException;
 
     int read(ByteBuffer dst, int offset, int size) throws IOException;
 
     void setWidth(ChannelWidth width);
 
     ChannelWidth getWidth();
+
+    void setMask(Integer mask);
+
+    Integer getMask();
 
     M createMessage();
 
