@@ -22,103 +22,25 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.nio.ByteBuffer;
-
 public class J2MEBaseTest {
     private static final Logger logger = LoggerFactory.getLogger(J2MEBaseTest.class);
 
+
+    @Test
+    public void testConfig() throws Exception {
+        I2CDeviceConfig c = new I2CDeviceConfig(1,1,1,1);
+        assert 1 == c.getAddress();
+        assert 1 == c.getAddressSize();
+        assert 1 == c.getClockFrequency();
+        assert 1 == c.getDeviceNumber();
+
+    }
+
     @Test
     public void testBases() throws Exception {
-        I2CDevice d = new I2CDevice() {
-            @Override
-            public int read() throws IOException {
-                return 0;
-            }
 
-            @Override
-            public int read(int i, int i2, int i3, ByteBuffer buffer) throws IOException {
-                return 0;
-            }
 
-            @Override
-            public int read(int i, int i2, ByteBuffer buffer) throws IOException {
-                return 0;
-            }
 
-            @Override
-            public int read(int i, ByteBuffer buffer) throws IOException {
-                return 0;
-            }
-
-            @Override
-            public int read(ByteBuffer buffer) throws IOException {
-                return 0;
-            }
-
-            @Override
-            public int write(int i, int i2, ByteBuffer buffer) throws IOException {
-                logger.debug("Write " + buffer);
-                return i;
-            }
-
-            @Override
-            public int write(ByteBuffer buffer) throws IOException {
-                logger.debug("Write " + buffer);
-                return buffer.limit();
-            }
-
-            @Override
-            public void begin() throws IOException {
-
-            }
-
-            @Override
-            public void end() throws IOException {
-
-            }
-
-            @Override
-            public void write(int i) throws IOException {
-                logger.debug("Write " + i);
-            }
-
-            @Override
-            public ByteBuffer getInputBuffer() throws IOException {
-                return ByteBuffer.allocate(10);
-            }
-
-            @Override
-            public ByteBuffer getOutputBuffer() throws IOException {
-                return ByteBuffer.allocate(10);
-            }
-
-            @Override
-            public PeripheralDescriptor getDescriptor() {
-                return null;
-            }
-
-            @Override
-            public boolean isOpen() {
-                logger.debug("Open");
-                return true;
-            }
-
-            @Override
-            public void close() throws IOException {
-                logger.debug("Close");
-            }
-
-            @Override
-            public void tryLock(int i) throws IOException {
-
-            }
-
-            @Override
-            public void unlock() throws IOException {
-
-            }
-        };
 //        I2CDeviceConfig dc = new I2CDeviceConfig(1,2,3,1000);
 //        ByteBuffer b = ByteBuffer.allocate(10);
 //        b.put(new byte[] {1,2,3,4,5,6,7,8,9});
@@ -132,11 +54,13 @@ public class J2MEBaseTest {
 //        assert dc.getClockFrequency() == 1000;
 
 
-        I2CDevice i1 = PeripheralManager.open(5, I2CDevice.class,PeripheralManager.EXCLUSIVE);
+        I2CDevice i1 = PeripheralManager.open(5, I2CDevice.class, PeripheralManager.EXCLUSIVE);
         I2CDevice i2 = PeripheralManager.open(5, I2CDevice.class);
         I2CDevice i3 = PeripheralManager.open(new I2CDeviceConfig(0,0,0,0));
-        I2CDevice i4 = PeripheralManager.open(new I2CDeviceConfig(0,0,0,0),PeripheralManager.EXCLUSIVE);
-        I2CDevice i5 = PeripheralManager.open();
+        I2CDevice i4 = PeripheralManager.open(new I2CDeviceConfig(0, 0, 0, 0), PeripheralManager.EXCLUSIVE);
+//        I2CDevice i5 = PeripheralManager.open();
+
+
 
     }
 }
