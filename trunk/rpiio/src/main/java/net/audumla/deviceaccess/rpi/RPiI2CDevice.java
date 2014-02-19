@@ -32,7 +32,7 @@ public class RPiI2CDevice extends DefaultAddressablePeripheralMessage<I2CDevice,
 
     private int handle;
 
-    public class RPiI2CByteIO implements DeviceBusIO {
+    public class ByteIO implements DeviceBusIO {
 
         @Override
         public int read() throws IOException {
@@ -49,13 +49,13 @@ public class RPiI2CDevice extends DefaultAddressablePeripheralMessage<I2CDevice,
 
         @Override
         public int read(int subAddress) throws IOException {
-            return I2C.readByte(handle,subAddress);
+            return I2C.readByte(handle, subAddress);
         }
 
         @Override
         public int read(int subAddress, ByteBuffer dst, int offset, int size) throws IOException {
             for (int i = 0; i < size; ++i) {
-                dst.put(offset+i, (byte) read(subAddress));
+                dst.put(offset + i, (byte) read(subAddress));
             }
             return size;
         }
@@ -69,10 +69,9 @@ public class RPiI2CDevice extends DefaultAddressablePeripheralMessage<I2CDevice,
         public int write(ByteBuffer dst, int offset, int size) throws IOException {
             if (dst.hasArray()) {
                 I2C.writeBytesDirect(handle, size, offset, dst.array());
-            }
-            else {
-                for (int i =0; i < size; ++i) {
-                    write(dst.get(offset+i));
+            } else {
+                for (int i = 0; i < size; ++i) {
+                    write(dst.get(offset + i));
                 }
             }
             return size;
@@ -87,10 +86,198 @@ public class RPiI2CDevice extends DefaultAddressablePeripheralMessage<I2CDevice,
         public int write(int subAddress, ByteBuffer dst, int offset, int size) throws IOException {
             if (dst.hasArray()) {
                 I2C.writeBytes(handle, subAddress, size, offset, dst.array());
+            } else {
+                for (int i = 0; i < size; ++i) {
+                    write(subAddress, dst.get(offset + i));
+                }
             }
-            else {
-                for (int i =0; i < size; ++i) {
-                    write(subAddress,dst.get(offset+i));
+            return size;
+        }
+    }
+
+    public class MaskedByteIO implements DeviceBusIO {
+
+        @Override
+        public int read() throws IOException {
+            return I2C.readByteDirect(handle) & getMask().byteValue();
+        }
+
+        @Override
+        public int read(ByteBuffer dst, int offset, int size) throws IOException {
+            for (int i = 0; i < size; ++i) {
+                dst.put(offset + i, (byte) read());
+            }
+            return size;
+        }
+
+        @Override
+        public int read(int subAddress) throws IOException {
+            return I2C.readByte(handle, subAddress) & getMask().byteValue();
+        }
+
+        @Override
+        public int read(int subAddress, ByteBuffer dst, int offset, int size) throws IOException {
+            for (int i = 0; i < size; ++i) {
+                dst.put(offset + i, (byte) read(subAddress));
+            }
+            return size;
+        }
+
+        @Override
+        public int write(int value) throws IOException {
+            return I2C.writeByteDirect(handle, (byte) (value & getMask().byteValue()));
+        }
+
+        @Override
+        public int write(ByteBuffer dst, int offset, int size) throws IOException {
+            if (dst.hasArray()) {
+                I2C.writeBytesDirectMask(handle, size, offset, dst.array(), getMask().byteValue());
+            } else {
+                for (int i = 0; i < size; ++i) {
+                    write(dst.get(offset + i));
+                }
+            }
+            return size;
+        }
+
+        @Override
+        public int write(int subAddress, int value) throws IOException {
+            return I2C.writeByte(handle, subAddress, (byte) value);
+        }
+
+        @Override
+        public int write(int subAddress, ByteBuffer dst, int offset, int size) throws IOException {
+            if (dst.hasArray()) {
+                I2C.writeBytesMask(handle, subAddress, size, offset, dst.array(),getMask().byteValue());
+            } else {
+                for (int i = 0; i < size; ++i) {
+                    write(subAddress, dst.get(offset + i));
+                }
+            }
+            return size;
+        }
+    }
+
+    public class WordIO implements DeviceBusIO {
+
+        @Override
+        public int read() throws IOException {
+            return I2C.readWordDirect(handle);
+        }
+
+        @Override
+        public int read(ByteBuffer dst, int offset, int size) throws IOException {
+            for (int i = 0; i < size; ++i) {
+                dst.put(offset + i, (byte) read());
+            }
+            return size;
+        }
+
+        @Override
+        public int read(int subAddress) throws IOException {
+            return I2C.readWord(handle, subAddress);
+        }
+
+        @Override
+        public int read(int subAddress, ByteBuffer dst, int offset, int size) throws IOException {
+            for (int i = 0; i < size; ++i) {
+                dst.put(offset + i, (byte) read(subAddress));
+            }
+            return size;
+        }
+
+        @Override
+        public int write(int value) throws IOException {
+            return I2C.writeWordDirect(handle, (byte) value);
+        }
+
+        @Override
+        public int write(ByteBuffer dst, int offset, int size) throws IOException {
+            if (dst.hasArray()) {
+                I2C.writeWordsDirect(handle, size, offset, dst.array());
+            } else {
+                for (int i = 0; i < size; ++i) {
+                    write(dst.get(offset + i));
+                }
+            }
+            return size;
+        }
+
+        @Override
+        public int write(int subAddress, int value) throws IOException {
+            return I2C.writeWord(handle, subAddress, (byte) value);
+        }
+
+        @Override
+        public int write(int subAddress, ByteBuffer dst, int offset, int size) throws IOException {
+            if (dst.hasArray()) {
+                I2C.writeWords(handle, subAddress, size, offset, dst.array());
+            } else {
+                for (int i = 0; i < size; ++i) {
+                    write(subAddress, dst.get(offset + i));
+                }
+            }
+            return size;
+        }
+    }
+
+    public class MaskedWordIO implements DeviceBusIO {
+
+        @Override
+        public int read() throws IOException {
+            return I2C.readWordDirect(handle) & getMask().byteValue();
+        }
+
+        @Override
+        public int read(ByteBuffer dst, int offset, int size) throws IOException {
+            for (int i = 0; i < size; ++i) {
+                dst.put(offset + i, (byte) read());
+            }
+            return size;
+        }
+
+        @Override
+        public int read(int subAddress) throws IOException {
+            return I2C.readWord(handle, subAddress) & getMask().byteValue();
+        }
+
+        @Override
+        public int read(int subAddress, ByteBuffer dst, int offset, int size) throws IOException {
+            for (int i = 0; i < size; ++i) {
+                dst.put(offset + i, (byte) read(subAddress));
+            }
+            return size;
+        }
+
+        @Override
+        public int write(int value) throws IOException {
+            return I2C.writeWordDirect(handle, (byte) (value & getMask().byteValue()));
+        }
+
+        @Override
+        public int write(ByteBuffer dst, int offset, int size) throws IOException {
+            if (dst.hasArray()) {
+                I2C.writeWordsDirectMask(handle, size, offset, dst.array(), getMask().byteValue());
+            } else {
+                for (int i = 0; i < size; ++i) {
+                    write(dst.get(offset + i));
+                }
+            }
+            return size;
+        }
+
+        @Override
+        public int write(int subAddress, int value) throws IOException {
+            return I2C.writeWord(handle, subAddress, (byte) value);
+        }
+
+        @Override
+        public int write(int subAddress, ByteBuffer dst, int offset, int size) throws IOException {
+            if (dst.hasArray()) {
+                I2C.writeWordsMask(handle, subAddress, size, offset, dst.array(),getMask().byteValue());
+            } else {
+                for (int i = 0; i < size; ++i) {
+                    write(subAddress, dst.get(offset + i));
                 }
             }
             return size;
