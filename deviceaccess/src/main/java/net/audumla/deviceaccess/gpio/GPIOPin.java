@@ -18,6 +18,7 @@ package net.audumla.deviceaccess.gpio;
 
 import net.audumla.deviceaccess.ClosedPeripheralException;
 import net.audumla.deviceaccess.Peripheral;
+import net.audumla.deviceaccess.UnavailablePeripheralException;
 
 public interface GPIOPin extends Peripheral<GPIOPin, GPIOPinConfig> {
     int INPUT = 0;
@@ -30,17 +31,17 @@ public interface GPIOPin extends Peripheral<GPIOPin, GPIOPinConfig> {
     int TRIGGER_NONE = 0;
     int TRIGGER_RISING_EDGE = 2;
 
-    int getDirection() throws java.io.IOException, com.oracle.deviceaccess.UnavailablePeripheralException, ClosedPeripheralException;
+    int getDirection() throws java.io.IOException, UnavailablePeripheralException, ClosedPeripheralException;
 
-    int getTrigger() throws java.io.IOException, com.oracle.deviceaccess.UnavailablePeripheralException, ClosedPeripheralException;
+    int getTrigger() throws java.io.IOException, UnavailablePeripheralException, ClosedPeripheralException;
 
-    boolean getValue() throws java.io.IOException, com.oracle.deviceaccess.UnavailablePeripheralException, ClosedPeripheralException;
+    boolean getValue() throws java.io.IOException, UnavailablePeripheralException, ClosedPeripheralException;
 
-    void setDirection(int i) throws java.io.IOException, com.oracle.deviceaccess.UnavailablePeripheralException, ClosedPeripheralException;
+    void setDirection(int i) throws java.io.IOException, UnavailablePeripheralException, ClosedPeripheralException;
 
-    void setTrigger(int i) throws java.io.IOException, com.oracle.deviceaccess.UnavailablePeripheralException, ClosedPeripheralException;
+    void setTrigger(int i) throws java.io.IOException, UnavailablePeripheralException, ClosedPeripheralException;
 
     void setInputListener(PinListener pinListener) throws java.io.IOException, ClosedPeripheralException;
 
-    void setValue(boolean b) throws java.io.IOException, com.oracle.deviceaccess.UnavailablePeripheralException, ClosedPeripheralException;
+    void setValue(boolean b) throws java.io.IOException, UnavailablePeripheralException, ClosedPeripheralException;
 }
