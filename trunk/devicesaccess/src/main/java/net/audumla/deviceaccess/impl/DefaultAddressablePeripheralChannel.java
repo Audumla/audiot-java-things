@@ -16,20 +16,18 @@ package net.audumla.deviceaccess.impl;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import net.audumla.deviceaccess.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import net.audumla.deviceaccess.AddressablePeripheralChannel;
+import net.audumla.deviceaccess.PeripheralConfig;
+import net.audumla.deviceaccess.PeripheralDescriptor;
+import net.audumla.deviceaccess.PeripheralMessage;
 
-import java.io.IOException;
-import java.nio.ByteBuffer;
-
-public abstract class DefaultPeripheralAddressableChannel<P extends AddressablePeripheralChannel<? super P, ? super C, ? super M>, C extends PeripheralConfig<? super P>, M extends PeripheralMessage<? super P, ? super C, ? super M>> extends DefaultPeripheralChannel<P,C,M> implements AddressablePeripheralChannel<P,C,M>   {
+public abstract class DefaultAddressablePeripheralChannel<P extends AddressablePeripheralChannel<? super P, ? super C, ? super M>, C extends PeripheralConfig<? super P>, M extends PeripheralMessage<? super P, ? super C, ? super M>> extends DefaultPeripheralChannel<P,C,M> implements AddressablePeripheralChannel<P,C,M>   {
 
     private Integer readAddress;
     private Integer writeAddress;
     private Integer addressSize;
 
-    protected DefaultPeripheralAddressableChannel(PeripheralDescriptor<P, C> descriptor) {
+    protected DefaultAddressablePeripheralChannel(PeripheralDescriptor<P, C> descriptor) {
         super(descriptor);
     }
 
