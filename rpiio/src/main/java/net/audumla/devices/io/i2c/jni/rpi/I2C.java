@@ -216,5 +216,7 @@ public class I2C {
      * @return result of operation. Zero if everything is OK, less than zero if there was an error.
      */
     public static native int writeWordsMask(int fd, int localAddress, int size, int offset, char[] buffer, char mask);
+
+
 }
 
