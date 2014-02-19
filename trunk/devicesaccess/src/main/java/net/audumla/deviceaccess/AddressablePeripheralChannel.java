@@ -19,7 +19,7 @@ package net.audumla.deviceaccess;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-public interface AddressablePeripheralChannel<P extends AddressablePeripheralChannel<? super P, ? super C, ? super M>, C extends PeripheralConfig<? super P>, M extends PeripheralMessage<? super P, ? super C, ? super M>> extends PeripheralChannel<P, C, M> {
+public interface AddressablePeripheralChannel<P extends AddressablePeripheralChannel<? super P, ? super C>, C extends PeripheralConfig<? super P>> extends PeripheralChannel<P, C> {
 
     int read(int subAddress) throws IOException;
 
@@ -33,15 +33,9 @@ public interface AddressablePeripheralChannel<P extends AddressablePeripheralCha
 
     int write(int subAddress, byte... data) throws IOException;
 
-    void setReadAddress(Integer addr);
-
-    void setWriteAddress(Integer addr);
-
-    void setAddressSize(Integer size);
+    void setReadWriteAddresses(Integer readAddress, Integer writeAddress);
 
     Integer getReadAddress();
 
     Integer getWriteAddress();
-
-    Integer getAddressSize();
 }

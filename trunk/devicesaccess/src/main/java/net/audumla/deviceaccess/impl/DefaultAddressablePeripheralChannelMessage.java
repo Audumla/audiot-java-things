@@ -23,19 +23,10 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-public class DefaultAddressablePeripheralMessage<P extends AddressablePeripheralChannel<? super P, ? super C, ? super M>, C extends PeripheralConfig<? super P>, M extends AddressablePeripheralMessage<? super P, ? super C, ? super M>> extends DefaultPeripheralMessage<P, C, M> implements AddressablePeripheralMessage<P, C, M> {
-    private static final Logger logger = LoggerFactory.getLogger(DefaultAddressablePeripheralMessage.class);
+public class DefaultAddressablePeripheralChannelMessage<P extends AddressablePeripheralChannel<? super P, ? super C>, C extends PeripheralConfig<? super P>, M extends AddressablePeripheralChannelMessage<? super P, ? super C, ? super M>> extends DefaultPeripheralChannelMessage<P, C, M> implements AddressablePeripheralChannelMessage<P, C, M> {
+    private static final Logger logger = LoggerFactory.getLogger(DefaultAddressablePeripheralChannelMessage.class);
 
-    protected Integer writeAddress;
-    protected Integer readAddress;
-
-    public DefaultAddressablePeripheralMessage(P peripheral, boolean template, Integer writeAddress, Integer readAddress) {
-        super(peripheral, template);
-        this.writeAddress = writeAddress;
-        this.readAddress = readAddress;
-    }
-
-    public DefaultAddressablePeripheralMessage(boolean tempalte) {
+    public DefaultAddressablePeripheralChannelMessage(boolean tempalte) {
         super(tempalte);
     }
 
@@ -45,7 +36,7 @@ public class DefaultAddressablePeripheralMessage<P extends AddressablePeripheral
         contextStack.add(new MessageContextModifier<P>() {
             @Override
             public int apply(ByteBuffer txBuffer, ByteBuffer rxBuffer, P peripheral) throws IOException {
-                return readAddress != null ? peripheral.read(readAddress, rxBuffer, rxBuffer.position(), byteBuffer.remaining()) : peripheral.read(rxBuffer, rxBuffer.position(), byteBuffer.remaining());
+                return peripheral.read(rxBuffer, rxBuffer.position(), byteBuffer.remaining());
             }
         });
         return (M) this;
@@ -58,7 +49,7 @@ public class DefaultAddressablePeripheralMessage<P extends AddressablePeripheral
             contextStack.add(new MessageContextModifier<P>() {
                 @Override
                 public int apply(ByteBuffer txBuffer, ByteBuffer rxBuffer, P peripheral) throws IOException {
-                    return writeAddress != null ? peripheral.write(writeAddress, txBuffer, txBuffer.position(), byteBuffer.remaining()) : peripheral.write(txBuffer, txBuffer.position(), byteBuffer.remaining());
+                    return peripheral.write(txBuffer, txBuffer.position(), byteBuffer.remaining());
                 }
             });
         }
@@ -72,7 +63,7 @@ public class DefaultAddressablePeripheralMessage<P extends AddressablePeripheral
             contextStack.add(new MessageContextModifier<P>() {
                 @Override
                 public int apply(ByteBuffer txBuffer, ByteBuffer rxBuffer, P peripheral) throws IOException {
-                    return writeAddress != null ? peripheral.write(writeAddress, txBuffer, txBuffer.position(), value.length) : peripheral.write(txBuffer, txBuffer.position(), value.length);
+                    return peripheral.write(txBuffer, txBuffer.position(), value.length);
 
                 }
             });
@@ -131,7 +122,7 @@ public class DefaultAddressablePeripheralMessage<P extends AddressablePeripheral
     }
 
     @Override
-    public M appendSizedAddressWrite(int address, int size) {
+    public M appendSizedWrite(int address, int size) {
         if (size > 0) {
             contextStack.add(new MessageContextModifier<P>() {
                 @Override
@@ -144,7 +135,7 @@ public class DefaultAddressablePeripheralMessage<P extends AddressablePeripheral
     }
 
     @Override
-    public M appendSizedAddressRead(int address, int size) {
+    public M appendSizedRead(int address, int size) {
         contextStack.add(new MessageContextModifier<P>() {
             @Override
             public int apply(ByteBuffer txBuffer, ByteBuffer rxBuffer, P peripheral) throws IOException {
@@ -160,7 +151,7 @@ public class DefaultAddressablePeripheralMessage<P extends AddressablePeripheral
             contextStack.add(new MessageContextModifier<P>() {
                 @Override
                 public int apply(ByteBuffer txBuffer, ByteBuffer rxBuffer, P peripheral) throws IOException {
-                    return writeAddress != null ? peripheral.write(writeAddress, txBuffer, txBuffer.position(), size) : peripheral.write(txBuffer, txBuffer.position(), size);
+                    return peripheral.write(txBuffer, txBuffer.position(), size);
                 }
             });
         }
@@ -172,46 +163,10 @@ public class DefaultAddressablePeripheralMessage<P extends AddressablePeripheral
         contextStack.add(new MessageContextModifier<P>() {
             @Override
             public int apply(ByteBuffer txBuffer, ByteBuffer rxBuffer, P peripheral) throws IOException {
-                return readAddress != null ? peripheral.read(readAddress, rxBuffer, rxBuffer.position(), size) : peripheral.read(rxBuffer, rxBuffer.position(), size);
+                return peripheral.read(rxBuffer, rxBuffer.position(), size);
             }
         });
         return (M) this;
     }
 
-
-    @Override
-    public M appendWriteAddress(Integer address) {
-        contextStack.add(new MessageContextModifier<P>() {
-            @Override
-            public int apply(ByteBuffer txBuffer, ByteBuffer rxBuffer, P peripheral) throws IOException {
-                DefaultAddressablePeripheralMessage.this.writeAddress = address;
-                return MessageContextModifier.NO_TRANSFER;
-            }
-        });
-        return (M) this;
-    }
-
-    @Override
-    public M appendReadAddress(Integer address) {
-        contextStack.add(new MessageContextModifier<P>() {
-            @Override
-            public int apply(ByteBuffer txBuffer, ByteBuffer rxBuffer, P peripheral) throws IOException {
-                DefaultAddressablePeripheralMessage.this.readAddress = address;
-                return MessageContextModifier.NO_TRANSFER;
-            }
-        });
-        return (M) this;
-    }
-
-    @Override
-    public Integer[] transfer(ByteBuffer txBuffer, ByteBuffer rxBuffer) throws IOException, UnavailablePeripheralException, ClosedPeripheralException {
-        int tReadAddress = readAddress;
-        int tWriteAddress = writeAddress;
-        try {
-            return super.transfer(txBuffer, rxBuffer);
-        } finally {
-            readAddress = tReadAddress;
-            writeAddress = tWriteAddress;
-        }
-    }
 }

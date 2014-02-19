@@ -27,9 +27,12 @@ import java.io.IOException;
 public class RPiI2CPeripheralProvider implements PeripheralProvider<I2CDevice,I2CDeviceConfig> {
     private static final Logger logger = LoggerFactory.getLogger(RPiI2CPeripheralProvider.class);
 
-    @Override
-    public I2CDevice open(PeripheralConfig<? super I2CDevice> config, String[] properties, int mode) throws PeripheralNotFoundException, UnavailablePeripheralException, PeripheralConfigInvalidException, UnsupportedAccessModeException, IOException {
+    public static final int I2C_CLOCK_FREQ_MIN = 10000;
+    public static final int	I2C_CLOCK_FREQ_MAX = 400000;
 
+    @Override
+    public I2CDevice open(I2CDeviceConfig config, String[] properties, int mode) throws PeripheralNotFoundException, UnavailablePeripheralException, PeripheralConfigInvalidException, UnsupportedAccessModeException, IOException {
+        PeripheralManager.ReferencedPeripheralDescriptor<I2CDevice, I2CDeviceConfig> desc = new PeripheralManager.ReferencedPeripheralDescriptor<I2CDevice, I2CDeviceConfig>(config,0,"",properties);
         return null;
     }
 

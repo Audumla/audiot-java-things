@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.ByteChannel;
 
-public interface PeripheralChannel<P extends PeripheralChannel<? super P, ? super C, ? super M>, C extends PeripheralConfig<? super P>, M extends PeripheralMessage<? super P, ? super C, ? super M>> extends Peripheral<P, C>, ByteChannel {
+public interface PeripheralChannel<P extends PeripheralChannel<? super P, ? super C>, C extends PeripheralConfig<? super P>> extends Peripheral<P, C>, ByteChannel {
     public enum ChannelWidth {
         WIDTH8(1), WIDTH16(2), WIDTH32(4);
 
@@ -43,14 +43,8 @@ public interface PeripheralChannel<P extends PeripheralChannel<? super P, ? supe
 
     int read(ByteBuffer dst, int offset, int size) throws IOException;
 
-    void setWidth(ChannelWidth width);
-
-    ChannelWidth getWidth();
-
     void setMask(Integer mask);
 
     Integer getMask();
-
-    M createMessage();
 
 }

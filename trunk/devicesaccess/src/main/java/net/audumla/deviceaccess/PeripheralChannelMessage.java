@@ -21,7 +21,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.ByteChannel;
 import java.time.Duration;
 
-public interface PeripheralMessage<P extends PeripheralChannel<? super P, ? super C, ? super M>, C extends PeripheralConfig<? super P>, M extends PeripheralMessage<? super P, ? super C, ? super M>> extends ByteChannel {
+public interface PeripheralChannelMessage<P extends PeripheralChannel<? super P, ? super C>, C extends PeripheralConfig<? super P>, M extends PeripheralChannelMessage<? super P, ? super C, ? super M>> extends ByteChannel {
 
     Integer[] transfer(ByteBuffer txBuffer, ByteBuffer rxBuffer) throws IOException, UnavailablePeripheralException, ClosedPeripheralException;
 
