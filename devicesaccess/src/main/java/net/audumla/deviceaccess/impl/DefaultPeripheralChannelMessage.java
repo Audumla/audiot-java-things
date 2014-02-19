@@ -187,7 +187,7 @@ public class DefaultPeripheralChannelMessage<P extends PeripheralChannel<? super
             // this will default to using the default tx and rx byte buffers
             return transfer(null, null);
         } else {
-            throw new PeripheralException();
+            throw new PeripheralChannelMessageException();
         }
     }
 

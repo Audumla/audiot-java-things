@@ -25,7 +25,7 @@ public class I2CDeviceConfig implements PeripheralConfig.HardwareAddressing, Per
 
     private int address;
     private int clockFrequency = DEFAULT;
-    private int deviceNumber;
+    private int deviceNumber = DEFAULT;
     private String deviceName;
     private int addressSize = ADDR_SIZE_7;
     private PeripheralChannel.ChannelWidth width = PeripheralChannel.ChannelWidth.WIDTH8;
@@ -53,6 +53,15 @@ public class I2CDeviceConfig implements PeripheralConfig.HardwareAddressing, Per
         this.clockFrequency = clockFrequency;
         this.deviceNumber = deviceNumber;
         this.addressSize = addressSize;
+        this.width = width;
+    }
+
+    public I2CDeviceConfig(String deviceName, int deviceNumber, int address, int addressSize, int clockFrequency, PeripheralChannel.ChannelWidth width) {
+        this.deviceName = deviceName;
+        this.deviceNumber = deviceNumber;
+        this.address = address;
+        this.addressSize = addressSize;
+        this.clockFrequency = clockFrequency;
         this.width = width;
     }
 

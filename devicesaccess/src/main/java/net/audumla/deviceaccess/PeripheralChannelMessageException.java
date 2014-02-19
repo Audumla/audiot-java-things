@@ -1,4 +1,4 @@
-package net.audumla.deviceaccess.rpi;
+package net.audumla.deviceaccess;
 
 /*
  * *********************************************************************
@@ -16,16 +16,10 @@ package net.audumla.deviceaccess.rpi;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import java.io.IOException;
-import java.nio.ByteBuffer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public interface DeviceBusIO {
-    int read() throws IOException;
-
-    int read(ByteBuffer dst, int offset, int size) throws IOException;
-
-    int write(int value) throws IOException;
-
-    int write(ByteBuffer dst, int offset, int size) throws IOException;
+public class PeripheralChannelMessageException extends PeripheralException {
+    private static final Logger logger = LoggerFactory.getLogger(PeripheralChannelMessageException.class);
 
 }
