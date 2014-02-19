@@ -16,11 +16,6 @@ package net.audumla.deviceaccess;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import com.oracle.deviceaccess.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-
 public class PeripheralConfigInvalidException extends PeripheralException
 {
     public PeripheralConfigInvalidException()
