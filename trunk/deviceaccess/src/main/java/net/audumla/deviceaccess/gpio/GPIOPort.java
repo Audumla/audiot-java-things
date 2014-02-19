@@ -18,21 +18,22 @@ package net.audumla.deviceaccess.gpio;
 
 import net.audumla.deviceaccess.ClosedPeripheralException;
 import net.audumla.deviceaccess.Peripheral;
+import net.audumla.deviceaccess.UnavailablePeripheralException;
 
 public interface GPIOPort extends Peripheral<GPIOPort, GPIOPortConfig> {
 
     int INPUT = 0;
     int OUTPUT = 1;
 
-    int getDirection() throws java.io.IOException, com.oracle.deviceaccess.UnavailablePeripheralException, ClosedPeripheralException;
+    int getDirection() throws java.io.IOException, UnavailablePeripheralException, ClosedPeripheralException;
 
-    int getMaxValue() throws java.io.IOException, com.oracle.deviceaccess.UnavailablePeripheralException, ClosedPeripheralException;
+    int getMaxValue() throws java.io.IOException, UnavailablePeripheralException, ClosedPeripheralException;
 
-    int getValue() throws java.io.IOException, com.oracle.deviceaccess.UnavailablePeripheralException, ClosedPeripheralException;
+    int getValue() throws java.io.IOException, UnavailablePeripheralException, ClosedPeripheralException;
 
-    void setDirection(int i) throws java.io.IOException, com.oracle.deviceaccess.UnavailablePeripheralException, ClosedPeripheralException;
+    void setDirection(int i) throws java.io.IOException, UnavailablePeripheralException, ClosedPeripheralException;
 
     void setInputListener(PortListener portListener) throws java.io.IOException, ClosedPeripheralException;
 
-    void setValue(int i) throws java.io.IOException, com.oracle.deviceaccess.UnavailablePeripheralException, ClosedPeripheralException;
+    void setValue(int i) throws java.io.IOException, UnavailablePeripheralException, ClosedPeripheralException;
 }

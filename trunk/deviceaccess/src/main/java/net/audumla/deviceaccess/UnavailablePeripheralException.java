@@ -16,7 +16,7 @@ package net.audumla.deviceaccess;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-public class UnavailablePeripheralException extends com.oracle.deviceaccess.PeripheralException
+public class UnavailablePeripheralException extends PeripheralException
 {
     public UnavailablePeripheralException()
     {
