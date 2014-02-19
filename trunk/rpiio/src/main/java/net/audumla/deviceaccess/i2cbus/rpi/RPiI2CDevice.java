@@ -1,4 +1,4 @@
-package net.audumla.deviceaccess.rpi;
+package net.audumla.deviceaccess.i2cbus.rpi;
 
 /*
  * *********************************************************************
@@ -19,7 +19,6 @@ package net.audumla.deviceaccess.rpi;
 import net.audumla.deviceaccess.PeripheralDescriptor;
 import net.audumla.deviceaccess.i2cbus.I2CDevice;
 import net.audumla.deviceaccess.i2cbus.I2CDeviceConfig;
-import net.audumla.deviceaccess.i2cbus.I2CChannelMessage;
 import net.audumla.devices.io.i2c.jni.rpi.I2C;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -145,14 +144,8 @@ public class RPiI2CDevice implements I2CDevice {
     }
 
     @Override
-    public I2CChannelMessage createMessage() {
-        return new I2CChannelMessage(false);
-    }
-
-
-    @Override
     public boolean isOpen() {
-        return false;
+        return true;
     }
 
     @Override
