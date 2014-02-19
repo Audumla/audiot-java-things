@@ -23,7 +23,11 @@ import org.slf4j.LoggerFactory;
 public class I2CMessage extends DefaultAddressablePeripheralMessage<I2CDevice, I2CDeviceConfig, I2CMessage> {
     private static final Logger logger = LoggerFactory.getLogger(I2CMessage.class);
 
-    public I2CMessage(boolean tempalte) {
-        super(tempalte);
+    public I2CMessage(I2CDevice peripheral, boolean template, Integer writeAddress, Integer readAddress) {
+        super(peripheral, template, writeAddress, readAddress);
+    }
+
+    public I2CMessage(boolean template) {
+        super(template);
     }
 }

@@ -36,10 +36,19 @@ public class DefaultPeripheralMessage<P extends PeripheralChannel<? super P, ? s
     protected Queue<MessageContextModifier> contextStack = new LinkedList<>();
     protected boolean template = false;
 
-    public DefaultPeripheralMessage(boolean tempalte) {
-        this.template = tempalte;
+    public DefaultPeripheralMessage(P peripheral,boolean template) {
+        this.peripheral = peripheral;
+        this.template = template;
         defaultRxBufferStack = new ArrayList<>();
-        if (!tempalte) {
+        if (!template) {
+            defaultTxBuffer = ByteBuffer.allocate(DEFAULT_BUFFER_SIZE);
+        }
+    }
+
+    public DefaultPeripheralMessage(boolean template) {
+        this.template = template;
+        defaultRxBufferStack = new ArrayList<>();
+        if (!template) {
             defaultTxBuffer = ByteBuffer.allocate(DEFAULT_BUFFER_SIZE);
         }
     }
