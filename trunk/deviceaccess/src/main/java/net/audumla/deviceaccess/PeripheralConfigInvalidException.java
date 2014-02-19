@@ -21,7 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public class PeripheralConfigInvalidException extends com.oracle.deviceaccess.PeripheralException
+public class PeripheralConfigInvalidException extends PeripheralException
 {
     public PeripheralConfigInvalidException()
     {
