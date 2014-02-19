@@ -29,7 +29,7 @@ import org.junit.Test;
 public class RPiI2CTest {
 
 
-    @Test
+//    @Test
     public void PCF8574readwrite8() throws Exception {
         DeviceChannel d = new I2CDeviceChannel(new RPiI2CDeviceFactory()).createChannel(new ChannelAddressAttr(1), new DeviceAddressAttr(PCF8574GPIOActivatorFactory.PCF8574_0x21));
         byte val = (byte) 0x01;
@@ -39,7 +39,7 @@ public class RPiI2CTest {
         Assert.assertEquals(~val, d.read());
     }
 
-    @Test
+//    @Test
     public void PCF8574RWMask8() throws Exception {
         DeviceChannel d = new I2CDeviceChannel(new RPiI2CDeviceFactory()).createChannel(
                 new ChannelAddressAttr(1),
