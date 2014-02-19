@@ -41,9 +41,9 @@ public interface PeripheralMessage<P extends PeripheralChannel<? super P, ? supe
 
     M appendSizedRead(int size);
 
-    M appendPeripheral(P peripheral);
+    M setPeripheral(P peripheral);
 
-    M appendWait(Duration duration);
+    M wait(Duration duration);
 
     Integer[] transfer() throws java.io.IOException, UnavailablePeripheralException, ClosedPeripheralException;
 }
