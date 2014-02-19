@@ -142,7 +142,7 @@ public class RPiI2CDevice extends DefaultAddressablePeripheralMessage<I2CDevice,
 
         @Override
         public int write(int subAddress, int value) throws IOException {
-            return I2C.writeByte(handle, subAddress, (byte) value);
+            return I2C.writeByte(handle, subAddress, (byte) (value & getMask().byteValue()));
         }
 
         @Override
@@ -162,7 +162,7 @@ public class RPiI2CDevice extends DefaultAddressablePeripheralMessage<I2CDevice,
 
         @Override
         public int read() throws IOException {
-            return I2C.readWordDirect(handle);
+            throw new UnsupportedOperationException();
         }
 
         @Override
@@ -188,13 +188,13 @@ public class RPiI2CDevice extends DefaultAddressablePeripheralMessage<I2CDevice,
 
         @Override
         public int write(int value) throws IOException {
-            return I2C.writeWordDirect(handle, (byte) value);
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public int write(ByteBuffer dst, int offset, int size) throws IOException {
             if (dst.hasArray()) {
-                I2C.writeWordsDirect(handle, size, offset, dst.array());
+                throw new UnsupportedOperationException();
             } else {
                 for (int i = 0; i < size; ++i) {
                     write(dst.get(offset + i));
@@ -205,16 +205,16 @@ public class RPiI2CDevice extends DefaultAddressablePeripheralMessage<I2CDevice,
 
         @Override
         public int write(int subAddress, int value) throws IOException {
-            return I2C.writeWord(handle, subAddress, (byte) value);
+            return I2C.writeWord(handle, subAddress, (char) value);
         }
 
         @Override
         public int write(int subAddress, ByteBuffer dst, int offset, int size) throws IOException {
             if (dst.hasArray()) {
-                I2C.writeWords(handle, subAddress, size, offset, dst.array());
+                I2C.writeWords(handle, subAddress, size / 2, offset / 2, dst.asCharBuffer().array());
             } else {
-                for (int i = 0; i < size; ++i) {
-                    write(subAddress, dst.get(offset + i));
+                for (int i = 0; i < size/2; ++i) {
+                    write(subAddress, dst.getChar(offset + i));
                 }
             }
             return size;
@@ -225,7 +225,7 @@ public class RPiI2CDevice extends DefaultAddressablePeripheralMessage<I2CDevice,
 
         @Override
         public int read() throws IOException {
-            return I2C.readWordDirect(handle) & getMask().byteValue();
+            throw new UnsupportedOperationException();
         }
 
         @Override
@@ -238,7 +238,7 @@ public class RPiI2CDevice extends DefaultAddressablePeripheralMessage<I2CDevice,
 
         @Override
         public int read(int subAddress) throws IOException {
-            return I2C.readWord(handle, subAddress) & getMask().byteValue();
+            return I2C.readWord(handle, subAddress) & getMask();
         }
 
         @Override
@@ -251,13 +251,13 @@ public class RPiI2CDevice extends DefaultAddressablePeripheralMessage<I2CDevice,
 
         @Override
         public int write(int value) throws IOException {
-            return I2C.writeWordDirect(handle, (byte) (value & getMask().byteValue()));
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public int write(ByteBuffer dst, int offset, int size) throws IOException {
             if (dst.hasArray()) {
-                I2C.writeWordsDirectMask(handle, size, offset, dst.array(), getMask().byteValue());
+                throw new UnsupportedOperationException();
             } else {
                 for (int i = 0; i < size; ++i) {
                     write(dst.get(offset + i));
@@ -268,16 +268,16 @@ public class RPiI2CDevice extends DefaultAddressablePeripheralMessage<I2CDevice,
 
         @Override
         public int write(int subAddress, int value) throws IOException {
-            return I2C.writeWord(handle, subAddress, (byte) value);
+            return I2C.writeWord(handle, subAddress, (char) (value & getMask()));
         }
 
         @Override
         public int write(int subAddress, ByteBuffer dst, int offset, int size) throws IOException {
             if (dst.hasArray()) {
-                I2C.writeWordsMask(handle, subAddress, size, offset, dst.array(),getMask().byteValue());
+                I2C.writeWordsMask(handle, subAddress, size/2, offset/2, dst.asCharBuffer().array(), (char) getMask().intValue());
             } else {
-                for (int i = 0; i < size; ++i) {
-                    write(subAddress, dst.get(offset + i));
+                for (int i = 0; i < size/2; ++i) {
+                    write(subAddress, dst.getChar(offset + i));
                 }
             }
             return size;
