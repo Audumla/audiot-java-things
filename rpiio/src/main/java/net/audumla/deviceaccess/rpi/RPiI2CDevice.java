@@ -16,10 +16,11 @@ package net.audumla.deviceaccess.rpi;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
+import net.audumla.deviceaccess.PeripheralChannel;
 import net.audumla.deviceaccess.i2cbus.I2CDevice;
 import net.audumla.deviceaccess.i2cbus.I2CDeviceConfig;
 import net.audumla.deviceaccess.i2cbus.I2CMessage;
-import net.audumla.deviceaccess.impl.DefaultAddressablePeripheralMessage;
+import net.audumla.deviceaccess.impl.DefaultAddressablePeripheralChannel;
 import net.audumla.devices.io.i2c.jni.rpi.I2C;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,10 +28,112 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-public class RPiI2CDevice extends DefaultAddressablePeripheralMessage<I2CDevice, I2CDeviceConfig, I2CMessage> implements I2CDevice {
+public class RPiI2CDevice extends DefaultAddressablePeripheralChannel<I2CDevice, I2CDeviceConfig, I2CMessage> implements I2CDevice {
     private static final Logger logger = LoggerFactory.getLogger(RPiI2CDevice.class);
 
     private int handle;
+    private DeviceBusIO activeAddressIO;
+    private DeviceBusIO activeDirectIO;
+
+    @Override
+    public int read(int subAddress) throws IOException {
+        return activeAddressIO.read(subAddress);
+    }
+
+    @Override
+    public int read(int subAddress, ByteBuffer dst) throws IOException {
+        return activeAddressIO.read(subAddress,dst,dst.position(),dst.remaining());
+    }
+
+    @Override
+    public int read(int subAddress, ByteBuffer dst, int offset, int size) throws IOException {
+        return activeAddressIO.read(subAddress,dst,offset,size);
+    }
+
+    @Override
+    public int write(int subAddress, ByteBuffer dst) throws IOException {
+        return activeAddressIO.write(subAddress, dst, 0, dst.limit());
+    }
+
+    @Override
+    public int write(int subAddress, ByteBuffer dst, int offset, int size) throws IOException {
+        return activeAddressIO.write(subAddress,dst,offset,size);
+    }
+
+    @Override
+    public int write(int subAddress, byte... data) throws IOException {
+        return data.length == 1 ? activeAddressIO.write(subAddress,data[0]) : write(subAddress, ByteBuffer.wrap(data));
+    }
+
+    @Override
+    public int write(byte... data) throws IOException {
+        return data.length == 1 ? activeAddressIO.write(data[0]) : write(ByteBuffer.wrap(data));
+    }
+
+    @Override
+    public int write(ByteBuffer dst, int offset, int size) throws IOException {
+        return activeAddressIO.write(dst,offset,size);
+    }
+
+    @Override
+    public int read() throws IOException {
+        return activeAddressIO.read();
+    }
+
+    @Override
+    public int read(ByteBuffer dst) throws IOException {
+        return activeAddressIO.read(dst,dst.position(),dst.remaining());
+    }
+
+    @Override
+    public int read(ByteBuffer dst, int offset, int size) throws IOException {
+        return activeAddressIO.read(dst,offset,size);
+    }
+
+    @Override
+    public I2CMessage createMessage() {
+        return new I2CMessage(false);
+    }
+
+    @Override
+    public int write(ByteBuffer src) throws IOException {
+        return 0;
+    }
+
+    @Override
+    public boolean isOpen() {
+        return false;
+    }
+
+    @Override
+    public void close() throws IOException {
+
+    }
+
+    @Override
+    public void setReadAddress(Integer addr) {
+        super.setReadAddress(addr);
+    }
+
+    @Override
+    public void setWriteAddress(Integer addr) {
+        super.setWriteAddress(addr);
+    }
+
+    @Override
+    public void setAddressSize(Integer size) {
+        super.setAddressSize(size);
+    }
+
+    @Override
+    public void setWidth(ChannelWidth width) {
+        super.setWidth(width);
+    }
+
+    @Override
+    public void setMask(Integer mask) {
+        super.setMask(mask);
+    }
 
     public class ByteIO implements DeviceBusIO {
 
