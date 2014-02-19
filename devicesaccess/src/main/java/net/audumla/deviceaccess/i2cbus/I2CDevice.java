@@ -20,7 +20,7 @@ package net.audumla.deviceaccess.i2cbus;
 import net.audumla.deviceaccess.AddressablePeripheralChannel;
 
 
-public interface I2CDevice extends AddressablePeripheralChannel<I2CDevice,I2CDeviceConfig,I2CMessage>
+public interface I2CDevice extends AddressablePeripheralChannel<I2CDevice,I2CDeviceConfig>
 {
 
 }

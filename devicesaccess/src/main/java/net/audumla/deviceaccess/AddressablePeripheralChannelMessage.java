@@ -16,9 +16,7 @@ package net.audumla.deviceaccess;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-public interface AddressablePeripheralMessage<P extends AddressablePeripheralChannel<? super P, ? super C, ? super M>, C extends PeripheralConfig<? super P>, M extends AddressablePeripheralMessage<? super P, ? super C, ? super M>> extends PeripheralMessage<P, C, M> {
-
-    M appendWriteAddress(Integer address);
+public interface AddressablePeripheralChannelMessage<P extends AddressablePeripheralChannel<? super P, ? super C>, C extends PeripheralConfig<? super P>, M extends AddressablePeripheralChannelMessage<? super P, ? super C, ? super M>> extends PeripheralChannelMessage<P, C, M> {
 
     M appendRead(int address, java.nio.ByteBuffer byteBuffer) throws ClosedPeripheralException;
 
@@ -26,9 +24,8 @@ public interface AddressablePeripheralMessage<P extends AddressablePeripheralCha
 
     M appendWrite(int address, byte... value) throws java.io.IOException, ClosedPeripheralException;
 
-    M appendSizedAddressWrite(int address, int size);
+    M appendSizedWrite(int address, int size);
 
-    M appendSizedAddressRead(int address, int size);
+    M appendSizedRead(int address, int size);
 
-    M appendReadAddress(Integer address);
 }

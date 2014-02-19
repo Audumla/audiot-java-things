@@ -17,31 +17,20 @@ package net.audumla.deviceaccess.impl;
  */
 
 import net.audumla.deviceaccess.PeripheralChannel;
+import net.audumla.deviceaccess.PeripheralChannelMessage;
 import net.audumla.deviceaccess.PeripheralConfig;
 import net.audumla.deviceaccess.PeripheralDescriptor;
-import net.audumla.deviceaccess.PeripheralMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class DefaultPeripheralChannel<P extends PeripheralChannel<? super P, ? super C, ? super M>,C extends PeripheralConfig<? super P>, M extends PeripheralMessage<? super P, ? super C, ? super M>> implements PeripheralChannel<P,C,M> {
+public abstract class DefaultPeripheralChannel<P extends PeripheralChannel<? super P, ? super C>,C extends PeripheralConfig<? super P>> implements PeripheralChannel<P,C> {
     private static final Logger logger = LoggerFactory.getLogger(DefaultPeripheralChannel.class);
 
-    private ChannelWidth width = ChannelWidth.WIDTH8;
     private Integer mask;
     private PeripheralDescriptor<P,C> descriptor;
 
     protected DefaultPeripheralChannel(PeripheralDescriptor<P, C> descriptor) {
         this.descriptor = descriptor;
-    }
-
-    @Override
-    public void setWidth(ChannelWidth width) {
-        this.width = width;
-    }
-
-    @Override
-    public ChannelWidth getWidth() {
-        return width;
     }
 
     @Override

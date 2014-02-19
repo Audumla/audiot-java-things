@@ -16,6 +16,7 @@ package net.audumla.deviceaccess.i2cbus;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
+import net.audumla.deviceaccess.PeripheralChannel;
 import net.audumla.deviceaccess.PeripheralConfig;
 
 public class I2CDeviceConfig implements PeripheralConfig.HardwareAddressing, PeripheralConfig<net.audumla.deviceaccess.i2cbus.I2CDevice> {
@@ -23,63 +24,80 @@ public class I2CDeviceConfig implements PeripheralConfig.HardwareAddressing, Per
     public static final int ADDR_SIZE_7 = 7;
 
     private int address;
-    private int clockFrequency;
+    private int clockFrequency = DEFAULT;
     private int deviceNumber;
     private String deviceName;
-    private int addressSize;
+    private int addressSize = ADDR_SIZE_7;
+    private PeripheralChannel.ChannelWidth width = PeripheralChannel.ChannelWidth.WIDTH8;
 
-    public I2CDeviceConfig(java.lang.String deviceName, int address, int addressSize, int clockFrequency) {
+    public I2CDeviceConfig(java.lang.String deviceName, int address) {
+        this.address = address;
+        this.deviceName = deviceName;
+    }
+
+    public I2CDeviceConfig(int deviceNumber, int address) {
+        this.deviceNumber = deviceNumber;
+        this.address = address;
+    }
+
+    public I2CDeviceConfig(java.lang.String deviceName, int address, int addressSize, int clockFrequency, PeripheralChannel.ChannelWidth width) {
         this.address = address;
         this.addressSize = addressSize;
         this.clockFrequency = clockFrequency;
         this.deviceName = deviceName;
+        this.width = width;
     }
 
-    public I2CDeviceConfig(int deviceNumber, int address, int addressSize, int clockFrequency) {
+    public I2CDeviceConfig(int deviceNumber, int address, int addressSize, int clockFrequency, PeripheralChannel.ChannelWidth width) {
         this.address = address;
         this.clockFrequency = clockFrequency;
         this.deviceNumber = deviceNumber;
         this.addressSize = addressSize;
+        this.width = width;
+    }
+
+    public PeripheralChannel.ChannelWidth getWidth() {
+        return width;
     }
 
     public int getAddress() {
         return address;
     }
 
-    public void setAddress(int address) {
-        this.address = address;
-    }
+//    public void setAddress(int address) {
+//        this.address = address;
+//    }
 
     public int getClockFrequency() {
         return clockFrequency;
     }
 
-    public void setClockFrequency(int clockFrequency) {
-        this.clockFrequency = clockFrequency;
-    }
+//    public void setClockFrequency(int clockFrequency) {
+//        this.clockFrequency = clockFrequency;
+//    }
 
     public int getDeviceNumber() {
         return deviceNumber;
     }
 
-    public void setDeviceNumber(int deviceNumber) {
-        this.deviceNumber = deviceNumber;
-    }
+//    public void setDeviceNumber(int deviceNumber) {
+//        this.deviceNumber = deviceNumber;
+//    }
 
     public String getDeviceName() {
         return deviceName;
     }
 
-    public void setDeviceName(String deviceName) {
-        this.deviceName = deviceName;
-    }
+//    public void setDeviceName(String deviceName) {
+//        this.deviceName = deviceName;
+//    }
 
     public int getAddressSize() {
         return addressSize;
     }
 
-    public void setAddressSize(int addressSize) {
-        this.addressSize = addressSize;
-    }
+//    public void setAddressSize(int addressSize) {
+//        this.addressSize = addressSize;
+//    }
 
 }

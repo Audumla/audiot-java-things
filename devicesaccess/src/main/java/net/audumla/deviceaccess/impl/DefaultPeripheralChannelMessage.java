@@ -25,8 +25,8 @@ import java.nio.ByteBuffer;
 import java.time.Duration;
 import java.util.*;
 
-public class DefaultPeripheralMessage<P extends PeripheralChannel<? super P, ? super C, ? super M>, C extends PeripheralConfig<? super P>, M extends PeripheralMessage<? super P, ? super C, ? super M>> implements PeripheralMessage<P, C, M> {
-    private static final Logger logger = LoggerFactory.getLogger(DefaultPeripheralMessage.class);
+public class DefaultPeripheralChannelMessage<P extends PeripheralChannel<? super P, ? super C>, C extends PeripheralConfig<? super P>, M extends PeripheralChannelMessage<? super P, ? super C, ? super M>> implements PeripheralChannelMessage<P, C, M> {
+    private static final Logger logger = LoggerFactory.getLogger(DefaultPeripheralChannelMessage.class);
 
     private static final int DEFAULT_BUFFER_SIZE = 1024;
 
@@ -36,7 +36,7 @@ public class DefaultPeripheralMessage<P extends PeripheralChannel<? super P, ? s
     protected Queue<MessageContextModifier> contextStack = new LinkedList<>();
     protected boolean template = false;
 
-    public DefaultPeripheralMessage(P peripheral,boolean template) {
+    public DefaultPeripheralChannelMessage(P peripheral, boolean template) {
         this.peripheral = peripheral;
         this.template = template;
         defaultRxBufferStack = new ArrayList<>();
@@ -45,7 +45,7 @@ public class DefaultPeripheralMessage<P extends PeripheralChannel<? super P, ? s
         }
     }
 
-    public DefaultPeripheralMessage(boolean template) {
+    public DefaultPeripheralChannelMessage(boolean template) {
         this.template = template;
         defaultRxBufferStack = new ArrayList<>();
         if (!template) {
@@ -162,7 +162,7 @@ public class DefaultPeripheralMessage<P extends PeripheralChannel<? super P, ? s
         contextStack.add(new MessageContextModifier<P>() {
             @Override
             public int apply(ByteBuffer txBuffer, ByteBuffer rxBuffer, P peripheral) throws IOException {
-                DefaultPeripheralMessage.this.peripheral = newPeripheral;
+                DefaultPeripheralChannelMessage.this.peripheral = newPeripheral;
                 return MessageContextModifier.NO_TRANSFER;
             }
         });
@@ -235,20 +235,8 @@ public class DefaultPeripheralMessage<P extends PeripheralChannel<? super P, ? s
 
     protected ByteBuffer appendBuffer(ByteBuffer dest, byte[] value) {
         if (!template) {
-            dest = getSizedBuffer(dest, peripheral.getWidth().byteSize() * value.length);
-            for (int i : value) {
-                switch (peripheral.getWidth()) {
-                    case WIDTH8:
-                        dest.put((byte) i);
-                        break;
-                    case WIDTH16:
-                        dest.putChar((char) i);
-                        break;
-                    case WIDTH32:
-                        dest.putInt(i);
-                        break;
-                }
-            }
+            dest = getSizedBuffer(dest, value.length);
+            dest.put(value);
         }
         return dest;
     }

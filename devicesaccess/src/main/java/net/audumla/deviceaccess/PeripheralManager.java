@@ -29,14 +29,14 @@ public class PeripheralManager {
     private static Collection<PeripheralProvider> providers = new ArrayList<>();
     private static int idCount = 0;
 
-    static class ReferencedPeripheralDescriptor<P extends Peripheral<? super P, ? super C>, C extends PeripheralConfig<? super P>> implements PeripheralDescriptor<P, C> {
+    static public class ReferencedPeripheralDescriptor<P extends Peripheral<? super P, ? super C>, C extends PeripheralConfig<? super P>> implements PeripheralDescriptor<P, C> {
 
         private C configuration;
         private int id;
         private String name;
         private String[] properties;
 
-        ReferencedPeripheralDescriptor(C configuration, int id, String name, String[] properties) {
+        public ReferencedPeripheralDescriptor(C configuration, int id, String name, String[] properties) {
             this.configuration = configuration;
             this.id = id;
             this.name = name;

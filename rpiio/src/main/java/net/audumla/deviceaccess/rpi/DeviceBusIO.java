@@ -24,16 +24,8 @@ public interface DeviceBusIO {
 
     int read(ByteBuffer dst, int offset, int size) throws IOException;
 
-    int read(int subAddress) throws IOException;
-
-    int read(int subAddress, ByteBuffer dst, int offset, int size) throws IOException;
-
     int write(int value) throws IOException;
 
     int write(ByteBuffer dst, int offset, int size) throws IOException;
-
-    int write(int subAddress, int value) throws IOException;
-
-    int write(int subAddress, ByteBuffer dst, int offset, int size) throws IOException;
 
 }

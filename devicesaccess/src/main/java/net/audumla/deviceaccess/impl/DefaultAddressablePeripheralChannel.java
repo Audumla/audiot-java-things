@@ -17,34 +17,19 @@ package net.audumla.deviceaccess.impl;
  */
 
 import net.audumla.deviceaccess.AddressablePeripheralChannel;
+import net.audumla.deviceaccess.PeripheralChannelMessage;
 import net.audumla.deviceaccess.PeripheralConfig;
 import net.audumla.deviceaccess.PeripheralDescriptor;
-import net.audumla.deviceaccess.PeripheralMessage;
 
-public abstract class DefaultAddressablePeripheralChannel<P extends AddressablePeripheralChannel<? super P, ? super C, ? super M>, C extends PeripheralConfig<? super P>, M extends PeripheralMessage<? super P, ? super C, ? super M>> extends DefaultPeripheralChannel<P,C,M> implements AddressablePeripheralChannel<P,C,M>   {
+public abstract class DefaultAddressablePeripheralChannel<P extends AddressablePeripheralChannel<? super P, ? super C>, C extends PeripheralConfig<? super P>> extends DefaultPeripheralChannel<P,C> implements AddressablePeripheralChannel<P,C>   {
 
     private Integer readAddress;
     private Integer writeAddress;
-    private Integer addressSize;
 
     protected DefaultAddressablePeripheralChannel(PeripheralDescriptor<P, C> descriptor) {
         super(descriptor);
     }
 
-    @Override
-    public void setReadAddress(Integer addr) {
-        this.readAddress = addr;
-    }
-
-    @Override
-    public void setWriteAddress(Integer addr) {
-        this.writeAddress = addr;
-    }
-
-    @Override
-    public void setAddressSize(Integer size) {
-        this.addressSize = size;
-    }
 
     @Override
     public Integer getReadAddress() {
@@ -56,8 +41,4 @@ public abstract class DefaultAddressablePeripheralChannel<P extends AddressableP
         return writeAddress;
     }
 
-    @Override
-    public Integer getAddressSize() {
-        return addressSize;
-    }
 }
