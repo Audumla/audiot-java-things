@@ -70,7 +70,8 @@ public class DefaultAddressablePeripheralMessage<P extends AddressablePeripheral
 
                 }
             });
-        } return (M) this;
+        }
+        return (M) this;
     }
 
     @Override
@@ -95,19 +96,30 @@ public class DefaultAddressablePeripheralMessage<P extends AddressablePeripheral
                     return peripheral.write(address, txBuffer, txBuffer.position(), byteBuffer.remaining());
                 }
             });
-        } return (M) this;
+        }
+        return (M) this;
     }
 
     @Override
     public M appendWrite(int address, byte... value) throws IOException, ClosedPeripheralException {
         if (value.length > 0) {
             defaultTxBuffer = appendBuffer(defaultTxBuffer, value);
-            contextStack.add(new MessageContextModifier<P>() {
-                @Override
-                public int apply(ByteBuffer txBuffer, ByteBuffer rxBuffer, P peripheral) throws IOException {
-                    return peripheral.write(address, txBuffer, txBuffer.position(), value.length);
-                }
-            });
+            if (value.length == 1) {
+                contextStack.add(new MessageContextModifier<P>() {
+                    @Override
+                    public int apply(ByteBuffer txBuffer, ByteBuffer rxBuffer, P peripheral) throws IOException {
+                        return peripheral.write(address, txBuffer.get());
+                    }
+                });
+
+            } else {
+                contextStack.add(new MessageContextModifier<P>() {
+                    @Override
+                    public int apply(ByteBuffer txBuffer, ByteBuffer rxBuffer, P peripheral) throws IOException {
+                        return peripheral.write(address, txBuffer, txBuffer.position(), value.length);
+                    }
+                });
+            }
         }
         return (M) this;
     }

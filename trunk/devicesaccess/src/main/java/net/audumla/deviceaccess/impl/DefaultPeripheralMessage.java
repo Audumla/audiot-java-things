@@ -75,13 +75,23 @@ public class DefaultPeripheralMessage<P extends PeripheralChannel<? super P, ? s
     public M appendWrite(byte... value) throws IOException, ClosedPeripheralException {
         if (value.length > 0) {
             defaultTxBuffer = appendBuffer(defaultTxBuffer, value);
-            contextStack.add(new MessageContextModifier<P>() {
-                @Override
-                public int apply(ByteBuffer txBuffer, ByteBuffer rxBuffer, P peripheral) throws IOException {
-                    return peripheral.write(txBuffer, txBuffer.position(), value.length);
+            if (value.length == 1) {
+                contextStack.add(new MessageContextModifier<P>() {
+                    @Override
+                    public int apply(ByteBuffer txBuffer, ByteBuffer rxBuffer, P peripheral) throws IOException {
+                        return peripheral.write(txBuffer.get());
+                    }
+                });
 
-                }
-            });
+            } else {
+                contextStack.add(new MessageContextModifier<P>() {
+                    @Override
+                    public int apply(ByteBuffer txBuffer, ByteBuffer rxBuffer, P peripheral) throws IOException {
+                        return peripheral.write(txBuffer, txBuffer.position(), value.length);
+
+                    }
+                });
+            }
         }
         return (M) this;
     }
@@ -139,7 +149,7 @@ public class DefaultPeripheralMessage<P extends PeripheralChannel<? super P, ? s
     }
 
     @Override
-    public M appendPeripheral(P newPeripheral) {
+    public M setPeripheral(P newPeripheral) {
         contextStack.add(new MessageContextModifier<P>() {
             @Override
             public int apply(ByteBuffer txBuffer, ByteBuffer rxBuffer, P peripheral) throws IOException {
@@ -151,7 +161,7 @@ public class DefaultPeripheralMessage<P extends PeripheralChannel<? super P, ? s
     }
 
     @Override
-    public M appendWait(Duration duration) {
+    public M wait(Duration duration) {
         synchronized (Thread.currentThread()) {
             try {
                 Thread.sleep(duration.getSeconds() * 1000, duration.getNano());
@@ -196,7 +206,8 @@ public class DefaultPeripheralMessage<P extends PeripheralChannel<? super P, ? s
             }
         } finally {
             peripheral = tperipheral;
-        } return readCount.toArray(new Integer[readCount.size()]);
+        }
+        return readCount.toArray(new Integer[readCount.size()]);
     }
 
     protected ByteBuffer appendBuffer(ByteBuffer dest, ByteBuffer src, int offset, int size) {
