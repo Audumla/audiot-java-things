@@ -18,7 +18,7 @@ package net.audumla.deviceaccess;
 
 public interface AddressablePeripheralMessage<P extends AddressablePeripheralChannel<? super P, ? super C, ? super M>, C extends PeripheralConfig<? super P>, M extends AddressablePeripheralMessage<? super P, ? super C, ? super M>> extends PeripheralMessage<P, C, M> {
 
-    M appendWriteAddress(int address);
+    M appendWriteAddress(Integer address);
 
     M appendRead(int address, java.nio.ByteBuffer byteBuffer) throws ClosedPeripheralException;
 
@@ -30,5 +30,5 @@ public interface AddressablePeripheralMessage<P extends AddressablePeripheralCha
 
     M appendSizedAddressRead(int address, int size);
 
-    M appendReadAddress(int address);
+    M appendReadAddress(Integer address);
 }

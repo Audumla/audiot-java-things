@@ -29,6 +29,12 @@ public class DefaultAddressablePeripheralMessage<P extends AddressablePeripheral
     protected Integer writeAddress;
     protected Integer readAddress;
 
+    public DefaultAddressablePeripheralMessage(P peripheral, boolean template, Integer writeAddress, Integer readAddress) {
+        super(peripheral, template);
+        this.writeAddress = writeAddress;
+        this.readAddress = readAddress;
+    }
+
     public DefaultAddressablePeripheralMessage(boolean tempalte) {
         super(tempalte);
     }
@@ -174,7 +180,7 @@ public class DefaultAddressablePeripheralMessage<P extends AddressablePeripheral
 
 
     @Override
-    public M appendWriteAddress(int address) {
+    public M appendWriteAddress(Integer address) {
         contextStack.add(new MessageContextModifier<P>() {
             @Override
             public int apply(ByteBuffer txBuffer, ByteBuffer rxBuffer, P peripheral) throws IOException {
@@ -186,7 +192,7 @@ public class DefaultAddressablePeripheralMessage<P extends AddressablePeripheral
     }
 
     @Override
-    public M appendReadAddress(int address) {
+    public M appendReadAddress(Integer address) {
         contextStack.add(new MessageContextModifier<P>() {
             @Override
             public int apply(ByteBuffer txBuffer, ByteBuffer rxBuffer, P peripheral) throws IOException {

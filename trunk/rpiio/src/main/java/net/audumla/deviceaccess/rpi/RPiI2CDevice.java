@@ -92,7 +92,7 @@ public class RPiI2CDevice extends DefaultAddressablePeripheralChannel<I2CDevice,
 
     @Override
     public I2CMessage createMessage() {
-        return new I2CMessage(false);
+        return new I2CMessage();
     }
 
     @Override
