@@ -40,7 +40,7 @@ public class RPiI2CPeripheralProvider implements PeripheralProvider<I2CDevice, I
     public I2CDevice open(I2CDeviceConfig config, String[] properties, int mode) throws PeripheralNotFoundException, UnavailablePeripheralException, PeripheralConfigInvalidException, UnsupportedAccessModeException, IOException {
 
         String deviceName = config.getDeviceName() == null ? DEVICE_FILE_PREFIX + (config.getDeviceNumber() == PeripheralConfig.DEFAULT ? 1 : config.getDeviceNumber()) : config.getDeviceName();
-        int deviceNumber = Integer.parseInt(deviceName.substring(0, DEVICE_FILE_PREFIX.length()));
+        int deviceNumber = Integer.parseInt(deviceName.substring(DEVICE_FILE_PREFIX.length()));
         String name = "I2C Device [Bus:" + String.valueOf(deviceNumber) + "][Addr:0x" + String.valueOf(Integer.toHexString(config.getAddress())) + "]";
 
         synchronized (deviceHandleMap) {
