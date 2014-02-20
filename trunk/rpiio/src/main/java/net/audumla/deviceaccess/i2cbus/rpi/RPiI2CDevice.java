@@ -37,14 +37,13 @@ public class RPiI2CDevice implements I2CDevice {
     private Queue<Integer> readAddressQueue = new LinkedList<>();
     private Queue<Integer> writeAddressQueue = new LinkedList<>();
     private Integer mask;
-    private ChannelWidth width = ChannelWidth.WIDTH8;
-    private Integer addressSize ;
     private PeripheralDescriptor<I2CDevice, I2CDeviceConfig> descriptor;
 
 
     public RPiI2CDevice(int handle, PeripheralDescriptor<I2CDevice, I2CDeviceConfig> descriptor) {
         this.handle = handle;
         this.descriptor = descriptor;
+        setActiveIO();
     }
 
     @Override
@@ -159,6 +158,7 @@ public class RPiI2CDevice implements I2CDevice {
         readAddressQueue.add(readAddress);
         writeAddressQueue.poll();
         writeAddressQueue.add(writeAddress);
+        setActiveIO();
     }
 
     @Override
@@ -174,6 +174,7 @@ public class RPiI2CDevice implements I2CDevice {
     @Override
     public void setMask(Integer mask) {
         this.mask = mask;
+        setActiveIO();
     }
 
     @Override
