@@ -114,7 +114,7 @@ JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative
  */
 JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative_write__IIIII_3B_3B(JNIEnv *env, jclass clazz, jint fd, jint localAddress, jint offset, jint width, jint writeCount, jbyteArray data, jbyteArray mask) {
 
-    ssize_t returnValue;
+    ssize_t returnValue = 1;
     uint8_t dataBlock[width+1];
     dataBlock[0] = localAddress;
     int i;
@@ -136,7 +136,7 @@ JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative
     }
     else {
         for (i = 0; i < writeCount; ++i) {
-            memcpy(&dataBlock+1,body[(i*width)+(offset*width)],width);
+            memcpy(&dataBlock+1,body+(i*width)+(offset*width),width);
             returnValue = write(fd,&dataBlock,width+1);
         }
     }
