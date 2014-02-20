@@ -121,10 +121,10 @@ JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative
     int ni;
 
     jbyte *body = (*env)->GetPrimitiveArrayCritical(env, data, 0);
-    if (mask != null) {
+    if (mask != NULL) {
         jbyte *maskBody = (*env)->GetPrimitiveArrayCritical(env, mask, 0);
         uint8_t currentData[width];
-        if ((returnValue = write(fd,localAddress,1)) && (returnValue = read(fd,currentData,width))) {
+        if ((returnValue = write(fd,&localAddress,1)) && (returnValue = read(fd,&currentData,width))) {
             for (i = 0; i < writeCount; ++i) {
                 for (ni = 0; ni < width; ++ni) {
                     dataBlock[ni+1] = (body[(i*width)+ni+(offset*width)] & maskBody[ni]) | (currentData[ni] & ~maskBody[ni]);
@@ -136,8 +136,8 @@ JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative
     }
     else {
         for (i = 0; i < writeCount; ++i) {
-            memcpy(dataBlock+1,body[(i*width)+(offset*width)],width);
-            returnValue = write(fd,dataBlock,width+1);
+            memcpy(&dataBlock+1,body[(i*width)+(offset*width)],width);
+            returnValue = write(fd,&dataBlock,width+1);
         }
     }
     (*env)->ReleasePrimitiveArrayCritical(env, data, body, 0);
