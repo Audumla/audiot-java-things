@@ -65,7 +65,7 @@ public class LibraryLoader {
             loadedLibraries.add(libraryName);
 
             try {
-                // attempt to load the native library from the system classpath loader
+                // attempt to load the jni library from the system classpath loader
                 System.loadLibrary(libraryName);
                 logger.debug("Library [" + libraryName + "] loaded from default System.loadLibrary");
             } catch (UnsatisfiedLinkError e) {
@@ -92,18 +92,18 @@ public class LibraryLoader {
 
                 // first attempt to determine if we are running on a hard float (armhf) based system
                 if (armhf_force) {
-                    // attempt to get the native library from the JAR file in the 'lib/hard-float' directory
+                    // attempt to get the jni library from the JAR file in the 'lib/hard-float' directory
                     resourceUrl = LibraryLoader.class.getResource("/lib/hard-float/" + fileName);
                 } else if (armel_force) {
-                    // attempt to get the native library from the JAR file in the 'lib/soft-float' directory
+                    // attempt to get the jni library from the JAR file in the 'lib/soft-float' directory
                     resourceUrl = LibraryLoader.class.getResource("/lib/soft-float/" + fileName);
                 } else {
 //                    logger.trace("AUTO-DETECTED HARD-FLOAT ABI" + SystemInfo.isHardFloatAbi());
 //                    if (SystemInfo.isHardFloatAbi()) {
-//                        // attempt to get the native library from the JAR file in the 'lib/hard-float' directory
+//                        // attempt to get the jni library from the JAR file in the 'lib/hard-float' directory
 //                        resourceUrl = NativeLibraryLoader.class.getResource("/lib/hard-float/" + fileName);
 //                    } else {
-//                        // attempt to get the native library from the JAR file in the 'lib/soft-float' directory
+//                        // attempt to get the jni library from the JAR file in the 'lib/soft-float' directory
 //                        resourceUrl = NativeLibraryLoader.class.getResource("/lib/soft-float/" + fileName);
 //                    }
                 }
@@ -117,7 +117,7 @@ public class LibraryLoader {
                     // ATTEMPT LOAD BASED USING HARD-FLOAT (armhf)
                     // ---------------------------------------------
 
-                    // attempt to get the native library from the JAR file in the 'lib/hard-float' directory
+                    // attempt to get the jni library from the JAR file in the 'lib/hard-float' directory
                     URL resourceUrlHardFloat = LibraryLoader.class.getResource("/lib/hard-float/" + fileName);
 
                     try {
@@ -133,7 +133,7 @@ public class LibraryLoader {
                         // ATTEMPT LOAD BASED USING SOFT-FLOAT (armel)
                         // ---------------------------------------------
 
-                        // attempt to get the native library from the JAR file in the 'lib/soft-float' directory
+                        // attempt to get the jni library from the JAR file in the 'lib/soft-float' directory
                         URL resourceUrlSoftFloat = LibraryLoader.class.getResource("/lib/soft-float/" + fileName);
 
                         try {
@@ -149,11 +149,11 @@ public class LibraryLoader {
                             // library load failed, remove from tracking collection
                             loadedLibraries.remove(libraryName);
 
-                            logger.error("ERROR:  The native library ["
+                            logger.error("ERROR:  The jni library ["
                                     + libraryName
                                     + " : "
                                     + fileName
-                                    + "] could not be found in the JVM library path nor could it be loaded from the embedded JAR resource file; you may need to explicitly define the library path '-Djava.library.path' where this native library can be found.");
+                                    + "] could not be found in the JVM library path nor could it be loaded from the embedded JAR resource file; you may need to explicitly define the library path '-Djava.library.path' where this jni library can be found.");
                         }
                     } catch (Exception ex_hard_float) {
                         // debug
@@ -162,11 +162,11 @@ public class LibraryLoader {
                         // library load failed, remove from tracking collection
                         loadedLibraries.remove(libraryName);
 
-                        logger.error("ERROR:  The native library ["
+                        logger.error("ERROR:  The jni library ["
                                 + libraryName
                                 + " : "
                                 + fileName
-                                + "] could not be found in the JVM library path nor could it be loaded from the embedded JAR resource file; you may need to explicitly define the library path '-Djava.library.path' where this native library can be found.");
+                                + "] could not be found in the JVM library path nor could it be loaded from the embedded JAR resource file; you may need to explicitly define the library path '-Djava.library.path' where this jni library can be found.");
                     }
                 }
             }
@@ -193,7 +193,7 @@ public class LibraryLoader {
             tempDirectory = new File("");
         }
 
-        // create a temporary file to copy the native library content to
+        // create a temporary file to copy the jni library content to
         File tempFile = new File(tempDirectory.getAbsolutePath() + "/" + fileName);
 
         // make sure that this temporary file does not exist; if it does then delete it

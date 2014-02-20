@@ -3,7 +3,7 @@
 #	audumlaRPi - Java (JNI) library wrapper for Raspberry Pi io interfaces
 #
 
-TARGET=audumlaRPi.so
+TARGET=audumlaRPiI2C.so
 
 #DEBUG	= -g -O0
 DEBUG	= -O3
@@ -11,14 +11,12 @@ CC	= gcc
 INCLUDE	= -I. -I/$(JAVA_HOME)/include -I/usr/local/include -I. -I/$(JAVA_HOME)/include/linux -I/usr/local/include/linux
 CFLAGS	= $(DEBUG) -Wall $(INCLUDE) -Winline -pipe $(LIBS) 
 
-# LIBS    = -L/usr/local/lib /usr/local/lib/libwiringPi.a
-
 # Should not alter anything below this line
 ###############################################################################
 
-SRC	=   net_audumla_devices_io_i2c_jni_rpi_I2C.c
+SRC	=   net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative.c
 
-OBJ	=   net_audumla_devices_io_i2c_jni_rpi_I2C.o
+OBJ	=   net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative.o
 
 all:		$(TARGET)
 
@@ -54,4 +52,4 @@ uninstall:
 
 
 # DO NOT DELETE
-net_audumla_devices_io_i2c_jni_rpi_I2C.o: net_audumla_devices_io_i2c_jni_rpi_I2C.h
+net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative.o: net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative.h

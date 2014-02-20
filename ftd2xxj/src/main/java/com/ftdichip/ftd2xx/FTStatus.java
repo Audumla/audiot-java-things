@@ -143,7 +143,7 @@ public enum FTStatus {
 
 	/**
 	 * Throws the exception related to a particular status value. This method is
-	 * used by the native code to throw localized exceptions.
+	 * used by the jni code to throw localized exceptions.
 	 * 
 	 * @param statusValue
 	 *            the status value for which to throw the exception.

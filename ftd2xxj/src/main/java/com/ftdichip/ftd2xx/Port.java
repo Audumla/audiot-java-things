@@ -37,7 +37,7 @@ public class Port {
 	 * Resets a device`s port.
 	 * 
 	 * @param handle
-	 *            the native handle of the device.
+	 *            the jni handle of the device.
 	 * @throws FTD2xxException
 	 *             if the port can not be reset.
 	 */
@@ -53,7 +53,7 @@ public class Port {
 	 */
 	public void setBaudRate(long baudRate) throws FTD2xxException {
 
-		// check the upper bound because the native API expects 32 bit values.
+		// check the upper bound because the jni API expects 32 bit values.
 		if (baudRate > 0xFFFFFFFFL)
 			throw new IllegalArgumentException(Localizer.getLocalizedMessage(
 					Port.class, "error.invalidBaudRate", baudRate));
@@ -87,7 +87,7 @@ public class Port {
 	 */
 	public void setDivisor(int divisor) throws FTD2xxException {
 
-		// check the upper bound because the native API expects 16 bit values.
+		// check the upper bound because the jni API expects 16 bit values.
 		if (divisor < 0 || divisor > 0xFFFF)
 			throw new IllegalArgumentException(Localizer.getLocalizedMessage(
 					Port.class, "error.invalidDivisor", divisor));
@@ -99,7 +99,7 @@ public class Port {
 	 * Sets the divisor of a device`s port used for non-standard baud rates.
 	 * 
 	 * @param handle
-	 *            the native handle of the device.
+	 *            the jni handle of the device.
 	 * @param divisor
 	 *            the divisor.
 	 * @throws FTD2xxException
@@ -131,7 +131,7 @@ public class Port {
 	 * Sets the data characteristics for a particular device`s port.
 	 * 
 	 * @param handle
-	 *            the native handle of the device.
+	 *            the jni handle of the device.
 	 * @param dataBits
 	 *            the number of data bits used.
 	 * @param stopBits
@@ -197,7 +197,7 @@ public class Port {
 	 * Sets the flow control mode of a particular device`s port.
 	 * 
 	 * @param handle
-	 *            the native handle of the device.
+	 *            the jni handle of the device.
 	 * @param flowControl
 	 *            the new flow control mode.
 	 * @param xon
@@ -228,7 +228,7 @@ public class Port {
 	 * Sets or clears the <i>Data Terminal Ready </i> signal of a device`s port.
 	 * 
 	 * @param handle
-	 *            the native handle of the device.
+	 *            the jni handle of the device.
 	 * @param value
 	 *            if {@code true}sets the signal, otherwise the it will be
 	 *            cleared.
@@ -257,7 +257,7 @@ public class Port {
 	 * device`s port.
 	 * 
 	 * @param handle
-	 *            the native handle of the device.
+	 *            the jni handle of the device.
 	 * @param value
 	 *            if {@code true}sets the signal, otherwise the it will be
 	 *            cleared.
@@ -285,7 +285,7 @@ public class Port {
 	 * Sets the <i>BREAK </i> condition for a particular device to on/off.
 	 * 
 	 * @param handle
-	 *            the native handle of the device.
+	 *            the jni handle of the device.
 	 * @param value
 	 *            if {@code true}the <i>BREAK </i> condition is set to ON,
 	 *            otherwise to OFF.

@@ -29,7 +29,7 @@ import org.apache.log4j.Logger;
  * </pre>
  * 
  * <br>
- * <b>Compatibility with the native ftd2xx-API: </b> <br>
+ * <b>Compatibility with the jni ftd2xx-API: </b> <br>
  * <ul>
  * <li>The function {@code FT_SetChars(...)}is not supported. It does not fit
  * into the current design.</li>
@@ -57,7 +57,7 @@ public class Device {
 	private long resetPipeRetryCount = 50;
 
 	/**
-	 * The handle to access the native API.
+	 * The handle to access the jni API.
 	 */
 	private long handle = -1;
 
@@ -79,7 +79,7 @@ public class Device {
 	 * @param locationID
 	 *            the device`s location within the USB tree.
 	 * @param deviceType
-	 *            the native device type code.
+	 *            the jni device type code.
 	 * @throws FTD2xxException
 	 *             if the device can not be accessed.
 	 */
@@ -169,7 +169,7 @@ public class Device {
 	 * 
 	 * @param locationID
 	 *            the device`s location within the USB tree.
-	 * @return the native handle of the opened device.
+	 * @return the jni handle of the opened device.
 	 * @throws FTD2xxException
 	 *             if the device can not be opened.
 	 */
@@ -194,7 +194,7 @@ public class Device {
 	 * Closes a device.
 	 * 
 	 * @param handle
-	 *            the native handle of the device to close.
+	 *            the jni handle of the device to close.
 	 * @throws FTD2xxException
 	 *             if the device can not be closed.
 	 */
@@ -358,7 +358,7 @@ public class Device {
 	 * device.
 	 * 
 	 * @param handle
-	 *            the native handle of the device.
+	 *            the jni handle of the device.
 	 * @param readTimeout
 	 *            the new read timeout value in milliseconds.
 	 * @param writeTimeout
@@ -388,7 +388,7 @@ public class Device {
 	 * device.
 	 * 
 	 * @param handle
-	 *            the native handle of the device.
+	 *            the jni handle of the device.
 	 * @return the number of characters in the receive queue.
 	 * @throws FTD2xxException
 	 *             if the device can not be accessed.
@@ -415,7 +415,7 @@ public class Device {
 	 * device.
 	 * 
 	 * @param handle
-	 *            the native handle of the device.
+	 *            the jni handle of the device.
 	 * @return the number of characters in the transmit queue.
 	 * @throws FTD2xxException
 	 *             if the device can not be accessed.
@@ -464,7 +464,7 @@ public class Device {
 	 * Sets the new resetPipeRetryCount of a device.
 	 * 
 	 * @param handle
-	 *            the native handle of the device.
+	 *            the jni handle of the device.
 	 * @param count
 	 *            the new value.
 	 * @throws FTD2xxException
@@ -491,7 +491,7 @@ public class Device {
 	 * Retrieves the current modem status of a device.
 	 * 
 	 * @param handle
-	 *            the native handle of the device.
+	 *            the jni handle of the device.
 	 * @return the status.
 	 * @throws FTD2xxException
 	 *             if the status can not be retrieved.
@@ -521,7 +521,7 @@ public class Device {
 	 * <b>Note: </b> this method is only valid for FT232BM and FT245BM devices.
 	 * 
 	 * @param handle
-	 *            the native handle of the device for which to retrieve the
+	 *            the jni handle of the device for which to retrieve the
 	 *            timer value.
 	 * @return the latency timer value.
 	 * @throws FTD2xxException
@@ -553,7 +553,7 @@ public class Device {
 	 * Sets the new latency timer value of a particular device.
 	 * 
 	 * @param handle
-	 *            the native handle of the device.
+	 *            the jni handle of the device.
 	 * @param value
 	 *            the new value in milliseconds. The value range is 1 - 255.
 	 * @throws FTD2xxException
@@ -580,7 +580,7 @@ public class Device {
 	 * Retrieves the current value of the bit bang mode of a particular device.
 	 * 
 	 * @param handle
-	 *            the native handle of the device.
+	 *            the jni handle of the device.
 	 * @return the mode value.
 	 * @throws FTD2xxException
 	 *             if the mode can not be retrieved.
@@ -626,7 +626,7 @@ public class Device {
 	 * Sets the bit bang mode value of a particular device.
 	 * 
 	 * @param handle
-	 *            the native handle of the device.
+	 *            the jni handle of the device.
 	 * @param bitMask
 	 *            8 bit mask to specify which pin shall serve as an input (0)
 	 *            and which one shall be an output pin (1).
@@ -668,7 +668,7 @@ public class Device {
 	 * Sets the USB transfer sizes of a particular device.
 	 * 
 	 * @param handle
-	 *            the native handle of the device.
+	 *            the jni handle of the device.
 	 * @param rxBufferSize
 	 *            the receive buffer size.
 	 * @param txBufferSize
@@ -782,7 +782,7 @@ public class Device {
 	 * stream was detected.
 	 * 
 	 * @param handle
-	 *            the native device handle.
+	 *            the jni device handle.
 	 * @param buffer
 	 *            the buffer to store the data in.
 	 * @param offset
@@ -860,7 +860,7 @@ public class Device {
 	 * Writes data to a particular device`s transmit queue.
 	 * 
 	 * @param handle
-	 *            the device`s native handle.
+	 *            the device`s jni handle.
 	 * @param buffer
 	 *            the buffer that stores the data to write.
 	 * @param offset

@@ -110,9 +110,7 @@ public class RPiI2cTest {
             I2CDevice d = createI2CDevice();
             int repeat = 20;
             logger.debug("Speed test 20ms");
-            wait(20);
             d.write(0xff);
-            wait(20);
             power.setState(ActivatorState.ACTIVATED);
             byte[] bytes = new byte[8 * repeat];
             for (int c = 0; c < repeat; ++c) {
@@ -125,9 +123,7 @@ public class RPiI2cTest {
                 }
             }
             logger.debug("Speed test 5ms");
-            wait(1000);
             d.write((byte) 0xff);
-            wait(20);
             for (int c = 0; c < repeat; ++c) {
                 byte val = (byte) 0x01;
                 for (int i = 0; i < 8; ++i) {
@@ -137,9 +133,7 @@ public class RPiI2cTest {
                 }
             }
 
-            wait(1000);
             d.write((byte) 0xff);
-            wait(20);
             logger.debug("Speed test 0ms");
             ByteBuffer b = ByteBuffer.wrap(bytes);
             for (int i = 0; i < repeat; ++i) {
