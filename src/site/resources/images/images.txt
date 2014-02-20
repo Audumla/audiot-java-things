@@ -1,1 +1,0 @@
-http://beheer.hetesc.nl/support/get.file.php?file_id=67&height=100&width=100&&quality=100
