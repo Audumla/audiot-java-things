@@ -80,14 +80,14 @@ JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative
         if ((returnValue = read(fd,&currentData,1))) {
             uint8_t maskedData[writeCount];
             int i;
-            for (i =0; i < writeCount; ++i) {
-                maskedData[i] = (data[i+offset] & mask) | (currentData & ~mask);
+            for (i = 0; i < writeCount; ++i) {
+                maskedData[i] = (body[i+offset] & mask) | (currentData & ~mask);
             }
             returnValue = write(fd,maskedData,writeCount);
         }
     }
     else {
-        returnValue = write(fd,data+offset,writeCount);
+        returnValue = write(fd,body+offset,writeCount);
     }
     (*env)->ReleasePrimitiveArrayCritical(env, data, body, 0);
     return returnValue;
