@@ -26,7 +26,6 @@ import org.slf4j.LoggerFactory;
 public class RPiI2cTest {
     private static final Logger logger = LoggerFactory.getLogger(RPiI2cTest.class);
 
-    @Test
     public I2CDevice createI2CDevice() throws Exception {
         I2CDeviceConfig c = new I2CDeviceConfig(1, 0x21);
         RPiI2CPeripheralProvider provider = new RPiI2CPeripheralProvider();
