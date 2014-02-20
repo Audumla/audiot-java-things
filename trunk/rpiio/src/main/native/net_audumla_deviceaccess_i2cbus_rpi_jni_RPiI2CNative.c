@@ -74,19 +74,20 @@ JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative
 JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative_write__III_3BB
   (JNIEnv *env, jclass clazz, jint fd, jint offset, jint writeCount, jbyteArray data, jbyte mask) {
     ssize_t returnValue;
-    jbyte *body = (*env)->GetPrimitiveArrayCritical(env, bytes, 0);
+    jbyte *body = (*env)->GetPrimitiveArrayCritical(env, data, 0);
     if (mask != 0xff) {
         uint8_t currentData;
         if (returnValue = read(fd,&currentData,1)) {
             uint8_t maskedData[writeCount];
-            for (int i =0; i < writeCount; ++i) maskedData[i] = (data[i+offset] & mask) | (currentData & ~mask);
+            int i;
+            for (i =0; i < writeCount; ++i) maskedData[i] = (data[i+offset] & mask) | (currentData & ~mask);
             returnValue = write(fd,maskedData,writeCount);
         }
     }
     else {
         returnValue = write(fd,data+offset,writeCount);
     }
-    (*env)->ReleasePrimitiveArrayCritical(env, bytes, body, 0);
+    (*env)->ReleasePrimitiveArrayCritical(env, data, body, 0);
     return returnValue;
 };
 
