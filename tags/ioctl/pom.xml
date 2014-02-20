@@ -1,0 +1,71 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<!-- MAVEN ARTIFACT INFORMATION -->
+	<artifactId>rpiio</artifactId>
+	<name>Raspberry Pi IO </name>
+	<description>Raspberry Pi JNI IOLibrary</description>
+	<parent>
+		<groupId>net.audumla</groupId>
+		<artifactId>core</artifactId>
+		<version>1.0-SNAPSHOT</version>
+	</parent>
+    <packaging>bundle</packaging>
+
+    <dependencies>
+        <dependency>
+            <groupId>net.audumla</groupId>
+            <artifactId>devices</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>net.audumla</groupId>
+            <artifactId>deviceaccess</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+    <build>
+        <resources>
+            <resource>
+                <directory>libraries</directory>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>2.4.0</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Bundle-NativeCode>lib/audumlaRPi.so ; osname=Linux; processor=ARM</Bundle-NativeCode>
+                    </instructions>
+                </configuration>
+            </plugin>
+
+            <!-- Generate .h header files for JNI wrapper -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>native-maven-plugin</artifactId>
+                <version>1.0-alpha-7</version>
+                <extensions>true</extensions>
+                <executions>
+                    <execution>
+                        <id>javah-generate</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>javah</goal>
+                        </goals>
+                        <configuration>
+                            <javahClassNames>
+                                <javahClassName>net.audumla.deviceaccess.i2cbus.rpi.jni.RPiI2CNative</javahClassName>
+                            </javahClassNames>
+                            <javahOutputDirectory>src/main/native</javahOutputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
