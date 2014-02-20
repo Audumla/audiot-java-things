@@ -277,7 +277,7 @@ public final class Service {
      * Starts the input task of a device.
      * 
      * @param handle
-     *            the native handle of the device for which to start it`s input
+     *            the jni handle of the device for which to start it`s input
      *            task.
      * @throws FTD2xxException
      *             if the input task can not be started (e.g. it is already
@@ -304,7 +304,7 @@ public final class Service {
      * Stops the input task of a device.
      * 
      * @param handle
-     *            the native handle of the device for which to stop it`s input
+     *            the jni handle of the device for which to stop it`s input
      *            task.
      * @throws FTD2xxException
      *             if the input task can not be stopped (e.g. it is already

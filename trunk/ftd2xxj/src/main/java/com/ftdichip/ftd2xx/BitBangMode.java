@@ -40,7 +40,7 @@ public enum BitBangMode {
 	FAST_OPTO_ISOLATED_SERIAL(0x10);
 
 	/**
-	 * Holds the native value of a particular {@code BitBangMode}.
+	 * Holds the jni value of a particular {@code BitBangMode}.
 	 */
 	public final int value;
 
@@ -50,10 +50,10 @@ public enum BitBangMode {
 	}
 
 	/**
-	 * Retrieves the {@code BitBangMode} by it`s native mode value.
+	 * Retrieves the {@code BitBangMode} by it`s jni mode value.
 	 * 
 	 * @param mode
-	 *            the native mode value.
+	 *            the jni mode value.
 	 * @return the enumeration constant representing the mode value.
 	 * @throws FTD2xxException
 	 *             if the mode value is unknown.

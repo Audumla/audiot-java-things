@@ -131,7 +131,7 @@ public class EEPROM {
 	 * Reads the User Area size of a particular device.
 	 * 
 	 * @param handle
-	 *            the device`s native handle.
+	 *            the device`s jni handle.
 	 * @return the size in bytes.
 	 * @throws FTD2xxException
 	 *             if the size can not be read.
@@ -159,7 +159,7 @@ public class EEPROM {
 	 * Reads the contents of the User Area of a particular device.
 	 * 
 	 * @param handle
-	 *            the native handle of the device.
+	 *            the jni handle of the device.
 	 * @param data
 	 *            the buffer to store the data in.
 	 * @return the number of bytes read.

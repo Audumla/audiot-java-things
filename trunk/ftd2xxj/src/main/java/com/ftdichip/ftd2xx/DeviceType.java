@@ -37,10 +37,10 @@ public enum DeviceType {
     FT_DEVICE_232R;
 
     /**
-     * Searches for constant representing a particular native device type code.
+     * Searches for constant representing a particular jni device type code.
      * 
      * @param deviceType
-     *            the native code to search for.
+     *            the jni code to search for.
      * @return the constant if one was found, {@code FT_DEVICE_UNKNOWN}
      *         otherwise.
      */

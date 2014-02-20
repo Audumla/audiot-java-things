@@ -59,7 +59,7 @@
                         </goals>
                         <configuration>
                             <javahClassNames>
-                                <javahClassName>net.audumla.devices.io.i2c.jni.rpi.I2C</javahClassName>
+                                <javahClassName>net.audumla.deviceaccess.i2cbus.rpi.jni.RPiI2CNative</javahClassName>
                             </javahClassNames>
                             <javahOutputDirectory>src/main/native</javahOutputDirectory>
                         </configuration>
