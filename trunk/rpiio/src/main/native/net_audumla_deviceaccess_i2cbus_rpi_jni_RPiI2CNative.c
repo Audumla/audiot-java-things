@@ -77,10 +77,12 @@ JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative
     jbyte *body = (*env)->GetPrimitiveArrayCritical(env, data, 0);
     if (mask != 0xff) {
         uint8_t currentData;
-        if (returnValue = read(fd,&currentData,1)) {
+        if ((returnValue = read(fd,&currentData,1))) {
             uint8_t maskedData[writeCount];
             int i;
-            for (i =0; i < writeCount; ++i) maskedData[i] = (data[i+offset] & mask) | (currentData & ~mask);
+            for (i =0; i < writeCount; ++i) {
+                maskedData[i] = (data[i+offset] & mask) | (currentData & ~mask);
+            }
             returnValue = write(fd,maskedData,writeCount);
         }
     }
