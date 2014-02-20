@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include <errno.h>
 #include <string.h>
+#include <fcntl.h>
 #include <sys/ioctl.h>
 #include "net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative.h"
 /*
