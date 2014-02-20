@@ -39,6 +39,14 @@ public class RPiActivatorTest {
     private static final Logger logger = LoggerFactory.getLogger(RPiActivatorTest.class);
 
     static RPIGPIOActivatorFactory rpi = new RPIGPIOActivatorFactory();
+    static {
+        try {
+            rpi.initialize();
+        } catch (Exception e) {
+            logger.error("Cannot initialize PI", e);
+        }
+    }
+
     static PCF8574GPIOActivatorFactory power5v;
 
     static {
@@ -55,13 +63,6 @@ public class RPiActivatorTest {
         }
     }
 
-    static {
-        try {
-            rpi.initialize();
-        } catch (Exception e) {
-            logger.error("Cannot initialize PI", e);
-        }
-    }
 
 
     Activator getPower(int pin1_5v, int pin2_5v, Activator pin3_33v) throws Exception {
