@@ -108,8 +108,8 @@ public class RPiI2cTest {
         synchronized (this) {
             Activator power = getPower(6, 7, rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO1));
             I2CDevice d = createI2CDevice();
-            int repeat = 10;
-            logger.debug("Speed test 5ms");
+            int repeat = 20;
+            logger.debug("Speed test 20ms");
             wait(20);
             d.write(0xff);
             wait(20);
@@ -120,11 +120,11 @@ public class RPiI2cTest {
                 for (int i = 0; i < 8; ++i) {
                     bytes[(c * 8) + i] = (byte) ~val;
                     d.write((byte) ~val);
-                    wait(5);
+                    wait(20);
                     val = (byte) (val << 1);
                 }
             }
-            logger.debug("Speed test 2ms");
+            logger.debug("Speed test 5ms");
             wait(1000);
             d.write((byte) 0xff);
             wait(20);
@@ -132,7 +132,7 @@ public class RPiI2cTest {
                 byte val = (byte) 0x01;
                 for (int i = 0; i < 8; ++i) {
                     d.write((byte) ~val);
-                    wait(2);
+                    wait(5);
                     val = (byte) (val << 1);
                 }
             }
@@ -142,7 +142,7 @@ public class RPiI2cTest {
             wait(20);
             logger.debug("Speed test 0ms");
             ByteBuffer b = ByteBuffer.wrap(bytes);
-            for (int i = 0; i < repeat*100; ++i) {
+            for (int i = 0; i < repeat; ++i) {
                 int v = d.write(b);
             }
             d.write((byte) 0xff);
