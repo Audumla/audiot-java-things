@@ -68,7 +68,7 @@ public class RPiI2CDevice implements I2CDevice {
         this.width = width;
     }
 
-    protected class I2CDirectChannel extends AbstractI2CChannel{
+    protected class I2CDirectChannel extends AbstractI2CChannel {
 
         @Override
         public int read() throws IOException {
@@ -119,8 +119,8 @@ public class RPiI2CDevice implements I2CDevice {
 
         protected ByteBuffer toByteBuffer(int value) {
             ByteBuffer result = ByteBuffer.allocate(getDeviceWidth());
-            for (int i = 0; i < getDeviceWidth(); ++ i) {
-                result.put(getDeviceWidth()-(i+1),(byte) (value >> i * 8));
+            for (int i = 0; i < getDeviceWidth(); ++i) {
+                result.put(getDeviceWidth() - (i + 1), (byte) (value >> i * 8));
             }
             return result;
         }
@@ -158,9 +158,9 @@ public class RPiI2CDevice implements I2CDevice {
         @Override
         public int read() throws IOException {
             if (mask == null) {
-                return I2C.readByte(handle,readSubAddress);
+                return I2C.readByte(handle, readSubAddress);
             } else {
-                return I2C.readByte(handle,readSubAddress) & mask[0];
+                return I2C.readByte(handle, readSubAddress) & mask[0];
             }
         }
 
@@ -199,13 +199,13 @@ public class RPiI2CDevice implements I2CDevice {
 
     }
 
-    protected class DirectChannel  extends AbstractI2CChannel {
+    protected class DirectChannel extends AbstractI2CChannel {
 
         @Override
         public int read() throws IOException {
             if (getDeviceWidth() > 1) {
                 ByteBuffer result = ByteBuffer.allocate(getDeviceWidth());
-                RPiI2CNative.read(handle, address, 0, getDeviceWidth(), 1, result.array(), mask);
+                RPiI2CNative.read(handle, address, 0, getDeviceWidth(), result.array(), mask == null ? (byte) 0xff : mask[0]);
                 return result.getInt();
             } else {
                 int value = RPiI2CNative.read(handle, address);
@@ -225,7 +225,7 @@ public class RPiI2CDevice implements I2CDevice {
         @Override
         public int read(ByteBuffer dst, int offset, int size) throws IOException {
             if (dst.hasArray()) {
-                return RPiI2CNative.read(handle, address, offset, getDeviceWidth(), size, dst.array(), mask);
+                return RPiI2CNative.read(handle, address, offset, getDeviceWidth() * size, dst.array(), mask == null ? (byte) 0xff : mask[0]);
             } else {
                 throw new IOException("Cannot operate on non array backed ByteBuffer");
             }
@@ -235,7 +235,7 @@ public class RPiI2CDevice implements I2CDevice {
         public int write(int value) throws IOException {
             if (getDeviceWidth() > 1) {
                 ByteBuffer bbValue = toByteBuffer(value);
-                return RPiI2CNative.write(handle,address,0,getDeviceWidth(),bbValue.array(), mask == null ? (byte) 0xff : mask[0]);
+                return RPiI2CNative.write(handle, address, 0, getDeviceWidth(), bbValue.array(), mask == null ? (byte) 0xff : mask[0]);
             } else {
                 return RPiI2CNative.write(handle, address, (byte) value, mask == null ? (byte) 0xff : mask[0]);
             }
@@ -249,7 +249,7 @@ public class RPiI2CDevice implements I2CDevice {
         @Override
         public int write(ByteBuffer dst, int offset, int size) throws IOException {
             if (dst.hasArray()) {
-                return RPiI2CNative.write(handle,address,0,size,dst.array(),mask == null ? (byte) 0xff : mask[0]);
+                return RPiI2CNative.write(handle, address, offset, size * getDeviceWidth(), dst.array(), mask == null ? (byte) 0xff : mask[0]);
             } else {
                 throw new IOException("Cannot operate on non array backed ByteBuffer");
             }
@@ -272,7 +272,7 @@ public class RPiI2CDevice implements I2CDevice {
         public int read() throws IOException {
             if (getDeviceWidth() > 1) {
                 ByteBuffer result = ByteBuffer.allocate(getDeviceWidth());
-                RPiI2CNative.read(handle, address, readSubAddress, 0, getDeviceWidth(), result.array(), mask);
+                RPiI2CNative.read(handle, address, readSubAddress, 0, getDeviceWidth(), 1, result.array(), mask);
                 return result.getInt();
             } else {
                 int value = RPiI2CNative.read(handle, address, readSubAddress);
@@ -292,7 +292,7 @@ public class RPiI2CDevice implements I2CDevice {
         @Override
         public int read(ByteBuffer dst, int offset, int size) throws IOException {
             if (dst.hasArray()) {
-                return RPiI2CNative.read(handle, address, readSubAddress, offset, size, dst.array(), mask);
+                return RPiI2CNative.read(handle, address, readSubAddress, offset, getDeviceWidth(), size, dst.array(), mask);
             } else {
                 throw new IOException("Cannot operate on non array backed ByteBuffer");
             }
@@ -316,7 +316,7 @@ public class RPiI2CDevice implements I2CDevice {
         @Override
         public int write(ByteBuffer dst, int offset, int size) throws IOException {
             if (dst.hasArray()) {
-                return RPiI2CNative.write(handle, address, writeSubAddress, 0, getDeviceWidth(), 1, dst.array(), mask);
+                return RPiI2CNative.write(handle, address, writeSubAddress, offset, getDeviceWidth(), size, dst.array(), mask);
             } else {
                 throw new IOException("Cannot operate on non array backed ByteBuffer");
             }

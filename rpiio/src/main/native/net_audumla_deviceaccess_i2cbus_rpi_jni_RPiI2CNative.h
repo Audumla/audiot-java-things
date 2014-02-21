@@ -74,18 +74,18 @@ JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative
 /*
  * Class:     net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative
  * Method:    read
- * Signature: (IIIII[B[B)I
+ * Signature: (IIII[BB)I
  */
-JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative_read__IIIII_3B_3B
-  (JNIEnv *, jclass, jint, jint, jint, jint, jint, jbyteArray, jbyteArray);
+JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative_read__IIII_3BB
+  (JNIEnv *, jclass, jint, jint, jint, jint, jbyteArray, jbyte);
 
 /*
  * Class:     net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative
  * Method:    read
- * Signature: (IIBII[BB)I
+ * Signature: (IIBIII[B[B)I
  */
-JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative_read__IIBII_3BB
-  (JNIEnv *, jclass, jint, jint, jbyte, jint, jint, jbyteArray, jbyte);
+JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative_read__IIBIII_3B_3B
+  (JNIEnv *, jclass, jint, jint, jbyte, jint, jint, jint, jbyteArray, jbyteArray);
 
 #ifdef __cplusplus
 }
