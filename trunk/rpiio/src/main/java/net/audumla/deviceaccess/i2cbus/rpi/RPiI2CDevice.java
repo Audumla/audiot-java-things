@@ -115,7 +115,7 @@ public class RPiI2CDevice implements I2CDevice {
 
         @Override
         public void setMask(int mask) {
-            ByteBuffer result = ByteBuffer.allocate(getDeviceWidth());
+            ByteBuffer result = ByteBuffer.allocate(4);
             result.putInt(mask);
             this.mask = result.array();
         }
