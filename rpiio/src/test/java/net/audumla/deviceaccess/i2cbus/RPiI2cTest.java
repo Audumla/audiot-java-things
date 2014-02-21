@@ -107,15 +107,20 @@ public class RPiI2cTest {
             PeripheralChannel d = createI2CDevice().getChannel();
             Activator power = getPower(6, 7, rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO1));
             power.setState(ActivatorState.ACTIVATED);
-            d.write(0xfe);
+            byte onval = (byte) 0xf0;
+            d.write(onval);
             d.setMask(0xf0);
-            for (int n = 0; n < 10; ++n) {
+            for (int n = 0; n < 4; ++n) {
                 byte val = (byte) 0x01;
                 for (int i = 0; i < 8; ++i) {
                     d.write((byte) ~val);
                     wait(500);
                     val = (byte) (val << 1);
                 }
+                d.removeMask();
+                val = (byte) (val << 1);
+                d.write(val);
+                d.setMask(0xf0);
             }
             power.setState(ActivatorState.DEACTIVATED);
         }
@@ -145,7 +150,7 @@ public class RPiI2cTest {
             logger.debug("Speed test 5ms");
             d.write((byte) 0xff);
             dev.setDeviceWidth(4);
-            for (int n = 0; i < 4; ++i) {
+            for (int n = 0; n < 4; ++n) {
                 for (int i = 0; i < bytes.length/4; ++i) {
                     int v = d.write(b.get(i));
                     wait(50);
