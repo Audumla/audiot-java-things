@@ -113,7 +113,7 @@ public class RPiI2cTest {
                 byte val = (byte) 0x01;
                 for (int i = 0; i < 8; ++i) {
                     d.write((byte) ~val);
-                    wait(200);
+                    wait(500);
                     val = (byte) (val << 1);
                 }
             }
