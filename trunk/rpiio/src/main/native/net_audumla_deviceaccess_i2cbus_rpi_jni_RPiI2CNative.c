@@ -132,7 +132,7 @@ JNIEXPORT jbyte JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNativ
 JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative_write__IIII_3BB(JNIEnv *env, jclass clazz, jint fd, jint devId, jint offset, jint writeCount, jbyteArray data, jbyte mask) {
     struct i2c_smbus_ioctl_data args ;
     jbyte *body = (*env)->GetPrimitiveArrayCritical(env, data, 0);
-
+    int i;
     args.size       = 1;
     if (mask != 0xFF) {
         uint8_t data;
@@ -162,10 +162,10 @@ JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative
 JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative_write__IIBIII_3B_3B(JNIEnv *env, jclass clazz, jint fd, jint devId, jbyte localAddress, jint offset, jint width, jint writeCount, jbyteArray data, jbyteArray mask) {
     struct i2c_smbus_ioctl_data args ;
     jbyte *body = (*env)->GetPrimitiveArrayCritical(env, data, 0);
-
+    int i;
     args.command = localAddress;
     args.size    = width+1;
-    if (mask != 0xFF) {
+    if (mask != NULL) {
         uint8_t dataBlock[width];
         jbyte *maskBody = (*env)->GetPrimitiveArrayCritical(env, mask, 0);
         uint8_t currentData[width];
@@ -174,6 +174,7 @@ JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative
         ioctl(fd, I2C_SMBUS, &args);
         args.data = &dataBlock;
         args.read_write = I2C_SMBUS_WRITE;
+        int ni;
         for (i = 0; i < writeCount; ++i) {
             for (ni = 0; ni < width; ++ni) {
                 dataBlock[ni] = (body[(i*width)+ni+(offset*width)] & maskBody[ni]) | (currentData[ni] & ~maskBody[ni]);
@@ -185,7 +186,7 @@ JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative
     else {
         args.read_write = I2C_SMBUS_WRITE;
         for (i = 0; i < writeCount; ++i) {
-            args.data = body + (i*width) + (offset*width)]
+            args.data = body + (i*width) + (offset*width);
             ioctl(fd, I2C_SMBUS, &args);
         }
     }
