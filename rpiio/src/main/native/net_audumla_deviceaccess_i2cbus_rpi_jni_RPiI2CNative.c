@@ -109,12 +109,12 @@ JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative
     if ((returnValue = ioctl (fd, I2C_SLAVE, devId))) {
         if (mask != 0xFF) {
             uint8_t currentData;
-            if ((returnValue = read(fd,currentData,1))) {
+            if ((returnValue = read(fd,&currentData,1))) {
                 value = (value & mask) | (currentData & ~mask);
             }
         }
         else {
-            returnValue = write(fd,value,1);
+            returnValue = write(fd,&value,1);
         }
     }
     return returnValue;
@@ -124,14 +124,14 @@ JNIEXPORT jbyte JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNativ
     ssize_t returnValue = 0;
     if ((returnValue = ioctl (fd, I2C_SLAVE, devId))) {
         uint8_t value;
-        if ((returnValue = read(fd,currentData,1))) {
+        if ((returnValue = read(fd,&value,1))) {
             return value;
         }
     }
     return returnValue;
 };
 
-JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative_write__IIIII_3BB(JNIEnv *env, jclass clazz, jint fd, jint devId, jint offset, jint width, jint writeCount, jbyteArray data, jbyte mask) {
+JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative_write__IIIII_3BB(JNIEnv *env, jclass clazz, jint fd, jint devId, jint offset, jint width, jint writeCount, jbyteArray data, jbyteArray mask) {
     ssize_t returnValue = 1;
     uint8_t dataBlock[width];
     jbyte *body = (*env)->GetPrimitiveArrayCritical(env, data, 0);
@@ -194,7 +194,7 @@ JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative
 };
 
 JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative_read__IIIII_3BB
-  (JNIEnv *env, jclass clazz, jint fd, jint devId, jint offset, jint width, jint readCount, jbyteArray data, jbyte mask) {
+  (JNIEnv *env, jclass clazz, jint fd, jint devId, jint offset, jint width, jint readCount, jbyteArray data, jbyteArray mask) {
   return 0;
 };
 
