@@ -107,7 +107,7 @@ public class RPiI2cTest {
             PeripheralChannel d = createI2CDevice().getChannel();
             Activator power = getPower(6, 7, rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO1));
             power.setState(ActivatorState.ACTIVATED);
-            d.write(0x01);
+            d.write(0xfe);
             d.setMask(0xf0);
             for (int n = 0; n < 20; ++n) {
                 byte val = (byte) 0x01;

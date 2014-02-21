@@ -49,12 +49,12 @@ public class RPiI2CDevice implements I2CDevice {
 
     @Override
     public PeripheralChannel getAddressableChannel(byte readSubAddress, byte writeSubAddress) {
-        return new I2CAddressedChannel(readSubAddress, writeSubAddress);
+        return new AddressedChannel(readSubAddress, writeSubAddress);
     }
 
     @Override
     public PeripheralChannel getChannel() {
-        return new I2CDirectChannel();
+        return new DirectChannel();
     }
 
     @Override
