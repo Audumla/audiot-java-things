@@ -24,199 +24,135 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.time.Duration;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
-public class DefaultPeripheralChannelMessage<P extends PeripheralChannel<? super P, ? super C>, C extends PeripheralConfig<? super P>, M extends PeripheralChannelMessage<? super P, ? super C, ? super M>> implements PeripheralChannelMessage<P, C, M> {
+public class DefaultPeripheralChannelMessage<P extends IOPeripheral<? super P, ? super C>, C extends PeripheralConfig<? super P>, M extends PeripheralChannelMessage<? super P, ? super C, ? super M>> implements PeripheralChannelMessage<P, C, M> {
     private static final Logger logger = LoggerFactory.getLogger(DefaultPeripheralChannelMessage.class);
 
     private static final int DEFAULT_BUFFER_SIZE = 1024;
 
-    protected P peripheral;
-    protected ByteBuffer defaultTxBuffer;
-    protected Collection<ByteBuffer> defaultRxBufferStack;
-    protected Queue<MessageContextModifier> contextStack = new LinkedList<>();
+    protected Collection<ByteBuffer> writeBuffers;
+    protected Collection<ByteBuffer> readBuffers;
+    protected Queue<MesssageChannelTrait> contextStack = new LinkedList<>();
     protected boolean template = false;
-
-    public DefaultPeripheralChannelMessage(P peripheral, boolean template) {
-        this.peripheral = peripheral;
-        this.template = template;
-        defaultRxBufferStack = new ArrayList<>();
-        if (!template) {
-            defaultTxBuffer = ByteBuffer.allocate(DEFAULT_BUFFER_SIZE);
-        }
-    }
 
     public DefaultPeripheralChannelMessage(boolean template) {
         this.template = template;
-        defaultRxBufferStack = new ArrayList<>();
-        if (!template) {
-            defaultTxBuffer = ByteBuffer.allocate(DEFAULT_BUFFER_SIZE);
-        }
-    }
-
-    @Override
-    public M appendRead(ByteBuffer byteBuffer) throws ClosedPeripheralException {
-        appendBuffer(defaultRxBufferStack, byteBuffer);
-        contextStack.add(new MessageContextModifier<P>() {
-            @Override
-            public int apply(ByteBuffer txBuffer, ByteBuffer rxBuffer, P peripheral) throws IOException {
-                return peripheral.read(rxBuffer, rxBuffer.position(), byteBuffer.remaining());
-            }
-        });
-        return (M) this;
-    }
-
-    @Override
-    public M appendWrite(ByteBuffer byteBuffer) throws IOException, ClosedPeripheralException {
-        if (byteBuffer.limit() > 0) {
-            defaultTxBuffer = appendBuffer(defaultTxBuffer, byteBuffer, 0, byteBuffer.limit());
-            contextStack.add(new MessageContextModifier<P>() {
-                @Override
-                public int apply(ByteBuffer txBuffer, ByteBuffer rxBuffer, P peripheral) throws IOException {
-                    return peripheral.write(txBuffer, txBuffer.position(), byteBuffer.limit());
-                }
-            });
-        }
-        return (M) this;
-    }
-
-
-    @Override
-    public M appendWrite(byte... value) throws IOException, ClosedPeripheralException {
-        if (value.length > 0) {
-            defaultTxBuffer = appendBuffer(defaultTxBuffer, value);
-            if (value.length == 1) {
-                contextStack.add(new MessageContextModifier<P>() {
-                    @Override
-                    public int apply(ByteBuffer txBuffer, ByteBuffer rxBuffer, P peripheral) throws IOException {
-                        return peripheral.write(txBuffer.get());
-                    }
-                });
-
-            } else {
-                contextStack.add(new MessageContextModifier<P>() {
-                    @Override
-                    public int apply(ByteBuffer txBuffer, ByteBuffer rxBuffer, P peripheral) throws IOException {
-                        return peripheral.write(txBuffer, txBuffer.position(), value.length);
-
-                    }
-                });
-            }
-        }
-        return (M) this;
-    }
-
-    @Override
-    public M appendSizedWrite(int size) {
-        if (size > 0) {
-            contextStack.add(new MessageContextModifier<P>() {
-                @Override
-                public int apply(ByteBuffer txBuffer, ByteBuffer rxBuffer, P peripheral) throws IOException {
-                    return peripheral.write(txBuffer, txBuffer.position(), size);
-                }
-            });
-        }
-        return (M) this;
-    }
-
-    @Override
-    public M appendSizedRead(int size) {
-        contextStack.add(new MessageContextModifier<P>() {
-            @Override
-            public int apply(ByteBuffer txBuffer, ByteBuffer rxBuffer, P peripheral) throws IOException {
-                return peripheral.read(rxBuffer, rxBuffer.position(), size);
-            }
-        });
-        return (M) this;
+        writeBuffers = new ArrayList<>();
+        readBuffers = new ArrayList<>();
     }
 
     @Override
     public int read(ByteBuffer dst) throws IOException {
-        Integer[] r = transfer(null, dst);
-        int size = 0;
-        for (Integer aR : r) {
-            size += aR;
-        }
-        return size;
+        Collection<MessageChannelResult> results = transfer(null, dst);
+        final AtomicInteger size = new AtomicInteger();
+        results.stream().filter(r -> r.getType().equals(MessageChannelResult.ResultType.READ)).forEach(r -> size.set(size.get() + r.getValue()));
+        return size.get();
     }
 
     @Override
     public int write(ByteBuffer src) throws IOException {
-        int pos = src.position();
-        transfer(src, null);
-        return src.position() - pos;
+        Collection<MessageChannelResult> results = transfer(src, null);
+        final AtomicInteger size = new AtomicInteger();
+        results.stream().filter(r -> r.getType().equals(MessageChannelResult.ResultType.WRITE)).forEach(r -> size.set(size.get() + r.getValue()));
+        return size.get();
     }
 
     @Override
     public boolean isOpen() {
-        return peripheral.isOpen();
+        return true;
     }
 
     @Override
     public void close() throws IOException {
-        defaultRxBufferStack = null;
-        defaultTxBuffer = null;
+        writeBuffers = null;
+        readBuffers = null;
     }
 
     @Override
-    public M setPeripheral(P newPeripheral) {
-        contextStack.add(new MessageContextModifier<P>() {
-            @Override
-            public int apply(ByteBuffer txBuffer, ByteBuffer rxBuffer, P peripheral) throws IOException {
-                DefaultPeripheralChannelMessage.this.peripheral = newPeripheral;
-                return MessageContextModifier.NO_TRANSFER;
-            }
-        });
+    public M appendRead(ReadablePeripheralChannel channel, ByteBuffer byteBuffer) throws IOException {
+        appendBuffer(readBuffers, byteBuffer);
+        return appendRead(channel, byteBuffer.remaining());
+    }
+
+    @Override
+    public M appendWrite(WritablePeripheralChannel channel, ByteBuffer byteBuffer) throws IOException {
+        appendBuffer(writeBuffers, byteBuffer);
+        return appendWrite(channel, byteBuffer.limit());
+    }
+
+    @Override
+    public M appendWrite(WritablePeripheralChannel channel, int size) throws IOException {
+        contextStack.add((txBuffer, rxBuffer) -> new MessageChannelResult(channel.write(txBuffer, 0, size), MessageChannelResult.ResultType.WRITE));
         return (M) this;
     }
 
     @Override
-    public M wait(Duration duration) {
-        synchronized (Thread.currentThread()) {
-            try {
-                Thread.sleep(duration.getSeconds() * 1000, duration.getNano());
-            } catch (InterruptedException e) {
-                logger.error("Unable to apply wait", e);
-            }
-        }
+    public M appendRead(ReadablePeripheralChannel channel, int size) throws IOException {
+        contextStack.add((txBuffer, rxBuffer) -> new MessageChannelResult(channel.read(rxBuffer, rxBuffer.position(), size), MessageChannelResult.ResultType.READ));
         return (M) this;
     }
 
     @Override
-    public Integer[] transfer() throws IOException, UnavailablePeripheralException, ClosedPeripheralException {
-        if (!template) {
-            // this will default to using the default tx and rx byte buffers
-            return transfer(null, null);
-        } else {
-            throw new PeripheralChannelMessageException();
-        }
+    public M appendWrite(WritablePeripheralChannel channel, byte... value) throws IOException {
+        return appendWrite(channel, ByteBuffer.wrap(value));
     }
 
     @Override
-    public Integer[] transfer(ByteBuffer txBuffer, ByteBuffer rxBuffer) throws IOException, UnavailablePeripheralException, ClosedPeripheralException {
-        P tperipheral = peripheral;
-        Collection<Integer> readCount = new ArrayList<>();
-        try {
-            Iterator<ByteBuffer> it = null;
-            rxBuffer = rxBuffer != null ? rxBuffer : (it = defaultRxBufferStack.iterator()).hasNext() ? (ByteBuffer) it.next().rewind() : ByteBuffer.allocate(DEFAULT_BUFFER_SIZE);
-            txBuffer = txBuffer != null ? txBuffer : defaultTxBuffer != null ? (ByteBuffer) defaultTxBuffer.rewind() : ByteBuffer.allocate(DEFAULT_BUFFER_SIZE);
-            for (MessageContextModifier c : contextStack) {
-                int pos = rxBuffer.position();
-                int bytes = c.apply(txBuffer, rxBuffer, peripheral);
-                if (rxBuffer != null && MessageContextModifier.NO_TRANSFER != bytes) {
-                    int posDiff = rxBuffer.position() - pos;
-                    if (posDiff > 0) {
-                        readCount.add(posDiff);
-                        if (it != null && it.hasNext()) {
-                            rxBuffer = it.next();
-                            rxBuffer.rewind();
+    public M appendWait(Duration duration) {
+        contextStack.add((txBuffer, rxBuffer) -> {
+                    synchronized (Thread.currentThread()) {
+                        try {
+                            Thread.sleep(duration.getSeconds() * 1000, duration.getNano());
+                        } catch (InterruptedException e) {
+                            return new MessageChannelResult(e);
                         }
                     }
+                    return new MessageChannelResult(MessageChannelResult.ResultType.NO_RESULT);
                 }
+        );
+        return (M) this;
+    }
+
+    @Override
+    public M appendTrait(MesssageChannelTrait trait) {
+        contextStack.add(trait);
+        return (M) this;
+    }
+
+    @Override
+    public Collection<MessageChannelResult> transfer() {
+        return transfer(null, null);
+    }
+
+    @Override
+    public Collection<MessageChannelResult> transfer(ByteBuffer txBuffer, ByteBuffer rxBuffer) {
+        Collection<MessageChannelResult> results = new ArrayList<>();
+        Iterator<ByteBuffer> writeIt = null;
+        Iterator<ByteBuffer> readIt = null;
+        rxBuffer = rxBuffer != null ? rxBuffer : (readIt = readBuffers.iterator()).hasNext() ? (ByteBuffer) readIt.next().rewind() : ByteBuffer.allocate(DEFAULT_BUFFER_SIZE);
+        txBuffer = txBuffer != null ? txBuffer : (writeIt = writeBuffers.iterator()).hasNext() ? (ByteBuffer) writeIt.next().rewind() : ByteBuffer.allocate(DEFAULT_BUFFER_SIZE);
+        for (MesssageChannelTrait c : contextStack) {
+            try {
+                int pos = rxBuffer.position();
+                MessageChannelResult result = c.apply(txBuffer, rxBuffer);
+                results.add(result);
+                switch (result.getType()) {
+                    case READ:
+                        rxBuffer = (readIt != null && readIt.hasNext()) ? (ByteBuffer) readIt.next().rewind() : rxBuffer;
+                        break;
+                    case WRITE:
+                        txBuffer = (writeIt != null && writeIt.hasNext()) ? (ByteBuffer) writeIt.next().rewind() : txBuffer;
+                        break;
+                    case ERROR:
+                        return results;
+                }
+            } catch (Exception e) {
+                results.add(new MessageChannelResult(e));
+                return results;
             }
-        } finally {
-            peripheral = tperipheral;
         }
-        return readCount.toArray(new Integer[readCount.size()]);
+        return results;
     }
 
     protected ByteBuffer appendBuffer(ByteBuffer dest, ByteBuffer src, int offset, int size) {
@@ -233,17 +169,9 @@ public class DefaultPeripheralChannelMessage<P extends PeripheralChannel<? super
         return dest;
     }
 
-    protected ByteBuffer appendBuffer(ByteBuffer dest, byte[] value) {
-        if (!template) {
-            dest = getSizedBuffer(dest, value.length);
-            dest.put(value);
-        }
-        return dest;
-    }
-
     protected ByteBuffer getSizedBuffer(ByteBuffer src, int size) {
         if (src.remaining() < size) {
-            src = ByteBuffer.allocate(defaultTxBuffer.capacity() + DEFAULT_BUFFER_SIZE).put(src);
+            src = ByteBuffer.allocate(src.capacity() + DEFAULT_BUFFER_SIZE).put(src);
         }
         return src;
     }

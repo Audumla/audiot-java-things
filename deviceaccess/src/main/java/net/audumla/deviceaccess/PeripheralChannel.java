@@ -20,31 +20,12 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.ByteChannel;
 
-public interface PeripheralChannel<P extends PeripheralChannel<? super P, ? super C>, C extends PeripheralConfig<? super P>> extends Peripheral<P, C>, ByteChannel {
-    public enum ChannelWidth {
-        WIDTH8(1), WIDTH16(2), WIDTH32(4);
+public interface PeripheralChannel extends ReadablePeripheralChannel, WritablePeripheralChannel {
 
-        ChannelWidth(int bytes) {
-            this.bytes = bytes;
-        }
+    void setMask(int mask);
 
-        public int byteSize() {return bytes;}
+    int getMask();
 
-        protected int bytes;
-    }
-
-    int write(byte... data) throws IOException;
-
-    int write(ByteBuffer dst, int offset, int size) throws IOException;
-
-    int read() throws IOException;
-
-    int read(ByteBuffer dst) throws IOException;
-
-    int read(ByteBuffer dst, int offset, int size) throws IOException;
-
-    void setMask(Integer mask);
-
-    Integer getMask();
+    int removeMask();
 
 }

@@ -20,30 +20,65 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.ByteChannel;
 import java.time.Duration;
+import java.util.Collection;
 
-public interface PeripheralChannelMessage<P extends PeripheralChannel<? super P, ? super C>, C extends PeripheralConfig<? super P>, M extends PeripheralChannelMessage<? super P, ? super C, ? super M>> extends ByteChannel {
+public interface PeripheralChannelMessage<P extends IOPeripheral<? super P, ? super C>, C extends PeripheralConfig<? super P>, M extends PeripheralChannelMessage<? super P, ? super C, ? super M>> extends ByteChannel {
 
-    Integer[] transfer(ByteBuffer txBuffer, ByteBuffer rxBuffer) throws IOException, UnavailablePeripheralException, ClosedPeripheralException;
+    public static interface MesssageChannelTrait {
+        public static int NO_IO_TRANSFER = Integer.MAX_VALUE;
 
-    public static interface MessageContextModifier<P extends Peripheral> {
-        public static int NO_TRANSFER = Integer.MAX_VALUE;
-
-        public int apply(ByteBuffer txBuffer, ByteBuffer rxBuffer, P peripheral) throws IOException;
+        public MessageChannelResult apply(ByteBuffer txBuffer, ByteBuffer rxBuffer) throws IOException;
     }
 
-    M appendRead(java.nio.ByteBuffer byteBuffer) throws ClosedPeripheralException;
+    public static class MessageChannelResult {
+        public enum ResultType {READ,WRITE,NO_RESULT,ERROR}
 
-    M appendWrite(java.nio.ByteBuffer byteBuffer) throws java.io.IOException, ClosedPeripheralException;
+        protected int value;
+        protected ResultType type;
+        protected Exception exception;
 
-    M appendWrite(byte... value) throws java.io.IOException, ClosedPeripheralException;
+        public MessageChannelResult(ResultType type) {
+            this.type = type;
+        }
 
-    M appendSizedWrite(int size);
+        public MessageChannelResult(Exception exception) {
+            this.exception = exception;
+            this.type = ResultType.ERROR;
+        }
 
-    M appendSizedRead(int size);
+        public MessageChannelResult(int value, ResultType type) {
+            this.value = value;
+            this.type = type;
+        }
 
-    M setPeripheral(P peripheral);
+        public ResultType getType() {
+            return type;
+        }
 
-    M wait(Duration duration);
+        public int getValue() {
+            return value;
+        }
 
-    Integer[] transfer() throws java.io.IOException, UnavailablePeripheralException, ClosedPeripheralException;
+        public Exception getException() {
+            return exception;
+        }
+    }
+
+    M appendRead(ReadablePeripheralChannel channel, java.nio.ByteBuffer byteBuffer) throws IOException;
+
+    M appendWrite(WritablePeripheralChannel channel, java.nio.ByteBuffer byteBuffer) throws IOException;
+
+    M appendWrite(WritablePeripheralChannel channel, int size) throws IOException;
+
+    M appendRead(ReadablePeripheralChannel channel, int size) throws IOException;
+
+    M appendWrite(WritablePeripheralChannel channel, byte... value) throws java.io.IOException, ClosedPeripheralException;
+
+    M appendWait(Duration duration);
+
+    M appendTrait(MesssageChannelTrait trait);
+
+    Collection<MessageChannelResult> transfer(ByteBuffer txBuffer, ByteBuffer rxBuffer) throws IOException, UnavailablePeripheralException, ClosedPeripheralException;
+
+    Collection<MessageChannelResult> transfer() throws java.io.IOException, UnavailablePeripheralException, ClosedPeripheralException;
 }

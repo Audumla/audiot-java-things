@@ -17,11 +17,13 @@ package net.audumla.deviceaccess.i2cbus;
  */
 
 
-import net.audumla.deviceaccess.AddressablePeripheralChannel;
+import net.audumla.deviceaccess.AddressableIOPeripheral;
+import net.audumla.deviceaccess.IOPeripheral;
 
-
-public interface I2CDevice extends AddressablePeripheralChannel<I2CDevice,I2CDeviceConfig>
+public interface I2CDevice extends AddressableIOPeripheral<I2CDevice,I2CDeviceConfig>, IOPeripheral<I2CDevice,I2CDeviceConfig>
 {
+    int getDeviceWidth();
 
+    void setDeviceWidth(int width);
 }
 

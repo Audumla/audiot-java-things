@@ -20,11 +20,11 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 
 public interface DeviceBusIO {
-    int read() throws IOException;
+    byte read() throws IOException;
 
     int read(ByteBuffer dst, int offset, int size) throws IOException;
 
-    int write(int value) throws IOException;
+    int write(byte value) throws IOException;
 
     int write(ByteBuffer dst, int offset, int size) throws IOException;
 
