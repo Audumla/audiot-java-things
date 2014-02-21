@@ -143,7 +143,6 @@ JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative
         jbyte *maskBody = (*env)->GetPrimitiveArrayCritical(env, mask, 0);
         uint8_t currentData[width];
         if ((returnValue = read(fd,currentData,width))) {
-            int i;
             for (i = 0; i < writeCount; ++i) {
                 for (ni = 0; ni < width; ++ni) {
                     dataBlock[ni] = (body[(i*width)+ni+(offset*width)] & maskBody[ni]) | (currentData[ni] & ~maskBody[ni]);
