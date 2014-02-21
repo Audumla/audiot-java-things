@@ -24,10 +24,7 @@ import net.audumla.devices.activator.ActivatorState;
 import net.audumla.devices.activator.AggregateActivator;
 import net.audumla.devices.activator.factory.PCF8574GPIOActivatorFactory;
 import net.audumla.devices.activator.factory.RPIGPIOActivatorFactory;
-import net.audumla.devices.io.channel.ChannelAddressAttr;
-import net.audumla.devices.io.channel.DeviceAddressAttr;
-import net.audumla.devices.io.channel.DeviceChannel;
-import net.audumla.devices.io.channel.I2CDeviceChannel;
+import net.audumla.devices.io.channel.*;
 import net.audumla.devices.io.i2c.RPiI2CDeviceFactory;
 import net.audumla.devices.io.i2c.jni.rpi.I2C;
 import org.junit.Assert;
@@ -104,6 +101,26 @@ public class RPiI2cTest {
         Assert.assertEquals(~val & 0x0f, d.read());
     }
 
+    public void testSainsSmartRelayFromPCF8574StreamMask() throws Exception {
+        PeripheralChannel d = createI2CDevice().getChannel();
+        Activator power = getPower(6, 7, rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO1));
+        power.setState(ActivatorState.ACTIVATED);
+        d.setMask(0xf0);
+        ByteBuffer bb = ByteBuffer.allocate(50);
+        byte val = (byte) 0x01;
+        for (int i = 0; i < 8; ++i) {
+            bb.put((byte) ~val);
+            d.wait(20);
+            val = (byte) (val << 1);
+        }
+        bb.put((byte) 0xff);
+        bb.flip();
+        for (int i = 0; i < 10; ++i) {
+            d.write(bb);
+            bb.position(0);
+        }
+        power.setState(ActivatorState.DEACTIVATED);
+    }
     @Test
     public void testSainsSmartRelayFromPCF8574Direct() throws Exception {
         synchronized (this) {
