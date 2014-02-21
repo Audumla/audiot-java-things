@@ -18,7 +18,7 @@ package net.audumla.deviceaccess;
 
 import java.io.IOException;
 
-public interface PeripheralProvider<P extends Peripheral<? super P,? super C>,C extends PeripheralConfig<? super P>> {
+public interface PeripheralProvider<P extends Peripheral<? super P,? super C>,C extends PeripheralConfig> {
     P open(C config, String[] properties, int mode) throws PeripheralNotFoundException, UnavailablePeripheralException, PeripheralConfigInvalidException, UnsupportedAccessModeException, IOException;
 
     Class<? super C> getConfigType();

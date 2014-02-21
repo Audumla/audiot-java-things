@@ -17,13 +17,11 @@ package net.audumla.deviceaccess;
  */
 
 import java.io.IOException;
-import java.nio.Buffer;
+import java.nio.ByteBuffer;
+import java.nio.channels.ByteChannel;
 
-public interface BufferAccess<A extends Buffer>
-{
-    A getInputBuffer()
-            throws IOException;
+public interface IOPeripheral<P extends IOPeripheral<? super P, ? super C>, C extends PeripheralConfig<? super P>> extends Peripheral<P, C>  {
 
-    A getOutputBuffer()
-            throws IOException;
+    PeripheralChannel getChannel();
+
 }

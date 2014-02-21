@@ -1,4 +1,4 @@
-package net.audumla.deviceaccess.i2cbus;
+package net.audumla.deviceaccess;
 
 /*
  * *********************************************************************
@@ -16,14 +16,14 @@ package net.audumla.deviceaccess.i2cbus;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import net.audumla.deviceaccess.impl.DefaultAddressablePeripheralChannelMessage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.channels.ReadableByteChannel;
 
-public class I2CChannelMessage extends DefaultAddressablePeripheralChannelMessage<I2CDevice, I2CDeviceConfig, I2CChannelMessage> {
-    private static final Logger logger = LoggerFactory.getLogger(I2CChannelMessage.class);
+public interface WritablePeripheralChannel extends ReadableByteChannel {
+    int write(int value) throws IOException;
 
-    public I2CChannelMessage(boolean template) {
-        super(template);
-    }
+    int write(ByteBuffer dst) throws IOException;
+
+    int write(ByteBuffer dst, int offset, int size) throws IOException;
 }

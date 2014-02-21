@@ -16,9 +16,11 @@ package net.audumla.deviceaccess.i2cbus.rpi;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
+import net.audumla.deviceaccess.PeripheralChannel;
 import net.audumla.deviceaccess.PeripheralDescriptor;
 import net.audumla.deviceaccess.i2cbus.I2CDevice;
 import net.audumla.deviceaccess.i2cbus.I2CDeviceConfig;
+import net.audumla.deviceaccess.i2cbus.rpi.jni.RPiI2CNative;
 import net.audumla.devices.io.i2c.jni.rpi.I2C;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,177 +34,14 @@ public class RPiI2CDevice implements I2CDevice {
     private static final Logger logger = LoggerFactory.getLogger(RPiI2CDevice.class);
 
     private int handle;
-    private DeviceBusIO activeIO;
-    private DeviceBusIO addressedActiveIO;
-    private Queue<Integer> readAddressQueue = new LinkedList<>();
-    private Queue<Integer> writeAddressQueue = new LinkedList<>();
-    private Integer mask;
+    private int address;
     private PeripheralDescriptor<I2CDevice, I2CDeviceConfig> descriptor;
-
+    private int width;
 
     public RPiI2CDevice(int handle, PeripheralDescriptor<I2CDevice, I2CDeviceConfig> descriptor) {
         this.handle = handle;
+        address = descriptor.getConfiguration().getAddress();
         this.descriptor = descriptor;
-        setActiveIO();
-    }
-
-    @Override
-    public int read(int subAddress) throws IOException {
-        try {
-            readAddressQueue.add(subAddress);
-            return addressedActiveIO.read();
-        }
-        finally {
-            readAddressQueue.remove();
-        }
-    }
-
-    @Override
-    public int read(int subAddress, ByteBuffer dst) throws IOException {
-        try {
-            readAddressQueue.add(subAddress);
-            return addressedActiveIO.read(dst, dst.position(), dst.remaining());
-        }
-        finally {
-            readAddressQueue.remove();
-        }
-    }
-
-    @Override
-    public int read(int subAddress, ByteBuffer dst, int offset, int size) throws IOException {
-        try {
-            readAddressQueue.add(subAddress);
-            return addressedActiveIO.read(dst, offset, size);
-        }
-        finally {
-            readAddressQueue.remove();
-        }
-    }
-
-    @Override
-    public int write(int subAddress, ByteBuffer dst) throws IOException {
-        try {
-            writeAddressQueue.add(subAddress);
-            return addressedActiveIO.write(dst, 0, dst.limit());
-        }
-        finally {
-            writeAddressQueue.remove();
-        }
-    }
-
-    @Override
-    public int write(int subAddress, ByteBuffer dst, int offset, int size) throws IOException {
-        try {
-            writeAddressQueue.add(subAddress);
-            return addressedActiveIO.write( dst, offset, size);
-        }
-        finally {
-            writeAddressQueue.remove();
-        }
-    }
-
-    @Override
-    public int write(int subAddress, byte... data) throws IOException {
-        try {
-            writeAddressQueue.add(subAddress);
-            return data.length == 1 ? addressedActiveIO.write(data[0]) : addressedActiveIO.write(ByteBuffer.wrap(data), 0, data.length);
-        }
-        finally {
-            writeAddressQueue.remove();
-        }
-    }
-
-    @Override
-    public int write(byte... data) throws IOException {
-        return data.length == 1 ? activeIO.write(data[0]) : activeIO.write(ByteBuffer.wrap(data), 0, data.length);
-    }
-
-    @Override
-    public int write(ByteBuffer dst, int offset, int size) throws IOException {
-        return activeIO.write(dst, offset, size);
-    }
-
-    @Override
-    public int read() throws IOException {
-        return activeIO.read();
-    }
-
-    @Override
-    public int read(ByteBuffer dst) throws IOException {
-        return activeIO.read(dst, dst.position(), dst.remaining());
-    }
-
-    @Override
-    public int read(ByteBuffer dst, int offset, int size) throws IOException {
-        return activeIO.read(dst, offset, size);
-    }
-
-    @Override
-    public int write(ByteBuffer src) throws IOException {
-        return activeIO.write(src, 0, src.limit());
-    }
-
-    @Override
-    public boolean isOpen() {
-        return true;
-    }
-
-    @Override
-    public void close() throws IOException {
-
-    }
-
-    @Override
-    public void setReadWriteAddresses(Integer readAddress, Integer writeAddress) {
-        readAddressQueue.poll();
-        readAddressQueue.add(readAddress);
-        writeAddressQueue.poll();
-        writeAddressQueue.add(writeAddress);
-        setActiveIO();
-    }
-
-    @Override
-    public Integer getReadAddress() {
-        return readAddressQueue.peek();
-    }
-
-    @Override
-    public Integer getWriteAddress() {
-        return writeAddressQueue.peek();
-    }
-
-    @Override
-    public void setMask(Integer mask) {
-        this.mask = mask;
-        setActiveIO();
-    }
-
-    @Override
-    public Integer getMask() {
-        return mask;
-    }
-
-    protected void setActiveIO() {
-        if (getMask() != null) {
-            if (getReadAddress() != null) {
-                activeIO = getDescriptor().getConfiguration().getWidth().equals(ChannelWidth.WIDTH8) ? new AddressedMaskedByteIO() : new AddressedMaskedWordIO();
-                addressedActiveIO = activeIO;
-            } else {
-                activeIO = getDescriptor().getConfiguration().getWidth().equals(ChannelWidth.WIDTH8) ? new MaskedByteIO() : null;
-                addressedActiveIO = getDescriptor().getConfiguration().getWidth().equals(ChannelWidth.WIDTH8) ? new AddressedMaskedByteIO() : new AddressedMaskedWordIO();
-            }
-        } else {
-            if (getReadAddress() != null) {
-                activeIO = getDescriptor().getConfiguration().getWidth().equals(ChannelWidth.WIDTH8) ? new AddressedByteIO() : new AddressedWordIO();
-                addressedActiveIO = activeIO;
-            } else {
-                activeIO = getDescriptor().getConfiguration().getWidth().equals(ChannelWidth.WIDTH8) ? new ByteIO() : null;
-                addressedActiveIO = getDescriptor().getConfiguration().getWidth().equals(ChannelWidth.WIDTH8) ? new AddressedByteIO() : new AddressedWordIO();
-            }
-        }
-        if (activeIO == null ) {
-            throw new UnsupportedOperationException("Only 8 bit direct access mode supported");
-        }
     }
 
     @Override
@@ -210,30 +49,74 @@ public class RPiI2CDevice implements I2CDevice {
         return descriptor;
     }
 
-    protected class ByteIO implements DeviceBusIO {
+    @Override
+    public PeripheralChannel getAddressableChannel(int readSubAddress, int writeSubAddress) {
+        return null;
+    }
+
+    @Override
+    public PeripheralChannel getChannel() {
+        return new DirectChannel();
+    }
+
+    @Override
+    public int getDeviceWidth() {
+        return width;
+    }
+
+    @Override
+    public void setDeviceWidth(int width) {
+        this.width = width;
+    }
+
+    protected class DirectChannel implements PeripheralChannel {
+
+        private int mask;
 
         @Override
         public int read() throws IOException {
-            return I2C.readByteDirect(handle);
+            if (getDeviceWidth() > 1) {
+                byte[] buffer = new byte[1];
+                RPiI2CNative.read(handle, address, 0, 1, buffer, (byte) getMask());
+                return buffer[0];
+            }
+            else {
+                byte[] buffer = new byte[1];
+                RPiI2CNative.read(handle, address, 0, 1, buffer, (byte) getMask());
+                return buffer[0];
+            }
+        }
+
+        @Override
+        public int read(ByteBuffer dst) throws IOException {
+            return 0;
         }
 
         @Override
         public int read(ByteBuffer dst, int offset, int size) throws IOException {
-            for (int i = 0; i < size; ++i) {
-                dst.put(offset + i, (byte) read());
-            }
-            return size;
+            return RPiI2CNative.read(handle, address, offset, size, dst.array(), (byte) getMask());
         }
 
         @Override
         public int write(int value) throws IOException {
-            return I2C.writeByteDirect(handle, (byte) value);
+            byte[] buffer = new byte[] {(byte) value};
+            return RPiI2CNative.write(handle, address, 0, 1, buffer, (byte) getMask());
+        }
+
+        @Override
+        public int write() throws IOException {
+            return 0;
+        }
+
+        @Override
+        public int write(ByteBuffer dst) throws IOException {
+            return 0;
         }
 
         @Override
         public int write(ByteBuffer dst, int offset, int size) throws IOException {
             if (dst.hasArray()) {
-                I2C.writeBytesDirect(handle, size, offset, dst.array());
+                return RPiI2CNative.write(handle, 0, 1, dst.array(), getMask() == null ? (byte) 0xFF : getMask().byteValue());
             } else {
                 for (int i = 0; i < size; ++i) {
                     write(dst.get(offset + i));
@@ -242,6 +125,31 @@ public class RPiI2CDevice implements I2CDevice {
             return size;
         }
 
+        @Override
+        public void setMask(int mask) {
+            this.mask = mask;
+        }
+
+        @Override
+        public int getMask() {
+            return mask;
+        }
+
+        @Override
+        public int removeMask() {
+            mask = Integer.MAX_VALUE;
+            return mask;
+        }
+
+        @Override
+        public boolean isOpen() {
+            return false;
+        }
+
+        @Override
+        public void close() throws IOException {
+
+        }
     }
 
     protected class AddressedByteIO implements DeviceBusIO {

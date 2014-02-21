@@ -16,16 +16,29 @@ package net.audumla.deviceaccess;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-public interface AddressablePeripheralChannelMessage<P extends AddressablePeripheralChannel<? super P, ? super C>, C extends PeripheralConfig<? super P>, M extends AddressablePeripheralChannelMessage<? super P, ? super C, ? super M>> extends PeripheralChannelMessage<P, C, M> {
+import java.io.IOException;
+import java.nio.ByteBuffer;
 
-    M appendRead(int address, java.nio.ByteBuffer byteBuffer) throws ClosedPeripheralException;
+public interface AddressableIOPeripheral<P extends AddressableIOPeripheral<? super P, ? super C>, C extends PeripheralConfig<? super P>> extends Peripheral<P, C> {
+//
+//    int read(int subAddress) throws IOException;
+//
+//    int read(int subAddress, ByteBuffer dst) throws IOException;
+//
+//    int read(int subAddress, ByteBuffer dst, int offset, int size) throws IOException;
+//
+//    int write(int subAddress, ByteBuffer dst) throws IOException;
+//
+//    int write(int subAddress, ByteBuffer dst, int offset, int size) throws IOException;
+//
+//    int write(int subAddress, byte... data) throws IOException;
+//
+//    void setReadWriteAddresses(Integer readAddress, Integer writeAddress);
+//
+//    Integer getReadAddress();
+//
+//    Integer getWriteAddress();
 
-    M appendWrite(int address, java.nio.ByteBuffer byteBuffer) throws java.io.IOException, ClosedPeripheralException;
-
-    M appendWrite(int address, byte... value) throws java.io.IOException, ClosedPeripheralException;
-
-    M appendSizedWrite(int address, int size);
-
-    M appendSizedRead(int address, int size);
+    PeripheralChannel getAddressableChannel(int readSubAddress, int writeSubAddress);
 
 }

@@ -16,7 +16,7 @@ package net.audumla.deviceaccess.i2cbus;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import net.audumla.deviceaccess.PeripheralChannel;
+import net.audumla.deviceaccess.IOPeripheral;
 import net.audumla.deviceaccess.PeripheralConfig;
 
 public class I2CDeviceConfig implements PeripheralConfig.HardwareAddressing, PeripheralConfig<net.audumla.deviceaccess.i2cbus.I2CDevice> {
@@ -28,7 +28,7 @@ public class I2CDeviceConfig implements PeripheralConfig.HardwareAddressing, Per
     private int deviceNumber = DEFAULT;
     private String deviceName;
     private int addressSize = ADDR_SIZE_7;
-    private PeripheralChannel.ChannelWidth width = PeripheralChannel.ChannelWidth.WIDTH8;
+    private int width = 1;
 
     public I2CDeviceConfig(java.lang.String deviceName, int address) {
         this.address = address;
@@ -40,7 +40,7 @@ public class I2CDeviceConfig implements PeripheralConfig.HardwareAddressing, Per
         this.address = address;
     }
 
-    public I2CDeviceConfig(java.lang.String deviceName, int address, int addressSize, int clockFrequency, PeripheralChannel.ChannelWidth width) {
+    public I2CDeviceConfig(java.lang.String deviceName, int address, int addressSize, int clockFrequency, int width) {
         this.address = address;
         this.addressSize = addressSize;
         this.clockFrequency = clockFrequency;
@@ -48,7 +48,7 @@ public class I2CDeviceConfig implements PeripheralConfig.HardwareAddressing, Per
         this.width = width;
     }
 
-    public I2CDeviceConfig(int deviceNumber, int address, int addressSize, int clockFrequency, PeripheralChannel.ChannelWidth width) {
+    public I2CDeviceConfig(int deviceNumber, int address, int addressSize, int clockFrequency, int width) {
         this.address = address;
         this.clockFrequency = clockFrequency;
         this.deviceNumber = deviceNumber;
@@ -56,7 +56,7 @@ public class I2CDeviceConfig implements PeripheralConfig.HardwareAddressing, Per
         this.width = width;
     }
 
-    public I2CDeviceConfig(String deviceName, int deviceNumber, int address, int addressSize, int clockFrequency, PeripheralChannel.ChannelWidth width) {
+    public I2CDeviceConfig(String deviceName, int deviceNumber, int address, int addressSize, int clockFrequency, int width) {
         this.deviceName = deviceName;
         this.deviceNumber = deviceNumber;
         this.address = address;
@@ -65,7 +65,7 @@ public class I2CDeviceConfig implements PeripheralConfig.HardwareAddressing, Per
         this.width = width;
     }
 
-    public PeripheralChannel.ChannelWidth getWidth() {
+    public int getWidth() {
         return width;
     }
 
@@ -73,40 +73,22 @@ public class I2CDeviceConfig implements PeripheralConfig.HardwareAddressing, Per
         return address;
     }
 
-//    public void setAddress(int address) {
-//        this.address = address;
-//    }
 
     public int getClockFrequency() {
         return clockFrequency;
     }
 
-//    public void setClockFrequency(int clockFrequency) {
-//        this.clockFrequency = clockFrequency;
-//    }
-
     public int getDeviceNumber() {
         return deviceNumber;
     }
-
-//    public void setDeviceNumber(int deviceNumber) {
-//        this.deviceNumber = deviceNumber;
-//    }
 
     public String getDeviceName() {
         return deviceName;
     }
 
-//    public void setDeviceName(String deviceName) {
-//        this.deviceName = deviceName;
-//    }
-
     public int getAddressSize() {
         return addressSize;
     }
 
-//    public void setAddressSize(int addressSize) {
-//        this.addressSize = addressSize;
-//    }
 
 }

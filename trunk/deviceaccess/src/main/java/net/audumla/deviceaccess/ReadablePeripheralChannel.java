@@ -16,26 +16,17 @@ package net.audumla.deviceaccess;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.channels.ReadableByteChannel;
 
-public interface AddressablePeripheralChannel<P extends AddressablePeripheralChannel<? super P, ? super C>, C extends PeripheralConfig<? super P>> extends PeripheralChannel<P, C> {
+public interface ReadablePeripheralChannel extends ReadableByteChannel {
+    int read() throws IOException;
 
-    int read(int subAddress) throws IOException;
+    int read(ByteBuffer dst) throws IOException;
 
-    int read(int subAddress, ByteBuffer dst) throws IOException;
-
-    int read(int subAddress, ByteBuffer dst, int offset, int size) throws IOException;
-
-    int write(int subAddress, ByteBuffer dst) throws IOException;
-
-    int write(int subAddress, ByteBuffer dst, int offset, int size) throws IOException;
-
-    int write(int subAddress, byte... data) throws IOException;
-
-    void setReadWriteAddresses(Integer readAddress, Integer writeAddress);
-
-    Integer getReadAddress();
-
-    Integer getWriteAddress();
+    int read(ByteBuffer dst, int offset, int size) throws IOException;
 }
