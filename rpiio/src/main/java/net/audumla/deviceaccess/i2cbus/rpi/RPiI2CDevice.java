@@ -67,16 +67,14 @@ public class RPiI2CDevice implements I2CDevice {
         this.width = width;
     }
 
-    protected class I2CDirectChannel implements PeripheralChannel {
-
-        private byte[] mask;
+    protected class I2CDirectChannel extends AbstractI2CChannel{
 
         @Override
         public int read() throws IOException {
             if (mask == null) {
                 return I2C.readByteDirect(handle);
             } else {
-                return I2C.readByteDirect(handle) & mask[3];
+                return I2C.readByteDirect(handle) & mask[0];
             }
         }
 
@@ -95,7 +93,7 @@ public class RPiI2CDevice implements I2CDevice {
             if (mask == null) {
                 return I2C.writeByteDirect(handle, (byte) value);
             } else {
-                return I2C.writeByteDirectMask(handle, (byte) value, mask[3]);
+                return I2C.writeByteDirectMask(handle, (byte) value, mask[0]);
             }
         }
 
@@ -109,14 +107,21 @@ public class RPiI2CDevice implements I2CDevice {
             if (mask == null) {
                 return I2C.writeBytesDirect(handle, size, offset, dst.array());
             } else {
-                return I2C.writeBytesDirectMask(handle, size, offset, dst.array(), mask[3]);
+                return I2C.writeBytesDirectMask(handle, size, offset, dst.array(), mask[0]);
             }
         }
 
+    }
+
+    protected abstract class AbstractI2CChannel implements PeripheralChannel {
+        protected byte[] mask;
+
         @Override
         public void setMask(int mask) {
-            ByteBuffer result = ByteBuffer.allocate(4);
-            result.putInt(mask);
+            ByteBuffer result = ByteBuffer.allocate(getDeviceWidth());
+            for (int i = 0; i < getDeviceWidth(); ++ i) {
+                result.put((byte) (mask >> (24 - (i * 8))));
+            }
             this.mask = result.array();
         }
 
@@ -132,15 +137,13 @@ public class RPiI2CDevice implements I2CDevice {
 
         @Override
         public void close() throws IOException {
-
         }
     }
 
-    protected class I2CAddressedChannel implements PeripheralChannel {
+    protected class I2CAddressedChannel extends AbstractI2CChannel {
 
         private byte readSubAddress;
         private byte writeSubAddress;
-        private byte[] mask;
 
         public I2CAddressedChannel(byte readSubAddress, byte writeSubAddress) {
             this.readSubAddress = readSubAddress;
@@ -150,9 +153,9 @@ public class RPiI2CDevice implements I2CDevice {
         @Override
         public int read() throws IOException {
             if (mask == null) {
-                return I2C.readByte(handle,writeSubAddress);
+                return I2C.readByte(handle,readSubAddress);
             } else {
-                return I2C.readByte(handle,writeSubAddress) & mask[3];
+                return I2C.readByte(handle,readSubAddress) & mask[0];
             }
         }
 
@@ -189,32 +192,9 @@ public class RPiI2CDevice implements I2CDevice {
             }
         }
 
-        @Override
-        public void setMask(int mask) {
-            ByteBuffer result = ByteBuffer.allocate(getDeviceWidth());
-            result.putInt(mask);
-            this.mask = result.array();
-        }
-
-        @Override
-        public void removeMask() {
-            mask = new byte[]{(byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff};
-        }
-
-        @Override
-        public boolean isOpen() {
-            return handle != 0;
-        }
-
-        @Override
-        public void close() throws IOException {
-
-        }
     }
 
-    protected class DirectChannel implements PeripheralChannel {
-
-        private byte[] mask;
+    protected class DirectChannel  extends AbstractI2CChannel {
 
         @Override
         public int read() throws IOException {
@@ -225,7 +205,7 @@ public class RPiI2CDevice implements I2CDevice {
             } else {
                 int value = RPiI2CNative.read(handle, address);
                 if (mask != null) {
-                    return value & mask[3];
+                    return value & mask[0];
                 } else {
                     return value;
                 }
@@ -251,9 +231,9 @@ public class RPiI2CDevice implements I2CDevice {
             if (getDeviceWidth() > 1) {
                 ByteBuffer bbValue = ByteBuffer.allocate(getDeviceWidth());
                 bbValue.putInt(value);
-                return RPiI2CNative.write(handle, address, 0, getDeviceWidth(), 1, bbValue.array(), mask);
+                return RPiI2CNative.write(handle,address,0,getDeviceWidth(),bbValue.array(),mask[0]);
             } else {
-                return RPiI2CNative.write(handle, address, (byte) value, mask == null ? (byte) 0xff : mask[3]);
+                return RPiI2CNative.write(handle, address, (byte) value, mask == null ? (byte) 0xff : mask[0]);
             }
         }
 
@@ -265,36 +245,15 @@ public class RPiI2CDevice implements I2CDevice {
         @Override
         public int write(ByteBuffer dst, int offset, int size) throws IOException {
             if (dst.hasArray()) {
-                return RPiI2CNative.write(handle, address, 0, getDeviceWidth(), 1, dst.array(), mask);
+                return RPiI2CNative.write(handle,address,0,getDeviceWidth(),dst.array(),mask[0]);
             } else {
                 throw new IOException("Cannot operate on non array backed ByteBuffer");
             }
         }
 
-        @Override
-        public void setMask(int mask) {
-            ByteBuffer result = ByteBuffer.allocate(4);
-            result.putInt(mask);
-            this.mask = result.array();
-        }
-
-        @Override
-        public void removeMask() {
-            mask = new byte[]{(byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff};
-        }
-
-        @Override
-        public boolean isOpen() {
-            return handle != 0;
-        }
-
-        @Override
-        public void close() throws IOException {
-
-        }
     }
 
-    protected class AddressedChannel implements PeripheralChannel {
+    protected class AddressedChannel extends AbstractI2CChannel {
 
         private byte readSubAddress;
         private byte writeSubAddress;
@@ -309,12 +268,12 @@ public class RPiI2CDevice implements I2CDevice {
         public int read() throws IOException {
             if (getDeviceWidth() > 1) {
                 ByteBuffer result = ByteBuffer.allocate(getDeviceWidth());
-                RPiI2CNative.read(handle, address, readSubAddress, 0, getDeviceWidth(), 1, result.array(), mask);
+                RPiI2CNative.read(handle, address, readSubAddress, 0, getDeviceWidth(), result.array(), mask);
                 return result.getInt();
             } else {
                 int value = RPiI2CNative.read(handle, address, readSubAddress);
                 if (mask != null) {
-                    return value & mask[3];
+                    return value & mask[0];
                 } else {
                     return value;
                 }
@@ -329,7 +288,7 @@ public class RPiI2CDevice implements I2CDevice {
         @Override
         public int read(ByteBuffer dst, int offset, int size) throws IOException {
             if (dst.hasArray()) {
-                return RPiI2CNative.read(handle, address, readSubAddress, offset, getDeviceWidth(), size, dst.array(), mask);
+                return RPiI2CNative.read(handle, address, readSubAddress, offset, size, dst.array(), mask);
             } else {
                 throw new IOException("Cannot operate on non array backed ByteBuffer");
             }
@@ -342,7 +301,7 @@ public class RPiI2CDevice implements I2CDevice {
                 bbValue.putInt(value);
                 return RPiI2CNative.write(handle, address, writeSubAddress, 0, getDeviceWidth(), 1, bbValue.array(), mask);
             } else {
-                return RPiI2CNative.write(handle, address, writeSubAddress, (byte) value, mask == null ? (byte) 0xff : mask[3]);
+                return RPiI2CNative.write(handle, address, writeSubAddress, (byte) value, mask == null ? (byte) 0xff : mask[0]);
             }
         }
 
@@ -358,28 +317,6 @@ public class RPiI2CDevice implements I2CDevice {
             } else {
                 throw new IOException("Cannot operate on non array backed ByteBuffer");
             }
-        }
-
-        @Override
-        public void setMask(int mask) {
-            ByteBuffer result = ByteBuffer.allocate(getDeviceWidth());
-            result.putInt(mask);
-            this.mask = result.array();
-        }
-
-        @Override
-        public void removeMask() {
-            mask = new byte[]{(byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff};
-        }
-
-        @Override
-        public boolean isOpen() {
-            return handle != 0;
-        }
-
-        @Override
-        public void close() throws IOException {
-
         }
     }
 }
