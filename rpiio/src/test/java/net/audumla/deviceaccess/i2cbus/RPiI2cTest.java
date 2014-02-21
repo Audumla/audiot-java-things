@@ -109,11 +109,11 @@ public class RPiI2cTest {
             power.setState(ActivatorState.ACTIVATED);
             d.write(0xfe);
             d.setMask(0xf0);
-            for (int n = 0; n < 20; ++n) {
+            for (int n = 0; n < 10; ++n) {
                 byte val = (byte) 0x01;
                 for (int i = 0; i < 8; ++i) {
                     d.write((byte) ~val);
-                    wait(100);
+                    wait(200);
                     val = (byte) (val << 1);
                 }
             }
