@@ -54,7 +54,7 @@ public class RPiI2CDevice implements I2CDevice {
 
     @Override
     public PeripheralChannel getChannel() {
-        return new DirectChannel();
+        return new I2CDirectChannel();
     }
 
     @Override
