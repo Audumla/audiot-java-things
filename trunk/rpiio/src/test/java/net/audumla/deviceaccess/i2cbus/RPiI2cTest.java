@@ -118,7 +118,7 @@ public class RPiI2cTest {
                     val = (byte) (val << 1);
                 }
                 d.setMask(~0xf0);
-                onval = (byte) (onval >> 1);
+                onval = (byte) (onval << 1);
                 d.write(~onval);
                 d.setMask(0xf0);
             }
