@@ -76,7 +76,7 @@ public class RPiI2CDevice implements I2CDevice {
             if (mask == null) {
                 return I2C.readByteDirect(handle);
             } else {
-                return I2C.readByteDirect(handle) & mask[0];
+                return I2C.readByteDirect(handle) & mask[3];
             }
         }
 
@@ -95,7 +95,7 @@ public class RPiI2CDevice implements I2CDevice {
             if (mask == null) {
                 return I2C.writeByteDirect(handle, (byte) value);
             } else {
-                return I2C.writeByteDirectMask(handle, (byte) value, mask[0]);
+                return I2C.writeByteDirectMask(handle, (byte) value, mask[3]);
             }
         }
 
@@ -109,7 +109,7 @@ public class RPiI2CDevice implements I2CDevice {
             if (mask == null) {
                 return I2C.writeBytesDirect(handle, size, offset, dst.array());
             } else {
-                return I2C.writeBytesDirectMask(handle, size, offset, dst.array(), mask[0]);
+                return I2C.writeBytesDirectMask(handle, size, offset, dst.array(), mask[3]);
             }
         }
 
@@ -152,7 +152,7 @@ public class RPiI2CDevice implements I2CDevice {
             if (mask == null) {
                 return I2C.readByte(handle,writeSubAddress);
             } else {
-                return I2C.readByte(handle,writeSubAddress) & mask[0];
+                return I2C.readByte(handle,writeSubAddress) & mask[3];
             }
         }
 
