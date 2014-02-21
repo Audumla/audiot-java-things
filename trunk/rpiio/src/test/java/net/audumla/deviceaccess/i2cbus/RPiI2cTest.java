@@ -152,7 +152,7 @@ public class RPiI2cTest {
             dev.setDeviceWidth(4);
             for (int n = 0; n < 4; ++n) {
                 for (int i = 0; i < bytes.length/4; ++i) {
-                    int v = d.write(b,i,1);
+                    int v = d.write(b,i*4,1);
                     wait(50);
                 }
             }
