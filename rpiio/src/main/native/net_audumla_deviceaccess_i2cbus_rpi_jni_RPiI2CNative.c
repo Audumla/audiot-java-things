@@ -132,7 +132,7 @@ JNIEXPORT jbyte JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNativ
 JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative_write__IIII_3BB(JNIEnv *env, jclass clazz, jint fd, jint devId, jint offset, jint writeCount, jbyteArray data, jbyte mask) {
     struct i2c_smbus_ioctl_data args ;
     jbyte *body = (*env)->GetPrimitiveArrayCritical(env, data, 0);
-    unint_32 i;
+    uint32_t i;
     args.size       = 1;
     if (mask != 0xFF) {
         uint8_t data;
@@ -162,7 +162,7 @@ JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative
 JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative_write__IIBIII_3B_3B(JNIEnv *env, jclass clazz, jint fd, jint devId, jbyte localAddress, jint offset, jint width, jint writeCount, jbyteArray data, jbyteArray mask) {
     struct i2c_smbus_ioctl_data args ;
     jbyte *body = (*env)->GetPrimitiveArrayCritical(env, data, 0);
-    unint_32 i;
+    uint32_t i;
     args.command = localAddress;
     args.size    = width+1;
     if (mask != NULL) {
@@ -174,7 +174,7 @@ JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative
         ioctl(fd, I2C_SMBUS, &args);
         args.data = dataBlock;
         args.read_write = I2C_SMBUS_WRITE;
-        unint_32 ni;
+        uint32_t ni;
         for (i = 0; i < writeCount; ++i) {
             for (ni = 0; ni < width; ++ni) {
                 dataBlock[ni] = (body[(i*width)+ni+(offset*width)] & maskBody[ni]) | (currentData[ni] & ~maskBody[ni]);
@@ -199,7 +199,7 @@ JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative
     struct i2c_smbus_ioctl_data args ;
     jbyte *body = (*env)->GetPrimitiveArrayCritical(env, data, 0);
     uint8_t dataBlock;
-    unint_32 i;
+    uint32_t i;
     args.read_write = I2C_SMBUS_READ;
     args.command    = 0;
     args.size       = 1;
@@ -219,13 +219,13 @@ JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative
     args.read_write = I2C_SMBUS_READ;
     args.command    = localAddress;
     args.size       = width+1;
-    unint_32 i;
+    uint32_t i;
     for (i = 0; i < readCount; ++i) {
         args.data = body + (i*width) + (offset*width);
         ioctl(fd, I2C_SMBUS, &args);
     }
     if (mask != NULL) {
-        unint_32 ni;
+        uint32_t ni;
         jbyte *maskBody = (*env)->GetPrimitiveArrayCritical(env, mask, 0);
         for (i = 0; i < readCount; ++i) {
             for (ni = 0; ni < width; ++i) {
