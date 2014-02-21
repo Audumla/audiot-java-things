@@ -186,7 +186,7 @@ JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative
     else {
         args.read_write = I2C_SMBUS_WRITE;
         for (i = 0; i < writeCount; ++i) {
-            args.data = body + (i*width) + (offset*width);
+            args.data = (uint32_t) body + (i*width) + (offset*width);
             ioctl(fd, I2C_SMBUS, &args);
         }
     }
@@ -221,7 +221,7 @@ JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative
     args.size       = width+1;
     uint32_t i;
     for (i = 0; i < readCount; ++i) {
-        args.data = body + (i*width) + (offset*width);
+        args.data = (uint32_t) body + (i*width) + (offset*width);
         ioctl(fd, I2C_SMBUS, &args);
     }
     if (mask != NULL) {
