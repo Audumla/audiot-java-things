@@ -16,6 +16,7 @@ package net.audumla.deviceaccess.i2cbus;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
+import net.audumla.deviceaccess.PeripheralChannel;
 import net.audumla.deviceaccess.PeripheralManager;
 import net.audumla.deviceaccess.i2cbus.rpi.RPiI2CPeripheralProvider;
 import net.audumla.devices.activator.Activator;
@@ -82,7 +83,7 @@ public class RPiI2cTest {
 
     @Test
     public void PCF8574readwrite8() throws Exception {
-        I2CDevice d = createI2CDevice();
+        PeripheralChannel d = createI2CDevice().getChannel();
         byte val = (byte) 0x01;
         d.write(val);
         Assert.assertEquals(val, d.read());
@@ -92,7 +93,7 @@ public class RPiI2cTest {
 
     @Test
     public void PCF8574RWMask8() throws Exception {
-        I2CDevice d = createI2CDevice();
+        PeripheralChannel d = createI2CDevice().getChannel();
         d.write((byte) 0x00);
         byte val = (byte) 0xff;
         d.setMask(0x0f);
@@ -107,7 +108,7 @@ public class RPiI2cTest {
     public void testSainsSmartRelayFromPCF8574Direct() throws Exception {
         synchronized (this) {
             Activator power = getPower(6, 7, rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO1));
-            I2CDevice d = createI2CDevice();
+            PeripheralChannel d = createI2CDevice().getChannel();
             int repeat = 20;
             logger.debug("Speed test 20ms");
             d.write(0xff);
