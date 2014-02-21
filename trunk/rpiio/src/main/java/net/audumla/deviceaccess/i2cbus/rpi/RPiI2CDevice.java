@@ -34,7 +34,7 @@ public class RPiI2CDevice implements I2CDevice {
     private int handle;
     private int address;
     private PeripheralDescriptor<I2CDevice, I2CDeviceConfig> descriptor;
-    private int width;
+    private int width = 1;
 
     public RPiI2CDevice(int handle, PeripheralDescriptor<I2CDevice, I2CDeviceConfig> descriptor) {
         this.handle = handle;
@@ -64,6 +64,7 @@ public class RPiI2CDevice implements I2CDevice {
 
     @Override
     public void setDeviceWidth(int width) {
+
         this.width = width;
     }
 
@@ -93,7 +94,7 @@ public class RPiI2CDevice implements I2CDevice {
             if (mask == null) {
                 return I2C.writeByteDirect(handle, (byte) value);
             } else {
-                return I2C.writeByteDirectMask(handle, (byte) value, mask[0]);
+                return I2C.writeByteDirectMask(handle, (byte) value, mask == null ? (byte) 0xff : mask[0]);
             }
         }
 
@@ -107,7 +108,7 @@ public class RPiI2CDevice implements I2CDevice {
             if (mask == null) {
                 return I2C.writeBytesDirect(handle, size, offset, dst.array());
             } else {
-                return I2C.writeBytesDirectMask(handle, size, offset, dst.array(), mask[0]);
+                return I2C.writeBytesDirectMask(handle, size, offset, dst.array(), mask == null ? (byte) 0xff : mask[0]);
             }
         }
 
@@ -127,7 +128,7 @@ public class RPiI2CDevice implements I2CDevice {
 
         @Override
         public void removeMask() {
-            mask = new byte[]{(byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff};
+            mask = null;
         }
 
         @Override
@@ -174,7 +175,7 @@ public class RPiI2CDevice implements I2CDevice {
             if (mask == null) {
                 return I2C.writeByte(handle, writeSubAddress, (byte) value);
             } else {
-                return I2C.writeByteMask(handle, writeSubAddress, (byte) value, mask[0]);
+                return I2C.writeByteMask(handle, writeSubAddress, (byte) value, mask == null ? (byte) 0xff : mask[0]);
             }
         }
 
@@ -188,7 +189,7 @@ public class RPiI2CDevice implements I2CDevice {
             if (mask == null) {
                 return I2C.writeBytes(handle, writeSubAddress, size, offset, dst.array());
             } else {
-                return I2C.writeBytesMask(handle, writeSubAddress, size, offset, dst.array(), mask[0]);
+                return I2C.writeBytesMask(handle, writeSubAddress, size, offset, dst.array(), mask == null ? (byte) 0xff : mask[0]);
             }
         }
 
@@ -231,7 +232,7 @@ public class RPiI2CDevice implements I2CDevice {
             if (getDeviceWidth() > 1) {
                 ByteBuffer bbValue = ByteBuffer.allocate(getDeviceWidth());
                 bbValue.putInt(value);
-                return RPiI2CNative.write(handle,address,0,getDeviceWidth(),bbValue.array(),mask[0]);
+                return RPiI2CNative.write(handle,address,0,getDeviceWidth(),bbValue.array(), mask == null ? (byte) 0xff : mask[0]);
             } else {
                 return RPiI2CNative.write(handle, address, (byte) value, mask == null ? (byte) 0xff : mask[0]);
             }
@@ -245,7 +246,7 @@ public class RPiI2CDevice implements I2CDevice {
         @Override
         public int write(ByteBuffer dst, int offset, int size) throws IOException {
             if (dst.hasArray()) {
-                return RPiI2CNative.write(handle,address,0,getDeviceWidth(),dst.array(),mask[0]);
+                return RPiI2CNative.write(handle,address,0,getDeviceWidth(),dst.array(),mask == null ? (byte) 0xff : mask[0]);
             } else {
                 throw new IOException("Cannot operate on non array backed ByteBuffer");
             }
