@@ -225,7 +225,7 @@ public class RPiI2CDevice implements I2CDevice {
             } else {
                 int value = RPiI2CNative.read(handle, address);
                 if (mask != null) {
-                    return value & mask[0];
+                    return value & mask[3];
                 } else {
                     return value;
                 }
@@ -253,7 +253,7 @@ public class RPiI2CDevice implements I2CDevice {
                 bbValue.putInt(value);
                 return RPiI2CNative.write(handle, address, 0, getDeviceWidth(), 1, bbValue.array(), mask);
             } else {
-                return RPiI2CNative.write(handle, address, (byte) value, mask == null ? (byte) 0xff : mask[0]);
+                return RPiI2CNative.write(handle, address, (byte) value, mask == null ? (byte) 0xff : mask[3]);
             }
         }
 
@@ -314,7 +314,7 @@ public class RPiI2CDevice implements I2CDevice {
             } else {
                 int value = RPiI2CNative.read(handle, address, readSubAddress);
                 if (mask != null) {
-                    return value & mask[0];
+                    return value & mask[3];
                 } else {
                     return value;
                 }
@@ -342,7 +342,7 @@ public class RPiI2CDevice implements I2CDevice {
                 bbValue.putInt(value);
                 return RPiI2CNative.write(handle, address, writeSubAddress, 0, getDeviceWidth(), 1, bbValue.array(), mask);
             } else {
-                return RPiI2CNative.write(handle, address, writeSubAddress, (byte) value, mask == null ? (byte) 0xff : mask[0]);
+                return RPiI2CNative.write(handle, address, writeSubAddress, (byte) value, mask == null ? (byte) 0xff : mask[3]);
             }
         }
 
