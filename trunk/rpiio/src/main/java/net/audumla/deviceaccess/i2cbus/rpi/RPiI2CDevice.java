@@ -117,13 +117,17 @@ public class RPiI2CDevice implements I2CDevice {
     protected abstract class AbstractI2CChannel implements PeripheralChannel {
         protected byte[] mask;
 
-        @Override
-        public void setMask(int mask) {
+        protected ByteBuffer toByteBuffer(int value) {
             ByteBuffer result = ByteBuffer.allocate(getDeviceWidth());
             for (int i = 0; i < getDeviceWidth(); ++ i) {
-                result.put(getDeviceWidth()-(i+1),(byte) (mask >> i * 8));
+                result.put(getDeviceWidth()-(i+1),(byte) (value >> i * 8));
             }
-            this.mask = result.array();
+            return result;
+        }
+
+        @Override
+        public void setMask(int mask) {
+            this.mask = toByteBuffer(mask).array();
         }
 
         @Override
@@ -230,8 +234,7 @@ public class RPiI2CDevice implements I2CDevice {
         @Override
         public int write(int value) throws IOException {
             if (getDeviceWidth() > 1) {
-                ByteBuffer bbValue = ByteBuffer.allocate(getDeviceWidth());
-                bbValue.putInt(value);
+                ByteBuffer bbValue = toByteBuffer(value);
                 return RPiI2CNative.write(handle,address,0,getDeviceWidth(),bbValue.array(), mask == null ? (byte) 0xff : mask[0]);
             } else {
                 return RPiI2CNative.write(handle, address, (byte) value, mask == null ? (byte) 0xff : mask[0]);
@@ -298,8 +301,7 @@ public class RPiI2CDevice implements I2CDevice {
         @Override
         public int write(int value) throws IOException {
             if (getDeviceWidth() > 1) {
-                ByteBuffer bbValue = ByteBuffer.allocate(getDeviceWidth());
-                bbValue.putInt(value);
+                ByteBuffer bbValue = toByteBuffer(value);
                 return RPiI2CNative.write(handle, address, writeSubAddress, 0, getDeviceWidth(), 1, bbValue.array(), mask);
             } else {
                 return RPiI2CNative.write(handle, address, writeSubAddress, (byte) value, mask == null ? (byte) 0xff : mask[0]);

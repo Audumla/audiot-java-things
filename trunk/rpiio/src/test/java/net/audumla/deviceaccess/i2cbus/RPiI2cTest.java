@@ -125,7 +125,8 @@ public class RPiI2cTest {
     public void testSainsSmartRelayFromPCF8574Direct() throws Exception {
         synchronized (this) {
             Activator power = getPower(6, 7, rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO1));
-            PeripheralChannel d = createI2CDevice().getChannel();
+            I2CDevice dev = createI2CDevice();
+            PeripheralChannel d = dev.getChannel();
             int repeat = 20;
             d.write(0xff);
             power.setState(ActivatorState.ACTIVATED);
@@ -143,10 +144,15 @@ public class RPiI2cTest {
             ByteBuffer b = ByteBuffer.wrap(bytes);
             logger.debug("Speed test 5ms");
             d.write((byte) 0xff);
-            for (int i = 0; i < bytes.length; ++i) {
-                int v = d.write(b.get(i));
-                wait(5);
+            dev.setDeviceWidth(4);
+            for (int n = 0; i < 4; ++i) {
+                for (int i = 0; i < bytes.length/4; ++i) {
+                    int v = d.write(b.get(i));
+                    wait(50);
+                }
             }
+            dev.setDeviceWidth(1);
+
             d.write((byte) 0xff);
             logger.debug("Speed test 0ms");
             for (int i = 0; i < repeat; ++i) {
