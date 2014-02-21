@@ -101,6 +101,7 @@ public class RPiI2cTest {
         Assert.assertEquals(~val & 0x0f, d.read());
     }
 
+    @Test
     public void testSainsSmartRelayFromPCF8574StreamMask() throws Exception {
         PeripheralChannel d = createI2CDevice().getChannel();
         Activator power = getPower(6, 7, rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO1));
@@ -121,6 +122,7 @@ public class RPiI2cTest {
         }
         power.setState(ActivatorState.DEACTIVATED);
     }
+
     @Test
     public void testSainsSmartRelayFromPCF8574Direct() throws Exception {
         synchronized (this) {
