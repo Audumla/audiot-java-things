@@ -121,7 +121,7 @@ public class RPiI2CDevice implements I2CDevice {
         public void setMask(int mask) {
             ByteBuffer result = ByteBuffer.allocate(getDeviceWidth());
             for (int i = 0; i < getDeviceWidth(); ++ i) {
-                result.put((byte) (mask >> (24 - (i * 8))));
+                result.put(getDeviceWidth()-(i+1),(byte) (mask >> i * 8));
             }
             this.mask = result.array();
         }
