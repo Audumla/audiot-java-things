@@ -74,7 +74,7 @@ JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative
 
 JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative_write__IIBBB(JNIEnv *env, jclass clazz, jint fd, jint devId, jbyte localAddress, jbyte value, jbyte mask) {
     ssize_t returnValue = 1;
-    if ((returnValue = ioctl (fd, I2C_SLAVE, devId)) {
+    if ((returnValue = ioctl (fd, I2C_SLAVE, devId))) {
         char values[2];
         values[0] = localAddress;
         if (mask != 0xFF) {
@@ -93,7 +93,7 @@ JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative
 
 JNIEXPORT jbyte JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative_read__IIB(JNIEnv *env, jclass clazz, jint fd, jint devId, jbyte localAddress) {
     ssize_t returnValue = 0;
-    if ((returnValue = ioctl (fd, I2C_SLAVE, devId)) {
+    if ((returnValue = ioctl (fd, I2C_SLAVE, devId))) {
         if ((returnValue = write(fd,value,1)) {
             returnValue = read(fd,1);
         }
