@@ -24,8 +24,6 @@ public interface PeripheralChannel extends ReadablePeripheralChannel, WritablePe
 
     void setMask(int mask);
 
-    int getMask();
-
-    int removeMask();
+    void removeMask();
 
 }

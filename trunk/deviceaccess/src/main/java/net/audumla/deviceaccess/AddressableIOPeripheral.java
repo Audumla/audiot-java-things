@@ -20,25 +20,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 
 public interface AddressableIOPeripheral<P extends AddressableIOPeripheral<? super P, ? super C>, C extends PeripheralConfig<? super P>> extends Peripheral<P, C> {
-//
-//    int read(int subAddress) throws IOException;
-//
-//    int read(int subAddress, ByteBuffer dst) throws IOException;
-//
-//    int read(int subAddress, ByteBuffer dst, int offset, int size) throws IOException;
-//
-//    int write(int subAddress, ByteBuffer dst) throws IOException;
-//
-//    int write(int subAddress, ByteBuffer dst, int offset, int size) throws IOException;
-//
-//    int write(int subAddress, byte... data) throws IOException;
-//
-//    void setReadWriteAddresses(Integer readAddress, Integer writeAddress);
-//
-//    Integer getReadAddress();
-//
-//    Integer getWriteAddress();
 
-    PeripheralChannel getAddressableChannel(int readSubAddress, int writeSubAddress);
+    PeripheralChannel getAddressableChannel(byte readSubAddress, byte writeSubAddress);
 
 }
