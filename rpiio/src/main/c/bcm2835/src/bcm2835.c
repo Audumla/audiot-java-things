@@ -1110,8 +1110,8 @@ int bcm2835_init(void)
 	bcm2835_gpio = (uint32_t*)BCM2835_GPIO_BASE;
 	bcm2835_pwm  = (uint32_t*)BCM2835_GPIO_PWM;
 	bcm2835_spi0 = (uint32_t*)BCM2835_SPI0_BASE;
-	bcm2835_bsc[0].bsc = (uint32_t*)BCM2835_BSC0_BASE;
-	bcm2835_bsc[1].bsc = (uint32_t*)BCM2835_BSC1_BASE;
+	bcm2835_bsc[0].paddr = (uint32_t*)BCM2835_BSC0_BASE;
+	bcm2835_bsc[1].paddr = (uint32_t*)BCM2835_BSC1_BASE;
 	bcm2835_st   = (uint32_t*)BCM2835_ST_BASE;
 	return 1; // Success
     }
@@ -1144,11 +1144,11 @@ int bcm2835_init(void)
     if (bcm2835_spi0 == MAP_FAILED) goto exit;
 
     // I2C
-    bcm2835_bsc[0].bsc = (volatile uint32_t *)mapmem("bsc0", BCM2835_BLOCK_SIZE, memfd, BCM2835_BSC0_BASE);
-    if (bcm2835_bsc[0].bsc == MAP_FAILED) goto exit;
+    bcm2835_bsc[0].paddr = (volatile uint32_t *)mapmem("bsc0", BCM2835_BLOCK_SIZE, memfd, BCM2835_BSC0_BASE);
+    if (bcm2835_bsc[0].paddr == MAP_FAILED) goto exit;
 
-    bcm2835_bsc[1].bsc = (volatile uint32_t *)mapmem("bsc1", BCM2835_BLOCK_SIZE, memfd, BCM2835_BSC1_BASE);
-    if (bcm2835_bsc[1].bsc == MAP_FAILED) goto exit;
+    bcm2835_bsc[1].paddr = (volatile uint32_t *)mapmem("bsc1", BCM2835_BLOCK_SIZE, memfd, BCM2835_BSC1_BASE);
+    if (bcm2835_bsc[1].paddr == MAP_FAILED) goto exit;
 
     // ST
     bcm2835_st = (volatile uint32_t *)mapmem("st", BCM2835_BLOCK_SIZE, memfd, BCM2835_ST_BASE);
@@ -1189,10 +1189,10 @@ int bcm2835_close(void)
     unmapmem((void**) &bcm2835_pwm,  BCM2835_BLOCK_SIZE);
     unmapmem((void**) &bcm2835_clk,  BCM2835_BLOCK_SIZE);
     unmapmem((void**) &bcm2835_spi0, BCM2835_BLOCK_SIZE);
-    unmapmem((void**) &bcm2835_bsc[0].bsc, BCM2835_BLOCK_SIZE);
-    unmapmem((void**) &bcm2835_bsc[1].bsc, BCM2835_BLOCK_SIZE);
     unmapmem((void**) &bcm2835_st,   BCM2835_BLOCK_SIZE);
     unmapmem((void**) &bcm2835_pads, BCM2835_BLOCK_SIZE);
+    unmapmem((void**) &bcm2835_bsc[0].paddr, BCM2835_BLOCK_SIZE);
+    unmapmem((void**) &bcm2835_bsc[1].paddr, BCM2835_BLOCK_SIZE);
     return 1; // Success
 }    
 
