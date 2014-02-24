@@ -39,7 +39,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Bundle-NativeCode>lib/audumlaRPi.so ; osname=Linux; processor=ARM</Bundle-NativeCode>
+                        <Bundle-NativeCode>lib/audumlaRPi_ioctl.so ; osname=Linux; processor=ARM</Bundle-NativeCode>
                     </instructions>
                 </configuration>
             </plugin>
