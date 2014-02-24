@@ -8,7 +8,7 @@ TARGET=audumlaRPiI2C_bcm2835.so
 #DEBUG	= -g -O0
 DEBUG	= -O3
 CC	= gcc
-INCLUDE	= -I. -I/$(JAVA_HOME)/include -I/usr/local/include -I. -I/$(JAVA_HOME)/include/linux -I/usr/local/include/linux
+INCLUDE	= -I. -I/$(JAVA_HOME)/include -I/usr/local/include -I. -I/$(JAVA_HOME)/include/linux -I/usr/local/include/linux -I../../bcm2835/src -I..
 CFLAGS	= $(DEBUG) -Wall $(INCLUDE) -Winline -pipe $(LIBS) 
 
 # Should not alter anything below this line
@@ -52,4 +52,4 @@ uninstall:
 
 
 # DO NOT DELETE
-net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative_bcm2835.o: net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative.h
+net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative.o: net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative.h
