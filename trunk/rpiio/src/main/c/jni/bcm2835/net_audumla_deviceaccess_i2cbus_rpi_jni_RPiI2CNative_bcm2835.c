@@ -26,10 +26,10 @@ JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative
 
 JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative_write__IIBBB(JNIEnv *env, jclass clazz, jint bus, jint deviceAddress, jbyte localAddress, jbyte value, jbyte mask) {
     bcm2835_i2c_setSlaveAddress(bus,deviceAddress);
-    bcm2835_i2c_write(bus,localAddress,1);
+    bcm2835_i2c_write(bus,&localAddress,1);
     uint8_t reason;
     if (mask != 0xFF) {
-        uint8_t data;
+        char data;
         reason = bcm2835_i2c_read(bus,&data,1);
         data = (value & mask) | (data & ~mask);
         reason = bcm2835_i2c_write(bus,&data,1);
