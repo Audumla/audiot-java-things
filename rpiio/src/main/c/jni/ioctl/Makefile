@@ -44,7 +44,7 @@ install:	$(TARGET)
 	install -m 0755 -d /usr/local/lib
 	install -m 0755 -d /usr/local/include
 	install -m 0644 $(TARGET)	/usr/local/lib
-	install -m 0644 $(TARGET)   ../../../libraries/lib
+	install -m 0644 $(TARGET)   ../../../../libraries/lib
 
 uninstall:
 	@echo [uninstall]
