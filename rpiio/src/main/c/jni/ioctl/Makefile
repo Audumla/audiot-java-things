@@ -52,4 +52,4 @@ uninstall:
 
 
 # DO NOT DELETE
-net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative.o: net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative.h
+net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative_ioctl.o: net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative.h
