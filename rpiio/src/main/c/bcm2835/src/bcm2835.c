@@ -41,7 +41,7 @@ volatile uint32_t *bcm2835_spi0 = (volatile uint32_t *)MAP_FAILED;
 volatile uint32_t *bcm2835_st	= (volatile uint32_t *)MAP_FAILED;
 bcm2835_bsc_data bcm2835_bsc[2];
 
-unint8_t bcm_init = 0;
+uint8_t bcm_init = 0;
 
 // This variable allows us to test on hardware other than RPi.
 // It prevents access to the kernel memory, and does not do any peripheral access
