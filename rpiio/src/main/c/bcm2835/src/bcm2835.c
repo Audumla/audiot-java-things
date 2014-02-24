@@ -41,9 +41,6 @@ volatile uint32_t *bcm2835_spi0 = (volatile uint32_t *)MAP_FAILED;
 volatile uint32_t *bcm2835_st	= (volatile uint32_t *)MAP_FAILED;
 
 bcm2835_bsc_data bcm2835_bsc[2];
-bcm2835_bsc[0].paddr = (volatile uint32_t *)MAP_FAILED;
-bcm2835_bsc[1].paddr = (volatile uint32_t *)MAP_FAILED;
-
 
 // This variable allows us to test on hardware other than RPi.
 // It prevents access to the kernel memory, and does not do any peripheral access
@@ -629,7 +626,7 @@ void bcm2835_spi_setChipSelectPolarity(uint8_t cs, uint8_t active)
 
 void bcm2835_i2c_begin(uint8_t bus)
 {
-    uint32_t* paddr = bcm2835_bsc[bus] + BCM2835_BSC_DIV/4;
+    uint32_t* paddr = bcm2835_bsc[bus].paddr + BCM2835_BSC_DIV/4;
     bcm2835_gpio_fsel(bcm2835_bsc[bus].sda, BCM2835_GPIO_FSEL_ALT0); // SDA
     bcm2835_gpio_fsel(bcm2835_bsc[bus].scl, BCM2835_GPIO_FSEL_ALT0); // SCL
     // Read the clock divider register
@@ -650,7 +647,7 @@ void bcm2835_i2c_end(uint8_t bus)
 void bcm2835_i2c_setSlaveAddress(uint8_t bus, uint8_t addr)
 {
 	// Set I2C Device Address
-	volatile uint32_t* paddr = bcm2835_bsc[bus] + BCM2835_BSC_A/4;
+	volatile uint32_t* paddr = bcm2835_bsc[bus].paddr + BCM2835_BSC_A/4;
 	bcm2835_peri_write(paddr, addr);
 }
 
@@ -659,7 +656,7 @@ void bcm2835_i2c_setSlaveAddress(uint8_t bus, uint8_t addr)
 // rounded down.
 void bcm2835_i2c_setClockDivider(uint8_t bus, uint16_t divider)
 {
-    volatile uint32_t* paddr = bcm2835_bsc[bus] + BCM2835_BSC_DIV/4;
+    volatile uint32_t* paddr = bcm2835_bsc[bus].paddr + BCM2835_BSC_DIV/4;
     bcm2835_peri_write(paddr, divider);
     // Calculate time for transmitting one byte
     // 1000000 = micros seconds in a second
@@ -679,10 +676,10 @@ void bcm2835_i2c_set_baudrate(uint8_t bus, uint32_t baudrate)
 // Writes an number of bytes to I2C
 uint8_t bcm2835_i2c_write(uint8_t bus, const char * buf, uint32_t len)
 {
-    volatile uint32_t* dlen    = bcm2835_bsc[bus] + BCM2835_BSC_DLEN/4;
-    volatile uint32_t* fifo    = bcm2835_bsc[bus] + BCM2835_BSC_FIFO/4;
-    volatile uint32_t* status  = bcm2835_bsc[bus] + BCM2835_BSC_S/4;
-    volatile uint32_t* control = bcm2835_bsc[bus] + BCM2835_BSC_C/4;
+    volatile uint32_t* dlen    = bcm2835_bsc[bus].paddr + BCM2835_BSC_DLEN/4;
+    volatile uint32_t* fifo    = bcm2835_bsc[bus].paddr + BCM2835_BSC_FIFO/4;
+    volatile uint32_t* status  = bcm2835_bsc[bus].paddr + BCM2835_BSC_S/4;
+    volatile uint32_t* control = bcm2835_bsc[bus].paddr + BCM2835_BSC_C/4;
 
     uint32_t remaining = len;
     uint32_t i = 0;
@@ -743,10 +740,10 @@ uint8_t bcm2835_i2c_write(uint8_t bus, const char * buf, uint32_t len)
 // Read an number of bytes from I2C
 uint8_t bcm2835_i2c_read(uint8_t bus, char* buf, uint32_t len)
 {
-    volatile uint32_t* dlen    = bcm2835_bsc[bus] + BCM2835_BSC_DLEN/4;
-    volatile uint32_t* fifo    = bcm2835_bsc[bus] + BCM2835_BSC_FIFO/4;
-    volatile uint32_t* status  = bcm2835_bsc[bus] + BCM2835_BSC_S/4;
-    volatile uint32_t* control = bcm2835_bsc[bus] + BCM2835_BSC_C/4;
+    volatile uint32_t* dlen    = bcm2835_bsc[bus].paddr + BCM2835_BSC_DLEN/4;
+    volatile uint32_t* fifo    = bcm2835_bsc[bus].paddr + BCM2835_BSC_FIFO/4;
+    volatile uint32_t* status  = bcm2835_bsc[bus].paddr + BCM2835_BSC_S/4;
+    volatile uint32_t* control = bcm2835_bsc[bus].paddr + BCM2835_BSC_C/4;
 
     uint32_t remaining = len;
     uint32_t i = 0;
@@ -810,10 +807,10 @@ uint8_t bcm2835_i2c_read(uint8_t bus, char* buf, uint32_t len)
 // the required register. Only works if your device supports this mode
 uint8_t bcm2835_i2c_read_register_rs(uint8_t bus, char* regaddr, char* buf, uint32_t len)
 {   
-    volatile uint32_t* dlen    = bcm2835_bsc[bus] + BCM2835_BSC_DLEN/4;
-    volatile uint32_t* fifo    = bcm2835_bsc[bus] + BCM2835_BSC_FIFO/4;
-    volatile uint32_t* status  = bcm2835_bsc[bus] + BCM2835_BSC_S/4;
-    volatile uint32_t* control = bcm2835_bsc[bus] + BCM2835_BSC_C/4;
+    volatile uint32_t* dlen    = bcm2835_bsc[bus].paddr + BCM2835_BSC_DLEN/4;
+    volatile uint32_t* fifo    = bcm2835_bsc[bus].paddr + BCM2835_BSC_FIFO/4;
+    volatile uint32_t* status  = bcm2835_bsc[bus].paddr + BCM2835_BSC_S/4;
+    volatile uint32_t* control = bcm2835_bsc[bus].paddr + BCM2835_BSC_C/4;
 
 	uint32_t remaining = len;
     uint32_t i = 0;
@@ -894,10 +891,10 @@ uint8_t bcm2835_i2c_read_register_rs(uint8_t bus, char* regaddr, char* buf, uint
 // (with no prior stop) and reading a response. Some devices require this behavior.
 uint8_t bcm2835_i2c_write_read_rs(uint8_t bus, char* cmds, uint32_t cmds_len, char* buf, uint32_t buf_len)
 {   
-    volatile uint32_t* dlen    = bcm2835_bsc[bus] + BCM2835_BSC_DLEN/4;
-    volatile uint32_t* fifo    = bcm2835_bsc[bus] + BCM2835_BSC_FIFO/4;
-    volatile uint32_t* status  = bcm2835_bsc[bus] + BCM2835_BSC_S/4;
-    volatile uint32_t* control = bcm2835_bsc[bus] + BCM2835_BSC_C/4;
+    volatile uint32_t* dlen    = bcm2835_bsc[bus].paddr + BCM2835_BSC_DLEN/4;
+    volatile uint32_t* fifo    = bcm2835_bsc[bus].paddr + BCM2835_BSC_FIFO/4;
+    volatile uint32_t* status  = bcm2835_bsc[bus].paddr + BCM2835_BSC_S/4;
+    volatile uint32_t* control = bcm2835_bsc[bus].paddr + BCM2835_BSC_C/4;
 
     uint32_t remaining = cmds_len;
     uint32_t i = 0;
@@ -1105,16 +1102,18 @@ int bcm2835_init(void)
 {
     if (debug) 
     {
-	bcm2835_pads = (uint32_t*)BCM2835_GPIO_PADS;
-	bcm2835_clk  = (uint32_t*)BCM2835_CLOCK_BASE;
-	bcm2835_gpio = (uint32_t*)BCM2835_GPIO_BASE;
-	bcm2835_pwm  = (uint32_t*)BCM2835_GPIO_PWM;
-	bcm2835_spi0 = (uint32_t*)BCM2835_SPI0_BASE;
-	bcm2835_bsc[0].paddr = (uint32_t*)BCM2835_BSC0_BASE;
-	bcm2835_bsc[1].paddr = (uint32_t*)BCM2835_BSC1_BASE;
-	bcm2835_st   = (uint32_t*)BCM2835_ST_BASE;
-	return 1; // Success
+		bcm2835_pads = (uint32_t*)BCM2835_GPIO_PADS;
+		bcm2835_clk  = (uint32_t*)BCM2835_CLOCK_BASE;
+		bcm2835_gpio = (uint32_t*)BCM2835_GPIO_BASE;
+		bcm2835_pwm  = (uint32_t*)BCM2835_GPIO_PWM;
+		bcm2835_spi0 = (uint32_t*)BCM2835_SPI0_BASE;
+		bcm2835_bsc[0].paddr = (uint32_t*)BCM2835_BSC0_BASE;
+		bcm2835_bsc[1].paddr = (uint32_t*)BCM2835_BSC1_BASE;
+		bcm2835_st   = (uint32_t*)BCM2835_ST_BASE;
+		return 1; // Success
     }
+	bcm2835_bsc[0].paddr = (volatile uint32_t *)MAP_FAILED;
+	bcm2835_bsc[1].paddr = (volatile uint32_t *)MAP_FAILED;
     int memfd = -1;
     int ok = 0;
     // Open the master /dev/memory device
