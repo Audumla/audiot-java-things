@@ -323,7 +323,7 @@ public class I2CDeviceChannel extends AbstractDeviceChannel {
                     writersChange = true;
                     continue;
                 }
-                if (DeviceAddressAttr.class.isAssignableFrom(a.getClass())) {
+                if (DeviceRegisterAttr.class.isAssignableFrom(a.getClass())) {
                     ctxt = (ctxt == this && clone) ? clone() : ctxt;
                     ctxt.setDeviceReadRegister((DeviceRegisterAttr) a);
                     ctxt.setDeviceWriteRegister((DeviceRegisterAttr) a);
