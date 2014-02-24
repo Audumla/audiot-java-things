@@ -19,6 +19,7 @@ package net.audumla.deviceaccess.i2cbus.rpi;
 import net.audumla.deviceaccess.*;
 import net.audumla.deviceaccess.i2cbus.I2CDevice;
 import net.audumla.deviceaccess.i2cbus.I2CDeviceConfig;
+import net.audumla.deviceaccess.i2cbus.rpi.jni.RPiI2CNative;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,7 +48,7 @@ public class RPiI2CPeripheralProvider implements PeripheralProvider<I2CDevice, I
             String id = String.valueOf(deviceNumber) + ":" + String.valueOf(config.getAddress());
             Integer handle = deviceHandleMap.get(id);
             if (handle == null) {
-                handle = net.audumla.devices.io.i2c.jni.rpi.I2C.open(deviceName, config.getAddress());
+                handle = RPiI2CNative.open(deviceNumber, config.getAddress());
                 if (handle < 0) {
                     throw new IOException("Cannot open " + name + " received " + handle);
                 }

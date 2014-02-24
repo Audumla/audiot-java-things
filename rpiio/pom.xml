@@ -61,7 +61,7 @@
                             <javahClassNames>
                                 <javahClassName>net.audumla.deviceaccess.i2cbus.rpi.jni.RPiI2CNative</javahClassName>
                             </javahClassNames>
-                            <javahOutputDirectory>src/main/native</javahOutputDirectory>
+                            <javahOutputDirectory>src/main/c/jni</javahOutputDirectory>
                         </configuration>
                     </execution>
                 </executions>
