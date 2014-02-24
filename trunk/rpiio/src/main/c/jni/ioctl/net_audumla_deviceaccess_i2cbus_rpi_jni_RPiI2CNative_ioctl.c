@@ -7,7 +7,7 @@
 #include <string.h>
 #include <fcntl.h>
 #include <sys/ioctl.h>
-#include "net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative.h"
+#include "../net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative.h"
 
 // I2C definitions
 

@@ -3,7 +3,7 @@
 #	audumlaRPi - Java (JNI) library wrapper for Raspberry Pi io interfaces
 #
 
-TARGET=audumlaRPiI2C.so
+TARGET=audumlaRPiI2C_ioctl.so
 
 #DEBUG	= -g -O0
 DEBUG	= -O3
@@ -14,9 +14,9 @@ CFLAGS	= $(DEBUG) -Wall $(INCLUDE) -Winline -pipe $(LIBS)
 # Should not alter anything below this line
 ###############################################################################
 
-SRC	=   net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative.c
+SRC	=   net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative_ioctl.c
 
-OBJ	=   net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative.o
+OBJ	=   net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative_ioctl.o
 
 all:		$(TARGET)
 
