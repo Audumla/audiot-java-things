@@ -385,7 +385,7 @@ extern volatile uint32_t *bcm2835_spi0;
 /// Struct to hold BSC (I2C) registers and pin definitions for the variations of the raspberry versions
 typedef struct bcm2835_bsc_data {
 	volatile uint32_t *paddr;
-	int wait_us
+	int wait_us;
 	uint8_t scl;
 	uint8_t sda;
 } bcm2835_bsc_data;
