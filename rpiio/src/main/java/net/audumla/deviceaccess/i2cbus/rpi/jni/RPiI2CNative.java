@@ -92,7 +92,7 @@ public class RPiI2CNative {
      * @param address the address of the device on the i2c bus
      * @param value   an array to receive the read bytes of size width*readCount
      * @param mask    a bit mask that will be applied to every byte written to the device
-     * @return return a negative value if an error was encountered otherwise the number of bytes read
+     * @return return a negative value if an error was encountered otherwise the number of bytes written
      */
     public static native int write(int bus, int address, byte value, byte mask);
 
