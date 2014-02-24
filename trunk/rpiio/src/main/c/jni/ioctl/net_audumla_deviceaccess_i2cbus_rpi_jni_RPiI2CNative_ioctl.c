@@ -47,7 +47,7 @@ struct i2c_smbus_ioctl_data
 
 JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative_open(JNIEnv *env, jclass clazz, jint bus, jint address) {
    char device[256];
-   sprintf(&device, "/dev/i2c-%d", aInt);
+   sprintf(&device, "/dev/i2c-%d", bus);
    int fd ;
 
    if ((fd = open (device, O_RDWR)) < 0)
