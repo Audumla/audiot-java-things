@@ -9,7 +9,7 @@ TARGET=audumlaRPiI2C_bcm2835.so
 DEBUG	= -O3
 CC	= gcc
 INCLUDE	= -I. -I/$(JAVA_HOME)/include -I/usr/local/include -I. -I/$(JAVA_HOME)/include/linux -I/usr/local/include/linux -I../../bcm2835/src -I..
-CFLAGS	= $(DEBUG) -Wall $(INCLUDE) -Winline -pipe $(LIBS) 
+CFLAGS	= $(DEBUG) -Wall $(INCLUDE) -Winline -pipe
 
 LIBS    = -L/usr/local/lib /usr/local/lib/libbcm2835.a
 
@@ -24,7 +24,7 @@ all:		$(TARGET)
 
 $(TARGET):	$(OBJ)
 	@echo [LINK] $(OBJ)
-	@$(CC) $(OBJ) -shared -o $(TARGET) $(INCLUDE)
+	@$(CC) $(OBJ) -shared -o $(TARGET) $(INCLUDE) $(LIBS)
 	@size   $(TARGET)
 
 .c.o:
