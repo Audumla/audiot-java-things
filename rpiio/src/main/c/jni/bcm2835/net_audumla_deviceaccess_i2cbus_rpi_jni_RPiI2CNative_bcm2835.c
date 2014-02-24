@@ -8,7 +8,7 @@
 #include <fcntl.h>
 #include <sys/ioctl.h>
 #include "net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative.h"
-#include "bcm2835/bcm2835.h"
+#include "bcm2835.h"
 
 
 JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative_open(JNIEnv *env, jclass clazz, jint bus, jint address) {
