@@ -81,6 +81,12 @@ public class RPiI2cTest {
     }
 
     @Test
+    public void testFrequency() throws Exception {
+        createI2CDevice().
+
+    }
+
+    @Test
     public void PCF8574readwrite8() throws Exception {
         PeripheralChannel d = createI2CDevice().getChannel();
         byte val = (byte) 0x01;

@@ -57,9 +57,23 @@ public class RPiI2CPeripheralProvider implements PeripheralProvider<I2CDevice, I
             } else {
                 logger.debug("Found " + name);
             }
-            I2CDeviceConfig nc = new I2CDeviceConfig(deviceName,deviceNumber,config.getAddress(),config.getAddressSize(),config.getClockFrequency(),config.getWidth());
+            int freq = config.getClockFrequency();
+            if (config.getClockFrequency() == PeripheralConfig.DEFAULT) {
+                freq = RPiI2CNative.getClock(deviceNumber);
+            } else {
+                if (config.getClockFrequency() < I2C_CLOCK_FREQ_MIN) {
+                    freq = I2C_CLOCK_FREQ_MIN;
+                } else {
+                    if (config.getClockFrequency() > I2C_CLOCK_FREQ_MAX) {
+                        freq = I2C_CLOCK_FREQ_MAX;
+                    }
+                }
+                RPiI2CNative.setClock(deviceNumber, freq);
+            }
+
+            I2CDeviceConfig nc = new I2CDeviceConfig(deviceName, deviceNumber, config.getAddress(), config.getAddressSize(), freq, config.getWidth());
             PeripheralManager.ReferencedPeripheralDescriptor<I2CDevice, I2CDeviceConfig> desc = new PeripheralManager.ReferencedPeripheralDescriptor<I2CDevice, I2CDeviceConfig>(nc, 0, name, properties);
-            return new RPiI2CDevice(handle,desc);
+            return new RPiI2CDevice(handle, desc);
         }
     }
 
