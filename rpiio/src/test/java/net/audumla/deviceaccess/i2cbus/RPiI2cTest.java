@@ -19,6 +19,7 @@ package net.audumla.deviceaccess.i2cbus;
 import net.audumla.deviceaccess.PeripheralChannel;
 import net.audumla.deviceaccess.PeripheralManager;
 import net.audumla.deviceaccess.i2cbus.rpi.RPiI2CPeripheralProvider;
+import net.audumla.deviceaccess.i2cbus.rpi.jni.RPiI2CNative;
 import net.audumla.devices.activator.Activator;
 import net.audumla.devices.activator.ActivatorState;
 import net.audumla.devices.activator.AggregateActivator;
@@ -82,8 +83,11 @@ public class RPiI2cTest {
 
     @Test
     public void testFrequency() throws Exception {
-        createI2CDevice().
-
+        int freq = RPiI2CNative.getClock(1);
+        int freq2 = RPiI2CNative.setClock(1,10000);
+        assert freq2 == freq;
+        freq2 = RPiI2CNative.setClock(1,400000);
+        assert freq2 == 10000;
     }
 
     @Test
