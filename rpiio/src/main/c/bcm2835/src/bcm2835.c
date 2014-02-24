@@ -626,7 +626,7 @@ void bcm2835_spi_setChipSelectPolarity(uint8_t cs, uint8_t active)
 
 void bcm2835_i2c_begin(uint8_t bus)
 {
-    uint32_t* paddr = bcm2835_bsc[bus].paddr + BCM2835_BSC_DIV/4;
+    volatile uint32_t* paddr = bcm2835_bsc[bus].paddr + BCM2835_BSC_DIV/4;
     bcm2835_gpio_fsel(bcm2835_bsc[bus].sda, BCM2835_GPIO_FSEL_ALT0); // SDA
     bcm2835_gpio_fsel(bcm2835_bsc[bus].scl, BCM2835_GPIO_FSEL_ALT0); // SCL
     // Read the clock divider register
@@ -840,7 +840,7 @@ uint8_t bcm2835_i2c_read_register_rs(uint8_t bus, char* regaddr, char* buf, uint
     bcm2835_peri_write_nb(control, BCM2835_BSC_C_I2CEN | BCM2835_BSC_C_ST  | BCM2835_BSC_C_READ );
     
     // Wait for write to complete and first byte back.	
-    bcm2835_delayMicroseconds(i2c_byte_wait_us * 3);
+    bcm2835_delayMicroseconds(bcm2835_bsc[bus].wait_us * 3);
     
     // wait for transfer to complete
     while (!(bcm2835_peri_read_nb(status) & BCM2835_BSC_S_DONE))
@@ -936,7 +936,7 @@ uint8_t bcm2835_i2c_write_read_rs(uint8_t bus, char* cmds, uint32_t cmds_len, ch
     bcm2835_peri_write_nb(control, BCM2835_BSC_C_I2CEN | BCM2835_BSC_C_ST  | BCM2835_BSC_C_READ );
     
     // Wait for write to complete and first byte back.	
-    bcm2835_delayMicroseconds(i2c_byte_wait_us * (cmds_len + 1));
+    bcm2835_delayMicroseconds(bcm2835_bsc[bus].wait_us * (cmds_len + 1));
     
     // wait for transfer to complete
     while (!(bcm2835_peri_read_nb(status) & BCM2835_BSC_S_DONE))
