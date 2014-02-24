@@ -24,7 +24,7 @@ all:		$(TARGET)
 
 $(TARGET):	$(OBJ)
 	@echo [LINK] $(OBJ)
-	@$(CC) $(OBJ) -shared -o $(TARGET) $(INCLUDE) $(LIBS)  
+	@$(CC) $(OBJ) -shared -o $(TARGET) $(INCLUDE)
 	@size   $(TARGET)
 
 .c.o:
