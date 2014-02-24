@@ -73,7 +73,8 @@ public class HitachiCharacterLCD implements CharacterLCD {
     private int rows = 4;
 
     public HitachiCharacterLCD(DeviceChannel channel,String name) throws IOException {
-        this.channel = channel.createChannel(new DeviceRegisterAttr(MCP2308DeviceChannel.MCP23008_GPIO));
+        this.channel = channel;
+        channel.setAttribute(new DeviceRegisterAttr(MCP2308DeviceChannel.MCP23008_GPIO));
         this.name = name;
         backlightStatus = LCD_BACKLIGHT;
     }
