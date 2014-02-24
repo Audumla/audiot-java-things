@@ -1,9 +1,6 @@
 package net.audumla.devices.lcd;
 
-import net.audumla.devices.io.channel.DeviceChannel;
-import net.audumla.devices.io.channel.DeviceWriteRegisterAttr;
-import net.audumla.devices.io.channel.FixedWaitAttr;
-import net.audumla.devices.io.channel.MCP2308DeviceChannel;
+import net.audumla.devices.io.channel.*;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
@@ -104,7 +101,7 @@ public class HitachiCharacterLCD implements CharacterLCD {
             writeMode = LCD_ENTRYMODESET_COMMAND | LCD_ENTRYMODE_INCREMENT_CURSOR;
             //see http://www.adafruit.com/datasheets/HD44780.pdf page 46 for initialization of 4 bit interface
             channel.write((byte) 0x00, new DeviceWriteRegisterAttr(MCP2308DeviceChannel.MCP23008_IODIR));
-            DeviceChannel initChannel = channel.createChannel();
+            DeviceChannel initChannel = channel.createChannel(new DeviceRegisterAttr(MCP2308DeviceChannel.MCP23008_GPIO));
             ByteBuffer bb = ByteBuffer.allocateDirect(100);
             reset(bb, initChannel);
             putCommand4bits(bb, initChannel, LCD_COMMAND, (byte) (LCD_FUNCTIONSET_COMMAND | (rows > 1 ? LCD_2LINE : LCD_1LINE) | (rows > 1 ? LCD_5x8DOTS : LCD_5x10DOTS))); // set to 4 bit interface - 2 lines - 5x10 font
