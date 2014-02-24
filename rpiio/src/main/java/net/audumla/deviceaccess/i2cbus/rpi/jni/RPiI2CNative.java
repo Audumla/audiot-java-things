@@ -26,7 +26,7 @@ public class RPiI2CNative {
 
     static {
         // Load the platform library
-        LibraryLoader.load("audumlaRPiI2C", "audumlaRPiI2C_bcm2835.so");
+        LibraryLoader.load("audumlaRPiI2C_bcm2835", "audumlaRPiI2C_bcm2835.so");
     }
 
     /**
