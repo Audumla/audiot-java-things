@@ -39,18 +39,14 @@ volatile uint32_t *bcm2835_clk  = (volatile uint32_t *)MAP_FAILED;
 volatile uint32_t *bcm2835_pads = (volatile uint32_t *)MAP_FAILED;
 volatile uint32_t *bcm2835_spi0 = (volatile uint32_t *)MAP_FAILED;
 volatile uint32_t *bcm2835_st	= (volatile uint32_t *)MAP_FAILED;
-
 bcm2835_bsc_data bcm2835_bsc[2];
+
+unint8_t bcm_init = 0;
 
 // This variable allows us to test on hardware other than RPi.
 // It prevents access to the kernel memory, and does not do any peripheral access
 // Instead it prints out what it _would_ do if debug were 0
 static uint8_t debug = 0;
-
-
-
-// I2C The time needed to transmit one byte. In microseconds.
-// static int i2c_byte_wait_us = 0;
 
 //
 // Low level register access functions
@@ -1107,6 +1103,8 @@ static void unmapmem(void **pmem, size_t size)
 // Initialise this library.
 int bcm2835_init(void)
 {
+    if (bcm_init)
+        return bcm_init;
     if (debug) 
     {
 		bcm2835_pads = (uint32_t*)BCM2835_GPIO_PADS;
@@ -1182,8 +1180,9 @@ exit:
         close(memfd);
 
     if (!ok)
-	bcm2835_close();
+	    bcm2835_close();
 
+    bcm_init = ok;
     return ok;
 }
 
@@ -1199,6 +1198,7 @@ int bcm2835_close(void)
     unmapmem((void**) &bcm2835_pads, BCM2835_BLOCK_SIZE);
     unmapmem((void**) &bcm2835_bsc[0].paddr, BCM2835_BLOCK_SIZE);
     unmapmem((void**) &bcm2835_bsc[1].paddr, BCM2835_BLOCK_SIZE);
+    bcm_init = 0;
     return 1; // Success
 }    
 
