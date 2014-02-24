@@ -1193,6 +1193,12 @@ extern "C" {
     /// \param[in] bus The i2c bus number to perform the operation on
     extern void bcm2835_i2c_set_baudrate(uint8_t bus,uint32_t baudrate);
 
+    /// Gets the baudrate currently set for the given bus
+    /// The use of baudrate corresponds to its use in the I2C kernel device
+    /// driver. (Of course, bcm2835 has nothing to do with the kernel driver)
+    /// \return the baudrate
+    extern uint32_t bcm2835_i2c_get_baudrate(uint8_t bus);
+
     /// Transfers any number of bytes to the currently selected I2C slave.
     /// (as previously set by \sa bcm2835_i2c_setSlaveAddress)
     /// \param[in] bus The i2c bus number to perform the operation on

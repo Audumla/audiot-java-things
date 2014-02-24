@@ -673,6 +673,13 @@ void bcm2835_i2c_set_baudrate(uint8_t bus, uint32_t baudrate)
 	bcm2835_i2c_setClockDivider( bus, (uint16_t)divider );
 }
 
+// \return the baudrate
+uint32_t bcm2835_i2c_get_baudrate(uint8_t bus) {
+    volatile uint32_t* paddr = bcm2835_bsc[bus].paddr + BCM2835_BSC_DIV/4;
+    uint16_t divider = bcm2835_peri_read(paddr) & 0xFFFE;
+    return BCM2835_CORE_CLK_HZ / divider;
+}
+
 // Writes an number of bytes to I2C
 uint8_t bcm2835_i2c_write(uint8_t bus, const char * buf, uint32_t len)
 {

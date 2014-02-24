@@ -45,11 +45,9 @@ struct i2c_smbus_ioctl_data
     uint8_t *data;
 };
 
-JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative_open(JNIEnv *env, jclass clazz, jstring deviceName, jint address) {
+JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative_open(JNIEnv *env, jclass clazz, jint bus, jint address) {
    char device[256];
-   int len = (*env)->GetStringLength(env, deviceName);
-   (*env)->GetStringUTFRegion(env, deviceName, 0, len, device);
-
+   sprintf(&device, "/dev/i2c-%d", aInt);
    int fd ;
 
    if ((fd = open (device, O_RDWR)) < 0)
@@ -239,3 +237,12 @@ JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative
     return 1;
 };
 
+JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative_setClock
+  (JNIEnv *env, jclass clazz, jint bus, jint freq) {
+  return 100000;
+}
+
+JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative_getClock
+  (JNIEnv *env, jclass clazz, jint bus) {
+  return 100000;
+}

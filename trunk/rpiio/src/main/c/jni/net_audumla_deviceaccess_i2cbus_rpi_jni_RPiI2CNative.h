@@ -10,10 +10,10 @@ extern "C" {
 /*
  * Class:     net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative
  * Method:    open
- * Signature: (Ljava/lang/String;I)I
+ * Signature: (II)I
  */
 JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative_open
-  (JNIEnv *, jclass, jstring, jint);
+  (JNIEnv *, jclass, jint, jint);
 
 /*
  * Class:     net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative
@@ -21,6 +21,22 @@ JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative
  * Signature: (I)I
  */
 JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative_close
+  (JNIEnv *, jclass, jint);
+
+/*
+ * Class:     net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative
+ * Method:    setClock
+ * Signature: (II)I
+ */
+JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative_setClock
+  (JNIEnv *, jclass, jint, jint);
+
+/*
+ * Class:     net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative
+ * Method:    getClock
+ * Signature: (I)I
+ */
+JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative_getClock
   (JNIEnv *, jclass, jint);
 
 /*
