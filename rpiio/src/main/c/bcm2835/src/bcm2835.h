@@ -1205,15 +1205,17 @@ extern "C" {
     /// \param[in] bus The i2c bus number to perform the operation on
     /// \param[in] buf Buffer of bytes to send.
     /// \param[in] len Number of bytes in the buf buffer, and the number of bytes to send.
+    /// \param[in] lenTr Number of bytes actually transmitted.
 	/// \return reason see \ref bcm2835I2CReasonCodes
-    extern uint8_t bcm2835_i2c_write(uint8_t bus, const char * buf, uint32_t len);
+    extern uint8_t bcm2835_i2c_write(uint8_t bus, const char * buf, uint32_t len, uint32_t *lenTr);
 
     /// Transfers any number of bytes from the currently selected I2C slave.
     /// (as previously set by \sa bcm2835_i2c_setSlaveAddress)
     /// \param[in] buf Buffer of bytes to receive.
     /// \param[in] len Number of bytes in the buf buffer, and the number of bytes to received.
+    /// \param[in] lenTr Number of bytes actually transmitted.
 	/// \return reason see \ref bcm2835I2CReasonCodes
-    extern uint8_t bcm2835_i2c_read(uint8_t bus, char* buf, uint32_t len);
+    extern uint8_t bcm2835_i2c_read(uint8_t bus, char* buf, uint32_t len, uint32_t *lenTr);
 
     /// Allows reading from I2C slaves that require a repeated start (without any prior stop)
     /// to read after the required slave register has been set. For example, the popular
@@ -1228,8 +1230,9 @@ extern "C" {
     /// \param[in] regaddr Buffer containing the slave register you wish to read from.
     /// \param[in] buf Buffer of bytes to receive.
     /// \param[in] len Number of bytes in the buf buffer, and the number of bytes to received.
+    /// \param[in] lenTr Number of bytes actually transmitted.
 	/// \return reason see \ref bcm2835I2CReasonCodes
-    extern uint8_t bcm2835_i2c_read_register_rs(uint8_t bus, char* regaddr, char* buf, uint32_t len);
+    extern uint8_t bcm2835_i2c_read_register_rs(uint8_t bus, char* regaddr, char* buf, uint32_t len, uint32_t *lenTr);
 
     /// Allows sending an arbitrary number of bytes to I2C slaves before issuing a repeated
     /// start (with no prior stop) and reading a response.
@@ -1240,8 +1243,9 @@ extern "C" {
     /// \param[in] cmds_len Number of bytes to send from cmds buffer
     /// \param[in] buf Buffer of bytes to receive.
     /// \param[in] buf_len Number of bytes to receive in the buf buffer.
+    /// \param[in] lenTr Number of bytes actually transmitted.
 	/// \return reason see \ref bcm2835I2CReasonCodes
-    extern uint8_t bcm2835_i2c_write_read_rs(uint8_t bus, char* cmds, uint32_t cmds_len, char* buf, uint32_t buf_len);
+    extern uint8_t bcm2835_i2c_write_read_rs(uint8_t bus, char* cmds, uint32_t cmds_len, char* buf, uint32_t buf_len, uint32_t *lenTr);
 
     /// @}
 

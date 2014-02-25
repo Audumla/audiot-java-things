@@ -88,6 +88,11 @@ public class RPiI2cTest {
         assert freq2 == freq;
         freq2 = RPiI2CNative.setClock(1,400000);
         assert freq2 == 10000;
+        freq = RPiI2CNative.getClock(0);
+        freq2 = RPiI2CNative.setClock(0,40000);
+        assert freq2 == freq;
+        freq2 = RPiI2CNative.setClock(0,200000);
+        assert freq2 == 40000;
     }
 
     @Test

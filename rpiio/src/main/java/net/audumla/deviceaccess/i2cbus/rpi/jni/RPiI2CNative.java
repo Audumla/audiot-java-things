@@ -56,8 +56,7 @@ public class RPiI2CNative {
     public static native int setClock(int bus, int frequency);
 
     /**
-     * Sets the I2C clock to the value specified. Any value that not within the bounds of 10000
-     * to 400000 will be changed to these values
+     * Gets the I2C clock for the specified bus
      *
      * @return the current frequency for the given bus
      */
@@ -71,7 +70,7 @@ public class RPiI2CNative {
      * @param localAddress the local register address within the device to read from
      * @param value        an array to receive the read bytes of size width*readCount
      * @param mask         a bit mask that will be applied to every byte written to the device
-     * @return return a negative value if an error was encountered otherwise the number of bytes read
+     * @return return the number of bytes written
      */
     public static native int write(int bus, int address, byte localAddress, byte value, byte mask);
 
@@ -114,7 +113,7 @@ public class RPiI2CNative {
      * @param writeBuffer an array to receive the read bytes of size width*readCount
      * @param writeCount  the number of times to read 'width' bytes from the device
      * @param mask        a bit mask that will be applied to every written to the device
-     * @return return a negative value if an error was encountered otherwise the number of bytes read
+     * @return return the number of bytes read
      */
     public static native int write(int bus, int address, int offset, int writeCount, byte[] writeBuffer, byte mask);
 
@@ -129,7 +128,7 @@ public class RPiI2CNative {
      * @param writeBuffer  an array to receive the read bytes of size width*readCount
      * @param writeCount   the number of times to read 'width' bytes from the device
      * @param mask         an array of length width that contains a bit mask that will be applied to every read from the device
-     * @return return a negative value if an error was encountered otherwise the number of bytes read
+     * @return return number of bytes written
      */
     public static native int write(int bus, int address, byte localAddress, int offset, int width, int writeCount, byte[] writeBuffer, byte[] mask);
 
@@ -142,7 +141,7 @@ public class RPiI2CNative {
      * @param readBuffer an array to receive the read bytes of size width*readCount
      * @param readCount  the number of times to read 'width' bytes from the device
      * @param mask       a bit mask that will be applied to every byte read from the device
-     * @return return a negative value if an error was encountered otherwise the number of bytes read
+     * @return return the number of bytes written
      */
     public static native int read(int bus, int address, int offset, int readCount, byte[] readBuffer, byte mask);
 
@@ -157,7 +156,7 @@ public class RPiI2CNative {
      * @param readBuffer   an array to receive the read bytes of size width*readCount
      * @param readCount    the number of times to read 'width' bytes from the device
      * @param mask         contains a bit mask that will be applied to every read from the device
-     * @return return a negative value if an error was encountered otherwise the number of bytes read
+     * @return return the number of bytes read
      */
     public static native int read(int bus, int address, byte localAddress, int offset, int width, int readCount, byte[] readBuffer, byte[] mask);
 }

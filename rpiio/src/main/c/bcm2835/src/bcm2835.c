@@ -677,7 +677,7 @@ uint32_t bcm2835_i2c_get_baudrate(uint8_t bus) {
 }
 
 // Writes an number of bytes to I2C
-uint8_t bcm2835_i2c_write(uint8_t bus, const char * buf, uint32_t len)
+uint8_t bcm2835_i2c_write(uint8_t bus, const char * buf, uint32_t len, uint32_t *lenTr)
 {
     volatile uint32_t* dlen    = bcm2835_bsc[bus].paddr + BCM2835_BSC_DLEN/4;
     volatile uint32_t* fifo    = bcm2835_bsc[bus].paddr + BCM2835_BSC_FIFO/4;
@@ -736,12 +736,12 @@ uint8_t bcm2835_i2c_write(uint8_t bus, const char * buf, uint32_t len)
     }
 
     bcm2835_peri_set_bits(control, BCM2835_BSC_S_DONE , BCM2835_BSC_S_DONE);
-
+    *lenTr = len - remaining;
     return reason;
 }
 
 // Read an number of bytes from I2C
-uint8_t bcm2835_i2c_read(uint8_t bus, char* buf, uint32_t len)
+uint8_t bcm2835_i2c_read(uint8_t bus, char* buf, uint32_t len, uint32_t *lenTr)
 {
     volatile uint32_t* dlen    = bcm2835_bsc[bus].paddr + BCM2835_BSC_DLEN/4;
     volatile uint32_t* fifo    = bcm2835_bsc[bus].paddr + BCM2835_BSC_FIFO/4;
@@ -803,12 +803,13 @@ uint8_t bcm2835_i2c_read(uint8_t bus, char* buf, uint32_t len)
 
     bcm2835_peri_set_bits(control, BCM2835_BSC_S_DONE , BCM2835_BSC_S_DONE);
 
+    *lenTr = len - remaining;
     return reason;
 }
 
 // Read an number of bytes from I2C sending a repeated start after writing
 // the required register. Only works if your device supports this mode
-uint8_t bcm2835_i2c_read_register_rs(uint8_t bus, char* regaddr, char* buf, uint32_t len)
+uint8_t bcm2835_i2c_read_register_rs(uint8_t bus, char* regaddr, char* buf, uint32_t len, uint32_t *lenTr)
 {   
     volatile uint32_t* dlen    = bcm2835_bsc[bus].paddr + BCM2835_BSC_DLEN/4;
     volatile uint32_t* fifo    = bcm2835_bsc[bus].paddr + BCM2835_BSC_FIFO/4;
@@ -887,12 +888,13 @@ uint8_t bcm2835_i2c_read_register_rs(uint8_t bus, char* regaddr, char* buf, uint
 
     bcm2835_peri_set_bits(control, BCM2835_BSC_S_DONE , BCM2835_BSC_S_DONE);
 
+    *lenTr = len - remaining;
     return reason;
 }
 
 // Sending an arbitrary number of bytes before issuing a repeated start 
 // (with no prior stop) and reading a response. Some devices require this behavior.
-uint8_t bcm2835_i2c_write_read_rs(uint8_t bus, char* cmds, uint32_t cmds_len, char* buf, uint32_t buf_len)
+uint8_t bcm2835_i2c_write_read_rs(uint8_t bus, char* cmds, uint32_t cmds_len, char* buf, uint32_t buf_len, uint32_t *lenTr)
 {   
     volatile uint32_t* dlen    = bcm2835_bsc[bus].paddr + BCM2835_BSC_DLEN/4;
     volatile uint32_t* fifo    = bcm2835_bsc[bus].paddr + BCM2835_BSC_FIFO/4;
@@ -983,6 +985,7 @@ uint8_t bcm2835_i2c_write_read_rs(uint8_t bus, char* cmds, uint32_t cmds_len, ch
 
     bcm2835_peri_set_bits(control, BCM2835_BSC_S_DONE , BCM2835_BSC_S_DONE);
 
+    *lenTr = len - remaining;
     return reason;
 }
 
