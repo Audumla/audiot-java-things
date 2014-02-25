@@ -133,7 +133,7 @@ AUTOCONF = ${SHELL} /usr/src/audumla.net/trunk/rpiio/src/main/c/bcm2835/missing 
 AUTOHEADER = ${SHELL} /usr/src/audumla.net/trunk/rpiio/src/main/c/bcm2835/missing --run autoheader
 AUTOMAKE = ${SHELL} /usr/src/audumla.net/trunk/rpiio/src/main/c/bcm2835/missing --run automake-1.12
 AWK = mawk
-CC = gcc
+CC = g++
 CCDEPMODE = depmode=gcc3
 CFLAGS = -g -O2
 CPPFLAGS = 
