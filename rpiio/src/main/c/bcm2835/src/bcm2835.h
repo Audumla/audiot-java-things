@@ -377,6 +377,9 @@ extern volatile uint32_t *bcm2835_pads;
 /// Available after bcm2835_init has been called
 extern volatile uint32_t *bcm2835_spi0;
 
+// Used as the default i2c bus if none is specified when calling an I2C method
+extern uint8_t default_i2c_bus;
+
 /// Base of the BSC0 registers.
 /// Available after bcm2835_init has been called
 //extern volatile uint32_t *bcm2835_bsc0;
