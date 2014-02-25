@@ -160,7 +160,7 @@ JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative
     }
     if (mask != NULL) {
         uint32_t ni;
-        jbyte *maskBody = env->GetPrimitiveArrayCritical( mask, 0);
+        jbyte *maskBody = (jbyte*)env->GetPrimitiveArrayCritical( mask, 0);
         for (i = 0; i < readCount; ++i) {
             for (ni = 0; ni < width; ++i) {
                 int index = (i*width)+ni+(offset*width);
