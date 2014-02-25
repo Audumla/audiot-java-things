@@ -967,7 +967,7 @@ uint8_t bcm2835_i2c_write_read_rs(char* cmds, uint32_t cmds_len, char* buf, uint
 
     bcm2835_peri_set_bits(control, BCM2835_BSC_S_DONE , BCM2835_BSC_S_DONE);
 
-    if (lenTr) *lenTr = len - remaining;
+    if (lenTr) *lenTr = buf_len - remaining;
     return reason;
 }
 
