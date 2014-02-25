@@ -95,9 +95,9 @@ public class RPiI2cTest {
         assert freq02 == 40000;
 
         freq1 = RPiI2CNative.getClock(1);
-        assert freq1 == 400000;
+        Assert.assertEquals(400000,freq1);
         freq0 = RPiI2CNative.getClock(0);
-        assert freq0 == 200000;
+        Assert.assertEquals(200000,freq0);
     }
 
     @Test
