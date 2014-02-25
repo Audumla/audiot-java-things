@@ -602,7 +602,7 @@ void bcm2835_spi_setChipSelectPolarity(uint8_t cs, uint8_t active)
     bcm2835_peri_set_bits(paddr, active << shift, 1 << shift);
 }
 
-void bcm2835_i2c_begin(uint8_t bus = default_i2c_bus)
+void bcm2835_i2c_begin(uint8_t bus)
 {
     volatile uint32_t* paddr = bcm2835_bsc[bus].paddr + BCM2835_BSC_DIV/4;
     bcm2835_gpio_fsel(bcm2835_bsc[bus].sda, BCM2835_GPIO_FSEL_ALT0); // SDA
@@ -615,14 +615,14 @@ void bcm2835_i2c_begin(uint8_t bus = default_i2c_bus)
     bcm2835_bsc[bus].wait_us = ((float)cdiv / BCM2835_CORE_CLK_HZ) * 1000000 * 9;
 }
 
-void bcm2835_i2c_end(uint8_t bus = default_i2c_bus)
+void bcm2835_i2c_end(uint8_t bus)
 {
     // Set all the I2C/BSC0 pins back to input
     bcm2835_gpio_fsel(bcm2835_bsc[bus].sda, BCM2835_GPIO_FSEL_INPT); // SDA
     bcm2835_gpio_fsel(bcm2835_bsc[bus].scl, BCM2835_GPIO_FSEL_INPT); // SCL
 }
 
-void bcm2835_i2c_setSlaveAddress(uint8_t addr, uint8_t bus = default_i2c_bus)
+void bcm2835_i2c_setSlaveAddress(uint8_t addr, uint8_t bus)
 {
 	// Set I2C Device Address
 	volatile uint32_t* paddr = bcm2835_bsc[bus].paddr + BCM2835_BSC_A/4;
@@ -632,7 +632,7 @@ void bcm2835_i2c_setSlaveAddress(uint8_t addr, uint8_t bus = default_i2c_bus)
 // defaults to 0x5dc, should result in a 166.666 kHz I2C clock frequency.
 // The divisor must be a power of 2. Odd numbers
 // rounded down.
-void bcm2835_i2c_setClockDivider(uint16_t divider, uint8_t bus = default_i2c_bus)
+void bcm2835_i2c_setClockDivider(uint16_t divider, uint8_t bus)
 {
     volatile uint32_t* paddr = bcm2835_bsc[bus].paddr + BCM2835_BSC_DIV/4;
     bcm2835_peri_write(paddr, divider);
@@ -643,7 +643,7 @@ void bcm2835_i2c_setClockDivider(uint16_t divider, uint8_t bus = default_i2c_bus
 }
 
 // set I2C clock divider by means of a baudrate number
-void bcm2835_i2c_set_baudrate(uint32_t baudrate, uint8_t bus = default_i2c_bus)
+void bcm2835_i2c_set_baudrate(uint32_t baudrate, uint8_t bus)
 {
 	uint32_t divider;
 	// use 0xFFFE mask to limit a max value and round down any odd number
@@ -652,14 +652,14 @@ void bcm2835_i2c_set_baudrate(uint32_t baudrate, uint8_t bus = default_i2c_bus)
 }
 
 // \return the baudrate
-uint32_t bcm2835_i2c_get_baudrate(uint8_t bus = default_i2c_bus) {
+uint32_t bcm2835_i2c_get_baudrate(uint8_t bus) {
     volatile uint32_t* paddr = bcm2835_bsc[bus].paddr + BCM2835_BSC_DIV/4;
     uint16_t divider = bcm2835_peri_read(paddr);
     return BCM2835_CORE_CLK_HZ / divider;
 }
 
 // Writes an number of bytes to I2C
-uint8_t bcm2835_i2c_write(const char * buf, uint32_t len, uint8_t bus = default_i2c_bus, uint32_t *lenTr = NULL)
+uint8_t bcm2835_i2c_write(const char * buf, uint32_t len, uint8_t bus, uint32_t *lenTr)
 {
     volatile uint32_t* dlen    = bcm2835_bsc[bus].paddr + BCM2835_BSC_DLEN/4;
     volatile uint32_t* fifo    = bcm2835_bsc[bus].paddr + BCM2835_BSC_FIFO/4;
@@ -723,7 +723,7 @@ uint8_t bcm2835_i2c_write(const char * buf, uint32_t len, uint8_t bus = default_
 }
 
 // Read an number of bytes from I2C
-uint8_t bcm2835_i2c_read(char* buf, uint32_t len, uint8_t bus = default_i2c_bus, uint32_t *lenTr = NULL)
+uint8_t bcm2835_i2c_read(char* buf, uint32_t len, uint8_t bus, uint32_t *lenTr)
 {
     volatile uint32_t* dlen    = bcm2835_bsc[bus].paddr + BCM2835_BSC_DLEN/4;
     volatile uint32_t* fifo    = bcm2835_bsc[bus].paddr + BCM2835_BSC_FIFO/4;
@@ -791,7 +791,7 @@ uint8_t bcm2835_i2c_read(char* buf, uint32_t len, uint8_t bus = default_i2c_bus,
 
 // Read an number of bytes from I2C sending a repeated start after writing
 // the required register. Only works if your device supports this mode
-uint8_t bcm2835_i2c_read_register_rs(char* regaddr, char* buf, uint32_t len, uint8_t bus = default_i2c_bus, uint32_t *lenTr = NULL)
+uint8_t bcm2835_i2c_read_register_rs(char* regaddr, char* buf, uint32_t len, uint8_t bus, uint32_t *lenTr)
 {   
     volatile uint32_t* dlen    = bcm2835_bsc[bus].paddr + BCM2835_BSC_DLEN/4;
     volatile uint32_t* fifo    = bcm2835_bsc[bus].paddr + BCM2835_BSC_FIFO/4;
@@ -876,7 +876,7 @@ uint8_t bcm2835_i2c_read_register_rs(char* regaddr, char* buf, uint32_t len, uin
 
 // Sending an arbitrary number of bytes before issuing a repeated start 
 // (with no prior stop) and reading a response. Some devices require this behavior.
-uint8_t bcm2835_i2c_write_read_rs(char* cmds, uint32_t cmds_len, char* buf, uint32_t buf_len, uint8_t bus = default_i2c_bus, uint32_t *lenTr = NULL)
+uint8_t bcm2835_i2c_write_read_rs(char* cmds, uint32_t cmds_len, char* buf, uint32_t buf_len, uint8_t bus, uint32_t *lenTr)
 {   
     volatile uint32_t* dlen    = bcm2835_bsc[bus].paddr + BCM2835_BSC_DLEN/4;
     volatile uint32_t* fifo    = bcm2835_bsc[bus].paddr + BCM2835_BSC_FIFO/4;
@@ -1190,7 +1190,6 @@ int bcm2835_close(void)
 #endif
 }    
 
-
 // return the hardware revision
 uint8_t gpioHardwareRevision(void)
 {
@@ -1198,7 +1197,6 @@ uint8_t gpioHardwareRevision(void)
    FILE * filp;
    char buf[512];
    char term;
-   DBG(DBG_USER, "");
    if (rev) return rev;
    filp = fopen ("/proc/cpuinfo", "r");
    if (filp != NULL)
