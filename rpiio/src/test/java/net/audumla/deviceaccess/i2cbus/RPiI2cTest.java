@@ -83,16 +83,21 @@ public class RPiI2cTest {
 
     @Test
     public void testFrequency() throws Exception {
-        int freq = RPiI2CNative.getClock(1);
-        int freq2 = RPiI2CNative.setClock(1,10000);
-        assert freq2 == freq;
-        freq2 = RPiI2CNative.setClock(1,400000);
-        assert freq2 == 10000;
-        freq = RPiI2CNative.getClock(0);
-        freq2 = RPiI2CNative.setClock(0,40000);
-        assert freq2 == freq;
-        freq2 = RPiI2CNative.setClock(0,200000);
-        assert freq2 == 40000;
+        int freq1 = RPiI2CNative.getClock(1);
+        int freq12 = RPiI2CNative.setClock(1,10000);
+        assert freq12 == freq;
+        freq12 = RPiI2CNative.setClock(1,400000);
+        assert freq12 == 10000;
+        int freq0 = RPiI2CNative.getClock(0);
+        int freq02 = RPiI2CNative.setClock(0,40000);
+        assert freq02 == freq;
+        freq02 = RPiI2CNative.setClock(0,200000);
+        assert freq02 == 40000;
+
+        freq1 = RPiI2CNative.getClock(1);
+        assert freq1 == 400000;
+        freq0 = RPiI2CNative.getClock(0);
+        assert freq0 == 200000;
     }
 
     @Test
