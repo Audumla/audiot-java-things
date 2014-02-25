@@ -36,7 +36,7 @@ public class RPiI2CNative {
      * @param deviceAddress the address on the bus of the device
      * @return identifier for the i2c bus.
      */
-    public static native int  open(int bus, int deviceAddress);
+    public static native int open(int bus, int deviceAddress);
 
     /**
      * Closes linux file.
