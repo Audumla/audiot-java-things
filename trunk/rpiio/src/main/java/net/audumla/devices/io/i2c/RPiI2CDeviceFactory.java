@@ -42,7 +42,7 @@ public class RPiI2CDeviceFactory implements I2CDeviceFactory{
                     throw new IOException("Cannot open I2C Bus [/dev/i2c-" + bus + "] received " + handle);
                 }
                 deviceHandleMap.put(id, handle);
-                logger.debug("Opened Device on '/dev/i2c-" + bus + "' at Address 0x" + Integer.toHexString(address));
+                logger.debug("Opened Device on '/dev/i2c-" + bus + "' at  Address 0x" + Integer.toHexString(address));
             } else {
                 logger.debug("Found open Device on '/dev/i2c-" + bus + "' at Address 0x" + Integer.toHexString(address));
             }
