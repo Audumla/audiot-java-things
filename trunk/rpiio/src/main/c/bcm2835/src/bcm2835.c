@@ -648,7 +648,7 @@ void bcm2835_i2c_set_baudrate(uint32_t baudrate, uint8_t bus)
 	uint32_t divider;
 	// use 0xFFFE mask to limit a max value and round down any odd number
 	divider = (BCM2835_CORE_CLK_HZ / baudrate) & 0xFFFE;
-//	bcm2835_i2c_setClockDivider( bus, divider );
+	bcm2835_i2c_setClockDivider(  divider , bus);
 }
 
 // \return the baudrate
