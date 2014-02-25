@@ -112,7 +112,7 @@ JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative
     uint8_t dataBlock[width+1];
     dataBlock[0] = localAddress;
     if (mask != NULL) {
-        jbyte *maskBody = env->GetPrimitiveArrayCritical( mask, 0);
+        jbyte *maskBody = (jbyte*)env->GetPrimitiveArrayCritical( mask, 0);
         uint8_t currentData[width];
         reason = bcm2835_i2c_write((char *)&localAddress,1,bus, &lenTr);
         reason = bcm2835_i2c_read((char *)&currentData,width,bus, &lenTr);
