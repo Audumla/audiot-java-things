@@ -43,80 +43,63 @@ bcm2835_bsc_data bcm2835_bsc[2];
 
 uint8_t bcm_init = 0;
 
-// This variable allows us to test on hardware other than RPi.
+// This definition allows us to test on hardware other than RPi.
 // It prevents access to the kernel memory, and does not do any peripheral access
 // Instead it prints out what it _would_ do if debug were 0
-static uint8_t debug = 0;
+// uncomment to enable debug
+// #define DEBUG
 
 //
 // Low level register access functions
 //
 
-void  bcm2835_set_debug(uint8_t d)
-{
-    debug = d;
-}
-
 // safe read from peripheral
 uint32_t bcm2835_peri_read(volatile uint32_t* paddr)
 {
-    if (debug)
-    {
-        printf("bcm2835_peri_read  paddr %08X\n", (unsigned) paddr);
+#ifdef DEBUG
+    printf("bcm2835_peri_read  paddr %08X\n", (unsigned) paddr);
 	return 0;
-    }
-    else
-    {
+#else
 	// Make sure we dont return the _last_ read which might get lost
 	// if subsequent code changes to a different peripheral
 	uint32_t ret = *paddr;
 	*paddr; // Read without assigneing to an unused variable
 	return ret;
-    }
+#endif
 }
 
 // read from peripheral without the read barrier
 uint32_t bcm2835_peri_read_nb(volatile uint32_t* paddr)
 {
-    if (debug)
-    {
+#ifdef DEBUG
 	printf("bcm2835_peri_read_nb  paddr %08X\n", (unsigned) paddr);
 	return 0;
-    }
-    else
-    {
+#else
 	return *paddr;
-    }
+#endif
 }
 
 // safe write to peripheral
 void bcm2835_peri_write(volatile uint32_t* paddr, uint32_t value)
 {
-  if (debug)
-    {
-	printf("bcm2835_peri_write paddr %08X, value %08X\n", (unsigned) paddr, value);
-    }
-  else
-    {
-	// Make sure we don't rely on the first write, which may get
-	// lost if the previous access was to a different peripheral.
-	*paddr = value;
-	*paddr = value;
-    }
+#ifdef DEBUG
+    printf("bcm2835_peri_write paddr %08X, value %08X\n", (unsigned) paddr, value);
+#else
+// Make sure we don't rely on the first write, which may get
+// lost if the previous access was to a different peripheral.
+    *paddr = value;
+    *paddr = value;
+#endif
 }
 
 // write to peripheral without the write barrier
 void bcm2835_peri_write_nb(volatile uint32_t* paddr, uint32_t value)
 {
-    if (debug)
-    {
-	printf("bcm2835_peri_write_nb paddr %08X, value %08X\n",
-               (unsigned) paddr, value);
-    }
-    else
-    {
-	*paddr = value;
-    }
+#ifdef DEBUG
+    printf("bcm2835_peri_write_nb paddr %08X, value %08X\n", (unsigned) paddr, value);
+#else
+    *paddr = value;
+#endif
 }
 
 // Set/clear only the bits in value covered by the mask
@@ -367,10 +350,10 @@ void bcm2835_delayMicroseconds(uint64_t micros)
     
     if (micros > 450)
     {
-	t1.tv_sec = 0;
-	t1.tv_nsec = 1000 * (long)(micros - 200);
-	nanosleep(&t1, NULL);
-    }    
+        t1.tv_sec = 0;
+        t1.tv_nsec = 1000 * (long)(micros - 200);
+        nanosleep(&t1, NULL);
+    }
   
     bcm2835_st_delay(start, micros);
 }
@@ -383,18 +366,18 @@ void bcm2835_delayMicroseconds(uint64_t micros)
 void bcm2835_gpio_write(uint8_t pin, uint8_t on)
 {
     if (on)
-	bcm2835_gpio_set(pin);
+    	bcm2835_gpio_set(pin);
     else
-	bcm2835_gpio_clr(pin);
+	    bcm2835_gpio_clr(pin);
 }
 
 // Set the state of a all 32 outputs in the mask to on or off
 void bcm2835_gpio_write_multi(uint32_t mask, uint8_t on)
 {
     if (on)
-	bcm2835_gpio_set_multi(mask);
+	    bcm2835_gpio_set_multi(mask);
     else
-	bcm2835_gpio_clr_multi(mask);
+	    bcm2835_gpio_clr_multi(mask);
 }
 
 // Set the state of a all 32 outputs in the mask to the values in value
@@ -496,15 +479,13 @@ uint8_t bcm2835_spi_transfer(uint8_t value)
     bcm2835_peri_set_bits(paddr, BCM2835_SPI0_CS_TA, BCM2835_SPI0_CS_TA);
 
     // Maybe wait for TXD
-    while (!(bcm2835_peri_read(paddr) & BCM2835_SPI0_CS_TXD))
-	;
+    while (!(bcm2835_peri_read(paddr) & BCM2835_SPI0_CS_TXD));
 
     // Write to FIFO, no barrier
     bcm2835_peri_write_nb(fifo, value);
 
     // Wait for DONE to be set
-    while (!(bcm2835_peri_read_nb(paddr) & BCM2835_SPI0_CS_DONE))
-	;
+    while (!(bcm2835_peri_read_nb(paddr) & BCM2835_SPI0_CS_DONE));
 
     // Read any byte that was sent back by the slave while we sere sending to it
     uint32_t ret = bcm2835_peri_read_nb(fifo);
@@ -550,8 +531,7 @@ void bcm2835_spi_transfernb(char* tbuf, char* rbuf, uint32_t len)
         }
     }
     // Wait for DONE to be set
-    while (!(bcm2835_peri_read_nb(paddr) & BCM2835_SPI0_CS_DONE))
-	;
+    while (!(bcm2835_peri_read_nb(paddr) & BCM2835_SPI0_CS_DONE));
 
     // Set TA = 0, and also set the barrier
     bcm2835_peri_set_bits(paddr, 0, BCM2835_SPI0_CS_TA);
@@ -590,8 +570,8 @@ void bcm2835_spi_writenb(char* tbuf, uint32_t len)
     
     // Wait for DONE to be set
     while (!(bcm2835_peri_read_nb(paddr) & BCM2835_SPI0_CS_DONE)) {
-	while (bcm2835_peri_read(paddr) & BCM2835_SPI0_CS_RXD)
-		(void) bcm2835_peri_read_nb(fifo);
+        while (bcm2835_peri_read(paddr) & BCM2835_SPI0_CS_RXD)
+            (void) bcm2835_peri_read_nb(fifo);
     };
 
     // Set TA = 0, and also set the barrier
@@ -665,14 +645,14 @@ void bcm2835_i2c_set_baudrate(uint8_t bus, uint32_t baudrate)
 {
 	uint32_t divider;
 	// use 0xFFFE mask to limit a max value and round down any odd number
-	divider = (BCM2835_CORE_CLK_HZ / baudrate) & 0xFFFE;
+	divider = (BCM2835_CORE_CLK_HZ / baudrate);
 	bcm2835_i2c_setClockDivider( bus, (uint16_t)divider );
 }
 
 // \return the baudrate
 uint32_t bcm2835_i2c_get_baudrate(uint8_t bus) {
     volatile uint32_t* paddr = bcm2835_bsc[bus].paddr + BCM2835_BSC_DIV/4;
-    uint16_t divider = bcm2835_peri_read(paddr) & 0xFFFE;
+    uint16_t divider = bcm2835_peri_read(paddr);
     return BCM2835_CORE_CLK_HZ / divider;
 }
 
@@ -736,7 +716,7 @@ uint8_t bcm2835_i2c_write(uint8_t bus, const char * buf, uint32_t len, uint32_t 
     }
 
     bcm2835_peri_set_bits(control, BCM2835_BSC_S_DONE , BCM2835_BSC_S_DONE);
-    *lenTr = len - remaining;
+    if (lenTr) *lenTr = len - remaining;
     return reason;
 }
 
@@ -803,7 +783,7 @@ uint8_t bcm2835_i2c_read(uint8_t bus, char* buf, uint32_t len, uint32_t *lenTr)
 
     bcm2835_peri_set_bits(control, BCM2835_BSC_S_DONE , BCM2835_BSC_S_DONE);
 
-    *lenTr = len - remaining;
+    if (lenTr) *lenTr = len - remaining;
     return reason;
 }
 
@@ -888,7 +868,7 @@ uint8_t bcm2835_i2c_read_register_rs(uint8_t bus, char* regaddr, char* buf, uint
 
     bcm2835_peri_set_bits(control, BCM2835_BSC_S_DONE , BCM2835_BSC_S_DONE);
 
-    *lenTr = len - remaining;
+    if (lenTr) *lenTr = len - remaining;
     return reason;
 }
 
@@ -985,7 +965,7 @@ uint8_t bcm2835_i2c_write_read_rs(uint8_t bus, char* cmds, uint32_t cmds_len, ch
 
     bcm2835_peri_set_bits(control, BCM2835_BSC_S_DONE , BCM2835_BSC_S_DONE);
 
-    *lenTr = buf_len - remaining;
+    if (lenTr) *lenTr = len - remaining;
     return reason;
 }
 
@@ -1108,18 +1088,17 @@ int bcm2835_init(void)
 {
     if (bcm_init)
         return bcm_init;
-    if (debug) 
-    {
-		bcm2835_pads = (uint32_t*)BCM2835_GPIO_PADS;
-		bcm2835_clk  = (uint32_t*)BCM2835_CLOCK_BASE;
-		bcm2835_gpio = (uint32_t*)BCM2835_GPIO_BASE;
-		bcm2835_pwm  = (uint32_t*)BCM2835_GPIO_PWM;
-		bcm2835_spi0 = (uint32_t*)BCM2835_SPI0_BASE;
-		bcm2835_bsc[0].paddr = (uint32_t*)BCM2835_BSC0_BASE;
-		bcm2835_bsc[1].paddr = (uint32_t*)BCM2835_BSC1_BASE;
-		bcm2835_st   = (uint32_t*)BCM2835_ST_BASE;
-		return 1; // Success
-    }
+#ifdef DEBUG
+    bcm2835_pads = (uint32_t*)BCM2835_GPIO_PADS;
+    bcm2835_clk  = (uint32_t*)BCM2835_CLOCK_BASE;
+    bcm2835_gpio = (uint32_t*)BCM2835_GPIO_BASE;
+    bcm2835_pwm  = (uint32_t*)BCM2835_GPIO_PWM;
+    bcm2835_spi0 = (uint32_t*)BCM2835_SPI0_BASE;
+    bcm2835_bsc[0].paddr = (uint32_t*)BCM2835_BSC0_BASE;
+    bcm2835_bsc[1].paddr = (uint32_t*)BCM2835_BSC1_BASE;
+    bcm2835_st   = (uint32_t*)BCM2835_ST_BASE;
+    return 1; // Success
+#else
 	bcm2835_bsc[0].paddr = (volatile uint32_t *)MAP_FAILED;
 	bcm2835_bsc[1].paddr = (volatile uint32_t *)MAP_FAILED;
     int memfd = -1;
@@ -1187,12 +1166,15 @@ exit:
 
     bcm_init = ok;
     return ok;
+#endif
 }
 
 // Close this library and deallocate everything
 int bcm2835_close(void)
 {
-    if (debug) return 1; // Success
+#ifdef DEBUG
+    return 1; // Success
+#else
     unmapmem((void**) &bcm2835_gpio, BCM2835_BLOCK_SIZE);
     unmapmem((void**) &bcm2835_pwm,  BCM2835_BLOCK_SIZE);
     unmapmem((void**) &bcm2835_clk,  BCM2835_BLOCK_SIZE);
@@ -1203,6 +1185,7 @@ int bcm2835_close(void)
     unmapmem((void**) &bcm2835_bsc[1].paddr, BCM2835_BLOCK_SIZE);
     bcm_init = 0;
     return 1; // Success
+#endif
 }    
 
 #ifdef BCM2835_TEST
@@ -1210,8 +1193,6 @@ int bcm2835_close(void)
 // actually doing it
 int main(int argc, char **argv)
 {
-    // Be non-destructive
-    bcm2835_set_debug(1);
 
     if (!bcm2835_init())
 	return 1;
