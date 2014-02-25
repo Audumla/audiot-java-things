@@ -27,10 +27,12 @@
 // ./a.out
 //#define BCM2835_TEST
 
-// Uncommenting this define compiles alternative I2C code for the version 1 RPi
-// The P1 header I2C pins are connected to SDA0 and SCL0 on V1.
-// By default I2C code is generated for the V2 RPi which has SDA1 and SCL1 connected.
-#define I2C_V1
+// This definition allows us to test on hardware other than RPi.
+// It prevents access to the kernel memory, and does not do any peripheral access
+// Instead it prints out what it _would_ do if debug were 0
+// uncomment to enable debug
+// #define DEBUG
+
 
 // Pointers to the hardware register bases
 volatile uint32_t *bcm2835_gpio = (volatile uint32_t *)MAP_FAILED;
@@ -41,13 +43,13 @@ volatile uint32_t *bcm2835_spi0 = (volatile uint32_t *)MAP_FAILED;
 volatile uint32_t *bcm2835_st	= (volatile uint32_t *)MAP_FAILED;
 bcm2835_bsc_data bcm2835_bsc[2];
 
+// Used as the default i2c bus if none is specified when calling an I2C method
+uint8_t default_i2c_bus = 0;
+
+// This value is set to 1 if the initialization of the bcm2835 library has been
+// executed. This allows subsequent initialization calls to be ignored
 uint8_t bcm_init = 0;
 
-// This definition allows us to test on hardware other than RPi.
-// It prevents access to the kernel memory, and does not do any peripheral access
-// Instead it prints out what it _would_ do if debug were 0
-// uncomment to enable debug
-// #define DEBUG
 
 //
 // Low level register access functions
@@ -63,7 +65,7 @@ uint32_t bcm2835_peri_read(volatile uint32_t* paddr)
 	// Make sure we dont return the _last_ read which might get lost
 	// if subsequent code changes to a different peripheral
 	uint32_t ret = *paddr;
-	*paddr; // Read without assigneing to an unused variable
+	*paddr; // Read without assigning to an unused variable
 	return ret;
 #endif
 }
@@ -600,7 +602,7 @@ void bcm2835_spi_setChipSelectPolarity(uint8_t cs, uint8_t active)
     bcm2835_peri_set_bits(paddr, active << shift, 1 << shift);
 }
 
-void bcm2835_i2c_begin(uint8_t bus)
+void bcm2835_i2c_begin(uint8_t bus = default_i2c_bus)
 {
     volatile uint32_t* paddr = bcm2835_bsc[bus].paddr + BCM2835_BSC_DIV/4;
     bcm2835_gpio_fsel(bcm2835_bsc[bus].sda, BCM2835_GPIO_FSEL_ALT0); // SDA
@@ -613,14 +615,14 @@ void bcm2835_i2c_begin(uint8_t bus)
     bcm2835_bsc[bus].wait_us = ((float)cdiv / BCM2835_CORE_CLK_HZ) * 1000000 * 9;
 }
 
-void bcm2835_i2c_end(uint8_t bus)
+void bcm2835_i2c_end(uint8_t bus = default_i2c_bus)
 {
     // Set all the I2C/BSC0 pins back to input
     bcm2835_gpio_fsel(bcm2835_bsc[bus].sda, BCM2835_GPIO_FSEL_INPT); // SDA
     bcm2835_gpio_fsel(bcm2835_bsc[bus].scl, BCM2835_GPIO_FSEL_INPT); // SCL
 }
 
-void bcm2835_i2c_setSlaveAddress(uint8_t bus, uint8_t addr)
+void bcm2835_i2c_setSlaveAddress(uint8_t addr, uint8_t bus = default_i2c_bus)
 {
 	// Set I2C Device Address
 	volatile uint32_t* paddr = bcm2835_bsc[bus].paddr + BCM2835_BSC_A/4;
@@ -630,7 +632,7 @@ void bcm2835_i2c_setSlaveAddress(uint8_t bus, uint8_t addr)
 // defaults to 0x5dc, should result in a 166.666 kHz I2C clock frequency.
 // The divisor must be a power of 2. Odd numbers
 // rounded down.
-void bcm2835_i2c_setClockDivider(uint8_t bus, uint16_t divider)
+void bcm2835_i2c_setClockDivider(uint16_t divider, uint8_t bus = default_i2c_bus)
 {
     volatile uint32_t* paddr = bcm2835_bsc[bus].paddr + BCM2835_BSC_DIV/4;
     bcm2835_peri_write(paddr, divider);
@@ -641,7 +643,7 @@ void bcm2835_i2c_setClockDivider(uint8_t bus, uint16_t divider)
 }
 
 // set I2C clock divider by means of a baudrate number
-void bcm2835_i2c_set_baudrate(uint8_t bus, uint32_t baudrate)
+void bcm2835_i2c_set_baudrate(uint32_t baudrate, uint8_t bus = default_i2c_bus)
 {
 	uint32_t divider;
 	// use 0xFFFE mask to limit a max value and round down any odd number
@@ -650,14 +652,14 @@ void bcm2835_i2c_set_baudrate(uint8_t bus, uint32_t baudrate)
 }
 
 // \return the baudrate
-uint32_t bcm2835_i2c_get_baudrate(uint8_t bus) {
+uint32_t bcm2835_i2c_get_baudrate(uint8_t bus = default_i2c_bus) {
     volatile uint32_t* paddr = bcm2835_bsc[bus].paddr + BCM2835_BSC_DIV/4;
     uint16_t divider = bcm2835_peri_read(paddr);
     return BCM2835_CORE_CLK_HZ / divider;
 }
 
 // Writes an number of bytes to I2C
-uint8_t bcm2835_i2c_write(uint8_t bus, const char * buf, uint32_t len, uint32_t *lenTr)
+uint8_t bcm2835_i2c_write(const char * buf, uint32_t len, uint8_t bus = default_i2c_bus, uint32_t *lenTr = NULL)
 {
     volatile uint32_t* dlen    = bcm2835_bsc[bus].paddr + BCM2835_BSC_DLEN/4;
     volatile uint32_t* fifo    = bcm2835_bsc[bus].paddr + BCM2835_BSC_FIFO/4;
@@ -721,7 +723,7 @@ uint8_t bcm2835_i2c_write(uint8_t bus, const char * buf, uint32_t len, uint32_t 
 }
 
 // Read an number of bytes from I2C
-uint8_t bcm2835_i2c_read(uint8_t bus, char* buf, uint32_t len, uint32_t *lenTr)
+uint8_t bcm2835_i2c_read(char* buf, uint32_t len, uint8_t bus = default_i2c_bus, uint32_t *lenTr = NULL)
 {
     volatile uint32_t* dlen    = bcm2835_bsc[bus].paddr + BCM2835_BSC_DLEN/4;
     volatile uint32_t* fifo    = bcm2835_bsc[bus].paddr + BCM2835_BSC_FIFO/4;
@@ -789,7 +791,7 @@ uint8_t bcm2835_i2c_read(uint8_t bus, char* buf, uint32_t len, uint32_t *lenTr)
 
 // Read an number of bytes from I2C sending a repeated start after writing
 // the required register. Only works if your device supports this mode
-uint8_t bcm2835_i2c_read_register_rs(uint8_t bus, char* regaddr, char* buf, uint32_t len, uint32_t *lenTr)
+uint8_t bcm2835_i2c_read_register_rs(char* regaddr, char* buf, uint32_t len, uint8_t bus = default_i2c_bus, uint32_t *lenTr = NULL)
 {   
     volatile uint32_t* dlen    = bcm2835_bsc[bus].paddr + BCM2835_BSC_DLEN/4;
     volatile uint32_t* fifo    = bcm2835_bsc[bus].paddr + BCM2835_BSC_FIFO/4;
@@ -874,7 +876,7 @@ uint8_t bcm2835_i2c_read_register_rs(uint8_t bus, char* regaddr, char* buf, uint
 
 // Sending an arbitrary number of bytes before issuing a repeated start 
 // (with no prior stop) and reading a response. Some devices require this behavior.
-uint8_t bcm2835_i2c_write_read_rs(uint8_t bus, char* cmds, uint32_t cmds_len, char* buf, uint32_t buf_len, uint32_t *lenTr)
+uint8_t bcm2835_i2c_write_read_rs(char* cmds, uint32_t cmds_len, char* buf, uint32_t buf_len, uint8_t bus = default_i2c_bus, uint32_t *lenTr = NULL)
 {   
     volatile uint32_t* dlen    = bcm2835_bsc[bus].paddr + BCM2835_BSC_DLEN/4;
     volatile uint32_t* fifo    = bcm2835_bsc[bus].paddr + BCM2835_BSC_FIFO/4;
@@ -1140,20 +1142,20 @@ int bcm2835_init(void)
     bcm2835_st = (volatile uint32_t *)mapmem("st", BCM2835_BLOCK_SIZE, memfd, BCM2835_ST_BASE);
     if (bcm2835_st == MAP_FAILED) goto exit;
 
-#ifdef I2C_V1
-	bcm2835_bsc[0].scl = RPI_GPIO_P1_05;
-	bcm2835_bsc[0].sda = RPI_GPIO_P1_03;
-	
-	bcm2835_bsc[1].scl = RPI_GPIO_S5_13;
-	bcm2835_bsc[1].sda = RPI_GPIO_S5_14;
+    if (gpioHardwareRevision() < 4) {
+        bcm2835_bsc[0].scl = RPI_GPIO_P1_05;
+        bcm2835_bsc[0].sda = RPI_GPIO_P1_03;
 
-#else
-	bcm2835_bsc[0].scl = RPI_V2_GPIO_P5_04;
-	bcm2835_bsc[0].sda = RPI_V2_GPIO_P5_03;
-	
-	bcm2835_bsc[1].scl = RPI_V2_GPIO_P1_05;
-	bcm2835_bsc[1].sda = RPI_V2_GPIO_P1_03;
-#endif    
+        bcm2835_bsc[1].scl = RPI_GPIO_S5_13;
+        bcm2835_bsc[1].sda = RPI_GPIO_S5_14;
+    }
+    else {
+        bcm2835_bsc[0].scl = RPI_V2_GPIO_P5_04;
+        bcm2835_bsc[0].sda = RPI_V2_GPIO_P5_03;
+
+        bcm2835_bsc[1].scl = RPI_V2_GPIO_P1_05;
+        bcm2835_bsc[1].sda = RPI_V2_GPIO_P1_03;
+    }
 
     ok = 1;
 
@@ -1187,6 +1189,35 @@ int bcm2835_close(void)
     return 1; // Success
 #endif
 }    
+
+
+// return the hardware revision
+uint8_t gpioHardwareRevision(void)
+{
+   static unsigned rev = 0;
+   FILE * filp;
+   char buf[512];
+   char term;
+   DBG(DBG_USER, "");
+   if (rev) return rev;
+   filp = fopen ("/proc/cpuinfo", "r");
+   if (filp != NULL)
+   {
+      while (fgets(buf, sizeof(buf), filp) != NULL)
+      {
+         if (!strncasecmp("revision\t", buf, 9))
+         {
+            if (sscanf(buf+strlen(buf)-5, "%x%c", &rev, &term) == 2)
+            {
+               if (term == '\n') break;
+               rev = 0;
+            }
+         }
+      }
+      fclose(filp);
+   }
+   return rev;
+}
 
 #ifdef BCM2835_TEST
 // this is a simple test program that prints out what it will do rather than 
