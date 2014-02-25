@@ -305,6 +305,9 @@
 /// \version 1.36 Make automake's test runner detect that we're skipping tests when not root, the second
 ///               one makes us skip the test when using fakeroot (as used when building
 ///               Debian packages). Contributed by Guido Günther.
+/// \version 1.37 Added bus selection to I2C methods
+///               Replaced debug flag with #define
+///               Added transmitted length parameter to I2C functions
 ///
 /// \author  Mike McCauley (mikem@airspayce.com) DO NOT CONTACT THE AUTHOR DIRECTLY: USE THE LISTS
 
