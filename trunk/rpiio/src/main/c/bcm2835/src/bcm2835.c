@@ -44,7 +44,7 @@ volatile uint32_t *bcm2835_st	= (volatile uint32_t *)MAP_FAILED;
 bcm2835_bsc_data bcm2835_bsc[2];
 
 // Used as the default i2c bus if none is specified when calling an I2C method
-uint8_t default_i2c_bus = 0;
+uint8_t default_i2c_bus = 1;
 
 // This value is set to 1 if the initialization of the bcm2835 library has been
 // executed. This allows subsequent initialization calls to be ignored
@@ -1143,6 +1143,7 @@ int bcm2835_init(void)
     if (bcm2835_st == MAP_FAILED) goto exit;
 
     if (gpioHardwareRevision() < 4) {
+        uint8_t default_i2c_bus = 0;
         bcm2835_bsc[0].scl = RPI_GPIO_P1_05;
         bcm2835_bsc[0].sda = RPI_GPIO_P1_03;
 
