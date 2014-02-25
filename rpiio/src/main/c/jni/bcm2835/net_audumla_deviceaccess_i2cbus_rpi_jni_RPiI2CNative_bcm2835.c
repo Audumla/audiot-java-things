@@ -176,11 +176,11 @@ JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative
 JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative_setClock
   (JNIEnv *env, jclass clazz, jint bus, jint freq) {
   uint32_t of = bcm2835_i2c_get_baudrate(bus);
-  bcm2835_i2c_set_baudrate(freq);
+  bcm2835_i2c_set_baudrate(freq,bus);
   return of;
 }
 
 JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative_getClock
   (JNIEnv *env, jclass clazz, jint bus) {
-  return bcm2835_i2c_get_baudrate(bus);;
+  return bcm2835_i2c_get_baudrate(bus);
 }
