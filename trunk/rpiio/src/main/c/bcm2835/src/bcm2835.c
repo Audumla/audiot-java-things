@@ -1142,7 +1142,7 @@ int bcm2835_init(void)
     bcm2835_st = (volatile uint32_t *)mapmem("st", BCM2835_BLOCK_SIZE, memfd, BCM2835_ST_BASE);
     if (bcm2835_st == MAP_FAILED) goto exit;
 
-    if (gpioHardwareRevision() < 4) {
+    if (getHardwareRevision() < 4) {
         uint8_t default_i2c_bus = 0;
         bcm2835_bsc[0].scl = RPI_GPIO_P1_05;
         bcm2835_bsc[0].sda = RPI_GPIO_P1_03;
@@ -1192,7 +1192,7 @@ int bcm2835_close(void)
 }    
 
 // return the hardware revision
-uint8_t gpioHardwareRevision(void)
+uint8_t getHardwareRevision(void)
 {
    static unsigned rev = 0;
    FILE * filp;

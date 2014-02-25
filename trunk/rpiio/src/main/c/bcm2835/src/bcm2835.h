@@ -308,6 +308,7 @@
 /// \version 1.37 Added bus selection to I2C methods
 ///               Replaced debug flag with #define
 ///               Added transmitted length parameter to I2C functions
+///               Added getHardwareRevision method
 ///
 /// \author  Mike McCauley (mikem@airspayce.com) DO NOT CONTACT THE AUTHOR DIRECTLY: USE THE LISTS
 
@@ -1316,7 +1317,7 @@ extern "C" {
     /// for "Revision       : 0002" the function returns 2.
     /// for "Revision       : 000f" the function returns 15.
     /// for "Revision       : 000g" the function returns 0.
-    extern uint8_t gpioHardwareRevision(void);
+    extern uint8_t getHardwareRevision(void);
 
 
     /// @} 
