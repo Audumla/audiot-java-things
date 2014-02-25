@@ -80,7 +80,7 @@ JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative
     uint32_t lenTr;
     uint32_t totalLenTr = 0;
     uint8_t reason;
-    jbyte *body = env->GetPrimitiveArrayCritical( values, 0);
+    jbyte *body = (jbyte *)env->GetPrimitiveArrayCritical( values, 0);
     bcm2835_i2c_setSlaveAddress(deviceAddress);
     if (mask != 0xFF) {
         uint32_t i;
@@ -107,7 +107,7 @@ JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative
     uint32_t totalLenTr = 0;
     uint8_t reason;
     uint32_t i;
-    jbyte *body = env->GetPrimitiveArrayCritical( data, 0);
+    jbyte *body = (jbyte *)env->GetPrimitiveArrayCritical( data, 0);
     bcm2835_i2c_setSlaveAddress(deviceAddress);
     uint8_t dataBlock[width+1];
     dataBlock[0] = localAddress;
@@ -139,7 +139,7 @@ JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative
 
 JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative_read__IIII_3BB(JNIEnv *env, jclass clazz, jint bus, jint deviceAddress, jint offset, jint readCount, jbyteArray data, jbyte mask) {
     uint32_t lenTr;
-    jbyte *body = env->GetPrimitiveArrayCritical( data, 0);
+    jbyte *body = (jbyte *)env->GetPrimitiveArrayCritical( data, 0);
     bcm2835_i2c_setSlaveAddress(deviceAddress);
     uint8_t reason = bcm2835_i2c_read((char *)body,readCount,bus, &lenTr);
     env->ReleasePrimitiveArrayCritical( data, body, 0);
@@ -151,7 +151,7 @@ JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative
     uint32_t i;
     uint32_t lenTr;
     uint8_t reason;
-    jbyte *body = env->GetPrimitiveArrayCritical( data, 0);
+    jbyte *body = (jbyte *)env->GetPrimitiveArrayCritical( data, 0);
     bcm2835_i2c_setSlaveAddress(deviceAddress);
     for (i = 0; i < readCount; ++i) {
         reason = bcm2835_i2c_write((char *)&localAddress,1,bus, &lenTr);
