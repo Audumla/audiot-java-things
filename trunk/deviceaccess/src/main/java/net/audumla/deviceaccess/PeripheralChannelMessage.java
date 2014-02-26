@@ -163,7 +163,7 @@ public interface PeripheralChannelMessage extends ByteChannel {
      * @param size       the number of bytes to write from the txBuffer supplied as part of the transfer call
      * @return the ChannelMessage instance
      */
-    PeripheralChannelMessage appendWrite(WritablePeripheralChannel channel, int size);
+    PeripheralChannelMessage appendSizedWrite(WritablePeripheralChannel channel, int size);
 
     /**
      * Appends a fixed sized read to the message. This method is only applicable when a rxBuffer is supplied to the transfer
@@ -175,7 +175,7 @@ public interface PeripheralChannelMessage extends ByteChannel {
      * @param size       the number of bytes to read into the rxBuffer supplied as part of the transfer call
      * @return the ChannelMessage instance
      */
-    PeripheralChannelMessage appendRead(ReadablePeripheralChannel channel, int size);
+    PeripheralChannelMessage appendSizedRead(ReadablePeripheralChannel channel, int size);
 
     /**
      * Appends a fixed duration wait to the message. This allows the message to pause while underlying devices complete writes
