@@ -158,7 +158,7 @@ public class RPiI2cTest {
             Activator power = getPower(6, 7, rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO1));
             I2CDevice dev = createI2CDevice();
             PeripheralChannel d = dev.getChannel();
-            int repeat = 5;
+            int repeat = 2;
             d.write(0xff);
             power.setState(ActivatorState.ACTIVATED);
             byte[] bytes = new byte[8 * repeat];
