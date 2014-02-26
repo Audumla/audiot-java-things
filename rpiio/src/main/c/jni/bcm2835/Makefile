@@ -7,7 +7,7 @@ TARGET=audumlaRPiI2C_bcm2835.so
 
 #DEBUG	= -g -O0
 DEBUG	= -O3
-CC	= g++
+CC	= gcc
 INCLUDE	= -I. -I/$(JAVA_HOME)/include -I/usr/local/include -I. -I/$(JAVA_HOME)/include/linux -I/usr/local/include/linux -I../../bcm2835/src -I..
 CFLAGS	= $(DEBUG) -Wall $(INCLUDE) -Winline -pipe
 
