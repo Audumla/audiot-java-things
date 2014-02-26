@@ -378,8 +378,10 @@ extern volatile uint32_t *bcm2835_pads;
 /// Available after bcm2835_init has been called
 extern volatile uint32_t *bcm2835_spi0;
 
-// Used as the default i2c bus if none is specified when calling an I2C method
-extern uint8_t default_i2c_bus;
+/// The primary and secondary i2c bus.
+/// Set based on the RaspberryPi board revision
+extern uint8_t primary_i2c_bus;
+extern uint8_t secondary_i2c_bus;
 
 /// Base of the BSC0 registers.
 /// Available after bcm2835_init has been called
@@ -1173,24 +1175,24 @@ extern "C" {
     /// You should call bcm2835_i2c_end() when all I2C functions are complete to return the pins to
     /// their default functions
     /// \param[in] bus The i2c bus number to perform the operation on
-    extern void bcm2835_i2c_begin(uint8_t bus);
+    extern void bcm2835_i2c_begin(uint8_t bus = primary_i2c_bus);
 
     /// End I2C operations.
     /// I2C pins P1-03 (SDA) and P1-05 (SCL)
     /// are returned to their default INPUT behaviour.
     /// \param[in] bus The i2c bus number to perform the operation on
-    extern void bcm2835_i2c_end(uint8_t bus);
+    extern void bcm2835_i2c_end(uint8_t bus = primary_i2c_bus);
 
     /// Sets the I2C slave address.
     /// \param[in] addr The I2C slave address.
     /// \param[in] bus The i2c bus number to perform the operation on
-    extern void bcm2835_i2c_setSlaveAddress(uint8_t addr, uint8_t bus);
+    extern void bcm2835_i2c_setSlaveAddress(uint8_t addr, uint8_t bus = primary_i2c_bus);
 
     /// Sets the I2C clock divider and therefore the I2C clock speed.
     /// \param[in] divider The desired I2C clock divider, one of BCM2835_I2C_CLOCK_DIVIDER_*,
     /// see \ref bcm2835I2CClockDivider
     /// \param[in] bus The i2c bus number to perform the operation on
-    extern void bcm2835_i2c_setClockDivider(uint16_t divider, uint8_t bus);
+    extern void bcm2835_i2c_setClockDivider(uint16_t divider, uint8_t bus = primary_i2c_bus);
 
     /// Sets the I2C clock divider by converting the baudrate parameter to
     /// the equivalent I2C clock divider. ( see \sa bcm2835_i2c_setClockDivider)
@@ -1198,13 +1200,13 @@ extern "C" {
     /// The use of baudrate corresponds to its use in the I2C kernel device
     /// driver. (Of course, bcm2835 has nothing to do with the kernel driver)
     /// \param[in] bus The i2c bus number to perform the operation on
-    extern void bcm2835_i2c_set_baudrate(uint32_t baudrate, uint8_t bus);
+    extern void bcm2835_i2c_set_baudrate(uint32_t baudrate, uint8_t bus = primary_i2c_bus);
 
     /// Gets the baudrate currently set for the given bus
     /// The use of baudrate corresponds to its use in the I2C kernel device
     /// driver. (Of course, bcm2835 has nothing to do with the kernel driver)
     /// \return the baudrate
-    extern uint32_t bcm2835_i2c_get_baudrate(uint8_t bus);
+    extern uint32_t bcm2835_i2c_get_baudrate(uint8_t bus = primary_i2c_bus);
 
     /// Transfers any number of bytes to the currently selected I2C slave.
     /// (as previously set by \sa bcm2835_i2c_setSlaveAddress)
@@ -1214,7 +1216,7 @@ extern "C" {
     /// \param[in] len Number of bytes in the buf buffer, and the number of bytes to send.
     /// \param[in] lenTr Number of bytes actually transmitted.
 	/// \return reason see \ref bcm2835I2CReasonCodes
-    extern uint8_t bcm2835_i2c_write(const char * buf, uint32_t len, uint8_t bus, uint32_t *lenTr);
+    extern uint8_t bcm2835_i2c_write(const char * buf, uint32_t len, uint8_t bus = primary_i2c_bus, uint32_t *lenTr = NULL);
 
     /// Transfers any number of bytes from the currently selected I2C slave.
     /// (as previously set by \sa bcm2835_i2c_setSlaveAddress)
@@ -1222,7 +1224,7 @@ extern "C" {
     /// \param[in] len Number of bytes in the buf buffer, and the number of bytes to received.
     /// \param[in] lenTr Number of bytes actually transmitted.
 	/// \return reason see \ref bcm2835I2CReasonCodes
-    extern uint8_t bcm2835_i2c_read(char* buf, uint32_t len, uint8_t bus, uint32_t *lenTr);
+    extern uint8_t bcm2835_i2c_read(char* buf, uint32_t len, uint8_t bus = primary_i2c_bus, uint32_t *lenTr = NULL);
 
     /// Allows reading from I2C slaves that require a repeated start (without any prior stop)
     /// to read after the required slave register has been set. For example, the popular
@@ -1239,7 +1241,7 @@ extern "C" {
     /// \param[in] len Number of bytes in the buf buffer, and the number of bytes to received.
     /// \param[in] lenTr Number of bytes actually transmitted.
 	/// \return reason see \ref bcm2835I2CReasonCodes
-    extern uint8_t bcm2835_i2c_read_register_rs(char* regaddr, char* buf, uint32_t len, uint8_t bus, uint32_t *lenTr);
+    extern uint8_t bcm2835_i2c_read_register_rs(char* regaddr, char* buf, uint32_t len, uint8_t bus = primary_i2c_bus, uint32_t *lenTr = NULL);
 
     /// Allows sending an arbitrary number of bytes to I2C slaves before issuing a repeated
     /// start (with no prior stop) and reading a response.
@@ -1252,7 +1254,7 @@ extern "C" {
     /// \param[in] buf_len Number of bytes to receive in the buf buffer.
     /// \param[in] lenTr Number of bytes actually transmitted.
 	/// \return reason see \ref bcm2835I2CReasonCodes
-    extern uint8_t bcm2835_i2c_write_read_rs(char* cmds, uint32_t cmds_len, char* buf, uint32_t buf_len, uint8_t bus, uint32_t *lenTr);
+    extern uint8_t bcm2835_i2c_write_read_rs(char* cmds, uint32_t cmds_len, char* buf, uint32_t buf_len, uint8_t bus = primary_i2c_bus, uint32_t *lenTr = NULL);
 
     /// @}
 
