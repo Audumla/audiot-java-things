@@ -39,12 +39,12 @@
 
 
 // Pointers to the hardware register bases
-volatile uint32_t *bcm2835_gpio = (const volatile uint32_t *)MAP_FAILED;
-volatile uint32_t *bcm2835_pwm  = (const volatile uint32_t *)MAP_FAILED;
-volatile uint32_t *bcm2835_clk  = (const volatile uint32_t *)MAP_FAILED;
-volatile uint32_t *bcm2835_pads = (const volatile uint32_t *)MAP_FAILED;
-volatile uint32_t *bcm2835_spi0 = (const volatile uint32_t *)MAP_FAILED;
-volatile uint32_t *bcm2835_st	= (const volatile uint32_t *)MAP_FAILED;
+volatile uint32_t *bcm2835_gpio = (volatile uint32_t *)MAP_FAILED;
+volatile uint32_t *bcm2835_pwm  = (volatile uint32_t *)MAP_FAILED;
+volatile uint32_t *bcm2835_clk  = (volatile uint32_t *)MAP_FAILED;
+volatile uint32_t *bcm2835_pads = (volatile uint32_t *)MAP_FAILED;
+volatile uint32_t *bcm2835_spi0 = (volatile uint32_t *)MAP_FAILED;
+volatile uint32_t *bcm2835_st	= (volatile uint32_t *)MAP_FAILED;
 bcm2835_bsc_data bcm2835_bsc[2];
 
 // Used as the default i2c bus if none is specified when calling an I2C method
@@ -1104,8 +1104,8 @@ int bcm2835_init(void)
     bcm2835_st   = (uint32_t*)BCM2835_ST_BASE;
     return 1; // Success
 #else
-	bcm2835_bsc[0].paddr = (const volatile uint32_t *)MAP_FAILED;
-	bcm2835_bsc[1].paddr = (const volatile uint32_t *)MAP_FAILED;
+	bcm2835_bsc[0].paddr = (volatile uint32_t *)MAP_FAILED;
+	bcm2835_bsc[1].paddr = (volatile uint32_t *)MAP_FAILED;
     int memfd = -1;
     int ok = 0;
     // Open the master /dev/memory device
@@ -1117,32 +1117,32 @@ int bcm2835_init(void)
     }
 	
     // GPIO:
-    bcm2835_gpio = (const volatile uint32_t *)mapmem("gpio", BCM2835_BLOCK_SIZE, memfd, BCM2835_GPIO_BASE);
+    bcm2835_gpio = (volatile uint32_t *)mapmem("gpio", BCM2835_BLOCK_SIZE, memfd, BCM2835_GPIO_BASE);
     if (bcm2835_gpio == MAP_FAILED) goto exit;
 
     // PWM
-    bcm2835_pwm = (const volatile uint32_t *)mapmem("pwm", BCM2835_BLOCK_SIZE, memfd, BCM2835_GPIO_PWM);
+    bcm2835_pwm = (volatile uint32_t *)mapmem("pwm", BCM2835_BLOCK_SIZE, memfd, BCM2835_GPIO_PWM);
     if (bcm2835_pwm == MAP_FAILED) goto exit;
 
     // Clock control (needed for PWM)
-    bcm2835_clk = (const volatile uint32_t *)mapmem("clk", BCM2835_BLOCK_SIZE, memfd, BCM2835_CLOCK_BASE);
+    bcm2835_clk = (volatile uint32_t *)mapmem("clk", BCM2835_BLOCK_SIZE, memfd, BCM2835_CLOCK_BASE);
     if (bcm2835_clk == MAP_FAILED) goto exit;
     
-    bcm2835_pads = (const volatile uint32_t *)mapmem("pads", BCM2835_BLOCK_SIZE, memfd, BCM2835_GPIO_PADS);
+    bcm2835_pads = (volatile uint32_t *)mapmem("pads", BCM2835_BLOCK_SIZE, memfd, BCM2835_GPIO_PADS);
     if (bcm2835_pads == MAP_FAILED) goto exit;
     
-    bcm2835_spi0 = (const volatile uint32_t *)mapmem("spi0", BCM2835_BLOCK_SIZE, memfd, BCM2835_SPI0_BASE);
+    bcm2835_spi0 = (volatile uint32_t *)mapmem("spi0", BCM2835_BLOCK_SIZE, memfd, BCM2835_SPI0_BASE);
     if (bcm2835_spi0 == MAP_FAILED) goto exit;
 
     // I2C
-    bcm2835_bsc[0].paddr = (const volatile uint32_t *)mapmem("bsc0", BCM2835_BLOCK_SIZE, memfd, BCM2835_BSC0_BASE);
+    bcm2835_bsc[0].paddr = (volatile uint32_t *)mapmem("bsc0", BCM2835_BLOCK_SIZE, memfd, BCM2835_BSC0_BASE);
     if (bcm2835_bsc[0].paddr == MAP_FAILED) goto exit;
 
-    bcm2835_bsc[1].paddr = (const volatile uint32_t *)mapmem("bsc1", BCM2835_BLOCK_SIZE, memfd, BCM2835_BSC1_BASE);
+    bcm2835_bsc[1].paddr = (volatile uint32_t *)mapmem("bsc1", BCM2835_BLOCK_SIZE, memfd, BCM2835_BSC1_BASE);
     if (bcm2835_bsc[1].paddr == MAP_FAILED) goto exit;
 
     // ST
-    bcm2835_st = (const volatile uint32_t *)mapmem("st", BCM2835_BLOCK_SIZE, memfd, BCM2835_ST_BASE);
+    bcm2835_st = (volatile uint32_t *)mapmem("st", BCM2835_BLOCK_SIZE, memfd, BCM2835_ST_BASE);
     if (bcm2835_st == MAP_FAILED) goto exit;
 
     if (getHardwareRevision() < 4) {
