@@ -324,6 +324,9 @@
 /// The values here are designed to be passed to various functions in the bcm2835 library.
 /// @{
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /// This means pin HIGH, true, 3.3volts on a pin.
 #define HIGH 0x1
@@ -789,9 +792,6 @@ typedef enum
 #define delayMicroseconds(x) bcm2835_delayMicroseconds(x)
 #endif
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
     /// \defgroup init Library initialisation and management
     /// These functions allow you to intialise and control the bcm2835 library

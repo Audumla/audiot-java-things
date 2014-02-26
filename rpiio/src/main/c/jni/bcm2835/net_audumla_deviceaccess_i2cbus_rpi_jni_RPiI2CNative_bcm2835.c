@@ -29,7 +29,7 @@ JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative
     uint32_t lenTr;
     uint8_t reason;
     bcm2835_i2c_setSlaveAddress(deviceAddress,bus);
-    bcm2835_i2c_write((char *)&localAddress,1,bus, &lenTr);
+    bcm2835_i2c_write((char *) &localAddress,1,bus, &lenTr);
     if (mask != 0xFF) {
         char data;
         reason = bcm2835_i2c_read(&data,1,bus, &lenTr);
@@ -184,3 +184,4 @@ JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative
   (JNIEnv *env, jclass clazz, jint bus) {
   return bcm2835_i2c_get_baudrate(bus);
 }
+
