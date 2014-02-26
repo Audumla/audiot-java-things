@@ -178,7 +178,7 @@ public class RPiI2cTest {
                 b.rewind();
                 for (int i = 0; i < bytes.length/dev.getDeviceWidth(); ++i) {
                     int v = d.write(b,i*dev.getDeviceWidth(),1);
-                    assert v == 1;
+                    assert v == 4;
                     wait(15);
                 }
             }
@@ -202,7 +202,7 @@ public class RPiI2cTest {
             I2CDevice dev = createI2CDevice();
             PeripheralChannel d = dev.getChannel();
             DefaultPeripheralChannelMessage message = new DefaultPeripheralChannelMessage();
-            int repeat = 5;
+            int repeat = 2;
             d.write(0xff);
             byte[] bytes = new byte[8 * repeat];
             power.setState(ActivatorState.ACTIVATED);
@@ -216,14 +216,14 @@ public class RPiI2cTest {
                 }
             }
             Collection<PeripheralChannelMessage.MessageChannelResult> results = message.transfer();
-            assert results.size() == 40;
+            assert results.size() == 8 * repeat;
             ByteBuffer b = ByteBuffer.wrap(bytes);
             results = message.transfer(b,null);
-            assert results.size() == 40;
+            assert results.size() == 8 * repeat;
             results.forEach(r -> {assert r.getValue() == 1;});
             b.rewind();
             int len = message.write(b);
-            assert len == 40;
+            assert len == 8 * repeat;
         }
     }
 
