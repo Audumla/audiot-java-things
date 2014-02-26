@@ -210,7 +210,7 @@ public class RPiI2cTest {
                 byte val = (byte) 0x01;
                 for (int i = 0; i < 8; ++i) {
                     bytes[(c * 8) + i] = (byte) ~val;
-                    message.appendSizedWrite(d, ~val);
+                    message.appendWrite(d, (byte)~val);
                     message.appendWait(Duration.ofMillis(20));
                     val = (byte) (val << 1);
                 }
