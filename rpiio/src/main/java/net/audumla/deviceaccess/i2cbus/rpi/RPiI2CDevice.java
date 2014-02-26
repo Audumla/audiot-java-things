@@ -253,7 +253,15 @@ public class RPiI2CDevice implements I2CDevice {
         public int write(ByteBuffer dst, int offset, int size) throws IOException {
             if (dst.hasArray()) {
                 int len = RPiI2CNative.write(handle, address, offset, size * getDeviceWidth(), dst.array(), mask == null ? (byte) 0xff : mask[0]);
-                dst.position(dst.position()+len);
+                if (len != size) {
+                    if (len < 0) {
+                        throw new IOException("Write error length - "+len );
+                    }
+                    dst.position(dst.position()+len);
+                }
+                else {
+                    dst.position(dst.position()+len);
+                }
                 return len;
             } else {
                 throw new IOException("Cannot operate on non array backed ByteBuffer");
