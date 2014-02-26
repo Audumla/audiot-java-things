@@ -85,7 +85,7 @@ public class RPiI2cTest {
         return device;
     }
 
-//    @Test
+    @Test
     public void testFrequency() throws Exception {
         int freq1 = RPiI2CNative.getClock(1);
         int freq12 = RPiI2CNative.setClock(1,10000);
@@ -104,7 +104,7 @@ public class RPiI2cTest {
         Assert.assertEquals(200000,freq0,1000);
     }
 
-//    @Test
+    @Test
     public void PCF8574readwrite8() throws Exception {
         PeripheralChannel d = createI2CDevice().getChannel();
         byte val = (byte) 0x01;
@@ -114,7 +114,7 @@ public class RPiI2cTest {
         Assert.assertEquals(~val, d.read());
     }
 
-//    @Test
+    @Test
     public void PCF8574RWMask8() throws Exception {
         PeripheralChannel d = createI2CDevice().getChannel();
         d.write((byte) 0x00);
@@ -127,7 +127,7 @@ public class RPiI2cTest {
         Assert.assertEquals(~val & 0x0f, d.read());
     }
 
-//    @Test
+    @Test
     public void testPCF8574StreamMask() throws Exception {
         synchronized (this) {
             PeripheralChannel d = createI2CDevice().getChannel();
@@ -140,7 +140,7 @@ public class RPiI2cTest {
                 byte val = (byte) 0x01;
                 for (int i = 0; i < 8; ++i) {
                     d.write((byte) ~val);
-                    wait(50);
+                    wait(10);
                     val = (byte) (val << 1);
                 }
                 d.setMask(~0xf0);
@@ -152,7 +152,7 @@ public class RPiI2cTest {
         }
     }
 
-//    @Test
+    @Test
     public void testPCF8574Direct() throws Exception {
         synchronized (this) {
             Activator power = getPower(6, 7, rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO1));
@@ -167,7 +167,7 @@ public class RPiI2cTest {
                 for (int i = 0; i < 8; ++i) {
                     bytes[(c * 8) + i] = (byte) ~val;
                     d.write((byte) ~val);
-                    wait(20);
+                    wait(10);
                     val = (byte) (val << 1);
                 }
             }
@@ -177,7 +177,7 @@ public class RPiI2cTest {
             for (int n = 0; n < 4; ++n) {
                 for (int i = 0; i < bytes.length/dev.getDeviceWidth(); ++i) {
                     int v = d.write(b,i*dev.getDeviceWidth(),1);
-                    wait(50);
+                    wait(15);
                 }
             }
             dev.setDeviceWidth(1);
@@ -194,7 +194,7 @@ public class RPiI2cTest {
     }
 
     @Test
-    public void testPCF8574ChannelMessage() throws Exception {
+    public void testPCF8574ChannelMessageWrite() throws Exception {
         synchronized (this) {
             Activator power = getPower(6, 7, rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO1));
             I2CDevice dev = createI2CDevice();
@@ -222,6 +222,43 @@ public class RPiI2cTest {
             b.rewind();
             int len = message.write(b);
             assert len == 40;
+        }
+    }
+
+
+    @Test
+    public void testPCF8574ChannelMessageReadWrite() throws Exception {
+        synchronized (this) {
+            Activator power = getPower(6, 7, rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO1));
+            I2CDevice dev = createI2CDevice();
+            PeripheralChannel d = dev.getChannel();
+            DefaultPeripheralChannelMessage message = new DefaultPeripheralChannelMessage();
+            d.write(0xff);
+            byte[] bytes = new byte[8];
+            ByteBuffer rx = ByteBuffer.allocate(1024);
+            power.setState(ActivatorState.ACTIVATED);
+            byte val = (byte) 0x01;
+            for (int i = 0; i < 8; ++i) {
+                bytes[i] = (byte) ~val;
+                message.appendWrite(d, (byte)~val);
+                message.appendSizedRead(d,1);
+                message.appendWait(Duration.ofMillis(10));
+                val = (byte) (val << 1);
+            }
+            Collection<PeripheralChannelMessage.MessageChannelResult> results = message.transfer();
+            assert results.size() == 16;
+            ByteBuffer b = ByteBuffer.wrap(bytes);
+            results = message.transfer(b,rx);
+            assert results.size() == 16;
+            rx.flip();
+            assert rx.limit() == 8;
+            for (int i =0; i < rx.limit(); ++i) {
+                assert rx.get(i) == b.get(i);
+            }
+            results.forEach(r -> {assert r.getValue() == 1;});
+            b.rewind();
+            int len = message.write(b);
+            assert len == 16;
         }
     }
 }
