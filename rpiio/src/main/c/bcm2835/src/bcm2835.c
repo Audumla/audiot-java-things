@@ -27,6 +27,10 @@
 // ./a.out
 //#define BCM2835_TEST
 
+#ifdef BCM2835_TEST
+#define DEBUG
+#endif
+
 // This definition allows us to test on hardware other than RPi.
 // It prevents access to the kernel memory, and does not do any peripheral access
 // Instead it prints out what it _would_ do if debug were 0
@@ -1141,7 +1145,8 @@ int bcm2835_init(void)
     if (bcm2835_st == MAP_FAILED) goto exit;
 
     if (getHardwareRevision() < 4) {
-        uint8_t default_i2c_bus = 0;
+        primary_i2c_bus = 0;
+        secondary_i2c_bus = 1
         bcm2835_bsc[0].scl = RPI_GPIO_P1_05;
         bcm2835_bsc[0].sda = RPI_GPIO_P1_03;
 
@@ -1149,6 +1154,9 @@ int bcm2835_init(void)
         bcm2835_bsc[1].sda = RPI_GPIO_S5_14;
     }
     else {
+        primary_i2c_bus = 1;
+        secondary_i2c_bus = 0
+
         bcm2835_bsc[0].scl = RPI_V2_GPIO_P5_04;
         bcm2835_bsc[0].sda = RPI_V2_GPIO_P5_03;
 
