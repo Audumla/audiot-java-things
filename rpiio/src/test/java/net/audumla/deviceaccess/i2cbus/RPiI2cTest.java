@@ -178,19 +178,20 @@ public class RPiI2cTest {
                 b.rewind();
                 for (int i = 0; i < bytes.length/dev.getDeviceWidth(); ++i) {
                     int v = d.write(b,i*dev.getDeviceWidth(),1);
+                    assert v == 1;
                     wait(15);
                 }
             }
             dev.setDeviceWidth(1);
-
+            b.rewind();
             d.write((byte) 0xff);
             for (int i = 0; i < repeat; ++i) {
                 int v = d.write(b);
+                assert v == b.limit();
             }
             d.write((byte) 0xff);
             power.setState(ActivatorState.DEACTIVATED);
             logger.debug("Finshed Speed test");
-
         }
     }
 
