@@ -26,7 +26,7 @@ import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class DefaultPeripheralChannelMessage<P extends IOPeripheral<? super P, ? super C>, C extends PeripheralConfig<? super P>, M extends PeripheralChannelMessage<? super P, ? super C, ? super M>> implements PeripheralChannelMessage<P, C, M> {
+public class DefaultPeripheralChannelMessage implements PeripheralChannelMessage {
     private static final Logger logger = LoggerFactory.getLogger(DefaultPeripheralChannelMessage.class);
 
     private static final int DEFAULT_BUFFER_SIZE = 1024;
@@ -70,36 +70,48 @@ public class DefaultPeripheralChannelMessage<P extends IOPeripheral<? super P, ?
     }
 
     @Override
-    public M appendRead(ReadablePeripheralChannel channel, ByteBuffer byteBuffer) throws IOException {
+    public PeripheralChannelMessage appendRead(ReadablePeripheralChannel channel, ByteBuffer byteBuffer) {
         appendBuffer(readBuffers, byteBuffer);
         return appendRead(channel, byteBuffer.remaining());
     }
 
     @Override
-    public M appendWrite(WritablePeripheralChannel channel, ByteBuffer byteBuffer) throws IOException {
+    public PeripheralChannelMessage appendWrite(WritablePeripheralChannel channel, ByteBuffer byteBuffer) {
         appendBuffer(writeBuffers, byteBuffer);
         return appendWrite(channel, byteBuffer.limit());
     }
 
     @Override
-    public M appendWrite(WritablePeripheralChannel channel, int size) throws IOException {
-        contextStack.add((txBuffer, rxBuffer) -> new MessageChannelResult(channel.write(txBuffer, 0, size), MessageChannelResult.ResultType.WRITE));
-        return (M) this;
+    public PeripheralChannelMessage appendWrite(WritablePeripheralChannel channel, int size) {
+        contextStack.add((txBuffer, rxBuffer) -> {
+            try {
+                return new MessageChannelResult(channel.write(txBuffer, 0, size), MessageChannelResult.ResultType.WRITE);
+            } catch (IOException ex) {
+                return new MessageChannelResult(ex);
+            }
+        });
+        return this;
     }
 
     @Override
-    public M appendRead(ReadablePeripheralChannel channel, int size) throws IOException {
-        contextStack.add((txBuffer, rxBuffer) -> new MessageChannelResult(channel.read(rxBuffer, rxBuffer.position(), size), MessageChannelResult.ResultType.READ));
-        return (M) this;
+    public PeripheralChannelMessage appendRead(ReadablePeripheralChannel channel, int size) {
+        contextStack.add((txBuffer, rxBuffer) -> {
+            try {
+                return new MessageChannelResult(channel.read(rxBuffer, rxBuffer.position(), size), MessageChannelResult.ResultType.READ);
+            } catch (IOException ex) {
+                return new MessageChannelResult(ex);
+            }
+        });
+        return this;
     }
 
     @Override
-    public M appendWrite(WritablePeripheralChannel channel, byte... value) throws IOException {
+    public PeripheralChannelMessage appendWrite(WritablePeripheralChannel channel, byte... value) {
         return appendWrite(channel, ByteBuffer.wrap(value));
     }
 
     @Override
-    public M appendWait(Duration duration) {
+    public PeripheralChannelMessage appendWait(Duration duration) {
         contextStack.add((txBuffer, rxBuffer) -> {
                     synchronized (Thread.currentThread()) {
                         try {
@@ -111,13 +123,13 @@ public class DefaultPeripheralChannelMessage<P extends IOPeripheral<? super P, ?
                     return new MessageChannelResult(MessageChannelResult.ResultType.NO_RESULT);
                 }
         );
-        return (M) this;
+        return this;
     }
 
     @Override
-    public M appendTrait(MesssageChannelTrait trait) {
+    public PeripheralChannelMessage appendTrait(MesssageChannelTrait trait) {
         contextStack.add(trait);
-        return (M) this;
+        return this;
     }
 
     @Override

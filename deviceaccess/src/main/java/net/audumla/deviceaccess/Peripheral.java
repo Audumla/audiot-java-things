@@ -16,11 +16,21 @@ package net.audumla.deviceaccess;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-public interface Peripheral<P extends Peripheral<? super P, ? super C>, C extends PeripheralConfig<? super P>> {
-    public static final int BIG_ENDIAN = 1;
-    public static final int LITTLE_ENDIAN = 0;
-    public static final int MIXED_ENDIAN = 2;
 
-    PeripheralDescriptor<P,C> getDescriptor();
+/**
+ * The Peripheral interface represents peripheral devices in the system. This interface provides generic methods for handling peripherals
+ * but imposes no pre set logic on how the peripheral operates.
+ * All peripherals must implement the Peripheral interface.
+ *
+ * When a peripheral device is open in shared mode then access synchronization may be performed by invoking tryLock and unlock. Peripheral
+ * locks are held on a per Peripheral instance basis. When the same peripheral device is open twice in shared access mode by the same application,
+ * locking one of the Peripheral instances will prevent the other form being accessed/used.*
+ *
+ * @param <P>  the implementation class of the Peripheral
+ * @param <C>  the configuration class for the Peripheral
+ */
+public interface Peripheral<P extends Peripheral<? super P, ? super C>, C extends PeripheralConfig<? super P>> {
+
+    PeripheralDescriptor<P, C> getDescriptor();
 
 }

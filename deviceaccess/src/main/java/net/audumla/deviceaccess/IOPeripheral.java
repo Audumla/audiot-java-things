@@ -21,6 +21,9 @@ import java.nio.ByteBuffer;
 import java.nio.channels.ByteChannel;
 
 public interface IOPeripheral<P extends IOPeripheral<? super P, ? super C>, C extends PeripheralConfig<? super P>> extends Peripheral<P, C>  {
+    public static final int BIG_ENDIAN = 1;
+    public static final int LITTLE_ENDIAN = 0;
+    public static final int MIXED_ENDIAN = 2;
 
     PeripheralChannel getChannel();
 
