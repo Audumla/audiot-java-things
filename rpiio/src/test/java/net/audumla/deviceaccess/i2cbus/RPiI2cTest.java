@@ -183,9 +183,9 @@ public class RPiI2cTest {
                 }
             }
             dev.setDeviceWidth(1);
-            b.rewind();
             d.write((byte) 0xff);
             for (int i = 0; i < repeat; ++i) {
+                b.rewind();
                 int v = d.write(b);
                 assert v == b.limit();
             }
