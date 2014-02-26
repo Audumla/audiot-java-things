@@ -83,7 +83,7 @@ JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative
     jbyte *body = (jbyte *)env->GetPrimitiveArrayCritical( values, 0);
     bcm2835_i2c_setSlaveAddress(deviceAddress,bus);
     if (mask != 0xFF) {
-        uint32_t i;
+        long i;
         uint8_t olddata;
         uint8_t data;
         reason = bcm2835_i2c_read((char *)&olddata,1,bus, &lenTr);
@@ -106,7 +106,7 @@ JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative
     uint32_t lenTr;
     uint32_t totalLenTr = 0;
     uint8_t reason;
-    uint32_t i;
+    long i;
     jbyte *body = (jbyte *)env->GetPrimitiveArrayCritical( data, 0);
     bcm2835_i2c_setSlaveAddress(deviceAddress,bus);
     uint8_t dataBlock[width+1];
@@ -116,7 +116,7 @@ JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative
         uint8_t currentData[width];
         reason = bcm2835_i2c_write((char *)&localAddress,1,bus, &lenTr);
         reason = bcm2835_i2c_read((char *)&currentData,width,bus, &lenTr);
-        uint32_t ni;
+        long ni;
         for (i = 0; i < writeCount; ++i) {
             for (ni = 0; ni < width; ++ni) {
                 dataBlock[ni+1] = (body[(i*width)+ni+(offset*width)] & maskBody[ni]) | (currentData[ni] & ~maskBody[ni]);
@@ -148,7 +148,7 @@ JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative
 
 JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative_read__IIBIII_3B_3B(JNIEnv *env, jclass clazz, jint bus, jint deviceAddress, jbyte localAddress, jint offset, jint width, jint readCount, jbyteArray data, jbyteArray mask) {
     uint32_t totalLenTr = 0;
-    uint32_t i;
+    long i;
     uint32_t lenTr;
     uint8_t reason;
     jbyte *body = (jbyte *)env->GetPrimitiveArrayCritical( data, 0);
@@ -159,7 +159,7 @@ JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative
         totalLenTr += lenTr;
     }
     if (mask != NULL) {
-        uint32_t ni;
+        long ni;
         jbyte *maskBody = (jbyte*)env->GetPrimitiveArrayCritical( mask, 0);
         for (i = 0; i < readCount; ++i) {
             for (ni = 0; ni < width; ++i) {
