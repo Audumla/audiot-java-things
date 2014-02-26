@@ -251,7 +251,7 @@ public class RPiI2CDevice implements I2CDevice {
             if (dst.hasArray()) {
                 return RPiI2CNative.write(handle, address, offset, size * getDeviceWidth(), dst.array(), mask == null ? (byte) 0xff : mask[0]);
             } else {
-                throw new IOException("Cannot operate on non array backed ByteBuffer ");
+                throw new IOException("Cannot operate on non array backed ByteBuffer");
             }
         }
 
