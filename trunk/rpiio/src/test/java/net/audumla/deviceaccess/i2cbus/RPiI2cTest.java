@@ -90,7 +90,7 @@ public class RPiI2cTest {
         int freq1 = RPiI2CNative.getClock(1);
         int freq12 = RPiI2CNative.setClock(1,10000);
         assert freq12 == freq1;
-        freq12 = RPiI2CNative.setClock(1,400000);
+        freq12 = RPiI2CNative.setClock(1,150000);
         assert freq12 == 10000;
         int freq0 = RPiI2CNative.getClock(0);
         int freq02 = RPiI2CNative.setClock(0,40000);
@@ -99,7 +99,7 @@ public class RPiI2cTest {
         assert freq02 == 40000;
 
         freq1 = RPiI2CNative.getClock(1);
-        Assert.assertEquals(400000,freq1,1000);
+        Assert.assertEquals(150000,freq1,1000);
         freq0 = RPiI2CNative.getClock(0);
         Assert.assertEquals(200000,freq0,1000);
     }
