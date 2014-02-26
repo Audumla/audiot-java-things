@@ -128,7 +128,7 @@ public class RPiI2cTest {
     }
 
 //    @Test
-    public void testSainsSmartRelayFromPCF8574StreamMask() throws Exception {
+    public void testPCF8574StreamMask() throws Exception {
         synchronized (this) {
             PeripheralChannel d = createI2CDevice().getChannel();
             Activator power = getPower(6, 7, rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO1));
@@ -153,7 +153,7 @@ public class RPiI2cTest {
     }
 
 //    @Test
-    public void testSainsSmartRelayFromPCF8574Direct() throws Exception {
+    public void testPCF8574Direct() throws Exception {
         synchronized (this) {
             Activator power = getPower(6, 7, rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO1));
             I2CDevice dev = createI2CDevice();
@@ -194,7 +194,7 @@ public class RPiI2cTest {
     }
 
     @Test
-    public void testSainsSmartRelayFromPCF8574ChannelMessage() throws Exception {
+    public void testPCF8574ChannelMessage() throws Exception {
         synchronized (this) {
             Activator power = getPower(6, 7, rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO1));
             I2CDevice dev = createI2CDevice();
@@ -219,7 +219,9 @@ public class RPiI2cTest {
             results = message.transfer(b,null);
             assert results.size() == 40;
             results.forEach(r -> {assert r.getValue() == 1;});
-            message.write(b);
+            b.rewind();
+            int len = message.write(b);
+            assert len == 40;
         }
     }
 }
