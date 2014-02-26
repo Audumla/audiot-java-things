@@ -84,7 +84,7 @@ public class DefaultPeripheralChannelMessage implements PeripheralChannelMessage
     public PeripheralChannelMessage appendSizedWrite(WritablePeripheralChannel channel, int size) {
         contextStack.add((txBuffer, rxBuffer) -> {
             try {
-                return new MessageChannelResult(channel.write(txBuffer, 0, size), MessageChannelResult.ResultType.WRITE);
+                return new MessageChannelResult(channel.write(txBuffer, txBuffer.position(), size), MessageChannelResult.ResultType.WRITE);
             } catch (IOException ex) {
                 return new MessageChannelResult(ex);
             }
@@ -148,15 +148,17 @@ public class DefaultPeripheralChannelMessage implements PeripheralChannelMessage
         for (MesssageChannelTrait c : contextStack) {
             try {
                 MessageChannelResult result = c.apply(txBuffer, rxBuffer);
-                results.add(result);
                 switch (result.getType()) {
                     case READ:
                         rxBuffer = (readIt != null && readIt.hasNext()) ? (ByteBuffer) readIt.next().rewind() : rxBuffer;
+                        results.add(result);
                         break;
                     case WRITE:
                         txBuffer = (writeIt != null && writeIt.hasNext()) ? (ByteBuffer) writeIt.next().rewind() : txBuffer;
+                        results.add(result);
                         break;
                     case ERROR:
+                        results.add(result);
                         return results;
                 }
             } catch (Exception e) {

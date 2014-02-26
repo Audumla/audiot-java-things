@@ -23,6 +23,8 @@ import org.slf4j.LoggerFactory;
 
 import java.nio.ByteBuffer;
 import java.time.Duration;
+import java.time.Instant;
+import java.util.Collection;
 
 public class MessageTest {
     private static final Logger logger = LoggerFactory.getLogger(MessageTest.class);
@@ -46,6 +48,34 @@ public class MessageTest {
     }
 
     @Test
+    public void testMessageReadWrite() throws Exception {
+        DefaultPeripheralChannelMessage message = new DefaultPeripheralChannelMessage();
+        PeripheralChannel channel = new DummyPeripheral().getChannel();
+        ByteBuffer bbw = ByteBuffer.allocate(1024);
+        ByteBuffer bbr1 = ByteBuffer.allocate(100);
+        ByteBuffer bbr2 = ByteBuffer.allocate(100);
+        for (int i = 0; i < 250; ++i) {
+            bbw.put((byte) i);
+        }
+        bbw.flip();
+        message.appendWrite(channel, bbw);
+        message.appendRead(channel, bbr1);
+        message.appendRead(channel, bbr2);
+        Collection<PeripheralChannelMessage.MessageChannelResult> results = message.transfer();
+        assert results.size() == 3;
+        bbr1.flip();
+        bbr2.flip();
+        bbw.rewind();
+        for (int i = 0; i < 100; ++i) {
+            assert bbw.get() == bbr1.get();
+        }
+
+        for (int i = 0; i < 100; ++i) {
+            assert bbw.get() == bbr2.get();
+        }
+    }
+
+    @Test
     public void testSizedMessageReadWrite() throws Exception {
         DefaultPeripheralChannelMessage message = new DefaultPeripheralChannelMessage();
         PeripheralChannel channel = new DummyPeripheral().getChannel();
@@ -59,8 +89,14 @@ public class MessageTest {
             message.appendWait(Duration.ofMillis(1));
         }
         bbw.flip();
+        Instant now = Instant.now();
+        Collection<PeripheralChannelMessage.MessageChannelResult> results = message.transfer(bbw, bbr);
+        Instant after = Instant.now();
+        long millis = Duration.between(now, after).toMillis();
+        assert millis > 499;
+        assert results.size() == 500;
+        results.forEach(r -> {assert r.getValue() == 1;});
         bbr.flip();
-        message.transfer(bbw,bbr);
         for (int i = 0; i < 250; ++i) {
             assert bbw.get(i) == bbr.get(i);
         }

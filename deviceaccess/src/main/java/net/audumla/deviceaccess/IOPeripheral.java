@@ -16,14 +16,7 @@ package net.audumla.deviceaccess;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.channels.ByteChannel;
-
-public interface IOPeripheral<P extends IOPeripheral<? super P, ? super C>, C extends PeripheralConfig<? super P>> extends Peripheral<P, C>  {
-    public static final int BIG_ENDIAN = 1;
-    public static final int LITTLE_ENDIAN = 0;
-    public static final int MIXED_ENDIAN = 2;
+public interface IOPeripheral<P extends IOPeripheral<? super P, ? super C>, C extends PeripheralConfig<? super P>> extends Peripheral<P, C> {
 
     PeripheralChannel getChannel();
 
