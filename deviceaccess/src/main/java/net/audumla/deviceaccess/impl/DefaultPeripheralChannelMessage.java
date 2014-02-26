@@ -159,10 +159,12 @@ public class DefaultPeripheralChannelMessage implements PeripheralChannelMessage
                         break;
                     case ERROR:
                         results.add(result);
+                        logger.error("Failed to execute message",result.getException());
                         return results;
                 }
             } catch (Exception e) {
                 results.add(new MessageChannelResult(e));
+                logger.error("Failed to execute message",e);
                 return results;
             }
         }
