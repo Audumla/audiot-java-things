@@ -1147,7 +1147,7 @@ int bcm2835_init(void)
 
     if (getHardwareRevision() < 4) {
         primary_i2c_bus = 0;
-        secondary_i2c_bus = 1
+        secondary_i2c_bus = 1;
         bcm2835_bsc[0].scl = RPI_GPIO_P1_05;
         bcm2835_bsc[0].sda = RPI_GPIO_P1_03;
 
@@ -1156,7 +1156,7 @@ int bcm2835_init(void)
     }
     else {
         primary_i2c_bus = 1;
-        secondary_i2c_bus = 0
+        secondary_i2c_bus = 0;
 
         bcm2835_bsc[0].scl = RPI_V2_GPIO_P5_04;
         bcm2835_bsc[0].sda = RPI_V2_GPIO_P5_03;
