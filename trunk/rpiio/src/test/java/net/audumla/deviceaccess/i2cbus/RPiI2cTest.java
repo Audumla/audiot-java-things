@@ -17,6 +17,7 @@ package net.audumla.deviceaccess.i2cbus;
  */
 
 import net.audumla.deviceaccess.PeripheralChannel;
+import net.audumla.deviceaccess.PeripheralChannelMessage;
 import net.audumla.deviceaccess.PeripheralManager;
 import net.audumla.deviceaccess.i2cbus.rpi.RPiI2CPeripheralProvider;
 import net.audumla.deviceaccess.i2cbus.rpi.jni.RPiI2CNative;
@@ -38,6 +39,7 @@ import org.slf4j.LoggerFactory;
 
 import java.nio.ByteBuffer;
 import java.time.Duration;
+import java.util.Collection;
 import java.util.Properties;
 
 public class RPiI2cTest {
@@ -207,13 +209,16 @@ public class RPiI2cTest {
                 for (int i = 0; i < 8; ++i) {
                     bytes[(c * 8) + i] = (byte) ~val;
                     message.appendWrite(d, (byte)~val);
-                    message.appendWait(Duration.ofMillis(2));
+                    message.appendWait(Duration.ofMillis(20));
                     val = (byte) (val << 1);
                 }
             }
-            message.transfer();
+            Collection<PeripheralChannelMessage.MessageChannelResult> results = message.transfer();
+            assert results.size() == 40;
             ByteBuffer b = ByteBuffer.wrap(bytes);
-            message.transfer(b,null);
+            results = message.transfer(b,null);
+            assert results.size() == 40;
+            results.forEach(r -> {assert r.getValue() == 1;});
             message.write(b);
         }
     }
