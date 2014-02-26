@@ -253,7 +253,7 @@ public class RPiI2CDevice implements I2CDevice {
         public int write(ByteBuffer dst, int offset, int size) throws IOException {
             if (dst.hasArray()) {
                 int len = RPiI2CNative.write(handle, address, offset, size * getDeviceWidth(), dst.array(), mask == null ? (byte) 0xff : mask[0]);
-                if (len != size) {
+                if (len != size * getDeviceWidth()) {
                     if (len < 0) {
                         throw new IOException("Write error length - "+len );
                     }
