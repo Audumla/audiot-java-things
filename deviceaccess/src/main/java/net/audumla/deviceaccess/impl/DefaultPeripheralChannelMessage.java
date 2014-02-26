@@ -71,17 +71,17 @@ public class DefaultPeripheralChannelMessage implements PeripheralChannelMessage
     @Override
     public PeripheralChannelMessage appendRead(ReadablePeripheralChannel channel, ByteBuffer byteBuffer) {
         appendBuffer(readBuffers, byteBuffer);
-        return appendRead(channel, byteBuffer.remaining());
+        return appendSizedRead(channel, byteBuffer.remaining());
     }
 
     @Override
     public PeripheralChannelMessage appendWrite(WritablePeripheralChannel channel, ByteBuffer byteBuffer) {
         appendBuffer(writeBuffers, byteBuffer);
-        return appendWrite(channel, byteBuffer.limit());
+        return appendSizedWrite(channel, byteBuffer.limit());
     }
 
     @Override
-    public PeripheralChannelMessage appendWrite(WritablePeripheralChannel channel, int size) {
+    public PeripheralChannelMessage appendSizedWrite(WritablePeripheralChannel channel, int size) {
         contextStack.add((txBuffer, rxBuffer) -> {
             try {
                 return new MessageChannelResult(channel.write(txBuffer, 0, size), MessageChannelResult.ResultType.WRITE);
@@ -93,7 +93,7 @@ public class DefaultPeripheralChannelMessage implements PeripheralChannelMessage
     }
 
     @Override
-    public PeripheralChannelMessage appendRead(ReadablePeripheralChannel channel, int size) {
+    public PeripheralChannelMessage appendSizedRead(ReadablePeripheralChannel channel, int size) {
         contextStack.add((txBuffer, rxBuffer) -> {
             try {
                 return new MessageChannelResult(channel.read(rxBuffer, rxBuffer.position(), size), MessageChannelResult.ResultType.READ);
