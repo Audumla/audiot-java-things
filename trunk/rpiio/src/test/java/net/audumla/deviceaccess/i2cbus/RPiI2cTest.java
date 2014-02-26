@@ -95,9 +95,9 @@ public class RPiI2cTest {
         assert freq02 == 40000;
 
         freq1 = RPiI2CNative.getClock(1);
-        Assert.assertEquals(400000,freq1);
+        Assert.assertEquals(400000,freq1,1000);
         freq0 = RPiI2CNative.getClock(0);
-        Assert.assertEquals(200000,freq0);
+        Assert.assertEquals(200000,freq0,1000);
     }
 
     @Test
@@ -136,7 +136,7 @@ public class RPiI2cTest {
                 byte val = (byte) 0x01;
                 for (int i = 0; i < 8; ++i) {
                     d.write((byte) ~val);
-                    wait(500);
+                    wait(50);
                     val = (byte) (val << 1);
                 }
                 d.setMask(~0xf0);
@@ -154,7 +154,51 @@ public class RPiI2cTest {
             Activator power = getPower(6, 7, rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO1));
             I2CDevice dev = createI2CDevice();
             PeripheralChannel d = dev.getChannel();
-            int repeat = 20;
+            int repeat = 5;
+            d.write(0xff);
+            power.setState(ActivatorState.ACTIVATED);
+            logger.debug("Speed test 20ms");
+            byte[] bytes = new byte[8 * repeat];
+            for (int c = 0; c < repeat; ++c) {
+                byte val = (byte) 0x01;
+                for (int i = 0; i < 8; ++i) {
+                    bytes[(c * 8) + i] = (byte) ~val;
+                    d.write((byte) ~val);
+                    wait(20);
+                    val = (byte) (val << 1);
+                }
+            }
+            ByteBuffer b = ByteBuffer.wrap(bytes);
+            logger.debug("Speed test 5ms");
+            d.write((byte) 0xff);
+            dev.setDeviceWidth(4);
+            for (int n = 0; n < 4; ++n) {
+                for (int i = 0; i < bytes.length/dev.getDeviceWidth(); ++i) {
+                    int v = d.write(b,i*dev.getDeviceWidth(),1);
+                    wait(50);
+                }
+            }
+            dev.setDeviceWidth(1);
+
+            d.write((byte) 0xff);
+            logger.debug("Speed test 0ms");
+            for (int i = 0; i < repeat; ++i) {
+                int v = d.write(b);
+            }
+            d.write((byte) 0xff);
+            power.setState(ActivatorState.DEACTIVATED);
+            logger.debug("Finshed Speed test");
+
+        }
+    }
+
+    @Test
+    public void testSainsSmartRelayFromPCF8574ChannelMessage() throws Exception {
+        synchronized (this) {
+            Activator power = getPower(6, 7, rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO1));
+            I2CDevice dev = createI2CDevice();
+            PeripheralChannel d = dev.getChannel();
+            int repeat = 5;
             d.write(0xff);
             power.setState(ActivatorState.ACTIVATED);
             logger.debug("Speed test 20ms");
