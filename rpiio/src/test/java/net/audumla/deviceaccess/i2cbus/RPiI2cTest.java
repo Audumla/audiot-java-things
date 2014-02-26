@@ -175,6 +175,7 @@ public class RPiI2cTest {
             d.write((byte) 0xff);
             dev.setDeviceWidth(4);
             for (int n = 0; n < 4; ++n) {
+                b.rewind();
                 for (int i = 0; i < bytes.length/dev.getDeviceWidth(); ++i) {
                     int v = d.write(b,i*dev.getDeviceWidth(),1);
                     wait(15);
