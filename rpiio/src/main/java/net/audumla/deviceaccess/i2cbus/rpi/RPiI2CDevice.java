@@ -229,7 +229,7 @@ public class RPiI2CDevice implements I2CDevice {
                 dst.position(dst.position()+len);
                 return len;
             } else {
-                throw new IOException("Cannot operate on non array backed ByteBuffer");
+                throw new IOException("Cannot operate on non array backed ByteBuffer ");
             }
         }
 
