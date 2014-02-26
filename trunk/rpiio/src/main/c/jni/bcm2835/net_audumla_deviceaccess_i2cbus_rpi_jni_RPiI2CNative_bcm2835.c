@@ -141,7 +141,7 @@ JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative
     uint32_t lenTr;
     jbyte *body = (jbyte *)(*env)->GetPrimitiveArrayCritical( env,data, 0);
     bcm2835_i2c_setSlaveAddress(deviceAddress,bus);
-    uint8_t reason = bcm2835_i2c_read((char *)body,readCount,bus, &lenTr);
+    uint8_t reason = bcm2835_i2c_read((char *)(body+offset),readCount,bus, &lenTr);
     (*env)->ReleasePrimitiveArrayCritical( env,data, body, 0);
     return lenTr;
 };
