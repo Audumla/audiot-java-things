@@ -37,7 +37,6 @@ public class DefaultPeripheralChannelMessage implements PeripheralChannelMessage
     protected boolean template = false;
 
     public DefaultPeripheralChannelMessage() {
-        this.template = template;
         writeBuffers = new ArrayList<>();
         readBuffers = new ArrayList<>();
     }
@@ -146,7 +145,6 @@ public class DefaultPeripheralChannelMessage implements PeripheralChannelMessage
         txBuffer = txBuffer != null ? txBuffer : (writeIt = writeBuffers.iterator()).hasNext() ? (ByteBuffer) writeIt.next().rewind() : ByteBuffer.allocate(DEFAULT_BUFFER_SIZE);
         for (MesssageChannelTrait c : contextStack) {
             try {
-                int pos = rxBuffer.position();
                 MessageChannelResult result = c.apply(txBuffer, rxBuffer);
                 results.add(result);
                 switch (result.getType()) {
