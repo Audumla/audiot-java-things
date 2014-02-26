@@ -111,10 +111,12 @@ public class DefaultPeripheralChannelMessage implements PeripheralChannelMessage
 
     @Override
     public PeripheralChannelMessage appendWait(Duration duration) {
+        long millis = (duration.getSeconds() * 1000) + (duration.getNano() / 1000000);
+        int nanos = duration.getNano() % 1000000;
         contextStack.add((txBuffer, rxBuffer) -> {
                     synchronized (Thread.currentThread()) {
                         try {
-                            Thread.sleep(duration.getSeconds() * 1000, duration.getNano());
+                            Thread.sleep(millis,nanos);
                         } catch (InterruptedException e) {
                             return new MessageChannelResult(e);
                         }
