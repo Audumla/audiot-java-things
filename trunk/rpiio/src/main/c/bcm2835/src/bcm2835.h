@@ -1216,7 +1216,7 @@ extern "C" {
     /// \param[in] len Number of bytes in the buf buffer, and the number of bytes to send.
     /// \param[in] lenTr Number of bytes actually transmitted.
 	/// \return reason see \ref bcm2835I2CReasonCodes
-    extern uint8_t bcm2835_i2c_write(const char * buf, uint32_t len, uint8_t bus, uint32_t *lenTr);
+    extern uint8_t bcm2835_i2c_write(char * buf, uint32_t len, uint8_t bus, uint32_t *lenTr);
 
     /// Transfers any number of bytes from the currently selected I2C slave.
     /// (as previously set by \sa bcm2835_i2c_setSlaveAddress)
