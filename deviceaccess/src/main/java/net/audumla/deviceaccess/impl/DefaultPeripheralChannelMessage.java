@@ -36,7 +36,7 @@ public class DefaultPeripheralChannelMessage implements PeripheralChannelMessage
     protected Queue<MesssageChannelTrait> contextStack = new LinkedList<>();
     protected boolean template = false;
 
-    public DefaultPeripheralChannelMessage(boolean template) {
+    public DefaultPeripheralChannelMessage() {
         this.template = template;
         writeBuffers = new ArrayList<>();
         readBuffers = new ArrayList<>();

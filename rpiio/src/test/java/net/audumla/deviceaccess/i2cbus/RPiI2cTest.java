@@ -20,6 +20,7 @@ import net.audumla.deviceaccess.PeripheralChannel;
 import net.audumla.deviceaccess.PeripheralManager;
 import net.audumla.deviceaccess.i2cbus.rpi.RPiI2CPeripheralProvider;
 import net.audumla.deviceaccess.i2cbus.rpi.jni.RPiI2CNative;
+import net.audumla.deviceaccess.impl.DefaultPeripheralChannelMessage;
 import net.audumla.devices.activator.Activator;
 import net.audumla.devices.activator.ActivatorState;
 import net.audumla.devices.activator.AggregateActivator;
@@ -36,6 +37,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.nio.ByteBuffer;
+import java.time.Duration;
 import java.util.Properties;
 
 public class RPiI2cTest {
@@ -198,40 +200,40 @@ public class RPiI2cTest {
             Activator power = getPower(6, 7, rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO1));
             I2CDevice dev = createI2CDevice();
             PeripheralChannel d = dev.getChannel();
+            DefaultPeripheralChannelMessage message = new DefaultPeripheralChannelMessage();
             int repeat = 5;
             d.write(0xff);
             power.setState(ActivatorState.ACTIVATED);
-            logger.debug("Speed  test 20ms");
-            byte[] bytes = new byte[8 * repeat];
+            logger.debug("Speed test 20ms");
             for (int c = 0; c < repeat; ++c) {
                 byte val = (byte) 0x01;
                 for (int i = 0; i < 8; ++i) {
-                    bytes[(c * 8) + i] = (byte) ~val;
-                    d.write((byte) ~val);
-                    wait(20);
+                    message.appendWrite(d,~val);
+                    message.appendWait(Duration.ofMillis(20));
                     val = (byte) (val << 1);
                 }
             }
-            ByteBuffer b = ByteBuffer.wrap(bytes);
-            logger.debug("Speed test 5ms");
-            d.write((byte) 0xff);
-            dev.setDeviceWidth(4);
-            for (int n = 0; n < 4; ++n) {
-                for (int i = 0; i < bytes.length/dev.getDeviceWidth(); ++i) {
-                    int v = d.write(b,i*dev.getDeviceWidth(),1);
-                    wait(50);
-                }
-            }
-            dev.setDeviceWidth(1);
-
-            d.write((byte) 0xff);
-            logger.debug("Speed test 0ms");
-            for (int i = 0; i < repeat; ++i) {
-                int v = d.write(b);
-            }
-            d.write((byte) 0xff);
-            power.setState(ActivatorState.DEACTIVATED);
-            logger.debug("Finshed Speed test");
+            message.transfer();
+//            ByteBuffer b = ByteBuffer.wrap(bytes);
+//            logger.debug("Speed test 5ms");
+//            d.write((byte) 0xff);
+//            dev.setDeviceWidth(4);
+//            for (int n = 0; n < 4; ++n) {
+//                for (int i = 0; i < bytes.length/dev.getDeviceWidth(); ++i) {
+//                    int v = d.write(b,i*dev.getDeviceWidth(),1);
+//                    wait(50);
+//                }
+//            }
+//            dev.setDeviceWidth(1);
+//
+//            d.write((byte) 0xff);
+//            logger.debug("Speed test 0ms");
+//            for (int i = 0; i < repeat; ++i) {
+//                int v = d.write(b);
+//            }
+//            d.write((byte) 0xff);
+//            power.setState(ActivatorState.DEACTIVATED);
+//            logger.debug("Finshed Speed test");
 
         }
     }
