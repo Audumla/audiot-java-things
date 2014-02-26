@@ -811,14 +811,6 @@ extern "C" {
     /// \return 1 if successful else 0
     extern int bcm2835_close(void);
 
-    /// Sets the debug level of the library.
-    /// A value of 1 prevents mapping to /dev/mem, and makes the library print out
-    /// what it would do, rather than accessing the GPIO registers.
-    /// A value of 0, the default, causes normal operation.
-    /// Call this before calling bcm2835_init();
-    /// \param[in] debug The new debug level. 1 means debug
-    extern void  bcm2835_set_debug(uint8_t debug);
-
     /// @} // end of init
 
     /// \defgroup lowlevel Low level register access

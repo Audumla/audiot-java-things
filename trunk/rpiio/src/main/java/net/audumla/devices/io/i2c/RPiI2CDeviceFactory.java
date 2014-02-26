@@ -23,7 +23,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RPiI2CDeviceFactory implements I2CDeviceFactory{
+public class RPiI2CDeviceFactory implements I2CDeviceFactory {
     private static final Logger logger = LoggerFactory.getLogger(RPiI2CDeviceFactory.class);
 
     static final Map<String, Integer> deviceHandleMap = new HashMap<>();
