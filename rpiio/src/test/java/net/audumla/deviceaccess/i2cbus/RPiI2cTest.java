@@ -201,7 +201,7 @@ public class RPiI2cTest {
             int repeat = 5;
             d.write(0xff);
             power.setState(ActivatorState.ACTIVATED);
-            logger.debug("Speed test 20ms");
+            logger.debug("Speed  test 20ms");
             byte[] bytes = new byte[8 * repeat];
             for (int c = 0; c < repeat; ++c) {
                 byte val = (byte) 0x01;
