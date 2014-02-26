@@ -68,52 +68,52 @@ public class RPiI2CDevice implements I2CDevice {
         this.width = width;
     }
 
-    protected class I2CDirectChannel extends AbstractI2CChannel {
-
-        @Override
-        public int read() throws IOException {
-            if (mask == null) {
-                return I2C.readByteDirect(handle);
-            } else {
-                return I2C.readByteDirect(handle) & mask[0];
-            }
-        }
-
-        @Override
-        public int read(ByteBuffer dst) throws IOException {
-            return read(dst, dst.position(), dst.remaining());
-        }
-
-        @Override
-        public int read(ByteBuffer dst, int offset, int size) throws IOException {
-            return 0;
-        }
-
-        @Override
-        public int write(int value) throws IOException {
-            if (mask == null) {
-                return I2C.writeByteDirect(handle, (byte) value);
-            } else {
-                return I2C.writeByteDirectMask(handle, (byte) value, mask == null ? (byte) 0xff : mask[0]);
-            }
-        }
-
-        @Override
-        public int write(ByteBuffer dst) throws IOException {
-            return write(dst, 0, dst.limit());
-        }
-
-        @Override
-        public int write(ByteBuffer dst, int offset, int size) throws IOException {
-            if (mask == null) {
-                return I2C.writeBytesDirect(handle, size, offset, dst.array());
-            } else {
-                return I2C.writeBytesDirectMask(handle, size, offset, dst.array(), mask == null ? (byte) 0xff : mask[0]);
-            }
-        }
-
-    }
-
+//    protected class I2CDirectChannel extends AbstractI2CChannel {
+//
+//        @Override
+//        public int read() throws IOException {
+//            if (mask == null) {
+//                return I2C.readByteDirect(handle);
+//            } else {
+//                return I2C.readByteDirect(handle) & mask[0];
+//            }
+//        }
+//
+//        @Override
+//        public int read(ByteBuffer dst) throws IOException {
+//            return read(dst, dst.position(), dst.remaining());
+//        }
+//
+//        @Override
+//        public int read(ByteBuffer dst, int offset, int size) throws IOException {
+//            return 0;
+//        }
+//
+//        @Override
+//        public int write(int value) throws IOException {
+//            if (mask == null) {
+//                return I2C.writeByteDirect(handle, (byte) value);
+//            } else {
+//                return I2C.writeByteDirectMask(handle, (byte) value, mask == null ? (byte) 0xff : mask[0]);
+//            }
+//        }
+//
+//        @Override
+//        public int write(ByteBuffer dst) throws IOException {
+//            return write(dst, 0, dst.limit());
+//        }
+//
+//        @Override
+//        public int write(ByteBuffer dst, int offset, int size) throws IOException {
+//            if (mask == null) {
+//                return I2C.writeBytesDirect(handle, size, offset, dst.array());
+//            } else {
+//                return I2C.writeBytesDirectMask(handle, size, offset, dst.array(), mask == null ? (byte) 0xff : mask[0]);
+//            }
+//        }
+//
+//    }
+//
     protected abstract class AbstractI2CChannel implements PeripheralChannel {
         protected byte[] mask;
 
@@ -144,60 +144,60 @@ public class RPiI2CDevice implements I2CDevice {
         public void close() throws IOException {
         }
     }
-
-    protected class I2CAddressedChannel extends AbstractI2CChannel {
-
-        private byte readSubAddress;
-        private byte writeSubAddress;
-
-        public I2CAddressedChannel(byte readSubAddress, byte writeSubAddress) {
-            this.readSubAddress = readSubAddress;
-            this.writeSubAddress = writeSubAddress;
-        }
-
-        @Override
-        public int read() throws IOException {
-            if (mask == null) {
-                return I2C.readByte(handle, readSubAddress);
-            } else {
-                return I2C.readByte(handle, readSubAddress) & mask[0];
-            }
-        }
-
-        @Override
-        public int read(ByteBuffer dst) throws IOException {
-            return read(dst, dst.position(), dst.remaining());
-        }
-
-        @Override
-        public int read(ByteBuffer dst, int offset, int size) throws IOException {
-            return 0;
-        }
-
-        @Override
-        public int write(int value) throws IOException {
-            if (mask == null) {
-                return I2C.writeByte(handle, writeSubAddress, (byte) value);
-            } else {
-                return I2C.writeByteMask(handle, writeSubAddress, (byte) value, mask == null ? (byte) 0xff : mask[0]);
-            }
-        }
-
-        @Override
-        public int write(ByteBuffer dst) throws IOException {
-            return write(dst, 0, dst.limit());
-        }
-
-        @Override
-        public int write(ByteBuffer dst, int offset, int size) throws IOException {
-            if (mask == null) {
-                return I2C.writeBytes(handle, writeSubAddress, size, offset, dst.array());
-            } else {
-                return I2C.writeBytesMask(handle, writeSubAddress, size, offset, dst.array(), mask == null ? (byte) 0xff : mask[0]);
-            }
-        }
-
-    }
+//
+//    protected class I2CAddressedChannel extends AbstractI2CChannel {
+//
+//        private byte readSubAddress;
+//        private byte writeSubAddress;
+//
+//        public I2CAddressedChannel(byte readSubAddress, byte writeSubAddress) {
+//            this.readSubAddress = readSubAddress;
+//            this.writeSubAddress = writeSubAddress;
+//        }
+//
+//        @Override
+//        public int read() throws IOException {
+//            if (mask == null) {
+//                return I2C.readByte(handle, readSubAddress);
+//            } else {
+//                return I2C.readByte(handle, readSubAddress) & mask[0];
+//            }
+//        }
+//
+//        @Override
+//        public int read(ByteBuffer dst) throws IOException {
+//            return read(dst, dst.position(), dst.remaining());
+//        }
+//
+//        @Override
+//        public int read(ByteBuffer dst, int offset, int size) throws IOException {
+//            return 0;
+//        }
+//
+//        @Override
+//        public int write(int value) throws IOException {
+//            if (mask == null) {
+//                return I2C.writeByte(handle, writeSubAddress, (byte) value);
+//            } else {
+//                return I2C.writeByteMask(handle, writeSubAddress, (byte) value, mask == null ? (byte) 0xff : mask[0]);
+//            }
+//        }
+//
+//        @Override
+//        public int write(ByteBuffer dst) throws IOException {
+//            return write(dst, 0, dst.limit());
+//        }
+//
+//        @Override
+//        public int write(ByteBuffer dst, int offset, int size) throws IOException {
+//            if (mask == null) {
+//                return I2C.writeBytes(handle, writeSubAddress, size, offset, dst.array());
+//            } else {
+//                return I2C.writeBytesMask(handle, writeSubAddress, size, offset, dst.array(), mask == null ? (byte) 0xff : mask[0]);
+//            }
+//        }
+//
+//    }
 
     protected class DirectChannel extends AbstractI2CChannel {
 
@@ -225,7 +225,9 @@ public class RPiI2CDevice implements I2CDevice {
         @Override
         public int read(ByteBuffer dst, int offset, int size) throws IOException {
             if (dst.hasArray()) {
-                return RPiI2CNative.read(handle, address, offset, getDeviceWidth() * size, dst.array(), mask == null ? (byte) 0xff : mask[0]);
+                int len = RPiI2CNative.read(handle, address, offset, getDeviceWidth() * size, dst.array(), mask == null ? (byte) 0xff : mask[0]);
+                dst.position(dst.position()+len);
+                return len;
             } else {
                 throw new IOException("Cannot operate on non array backed ByteBuffer");
             }
@@ -236,6 +238,7 @@ public class RPiI2CDevice implements I2CDevice {
             if (getDeviceWidth() > 1) {
                 ByteBuffer bbValue = toByteBuffer(value);
                 return RPiI2CNative.write(handle, address, 0, getDeviceWidth(), bbValue.array(), mask == null ? (byte) 0xff : mask[0]);
+
             } else {
                 return RPiI2CNative.write(handle, address, (byte) value, mask == null ? (byte) 0xff : mask[0]);
             }
@@ -249,7 +252,9 @@ public class RPiI2CDevice implements I2CDevice {
         @Override
         public int write(ByteBuffer dst, int offset, int size) throws IOException {
             if (dst.hasArray()) {
-                return RPiI2CNative.write(handle, address, offset, size * getDeviceWidth(), dst.array(), mask == null ? (byte) 0xff : mask[0]);
+                int len = RPiI2CNative.write(handle, address, offset, size * getDeviceWidth(), dst.array(), mask == null ? (byte) 0xff : mask[0]);
+                dst.position(dst.position()+len);
+                return len;
             } else {
                 throw new IOException("Cannot operate on non array backed ByteBuffer");
             }
@@ -292,7 +297,9 @@ public class RPiI2CDevice implements I2CDevice {
         @Override
         public int read(ByteBuffer dst, int offset, int size) throws IOException {
             if (dst.hasArray()) {
-                return RPiI2CNative.read(handle, address, readSubAddress, offset, getDeviceWidth(), size, dst.array(), mask);
+                int len = RPiI2CNative.read(handle, address, readSubAddress, offset, getDeviceWidth(), size, dst.array(), mask);
+                dst.position(dst.position()+len);
+                return len;
             } else {
                 throw new IOException("Cannot operate on non array backed ByteBuffer");
             }
@@ -316,7 +323,9 @@ public class RPiI2CDevice implements I2CDevice {
         @Override
         public int write(ByteBuffer dst, int offset, int size) throws IOException {
             if (dst.hasArray()) {
-                return RPiI2CNative.write(handle, address, writeSubAddress, offset, getDeviceWidth(), size, dst.array(), mask);
+                int len = RPiI2CNative.write(handle, address, writeSubAddress, offset, getDeviceWidth(), size, dst.array(), mask);
+                dst.position(dst.position()+len);
+                return len;
             } else {
                 throw new IOException("Cannot operate on non array backed ByteBuffer");
             }
