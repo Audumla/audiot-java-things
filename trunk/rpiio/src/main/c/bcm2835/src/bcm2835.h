@@ -324,9 +324,6 @@
 /// The values here are designed to be passed to various functions in the bcm2835 library.
 /// @{
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 /// This means pin HIGH, true, 3.3volts on a pin.
 #define HIGH 0x1
@@ -382,7 +379,7 @@ extern volatile uint32_t *bcm2835_pads;
 extern volatile uint32_t *bcm2835_spi0;
 
 /// The primary and secondary i2c bus.
-/// Set based on the RaspberryPi board revision
+/// Set based on the RaspberryPi revision
 extern uint8_t primary_i2c_bus;
 extern uint8_t secondary_i2c_bus;
 
@@ -792,6 +789,9 @@ typedef enum
 #define delayMicroseconds(x) bcm2835_delayMicroseconds(x)
 #endif
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
     /// \defgroup init Library initialisation and management
     /// These functions allow you to intialise and control the bcm2835 library
