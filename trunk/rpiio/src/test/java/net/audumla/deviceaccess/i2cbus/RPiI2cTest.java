@@ -245,11 +245,12 @@ public class RPiI2cTest {
                 message.appendWait(Duration.ofMillis(10));
                 val = (byte) (val << 1);
             }
+            message.appendWrite(d, (byte)0xff);
             Collection<PeripheralChannelMessage.MessageChannelResult> results = message.transfer();
-            assert results.size() == 16;
+            assert results.size() == 17;
             ByteBuffer b = ByteBuffer.wrap(bytes);
             results = message.transfer(b,rx);
-            assert results.size() == 16;
+            assert results.size() == 17;
             rx.flip();
             assert rx.limit() == 8;
             for (int i =0; i < rx.limit(); ++i) {
@@ -258,7 +259,7 @@ public class RPiI2cTest {
             results.forEach(r -> {assert r.getValue() == 1;});
             b.rewind();
             int len = message.write(b);
-            assert len == 16;
+            assert len == 17;
         }
     }
 }

@@ -73,7 +73,7 @@ JNIEXPORT jbyte JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNativ
     uint8_t data;
     bcm2835_i2c_setSlaveAddress(deviceAddress,bus);
     bcm2835_i2c_read((char *)&data,1,bus, &lenTr);
-    return data;
+    return lenTr;
 };
 
 JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative_write__IIII_3BB(JNIEnv *env, jclass clazz, jint bus, jint deviceAddress, jint offset, jint writeCount, jbyteArray values, jbyte mask) {

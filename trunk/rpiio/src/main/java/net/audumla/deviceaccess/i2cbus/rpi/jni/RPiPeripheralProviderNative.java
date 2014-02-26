@@ -41,10 +41,14 @@ public class RPiPeripheralProviderNative {
     /**
      * Shuts down and releases any handles that the application is holding
      *
-     *
      */
     public static native void shutdown();
 
+    /**
+     * Returns the board revision number
+     *
+     */
+    public static native int getRevision();
 
 
 }
