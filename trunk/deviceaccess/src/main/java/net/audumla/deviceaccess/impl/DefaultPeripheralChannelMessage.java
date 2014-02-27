@@ -46,7 +46,7 @@ public class DefaultPeripheralChannelMessage implements PeripheralChannelMessage
     public int read(ByteBuffer dst) throws IOException {
         Collection<MessageChannelResult> results = transfer(null, dst);
         final AtomicInteger size = new AtomicInteger();
-        results.stream().filter(r -> r.getType().equals(MessageChannelResult.ResultType.READ)).forEach(r -> size.set(size.get() + r.getValue()));
+        results.stream().filter(r -> r.getResultType().equals(MessageChannelResult.ResultType.READ)).forEach(r -> size.set(size.get() + r.getTransferSize()));
         return size.get();
     }
 
@@ -54,7 +54,7 @@ public class DefaultPeripheralChannelMessage implements PeripheralChannelMessage
     public int write(ByteBuffer src) throws IOException {
         Collection<MessageChannelResult> results = transfer(src, null);
         final AtomicInteger size = new AtomicInteger();
-        results.stream().filter(r -> r.getType().equals(MessageChannelResult.ResultType.WRITE)).forEach(r -> size.set(size.get() + r.getValue()));
+        results.stream().filter(r -> r.getResultType().equals(MessageChannelResult.ResultType.WRITE)).forEach(r -> size.set(size.get() + r.getTransferSize()));
         return size.get();
     }
 
@@ -159,7 +159,7 @@ public class DefaultPeripheralChannelMessage implements PeripheralChannelMessage
         for (MesssageChannelTrait c : contextStack) {
             try {
                 MessageChannelResult result = c.apply(txBuffer, rxBuffer);
-                switch (result.getType()) {
+                switch (result.getResultType()) {
                     case READ:
                         rxBuffer = (readIt != null && readIt.hasNext()) ? (ByteBuffer) readIt.next().rewind() : rxBuffer;
                         results.add(result);

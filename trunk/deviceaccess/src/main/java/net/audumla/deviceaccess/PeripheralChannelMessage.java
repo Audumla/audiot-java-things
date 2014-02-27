@@ -16,7 +16,6 @@ package net.audumla.deviceaccess;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.ByteChannel;
 import java.time.Duration;
@@ -67,7 +66,7 @@ public interface PeripheralChannelMessage extends ByteChannel {
             READ, WRITE, NO_RESULT, ERROR
         }
 
-        protected int value;
+        protected int transferSize;
         protected ResultType type;
         protected Exception exception;
 
@@ -80,8 +79,8 @@ public interface PeripheralChannelMessage extends ByteChannel {
             this.type = ResultType.ERROR;
         }
 
-        public MessageChannelResult(int value, ResultType type) {
-            this.value = value;
+        public MessageChannelResult(int transferSize, ResultType type) {
+            this.transferSize = transferSize;
             this.type = type;
         }
 
@@ -90,17 +89,17 @@ public interface PeripheralChannelMessage extends ByteChannel {
          *
          * @return the successfully exceuted operation type
          */
-        public ResultType getType() {
+        public ResultType getResultType() {
             return type;
         }
 
         /**
-         * A value that can applies to the type of operation indicated by getType()
+         * A value that can applies to the type of operation indicated by getResultType()
          *
          * @return a numberical value generally indicating bytes read or written
          */
-        public int getValue() {
-            return value;
+        public int getTransferSize() {
+            return transferSize;
         }
 
         /**
