@@ -1,13 +1,11 @@
 package net.audumla.devices.lcd;
 
-import net.audumla.deviceaccess.PeripheralChannel;
-import net.audumla.deviceaccess.PeripheralChannelMessage;
-import net.audumla.deviceaccess.impl.DefaultPeripheralChannelMessage;
-import net.audumla.devices.io.channel.*;
+import net.audumla.perio.PeripheralChannel;
+import net.audumla.perio.PeripheralChannelMessage;
+import net.audumla.perio.impl.DefaultPeripheralChannelMessage;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.time.Duration;
 
 public class HitachiCharacterLCD implements CharacterLCD {

@@ -59,7 +59,7 @@
                         </goals>
                         <configuration>
                             <javahClassNames>
-                                <javahClassName>net.audumla.deviceaccess.i2cbus.rpi.jni.RPiI2CNative</javahClassName>
+                                <javahClassName>net.audumla.perio.i2c.rpi.jni.RPiI2CNative</javahClassName>
                             </javahClassNames>
                             <javahOutputDirectory>src/main/c/jni</javahOutputDirectory>
                         </configuration>
