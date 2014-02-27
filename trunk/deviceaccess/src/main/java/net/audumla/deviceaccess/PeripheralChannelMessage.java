@@ -219,8 +219,9 @@ public interface PeripheralChannelMessage extends ByteChannel {
      * Executes the message transfer using the supplied tx and rx buffers. The supplied buffers will be used instead of any buffers
      * supplied to the message when appending a read or write.
      * If either of the buffers is null then the underlying buffers supplied to the append read or write methods will be used instead.
-     * If only fixed read and writes were appended to the message and a null was supplied for either the tx or rx buffers, then and read
-     * data will be discarded, and all writes be populated as 0.
+     * If only fixed read and writes were appended to the message and a null was supplied for either the tx or rx buffers, then an internal buffer
+     * will be created and can be accessed using the returned MessageChannelResult collection. In this case all writes will pass 0 as the data to
+     * the channel
      *
      * @param rxBuffer The buffer to read data into or null to use the buffers supplied when initializing the message
      * @param txBuffer The buffer to write data from or null to use the buffers supplied when initializing the message

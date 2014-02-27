@@ -295,8 +295,8 @@ public class RPiI2cTest {
         assert it.next().getTransferSize() == 10;
 
         for (int i = 0; i < 10; ++i) {
-            assert rx1.get(i) == 0xfe;
-            assert rx2.get(i) == 0xfe;
+            assert rx1.get(i) == (byte)0xfe;
+            assert rx2.get(i) == (byte)0xfe;
         }
 
     }
