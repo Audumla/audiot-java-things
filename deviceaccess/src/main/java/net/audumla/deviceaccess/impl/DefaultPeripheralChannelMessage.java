@@ -35,6 +35,7 @@ public class DefaultPeripheralChannelMessage implements PeripheralChannelMessage
     protected Collection<ByteBuffer> readBuffers;
     protected Queue<MesssageChannelTrait> contextStack = new LinkedList<>();
     protected boolean template = false;
+    protected boolean haltOnError = true;
 
     public DefaultPeripheralChannelMessage() {
         writeBuffers = new ArrayList<>();
@@ -116,7 +117,7 @@ public class DefaultPeripheralChannelMessage implements PeripheralChannelMessage
         contextStack.add((txBuffer, rxBuffer) -> {
                     synchronized (Thread.currentThread()) {
                         try {
-                            Thread.sleep(millis,nanos);
+                            Thread.sleep(millis, nanos);
                         } catch (InterruptedException e) {
                             return new MessageChannelResult(e);
                         }
@@ -136,6 +137,16 @@ public class DefaultPeripheralChannelMessage implements PeripheralChannelMessage
     @Override
     public Collection<MessageChannelResult> transfer() {
         return transfer(null, null);
+    }
+
+    @Override
+    public void haltOnError(boolean halt) {
+        haltOnError = halt;
+    }
+
+    @Override
+    public boolean willHaltOnError() {
+        return haltOnError;
     }
 
     @Override
@@ -159,13 +170,17 @@ public class DefaultPeripheralChannelMessage implements PeripheralChannelMessage
                         break;
                     case ERROR:
                         results.add(result);
-                        logger.error("Failed to execute message",result.getException());
-                        return results;
+                        logger.error("Failed to execute message", result.getException());
+                        if (haltOnError) {
+                            return results;
+                        }
                 }
             } catch (Exception e) {
                 results.add(new MessageChannelResult(e));
-                logger.error("Failed to execute message",e);
-                return results;
+                logger.error("Failed to execute message", e);
+                if (haltOnError) {
+                    return results;
+                }
             }
         }
         return results;

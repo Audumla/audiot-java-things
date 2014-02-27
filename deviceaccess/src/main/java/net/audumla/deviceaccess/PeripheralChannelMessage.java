@@ -25,10 +25,9 @@ import java.util.Collection;
 /**
  * A PeripheralChannelMessage can be used to read and write to multiple locations as a single transaction. By appending reads and writes to a message a complete
  * transaction can be built up from multiple parts and executed as a single transfer.
- *
+ * <p>
  * A message template can be created by using any of the append methods and then reused multiple times by passing ByteBuffers to either the transfer method or to the read/write methods
  * from the ByteChannel interface.
- *
  */
 
 public interface PeripheralChannelMessage extends ByteChannel {
@@ -147,8 +146,8 @@ public interface PeripheralChannelMessage extends ByteChannel {
      * This is a convenience method to allow simplified write calls. The underlying implementation is the same as
      * creating a ByteBuffer and appending it as a write
      *
-     * @param channel    the Channel to read from
-     * @param value      the bytes to be written to the supplied channel
+     * @param channel the Channel to read from
+     * @param value   the bytes to be written to the supplied channel
      * @return the ChannelMessage instance
      */
     PeripheralChannelMessage appendWrite(WritablePeripheralChannel channel, byte... value);
@@ -159,8 +158,8 @@ public interface PeripheralChannelMessage extends ByteChannel {
      * This allows a message template to be created that can read or write a given number of bytes in a specific sequence but
      * allowing differnet source and target buffers to be passed in as part of the transfer call
      *
-     * @param channel    the Channel to write to
-     * @param size       the number of bytes to write from the txBuffer supplied as part of the transfer call
+     * @param channel the Channel to write to
+     * @param size    the number of bytes to write from the txBuffer supplied as part of the transfer call
      * @return the ChannelMessage instance
      */
     PeripheralChannelMessage appendSizedWrite(WritablePeripheralChannel channel, int size);
@@ -171,8 +170,8 @@ public interface PeripheralChannelMessage extends ByteChannel {
      * This allows a message template to be created that can read or write a given number of bytes in a specific sequence but
      * allowing differnet source and target buffers to be passed in as part of the transfer call
      *
-     * @param channel    the Channel to read from
-     * @param size       the number of bytes to read into the rxBuffer supplied as part of the transfer call
+     * @param channel the Channel to read from
+     * @param size    the number of bytes to read into the rxBuffer supplied as part of the transfer call
      * @return the ChannelMessage instance
      */
     PeripheralChannelMessage appendSizedRead(ReadablePeripheralChannel channel, int size);
@@ -204,7 +203,6 @@ public interface PeripheralChannelMessage extends ByteChannel {
      *
      * @param rxBuffer The buffer to read data into or null to use the buffers supplied when initializing the message
      * @param txBuffer The buffer to write data from or null to use the buffers supplied when initializing the message
-     *
      * @return a collection of MessageChannelResult objects representing every individual message transfer. If an error occurred then
      * the last instance in the collection will contain the error information
      */
@@ -217,4 +215,21 @@ public interface PeripheralChannelMessage extends ByteChannel {
      * the last instance in the collection will contain the error information
      */
     Collection<MessageChannelResult> transfer();
+
+    /**
+     * Determines whether the message will continue to process or not if an error is encountered. Default is true
+     * If set to not halt errors the MessageChannelResult collection returned by the transfer methods should be queried to determine whether
+     * errors occurred during the data transfer.
+     *
+     * @param halt true to halt the transfer if an error is encountered on a read or write. false will continue to process the other parts
+     *             of the message which may generate more errors.
+     */
+    void haltOnError(boolean halt);
+
+    /**
+     * Return whether the channel will halt when errors are encountered during a data transmission
+     *
+     * @return true if the channel will halt on errors, otherwise false
+     */
+    boolean willHaltOnError();
 }
