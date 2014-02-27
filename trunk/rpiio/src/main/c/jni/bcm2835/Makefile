@@ -56,5 +56,5 @@ uninstall:
 
 
 # DO NOT DELETE
-net_audumla_perio_i2c_rpi_jni_RPiI2CNative_bcm2835.o: net_audumla_perio_i2c_rpi_jni_RPiI2CNative.h
-net_audumla_perio_rpi_jni_RPiPlatformNative_bcm2835.o: net_audumla_perio_rpi_jni_RPiPlatformNative.h
+#net_audumla_perio_i2c_rpi_jni_RPiI2CNative_bcm2835.o: net_audumla_perio_i2c_rpi_jni_RPiI2CNative.h
+#net_audumla_perio_rpi_jni_RPiPlatformNative_bcm2835.o: net_audumla_perio_rpi_jni_RPiPlatformNative.h
