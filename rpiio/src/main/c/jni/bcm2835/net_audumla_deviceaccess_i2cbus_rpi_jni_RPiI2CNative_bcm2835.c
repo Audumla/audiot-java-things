@@ -122,7 +122,7 @@ JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative
                 dataBlock[ni+1] = (body[(i*width)+ni+(offset*width)] & maskBody[ni]) | (currentData[ni] & ~maskBody[ni]);
             }
             reason = bcm2835_i2c_write((char *)dataBlock,width+1,bus, &lenTr);
-            totalLenTr += lenTr;
+            totalLenTr += (lenTr -1);
         }
         (*env)->ReleasePrimitiveArrayCritical( env,mask, maskBody, 0);
     }
@@ -130,7 +130,7 @@ JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative
         for (i = 0; i < writeCount; ++i) {
             memcpy(dataBlock+1,(body + (i*width) + (offset*width)),width);
             reason = bcm2835_i2c_write((char *)dataBlock,width+1,bus, &lenTr);
-            totalLenTr += lenTr;
+            totalLenTr += (lenTr-1);
         }
     }
     (*env)->ReleasePrimitiveArrayCritical( env,data, body, 0);
