@@ -20,6 +20,7 @@ import net.audumla.perio.*;
 import net.audumla.perio.i2c.I2CDevice;
 import net.audumla.perio.i2c.I2CDeviceConfig;
 import net.audumla.perio.i2c.rpi.jni.RPiI2CNative;
+import net.audumla.perio.rpi.RPiPlatform;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,13 +38,15 @@ public class RPiI2CPeripheralProvider implements PeripheralProvider<I2CDevice, I
 
     static final Map<String, Integer> deviceHandleMap = new HashMap<>();
 
+    protected int defaultI2CBus = RPiPlatform.getHardwareRevision() < 4 ? 0 : 1;
+
     public RPiI2CPeripheralProvider() {
     }
 
     @Override
     public I2CDevice open(I2CDeviceConfig config, String[] properties, int mode) throws PeripheralNotFoundException, UnavailablePeripheralException, PeripheralConfigInvalidException, UnsupportedAccessModeException, IOException {
 
-        String deviceName = config.getDeviceName() == null ? DEVICE_FILE_PREFIX + (config.getDeviceNumber() == PeripheralConfig.DEFAULT ? 1 : config.getDeviceNumber()) : config.getDeviceName();
+        String deviceName = config.getDeviceName() == null ? DEVICE_FILE_PREFIX + (config.getDeviceNumber() == PeripheralConfig.DEFAULT ? defaultI2CBus : config.getDeviceNumber()) : config.getDeviceName();
         int deviceNumber = Integer.parseInt(deviceName.substring(DEVICE_FILE_PREFIX.length()));
         String name = "I2C Device [Bus:" + String.valueOf(deviceNumber) + "][Addr:0x" + String.valueOf(Integer.toHexString(config.getAddress())) + "]";
 
