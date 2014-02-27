@@ -262,7 +262,38 @@ public class RPiI2cTest {
             results.forEach(r -> {assert r.getValue() == 1;});
             b.rewind();
             int len = message.write(b);
-            assert len == 17;
+            assert len == 9;
         }
+    }
+
+    @Test
+    public void testMultiRead() throws Exception {
+        Activator power = getPower(6, 7, rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO1));
+        I2CDevice dev = createI2CDevice();
+        PeripheralChannel d = dev.getChannel();
+
+        DefaultPeripheralChannelMessage message = new DefaultPeripheralChannelMessage();
+
+        ByteBuffer rx1 = ByteBuffer.allocate(10);
+        ByteBuffer rx2 = ByteBuffer.allocate(10);
+
+        message.appendWrite(d,(byte)0xfe);
+        message.appendRead(d, rx1);
+        message.appendRead(d,rx2);
+
+        Collection<PeripheralChannelMessage.MessageChannelResult> results = message.transfer();
+        assert rx1.position() == rx1.limit();
+        assert rx2.position() == rx2.limit();
+
+        rx1.rewind();
+        rx2.rewind();
+
+        results.forEach(r -> {assert r.getValue() == 1;});
+
+        for (int i = 0; i < 10; ++i) {
+            assert rx1.get(i) == 0xfe;
+            assert rx2.get(i) == 0xfe;
+        }
+
     }
 }

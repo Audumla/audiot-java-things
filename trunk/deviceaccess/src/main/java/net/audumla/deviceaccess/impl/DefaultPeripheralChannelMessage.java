@@ -186,19 +186,19 @@ public class DefaultPeripheralChannelMessage implements PeripheralChannelMessage
         return results;
     }
 
-    protected ByteBuffer appendBuffer(ByteBuffer dest, ByteBuffer src, int offset, int size) {
-        if (!template) {
-            dest = getSizedBuffer(dest, size);
-            if (src.hasArray()) {
-                dest.put(src.array(), offset, size);
-            } else {
-                for (int i = offset; i < offset + size; ++i) {
-                    dest.put(src.get(i));
-                }
-            }
-        }
-        return dest;
-    }
+//    protected ByteBuffer appendBuffer(ByteBuffer dest, ByteBuffer src, int offset, int size) {
+//        if (!template) {
+//            dest = getSizedBuffer(dest, size);
+//            if (src.hasArray()) {
+//                dest.put(src.array(), offset, size);
+//            } else {
+//                for (int i = offset; i < offset + size; ++i) {
+//                    dest.put(src.get(i));
+//                }
+//            }
+//        }
+//        return dest;
+//    }
 
     protected ByteBuffer getSizedBuffer(ByteBuffer src, int size) {
         if (src.remaining() < size) {
