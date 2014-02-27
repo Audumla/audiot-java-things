@@ -22,13 +22,19 @@ import akka.actor.Props;
 import akka.pattern.AskTimeoutException;
 import akka.pattern.Patterns;
 import net.audumla.akka.CMTargetCreator;
-import net.audumla.devices.io.channel.ChannelAddressAttr;
-import net.audumla.devices.io.channel.DeviceAddressAttr;
-import net.audumla.devices.io.channel.I2CDeviceChannel;
+import net.audumla.deviceaccess.PeripheralChannel;
+import net.audumla.deviceaccess.PeripheralManager;
+import net.audumla.deviceaccess.i2cbus.I2CDevice;
+import net.audumla.deviceaccess.i2cbus.I2CDeviceConfig;
+import net.audumla.deviceaccess.i2cbus.rpi.RPiI2CPeripheralProvider;
+import net.audumla.devices.io.channel.*;
 import net.audumla.devices.io.i2c.RPiI2CDeviceFactory;
 import net.audumla.devices.lcd.CharacterLCD;
-import net.audumla.devices.lcd.akka.*;
 import net.audumla.devices.lcd.HitachiCharacterLCD;
+import net.audumla.devices.lcd.akka.LCDClearDisplayCommand;
+import net.audumla.devices.lcd.akka.LCDInitializeCommand;
+import net.audumla.devices.lcd.akka.LCDPauseCommand;
+import net.audumla.devices.lcd.akka.LCDPositionedWriteCommand;
 import org.apache.log4j.Logger;
 import org.junit.runner.Description;
 import org.junit.runner.Result;
@@ -48,8 +54,13 @@ public class LCDJUnitListener extends RunListener {
     public LCDJUnitListener() {
         try {
             ActorSystem actorSystem = ActorSystem.create();
+
+            I2CDeviceConfig config = new I2CDeviceConfig(1, HitachiCharacterLCD.DEFAULT_ADDRESS);
+            I2CDevice device = new RPiI2CPeripheralProvider().open(config,null, PeripheralManager.SHARED);
+            device.getAddressableChannel(MCP2308DeviceChannel.MCP23008_IODIR,MCP2308DeviceChannel.MCP23008_IODIR).write(0x00);
+            PeripheralChannel rwChannel = device.getAddressableChannel(MCP2308DeviceChannel.MCP23008_GPIO, MCP2308DeviceChannel.MCP23008_GPIO);
             I2CDeviceChannel channel = new I2CDeviceChannel(new RPiI2CDeviceFactory(), new ChannelAddressAttr(1), new DeviceAddressAttr(HitachiCharacterLCD.DEFAULT_ADDRESS));
-            Props lcpProps = Props.create(new CMTargetCreator<CharacterLCD>(new HitachiCharacterLCD(channel, "LCD JUnit Logger"))).withDispatcher("junit-dispatcher");
+            Props lcpProps = Props.create(new CMTargetCreator<CharacterLCD>(new HitachiCharacterLCD(rwChannel, "LCD JUnit Logger"))).withDispatcher("junit-dispatcher");
             target = actorSystem.actorOf(lcpProps, "lcd");
             target.tell(new LCDInitializeCommand(4, 20), null);
             logger.debug("Loaded JUnit LCD Listener");
