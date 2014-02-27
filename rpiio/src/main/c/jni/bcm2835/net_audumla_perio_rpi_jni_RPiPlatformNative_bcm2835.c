@@ -7,7 +7,7 @@
 #include <string.h>
 #include <fcntl.h>
 #include <sys/ioctl.h>
-#include "net_audumla_perio_i2cbus_rpi_jni_RPiPlatformNative.h"
+#include "net_audumla_perio_rpi_jni_RPiPlatformNative.h"
 #include "bcm2835.h"
 
 JNIEXPORT jint JNICALL Java_net_audumla_perio_rpi_jni_RPiPlatformNative_init(JNIEnv *env, jclass clazz) {
