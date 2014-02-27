@@ -11,6 +11,7 @@
     <name>Audumla&#160;Camel&#160;Scheduler</name>
     <description>Advanced Scheduling &#160; Astronomical Event Triggering for Apache Camel</description>
     <artifactId>camelscheduler</artifactId>
+    <packaging>bundle</packaging>
 
     <properties>
         <apache.camel.version>2.12.2</apache.camel.version>
