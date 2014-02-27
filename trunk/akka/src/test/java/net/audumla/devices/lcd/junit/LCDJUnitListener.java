@@ -59,7 +59,7 @@ public class LCDJUnitListener extends RunListener {
             I2CDevice device = new RPiI2CPeripheralProvider().open(config,null, PeripheralManager.SHARED);
             device.getAddressableChannel(MCP2308DeviceChannel.MCP23008_IODIR,MCP2308DeviceChannel.MCP23008_IODIR).write(0x00);
             PeripheralChannel rwChannel = device.getAddressableChannel(MCP2308DeviceChannel.MCP23008_GPIO, MCP2308DeviceChannel.MCP23008_GPIO);
-            I2CDeviceChannel channel = new I2CDeviceChannel(new RPiI2CDeviceFactory(), new ChannelAddressAttr(1), new DeviceAddressAttr(HitachiCharacterLCD.DEFAULT_ADDRESS));
+//            I2CDeviceChannel channel = new I2CDeviceChannel(new RPiI2CDeviceFactory(), new ChannelAddressAttr(1), new DeviceAddressAttr(HitachiCharacterLCD.DEFAULT_ADDRESS));
             Props lcpProps = Props.create(new CMTargetCreator<CharacterLCD>(new HitachiCharacterLCD(rwChannel, "LCD JUnit Logger"))).withDispatcher("junit-dispatcher");
             target = actorSystem.actorOf(lcpProps, "lcd");
             target.tell(new LCDInitializeCommand(4, 20), null);

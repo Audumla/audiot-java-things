@@ -149,7 +149,7 @@ public class RPiI2CDevice implements I2CDevice {
             try {
                 bb.position(bb.position() + adjust);
             } catch (IllegalArgumentException ex) {
-                throw new IOException("Attempt to position buffer beyond limit [limit:" + bb.limit() + "] [position:" + bb.position() + adjust + "]", ex);
+                throw new IOException("Attempt to position buffer beyond limit [limit:" + bb.limit() + "] [new position:" + (bb.position() + adjust) + "]", ex);
             }
         }
 
