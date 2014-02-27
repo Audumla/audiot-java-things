@@ -11,7 +11,7 @@ CC	= gcc
 INCLUDE	= -I. -I/$(JAVA_HOME)/include -I/usr/local/include -I. -I/$(JAVA_HOME)/include/linux -I/usr/local/include/linux -I../../bcm2835/src -I..
 CFLAGS	= $(DEBUG) -Wall $(INCLUDE) -Winline -pipe
 
-LIBS    = -L/usr/local/lib /usr/local/lib/libbcm2835.a
+LIBS    = -L/usr/local/lib -l/usr/local/lib/libbcm2835.a
 
 # Should not alter anything below this line
 ###############################################################################
