@@ -76,7 +76,7 @@
     </dependencies>
     <modules>
         <module>devices</module>
-        <module>deviceaccess</module>
+        <module>perio</module>
         <module>climate</module>
         <!--<module>irrigation</module>-->
         <module>commons</module>

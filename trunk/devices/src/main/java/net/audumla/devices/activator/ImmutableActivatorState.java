@@ -16,7 +16,6 @@ package net.audumla.devices.activator;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import org.apache.commons.math3.util.Precision;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,7 +59,8 @@ public class ImmutableActivatorState implements ActivatorState {
 
         ImmutableActivatorState that = (ImmutableActivatorState) o;
 
-        return Precision.equals(value, that.value,5.96e-08);
+        return Math.abs(value - that.value) < 5.96e-08;
+//        return Precision.equals(value, that.value,5.96e-08);
     }
 
     @Override

@@ -37,6 +37,9 @@ public class RPiI2CPeripheralProvider implements PeripheralProvider<I2CDevice, I
 
     static final Map<String, Integer> deviceHandleMap = new HashMap<>();
 
+    public RPiI2CPeripheralProvider() {
+    }
+
     @Override
     public I2CDevice open(I2CDeviceConfig config, String[] properties, int mode) throws PeripheralNotFoundException, UnavailablePeripheralException, PeripheralConfigInvalidException, UnsupportedAccessModeException, IOException {
 

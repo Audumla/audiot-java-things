@@ -7,7 +7,7 @@
 #include <string.h>
 #include <fcntl.h>
 #include <sys/ioctl.h>
-#include "../net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative.h"
+#include "../net_audumla_perio_i2cbus_rpi_jni_RPiI2CNative.h"
 
 // I2C definitions
 
@@ -45,7 +45,7 @@ struct i2c_smbus_ioctl_data
     uint8_t *data;
 };
 
-JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative_open(JNIEnv *env, jclass clazz, jint bus, jint address) {
+JNIEXPORT jint JNICALL Java_net_audumla_perio_i2cbus_rpi_jni_RPiI2CNative_open(JNIEnv *env, jclass clazz, jint bus, jint address) {
    char device[256];
    sprintf(device, "/dev/i2c-%d", bus);
    int fd ;
@@ -59,12 +59,12 @@ JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative
    return fd ;
 };
 
-JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative_close(JNIEnv *env, jclass clazz, jint fd) {
+JNIEXPORT jint JNICALL Java_net_audumla_perio_i2cbus_rpi_jni_RPiI2CNative_close(JNIEnv *env, jclass clazz, jint fd) {
     return close(fd);
 };
 
 
-JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative_write__IIBBB(JNIEnv *env, jclass clazz, jint fd, jint devId, jbyte localAddress, jbyte value, jbyte mask) {
+JNIEXPORT jint JNICALL Java_net_audumla_perio_i2cbus_rpi_jni_RPiI2CNative_write__IIBBB(JNIEnv *env, jclass clazz, jint fd, jint devId, jbyte localAddress, jbyte value, jbyte mask) {
     uint8_t data;
     struct i2c_smbus_ioctl_data args ;
 
@@ -83,7 +83,7 @@ JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative
     return ioctl(fd, I2C_SMBUS, &args);
 };
 
-JNIEXPORT jbyte JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative_read__IIB(JNIEnv *env, jclass clazz, jint fd, jint devId, jbyte localAddress) {
+JNIEXPORT jbyte JNICALL Java_net_audumla_perio_i2cbus_rpi_jni_RPiI2CNative_read__IIB(JNIEnv *env, jclass clazz, jint fd, jint devId, jbyte localAddress) {
     uint8_t data;
     struct i2c_smbus_ioctl_data args ;
 
@@ -95,7 +95,7 @@ JNIEXPORT jbyte JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNativ
     return data;
 };
 
-JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative_write__IIBB(JNIEnv *env, jclass clazz, jint fd, jint devId,  jbyte value , jbyte mask) {
+JNIEXPORT jint JNICALL Java_net_audumla_perio_i2cbus_rpi_jni_RPiI2CNative_write__IIBB(JNIEnv *env, jclass clazz, jint fd, jint devId,  jbyte value , jbyte mask) {
     uint8_t data ;
     struct i2c_smbus_ioctl_data args ;
 
@@ -115,7 +115,7 @@ JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative
     return ioctl(fd, I2C_SMBUS, &args);
 };
 
-JNIEXPORT jbyte JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative_read__II(JNIEnv *env, jclass clazz, jint fd, jint devId ) {
+JNIEXPORT jbyte JNICALL Java_net_audumla_perio_i2cbus_rpi_jni_RPiI2CNative_read__II(JNIEnv *env, jclass clazz, jint fd, jint devId ) {
     uint8_t data ;
     struct i2c_smbus_ioctl_data args ;
 
@@ -127,7 +127,7 @@ JNIEXPORT jbyte JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNativ
     return data;
 };
 
-JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative_write__IIII_3BB(JNIEnv *env, jclass clazz, jint fd, jint devId, jint offset, jint writeCount, jbyteArray data, jbyte mask) {
+JNIEXPORT jint JNICALL Java_net_audumla_perio_i2cbus_rpi_jni_RPiI2CNative_write__IIII_3BB(JNIEnv *env, jclass clazz, jint fd, jint devId, jint offset, jint writeCount, jbyteArray data, jbyte mask) {
     struct i2c_smbus_ioctl_data args ;
     jbyte *body = (*env)->GetPrimitiveArrayCritical(env, data, 0);
     uint32_t i;
@@ -157,7 +157,7 @@ JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative
     return 1;
 };
 
-JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative_write__IIBIII_3B_3B(JNIEnv *env, jclass clazz, jint fd, jint devId, jbyte localAddress, jint offset, jint width, jint writeCount, jbyteArray data, jbyteArray mask) {
+JNIEXPORT jint JNICALL Java_net_audumla_perio_i2cbus_rpi_jni_RPiI2CNative_write__IIBIII_3B_3B(JNIEnv *env, jclass clazz, jint fd, jint devId, jbyte localAddress, jint offset, jint width, jint writeCount, jbyteArray data, jbyteArray mask) {
     struct i2c_smbus_ioctl_data args ;
     jbyte *body = (*env)->GetPrimitiveArrayCritical(env, data, 0);
     uint32_t i;
@@ -192,7 +192,7 @@ JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative
     return 1;
 }
 
-JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative_read__IIII_3BB
+JNIEXPORT jint JNICALL Java_net_audumla_perio_i2cbus_rpi_jni_RPiI2CNative_read__IIII_3BB
   (JNIEnv *env, jclass clazz, jint fd, jint devId, jint offset, jint readCount, jbyteArray data, jbyte mask) {
     struct i2c_smbus_ioctl_data args ;
     jbyte *body = (*env)->GetPrimitiveArrayCritical(env, data, 0);
@@ -210,7 +210,7 @@ JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative
     return 1;
 };
 
-JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative_read__IIBIII_3B_3B
+JNIEXPORT jint JNICALL Java_net_audumla_perio_i2cbus_rpi_jni_RPiI2CNative_read__IIBIII_3B_3B
   (JNIEnv *env, jclass clazz, jint fd, jint devId, jbyte localAddress, jint offset, jint width, jint readCount, jbyteArray data, jbyteArray mask) {
     struct i2c_smbus_ioctl_data args ;
     jbyte *body = (*env)->GetPrimitiveArrayCritical(env, data, 0);
@@ -237,12 +237,12 @@ JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative
     return 1;
 };
 
-JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative_setClock
+JNIEXPORT jint JNICALL Java_net_audumla_perio_i2cbus_rpi_jni_RPiI2CNative_setClock
   (JNIEnv *env, jclass clazz, jint bus, jint freq) {
   return 100000;
 }
 
-JNIEXPORT jint JNICALL Java_net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative_getClock
+JNIEXPORT jint JNICALL Java_net_audumla_perio_i2cbus_rpi_jni_RPiI2CNative_getClock
   (JNIEnv *env, jclass clazz, jint bus) {
   return 100000;
 }
