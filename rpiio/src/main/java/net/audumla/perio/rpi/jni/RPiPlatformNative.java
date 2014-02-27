@@ -1,4 +1,4 @@
-package net.audumla.perio.i2c.rpi.jni;
+package net.audumla.perio.rpi.jni;
 
 /*
  * *********************************************************************
