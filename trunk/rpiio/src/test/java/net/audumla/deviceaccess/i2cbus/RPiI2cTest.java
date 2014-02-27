@@ -40,6 +40,7 @@ import org.slf4j.LoggerFactory;
 import java.nio.ByteBuffer;
 import java.time.Duration;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.Properties;
 
 public class RPiI2cTest {
@@ -287,7 +288,11 @@ public class RPiI2cTest {
         rx1.rewind();
         rx2.rewind();
 
-        results.forEach(r -> {assert r.getTransferSize() == 1;});
+        assert results.size() == 3;
+        Iterator<PeripheralChannelMessage.MessageChannelResult> it = results.iterator();
+        assert it.next().getTransferSize() == 1;
+        assert it.next().getTransferSize() == 10;
+        assert it.next().getTransferSize() == 10;
 
         for (int i = 0; i < 10; ++i) {
             assert rx1.get(i) == 0xfe;

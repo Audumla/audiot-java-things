@@ -70,6 +70,7 @@ public interface PeripheralChannelMessage extends ByteChannel {
         protected ResultType type;
         protected Exception exception;
 
+
         public MessageChannelResult(ResultType type) {
             this.type = type;
         }
