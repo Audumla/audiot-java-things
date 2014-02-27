@@ -69,7 +69,15 @@ public interface PeripheralChannelMessage extends ByteChannel {
         protected int transferSize;
         protected ResultType type;
         protected Exception exception;
+        protected ByteBuffer buffer;
+        protected int transferOffset = -1;
 
+        public MessageChannelResult(ResultType type, int transferSize, ByteBuffer buffer, int transferOffset) {
+            this.type = type;
+            this.transferSize = transferSize;
+            this.buffer = buffer;
+            this.transferOffset = transferOffset;
+        }
 
         public MessageChannelResult(ResultType type) {
             this.type = type;
@@ -78,11 +86,6 @@ public interface PeripheralChannelMessage extends ByteChannel {
         public MessageChannelResult(Exception exception) {
             this.exception = exception;
             this.type = ResultType.ERROR;
-        }
-
-        public MessageChannelResult(int transferSize, ResultType type) {
-            this.transferSize = transferSize;
-            this.type = type;
         }
 
         /**
@@ -110,6 +113,24 @@ public interface PeripheralChannelMessage extends ByteChannel {
          */
         public Exception getException() {
             return exception;
+        }
+
+        /**
+         * returns the buffer that was either written from or read to
+         *
+         * @return a reference to the ByteBuffer if a read or write operation was successfully completed, otherwise null
+         */
+        public ByteBuffer getTransferBuffer() {
+            return buffer;
+        }
+
+        /**
+         * returns the offset into the transfer buffer where the read or rwite began
+         *
+         * @return a value of 0 or greater if a read or write took place, othersize it will return a negative value if no transfer completed
+         */
+        public int getTransferOffset() {
+            return transferOffset;
         }
     }
 
