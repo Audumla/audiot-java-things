@@ -20,7 +20,8 @@ SRC	=   net_audumla_perio_i2c_rpi_jni_RPiI2CNative_bcm2835.c       \
         net_audumla_perio_rpi_jni_RPiPlatformNative_bcm2835.c
 
 OBJ	=   net_audumla_perio_i2c_rpi_jni_RPiI2CNative_bcm2835.o       \
-        net_audumla_perio_rpi_jni_RPiPlatformNative_bcm2835.o
+        net_audumla_perio_rpi_jni_RPiPlatformNative_bcm2835.o      \
+        libbcm2835.o
 
 all:		$(TARGET)
 
