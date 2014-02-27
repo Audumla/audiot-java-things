@@ -268,7 +268,6 @@ public class RPiI2cTest {
 
     @Test
     public void testMultiRead() throws Exception {
-        Activator power = getPower(6, 7, rpi.getActivator(RPIGPIOActivatorFactory.GPIOName.GPIO1));
         I2CDevice dev = createI2CDevice();
         PeripheralChannel d = dev.getChannel();
 
