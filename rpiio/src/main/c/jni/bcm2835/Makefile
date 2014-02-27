@@ -3,7 +3,7 @@
 #	audumlaRPi - Java (JNI) library wrapper for Raspberry Pi io interfaces
 #
 
-TARGET=audumlaRPiI2C_bcm2835.so
+TARGET=audumlaRPi_bcm2835.so
 
 #DEBUG	= -g -O0
 DEBUG	= -O3
@@ -16,9 +16,12 @@ LIBS    = -L/usr/local/lib /usr/local/lib/libbcm2835.a
 # Should not alter anything below this line
 ###############################################################################
 
-SRC	=   net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative_bcm2835.c
+SRC	=   net_audumla_perio_i2cbus_rpi_jni_RPiI2CNative_bcm2835.c       \
+        net_audumla_perio_i2cbus_rpi_jni_RPiPlatformNative_bcm2835.c
 
-OBJ	=   net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative_bcm2835.o
+OBJ	=   net_audumla_perio_i2cbus_rpi_jni_RPiI2CNative_bcm2835.o       \
+        net_audumla_perio_i2cbus_rpi_jni_RPiPlatformNative_bcm2835.o  \
+        libbcm2835.o
 
 all:		$(TARGET)
 
@@ -54,4 +57,5 @@ uninstall:
 
 
 # DO NOT DELETE
-net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative.o: net_audumla_deviceaccess_i2cbus_rpi_jni_RPiI2CNative.h
+net_audumla_perio_i2cbus_rpi_jni_RPiI2CNative_bcm2835.o: net_audumla_perio_i2cbus_rpi_jni_RPiI2CNative.h
+net_audumla_perio_i2cbus_rpi_jni_RPiPlatformNative_bcm2835.o: net_audumla_perio_i2cbus_rpi_jni_RPiPlatformNative.h
