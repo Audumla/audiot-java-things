@@ -25,17 +25,17 @@ import java.nio.ByteBuffer;
 public class MCP2308DeviceChannel extends AbstractDeviceChannel {
     private static final Logger logger = LoggerFactory.getLogger(MCP2308DeviceChannel.class);
 
-    public static final int MCP23008_IODIR = 0x00;
-    public static final int MCP23008_IPOL = 0x01;
-    public static final int MCP23008_GPINTEN = 0x02;
-    public static final int MCP23008_DEFVAL = 0x03;
-    public static final int MCP23008_INTCON = 0x04;
-    public static final int MCP23008_IOCON = 0x05;
-    public static final int MCP23008_GPPU = 0x06;
-    public static final int MCP23008_INTF = 0x07;
-    public static final int MCP23008_INTCAP = 0x08;
-    public static final int MCP23008_GPIO = 0x09;
-    public static final int MCP23008_OLAT = 0x0A;
+    public static final byte MCP23008_IODIR = (byte)0x00;
+    public static final byte MCP23008_IPOL = (byte)0x01;
+    public static final byte MCP23008_GPINTEN = (byte)0x02;
+    public static final byte MCP23008_DEFVAL = (byte)0x03;
+    public static final byte MCP23008_INTCON = (byte)0x04;
+    public static final byte MCP23008_IOCON = (byte)0x05;
+    public static final byte MCP23008_GPPU = (byte)0x06;
+    public static final byte MCP23008_INTF = (byte)0x07;
+    public static final byte MCP23008_INTCAP = (byte)0x08;
+    public static final byte MCP23008_GPIO = (byte)0x09;
+    public static final byte MCP23008_OLAT = (byte)0x0A;
 
     protected DeviceChannel targetChannel;
 

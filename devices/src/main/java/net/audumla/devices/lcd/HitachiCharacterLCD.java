@@ -1,10 +1,14 @@
 package net.audumla.devices.lcd;
 
+import net.audumla.deviceaccess.PeripheralChannel;
+import net.audumla.deviceaccess.PeripheralChannelMessage;
+import net.audumla.deviceaccess.impl.DefaultPeripheralChannelMessage;
 import net.audumla.devices.io.channel.*;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.time.Duration;
 
 public class HitachiCharacterLCD implements CharacterLCD {
     public static final byte DEFAULT_ADDRESS = 0x20;
@@ -66,31 +70,30 @@ public class HitachiCharacterLCD implements CharacterLCD {
     private byte backlightStatus;
     private byte displayControl;
     private byte writeMode;
-    private DeviceChannel channel;
+    private PeripheralChannel channel;
 
     public static Logger logger = Logger.getLogger(HitachiCharacterLCD.class);
     private int columns = 20;
     private int rows = 4;
 
-    public HitachiCharacterLCD(DeviceChannel channel,String name) throws IOException {
+    public HitachiCharacterLCD(PeripheralChannel channel,String name) throws IOException {
         this.channel = channel;
-        channel.setAttribute(new DeviceRegisterAttr(MCP2308DeviceChannel.MCP23008_GPIO));
         this.name = name;
         backlightStatus = LCD_BACKLIGHT;
     }
 
-    protected void reset(ByteBuffer bb, DeviceChannel ch) throws Exception {
-        ch.setAttribute(bb, new FixedWaitAttr(20));
-        bb.put((byte) (LCD_D4_PIN | LCD_D5_PIN | LCD_ENABLE_PIN));
-        bb.put((byte) (LCD_D4_PIN | LCD_D5_PIN));
-        ch.setAttribute(bb, new FixedWaitAttr(5));
-        bb.put((byte) (LCD_D4_PIN | LCD_D5_PIN | LCD_ENABLE_PIN));
-        bb.put((byte) (LCD_D4_PIN | LCD_D5_PIN));
-        ch.setAttribute(bb, new FixedWaitAttr(0, 100));
-        bb.put((byte) (LCD_D4_PIN | LCD_D5_PIN | LCD_ENABLE_PIN));
-        bb.put((byte) (LCD_D4_PIN | LCD_D5_PIN));
-        bb.put((byte) (LCD_D5_PIN | LCD_ENABLE_PIN));
-        bb.put((byte) (LCD_D5_PIN));
+    protected void reset(PeripheralChannelMessage message) throws Exception {
+        message.appendWait(Duration.ofMillis(20));
+        message.appendWrite(channel, (byte) (LCD_D4_PIN | LCD_D5_PIN | LCD_ENABLE_PIN));
+        message.appendWrite(channel, (byte) (LCD_D4_PIN | LCD_D5_PIN));
+        message.appendWait(Duration.ofMillis(5));
+        message.appendWrite(channel, (byte) (LCD_D4_PIN | LCD_D5_PIN | LCD_ENABLE_PIN));
+        message.appendWrite(channel, (byte) (LCD_D4_PIN | LCD_D5_PIN));
+        message.appendWait(Duration.ofNanos(100));
+        message.appendWrite(channel, (byte) (LCD_D4_PIN | LCD_D5_PIN | LCD_ENABLE_PIN));
+        message.appendWrite(channel, (byte) (LCD_D4_PIN | LCD_D5_PIN));
+        message.appendWrite(channel, (byte) (LCD_D5_PIN | LCD_ENABLE_PIN));
+        message.appendWrite(channel, (byte) (LCD_D5_PIN));
     }
 
     @Override
@@ -101,18 +104,16 @@ public class HitachiCharacterLCD implements CharacterLCD {
             displayControl = LCD_DISPLAYCONTROL_COMMAND | LCD_DISPLAYON;
             writeMode = LCD_ENTRYMODESET_COMMAND | LCD_ENTRYMODE_INCREMENT_CURSOR;
             //see http://www.adafruit.com/datasheets/HD44780.pdf page 46 for initialization of 4 bit interface
-            channel.write((byte) 0x00, new DeviceWriteRegisterAttr(MCP2308DeviceChannel.MCP23008_IODIR));
-            DeviceChannel initChannel = channel.createChannel();
-            ByteBuffer bb = ByteBuffer.allocateDirect(100);
-            reset(bb, initChannel);
-            putCommand4bits(bb, initChannel, LCD_COMMAND, (byte) (LCD_FUNCTIONSET_COMMAND | (rows > 1 ? LCD_2LINE : LCD_1LINE) | (rows > 1 ? LCD_5x8DOTS : LCD_5x10DOTS))); // set to 4 bit interface - 2 lines - 5x10 font
-            putCommand4bits(bb, initChannel, LCD_COMMAND, (byte) (LCD_DISPLAYCONTROL_COMMAND));
-            putCommand4bits(bb, initChannel, LCD_COMMAND, (byte) (LCD_RETURNHOME_COMMAND));
-            putCommand4bits(bb, initChannel, LCD_COMMAND, (byte) (LCD_CLEARDISPLAY_COMMAND)); // display clear
-            putCommand4bits(bb, initChannel, LCD_COMMAND, (byte) displayControl);
-            putCommand4bits(bb, initChannel, LCD_COMMAND, (byte) writeMode);
-            bb.flip();
-            initChannel.write(bb);
+
+            DefaultPeripheralChannelMessage message = new DefaultPeripheralChannelMessage();
+            reset(message);
+            putCommand4bits(message, LCD_COMMAND, (byte) (LCD_FUNCTIONSET_COMMAND | (rows > 1 ? LCD_2LINE : LCD_1LINE) | (rows > 1 ? LCD_5x8DOTS : LCD_5x10DOTS))); // set to 4 bit interface - 2 lines - 5x10 font
+            putCommand4bits(message, LCD_COMMAND, (byte) (LCD_DISPLAYCONTROL_COMMAND));
+            putCommand4bits(message, LCD_COMMAND, (byte) (LCD_RETURNHOME_COMMAND));
+            putCommand4bits(message, LCD_COMMAND, (byte) (LCD_CLEARDISPLAY_COMMAND)); // display clear
+            putCommand4bits(message, LCD_COMMAND, (byte) displayControl);
+            putCommand4bits(message, LCD_COMMAND, (byte) writeMode);
+            message.transfer();
         } catch (Exception ex) {
             logger.error("Cannot initialize LCD [" + getName() + "]", ex);
             return false;
@@ -124,15 +125,15 @@ public class HitachiCharacterLCD implements CharacterLCD {
         return name;
     }
 
-    protected void putCommand8bits(ByteBuffer bb, DeviceChannel ch, byte mode, byte... values) throws Exception {
+    protected void putCommand8bits(PeripheralChannelMessage message, byte mode, byte... values) throws Exception {
         for (byte value : values) {
-            bb.put((byte) (value | backlightStatus | LCD_ENABLE_PIN | mode));
-            bb.put((byte) (value | backlightStatus | mode));
-            ch.setAttribute(bb, new FixedWaitAttr(0, 400));
+            message.appendWrite(channel,(byte) (value | backlightStatus | LCD_ENABLE_PIN | mode));
+            message.appendWrite(channel, (byte) (value | backlightStatus | mode));
+            message.appendWait(Duration.ofNanos(400));
         }
     }
 
-    protected void putCommand4bits(ByteBuffer bb, DeviceChannel ch, byte mode, byte... values) throws Exception {
+    protected void putCommand4bits(PeripheralChannelMessage message, byte mode, byte... values) throws Exception {
         for (byte value : values) {
             byte bitx4 = 0;
             for (int i = 0; i < LCD_DATA_4BITMASK.length; ++i) {
@@ -140,20 +141,18 @@ public class HitachiCharacterLCD implements CharacterLCD {
                     bitx4 |= LCD_DATA_4BITPIN[i];
                 }
                 if (i == 3) {
-                    putCommand8bits(bb, ch, mode, bitx4);
+                    putCommand8bits(message, mode, bitx4);
                     bitx4 = 0;
                 }
             }
-            putCommand8bits(bb, ch, mode, bitx4);
+            putCommand8bits(message, mode, bitx4);
         }
     }
 
     protected void commandByMode(byte mode, byte... args) throws Exception {
-        DeviceChannel wb = channel.createChannel();
-        ByteBuffer bb = ByteBuffer.allocate(args.length * 8);
-        putCommand4bits(bb, wb, mode, args);
-        bb.flip();
-        wb.write(bb);
+        DefaultPeripheralChannelMessage message = new DefaultPeripheralChannelMessage();
+        putCommand4bits(message, mode, args);
+        message.transfer();
     }
 
     protected void command(byte... args) throws Exception {
