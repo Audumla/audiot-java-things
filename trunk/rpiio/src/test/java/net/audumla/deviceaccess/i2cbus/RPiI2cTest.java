@@ -236,7 +236,7 @@ public class RPiI2cTest {
             PeripheralChannel d = dev.getChannel();
             DefaultPeripheralChannelMessage message = new DefaultPeripheralChannelMessage();
             d.write(0xff);
-            byte[] bytes = new byte[8];
+            byte[] bytes = new byte[9];
             ByteBuffer rx = ByteBuffer.allocate(1024);
             power.setState(ActivatorState.ACTIVATED);
             byte val = (byte) 0x01;
@@ -248,6 +248,7 @@ public class RPiI2cTest {
                 val = (byte) (val << 1);
             }
             message.appendWrite(d, (byte)0xff);
+            bytes[8] = (byte) 0xff;
             Collection<PeripheralChannelMessage.MessageChannelResult> results = message.transfer();
             assert results.size() == 17;
             ByteBuffer b = ByteBuffer.wrap(bytes);
