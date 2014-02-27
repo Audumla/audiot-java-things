@@ -1,4 +1,4 @@
-package net.audumla.perio.gpio.rpi;
+package net.audumla.perio.i2c.rpi.jni;
 
 /*
  * *********************************************************************
@@ -16,11 +16,37 @@ package net.audumla.perio.gpio.rpi;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import net.audumla.perio.gpio.GPIOPin;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import net.audumla.utils.jni.LibraryLoader;
 
-public class RPiGPIOPin {
-    private static final Logger logger = LoggerFactory.getLogger(RPiGPIOPin.class);
+public class RPiPlatformNative {
+    // private constructor
+    private RPiPlatformNative() {
+        // forbid object construction
+    }
+
+    static {
+        // Load the platform library
+        LibraryLoader.load("audumlaRPi_bcm2835", "audumlaRPi_bcm2835.so");
+    }
+
+    /**
+     * Initializes the raspberry pi for access to its peripherals
+     *
+     * @return greater that 1 if successfully initialized
+     */
+    public static native int init();
+
+    /**
+     * Shuts down and releases any handles that the application is holding
+     *
+     */
+    public static native void shutdown();
+
+    /**
+     * Returns the board revision number
+     *
+     */
+    public static native int getRevision();
+
 
 }

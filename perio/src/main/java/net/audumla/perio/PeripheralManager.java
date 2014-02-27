@@ -17,6 +17,7 @@ package net.audumla.perio;
  */
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.*;
 
 public class PeripheralManager {
@@ -24,10 +25,12 @@ public class PeripheralManager {
     public static final int SHARED = 2;
     public static final int UNSPECIFIED_ID = -1;
 
-    private static Map<Class<?>, Collection<RegistrationListener>> listeners = new HashMap<>();
-    private static Collection<PeripheralDescriptor<? extends Peripheral, ? extends PeripheralConfig>> peripherals = new ArrayList<>();
-    private static Collection<PeripheralProvider> providers = new ArrayList<>();
-    private static int idCount = 0;
+    protected static Map<Class<?>, Collection<RegistrationListener>> listeners = new HashMap<>();
+    protected static Collection<PeripheralDescriptor<? extends Peripheral, ? extends PeripheralConfig>> peripherals = new ArrayList<>();
+    //    private static Collection<PeripheralProvider> providers = new ArrayList<>();
+    protected static int idCount = 0;
+
+    protected static ServiceLoader<PeripheralProvider> peripheralProviders = ServiceLoader.load(PeripheralProvider.class);
 
     static public class ReferencedPeripheralDescriptor<P extends Peripheral<? super P, ? super C>, C extends PeripheralConfig<? super P>> implements PeripheralDescriptor<P, C> {
 
@@ -70,6 +73,17 @@ public class PeripheralManager {
     }
 
     PeripheralManager() {
+        try {
+            Enumeration<URL> en = null;
+            en = getClass().getClassLoader().getResources("META-INF/services/net.audumla.perio.PeripheralProvider");
+
+            while (en.hasMoreElements()) {
+                URL metaInf = en.nextElement();
+                System.out.println(metaInf);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public static Iterator<PeripheralDescriptor<? extends Peripheral, ? extends PeripheralConfig>> list() {
@@ -80,7 +94,7 @@ public class PeripheralManager {
         return peripherals.stream().filter(p -> paramClass.isAssignableFrom(p.getInterface())).iterator();
     }
 
-    public static <P extends Peripheral<? super P, ? super C>, C extends PeripheralConfig<? super P>> P open(Class<P> peripheralClass, C config) throws IOException{
+    public static <P extends Peripheral<? super P, ? super C>, C extends PeripheralConfig<? super P>> P open(Class<P> peripheralClass, C config) throws IOException {
         return open(peripheralClass, config, EXCLUSIVE);
     }
 
@@ -88,11 +102,6 @@ public class PeripheralManager {
         PeripheralProvider<P, C> p = getProvider(peripheralClass, config.getClass(), null);
         return openPeripheral(p, config, null, mode, UNSPECIFIED_ID, null);
     }
-
-//    public static <P extends Peripheral<? super P, ? super C>, C extends PeripheralConfig<? super P>> P open(int id) throws IOException, PeripheralNotFoundException, UnavailablePeripheralException {
-//        return open(id, Class<?>, EXCLUSIVE);
-//        return null;
-//    }
 
     public static <P extends Peripheral<? super P, ? super C>, C extends PeripheralConfig<? super P>> P open(int id, Class<P> peripheralClass) throws IOException {
         return open(id, peripheralClass, EXCLUSIVE);
@@ -113,11 +122,6 @@ public class PeripheralManager {
         }
     }
 
-//    public static <P extends Peripheral<? super P, ? super C>, C extends PeripheralConfig<? super P>> P open(int id, int mode) throws IOException, PeripheralNotFoundException, UnavailablePeripheralException, UnsupportedAccessModeException {
-//        return open(id, null, mode);
-//        return null;
-//    }
-
     public static <P extends Peripheral<? super P, ? super C>, C extends PeripheralConfig<? super P>> P open(C config) throws IOException, PeripheralConfigInvalidException, PeripheralTypeNotSupportedException, PeripheralNotFoundException, UnavailablePeripheralException {
         return open(config, EXCLUSIVE);
     }
@@ -135,7 +139,6 @@ public class PeripheralManager {
         PeripheralProvider<P, C> p = getProvider(peripheralClass, null, properties);
         return openPeripheral(p, null, properties, mode, UNSPECIFIED_ID, name);
     }
-
 
     private static <P extends Peripheral<? super P, ? super C>, C extends PeripheralConfig<? super P>> int register(int id, Class<? extends Peripheral> peripheralClass, C config, String name, String[] properties) throws IOException, PeripheralTypeNotSupportedException, PeripheralConfigInvalidException, PeripheralNotFoundException, PeripheralExistsException {
         if (id == UNSPECIFIED_ID) {
@@ -182,30 +185,33 @@ public class PeripheralManager {
         }
     }
 
-    protected void registerprovider(Class<? extends Peripheral> clazz, PeripheralProvider provider) {
-        providers.add(provider);
-    }
+//    protected void registerprovider(Class<? extends Peripheral> clazz, PeripheralProvider provider) {
+//        providers.add(provider);
+//    }
 
     protected static <P extends Peripheral<? super P, ? super C>, C extends PeripheralConfig<? super P>> PeripheralProvider<P, C> getProvider(Class<?> peripheralClass, Class<?> configClass, String[] properties) throws PeripheralTypeNotSupportedException {
         PeripheralProvider<P, C> provider = null;
         if (peripheralClass != null) {
-            Optional<PeripheralProvider> found = providers.stream().filter(p -> p.getType().equals(peripheralClass)).findFirst();
-            if (found.isPresent()) {
-                return found.get();
+            for (PeripheralProvider p : peripheralProviders) {
+                if (p.getType().equals(peripheralClass)) {
+                    provider = p;
+                }
             }
         }
 
         if (configClass != null) {
-            Optional<PeripheralProvider> found = providers.stream().filter(p -> p.getConfigType().equals(configClass)).findFirst();
-            if (found.isPresent()) {
-                return found.get();
+            for (PeripheralProvider p : peripheralProviders) {
+                if (p.getConfigType().equals(configClass)) {
+                    provider = p;
+                }
             }
         }
 
         if (properties != null) {
-            Optional<PeripheralProvider> found = providers.stream().filter(p -> p.matches(properties)).findFirst();
-            if (found.isPresent()) {
-                return found.get();
+            for (PeripheralProvider p : peripheralProviders) {
+                if (p.matches(properties)) {
+                    provider = p;
+                }
             }
         }
 
