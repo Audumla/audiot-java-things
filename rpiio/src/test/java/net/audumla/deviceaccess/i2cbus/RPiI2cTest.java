@@ -220,7 +220,7 @@ public class RPiI2cTest {
             ByteBuffer b = ByteBuffer.wrap(bytes);
             results = message.transfer(b,null);
             assert results.size() == 8 * repeat;
-            results.forEach(r -> {assert r.getValue() == 1;});
+            results.forEach(r -> {assert r.getTransferSize() == 1;});
             b.rewind();
             int len = message.write(b);
             assert len == 8 * repeat;
@@ -259,7 +259,7 @@ public class RPiI2cTest {
             for (int i =0; i < rx.limit(); ++i) {
                 assert rx.get(i) == b.get(i);
             }
-            results.forEach(r -> {assert r.getValue() == 1;});
+            results.forEach(r -> {assert r.getTransferSize() == 1;});
             b.rewind();
             int len = message.write(b);
             assert len == 9;
@@ -287,7 +287,7 @@ public class RPiI2cTest {
         rx1.rewind();
         rx2.rewind();
 
-        results.forEach(r -> {assert r.getValue() == 1;});
+        results.forEach(r -> {assert r.getTransferSize() == 1;});
 
         for (int i = 0; i < 10; ++i) {
             assert rx1.get(i) == 0xfe;

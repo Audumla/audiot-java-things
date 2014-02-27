@@ -95,7 +95,7 @@ public class MessageTest {
         long millis = Duration.between(now, after).toMillis();
         assert millis > 499;
         assert results.size() == 500;
-        results.forEach(r -> {assert r.getValue() == 1;});
+        results.forEach(r -> {assert r.getTransferSize() == 1;});
         bbr.flip();
         for (int i = 0; i < 250; ++i) {
             assert bbw.get(i) == bbr.get(i);
