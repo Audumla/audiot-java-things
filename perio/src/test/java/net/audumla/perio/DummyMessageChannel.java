@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-public class DummyMessageChannel implements PeripheralChannel {
+public class DummyMessageChannel implements ReadWritePeripheralChannel {
     private static final Logger logger = LoggerFactory.getLogger(DummyMessageChannel.class);
 
     public byte bytes[] = new byte[2048];

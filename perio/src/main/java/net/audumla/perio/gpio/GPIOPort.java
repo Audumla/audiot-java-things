@@ -16,24 +16,14 @@ package net.audumla.perio.gpio;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import net.audumla.perio.ClosedPeripheralException;
-import net.audumla.perio.Peripheral;
-import net.audumla.perio.UnavailablePeripheralException;
+import net.audumla.perio.SelectableIOPeripheral;
 
-public interface GPIOPort extends Peripheral<GPIOPort, GPIOPortConfig> {
+public interface GPIOPort extends SelectableIOPeripheral<GPIOPort, GPIOPortConfig, GPIOPin[]> {
 
-    int INPUT = 0;
-    int OUTPUT = 1;
+    void setInputListener(PortListener portListener) throws java.io.IOException;
 
-    int getDirection() throws java.io.IOException, UnavailablePeripheralException, ClosedPeripheralException;
+    void setDirection(GPIOPin.Direction direction, GPIOPin ... pins);
 
-    int getMaxValue() throws java.io.IOException, UnavailablePeripheralException, ClosedPeripheralException;
+    GPIOPin[] getPins();
 
-    int getValue() throws java.io.IOException, UnavailablePeripheralException, ClosedPeripheralException;
-
-    void setDirection(int i) throws java.io.IOException, UnavailablePeripheralException, ClosedPeripheralException;
-
-    void setInputListener(PortListener portListener) throws java.io.IOException, ClosedPeripheralException;
-
-    void setValue(int i) throws java.io.IOException, UnavailablePeripheralException, ClosedPeripheralException;
 }

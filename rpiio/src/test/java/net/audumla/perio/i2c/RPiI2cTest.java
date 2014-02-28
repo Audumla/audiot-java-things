@@ -16,7 +16,7 @@ package net.audumla.perio.i2c;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import net.audumla.perio.PeripheralChannel;
+import net.audumla.perio.ReadWritePeripheralChannel;
 import net.audumla.perio.PeripheralChannelMessage;
 import net.audumla.perio.PeripheralManager;
 import net.audumla.perio.i2c.rpi.RPiI2CPeripheralProvider;
@@ -64,7 +64,7 @@ public class RPiI2cTest {
 
     @Test
     public void PCF8574readwrite8() throws Exception {
-        PeripheralChannel d = createI2CDevice().getChannel();
+        ReadWritePeripheralChannel d = createI2CDevice().getReadWriteChannel();
         byte val = (byte) 0x01;
         d.write(val);
         Assert.assertEquals(val, d.read());
@@ -74,7 +74,7 @@ public class RPiI2cTest {
 
     @Test
     public void PCF8574RWMask8() throws Exception {
-        PeripheralChannel d = createI2CDevice().getChannel();
+        ReadWritePeripheralChannel d = createI2CDevice().getReadWriteChannel();
         d.write((byte) 0x00);
         byte val = (byte) 0xff;
         d.setMask(0x0f);
@@ -89,7 +89,7 @@ public class RPiI2cTest {
     @Test
     public void testMultiRead() throws Exception {
         I2CDevice dev = createI2CDevice();
-        PeripheralChannel d = dev.getChannel();
+        ReadWritePeripheralChannel d = dev.getReadWriteChannel();
 
         DefaultPeripheralChannelMessage message = new DefaultPeripheralChannelMessage();
 

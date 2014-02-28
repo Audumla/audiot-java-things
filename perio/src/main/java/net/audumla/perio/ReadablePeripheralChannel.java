@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.ReadableByteChannel;
 
-public interface ReadablePeripheralChannel extends ReadableByteChannel {
+public interface ReadablePeripheralChannel extends ReadableByteChannel, PeripheralChannel {
     int read() throws IOException;
 
     int read(ByteBuffer dst) throws IOException;

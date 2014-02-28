@@ -16,8 +16,7 @@ package net.audumla.perio.i2c.rpi;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import net.audumla.perio.PeripheralChannel;
-import net.audumla.perio.PeripheralDescriptor;
+import net.audumla.perio.*;
 import net.audumla.perio.i2c.I2CDevice;
 import net.audumla.perio.i2c.I2CDeviceConfig;
 import net.audumla.perio.i2c.rpi.jni.RPiI2CNative;
@@ -30,12 +29,13 @@ import java.nio.ByteBuffer;
 public class RPiI2CDevice implements I2CDevice {
     private static final Logger logger = LoggerFactory.getLogger(RPiI2CDevice.class);
 
-    private int handle;
-    private int address;
-    private PeripheralDescriptor<I2CDevice, I2CDeviceConfig> descriptor;
-    private int width = 1;
+    private final int handle;
+    private final int address;
+    private final PeripheralDescriptor<I2CDevice, I2CDeviceConfig> descriptor;
+    private final int width;
 
-    public RPiI2CDevice(int handle, PeripheralDescriptor<I2CDevice, I2CDeviceConfig> descriptor) {
+    public RPiI2CDevice(final int handle, final PeripheralDescriptor<I2CDevice, I2CDeviceConfig> descriptor) {
+        width = descriptor.getConfiguration().getWidth();
         this.handle = handle;
         address = descriptor.getConfiguration().getAddress();
         this.descriptor = descriptor;
@@ -47,78 +47,61 @@ public class RPiI2CDevice implements I2CDevice {
     }
 
     @Override
-    public PeripheralChannel getAddressableChannel(byte readSubAddress, byte writeSubAddress) {
-        return new AddressedChannel(readSubAddress, writeSubAddress);
+    public ReadWritePeripheralChannel getReadWriteChannel(final Long read, final Long write) {
+        return new AddressedChannel(write.byteValue(), read.byteValue());
     }
 
     @Override
-    public PeripheralChannel getChannel() {
+    public ReadWritePeripheralChannel getReadWriteChannel(final Long readWrite) {
+        return getReadWriteChannel(readWrite, readWrite);
+    }
+
+    @Override
+    public WritablePeripheralChannel getWriteChannel(final Long write) {
+        return new AddressedChannel(null, write.byteValue());
+    }
+
+    @Override
+    public ReadablePeripheralChannel getReadChannel(final Long read) {
+        return new AddressedChannel(read.byteValue(), null);
+    }
+
+    @Override
+    public ReadWritePeripheralChannel getReadWriteChannel() {
         return new DirectChannel();
     }
 
     @Override
-    public int getDeviceWidth() {
-        return width;
+    public ReadablePeripheralChannel getReadChannel() {
+        return getReadWriteChannel();
     }
 
     @Override
-    public void setDeviceWidth(int width) {
-
-        this.width = width;
+    public WritablePeripheralChannel getWriteChannel() {
+        return getReadWriteChannel();
     }
 
-    //    protected class I2CDirectChannel extends AbstractI2CChannel {
-//
-//        @Override
-//        public int read() throws IOException {
-//            if (mask == null) {
-//                return I2C.readByteDirect(handle);
-//            } else {
-//                return I2C.readByteDirect(handle) & mask[0];
-//            }
-//        }
-//
-//        @Override
-//        public int read(ByteBuffer dst) throws IOException {
-//            return read(dst, dst.position(), dst.remaining());
-//        }
-//
-//        @Override
-//        public int read(ByteBuffer dst, int offset, int size) throws IOException {
-//            return 0;
-//        }
-//
-//        @Override
-//        public int write(int value) throws IOException {
-//            if (mask == null) {
-//                return I2C.writeByteDirect(handle, (byte) value);
-//            } else {
-//                return I2C.writeByteDirectMask(handle, (byte) value, mask == null ? (byte) 0xff : mask[0]);
-//            }
-//        }
-//
-//        @Override
-//        public int write(ByteBuffer dst) throws IOException {
-//            return write(dst, 0, dst.limit());
-//        }
-//
-//        @Override
-//        public int write(ByteBuffer dst, int offset, int size) throws IOException {
-//            if (mask == null) {
-//                return I2C.writeBytesDirect(handle, size, offset, dst.array());
-//            } else {
-//                return I2C.writeBytesDirectMask(handle, size, offset, dst.array(), mask == null ? (byte) 0xff : mask[0]);
-//            }
-//        }
-//
-//    }
-//
-    protected abstract class AbstractI2CChannel implements PeripheralChannel {
+    protected abstract class AbstractI2CChannel implements ReadWritePeripheralChannel {
 
         protected byte[] mask;
         protected boolean failOnBufferCapacity = true;
 
-        protected ByteBuffer toByteBuffer(int value) {
+        @Override
+        public int getDeviceWidth() {
+            return width;
+        }
+
+        @Override
+        public int getBitWidth() {
+            return getDeviceWidth() * 8;
+        }
+
+        @Override
+        public int getMaxValue() {
+            return (int) Math.pow(2, getBitWidth());
+        }
+
+        protected ByteBuffer toByteBuffer(final int value) {
             ByteBuffer result = ByteBuffer.allocate(getDeviceWidth());
             for (int i = 0; i < getDeviceWidth(); ++i) {
                 result.put(getDeviceWidth() - (i + 1), (byte) (value >> i * 8));
@@ -127,7 +110,7 @@ public class RPiI2CDevice implements I2CDevice {
         }
 
         @Override
-        public void setMask(int mask) {
+        public void setMask(final int mask) {
             this.mask = toByteBuffer(mask).array();
         }
 
@@ -145,221 +128,151 @@ public class RPiI2CDevice implements I2CDevice {
         public void close() throws IOException {
         }
 
-        protected void adjustBufferPosition(ByteBuffer bb, int adjust) throws IOException {
+        @Override
+        public int read(final ByteBuffer dst) throws IOException {
+            return read(dst, dst.position(), dst.remaining());
+        }
+
+        @Override
+        public int write(final ByteBuffer dst) throws IOException {
+            return write(dst, 0, dst.limit());
+        }
+
+        protected void adjustBufferPosition(final ByteBuffer bb, final int adjust) throws IOException {
             try {
                 bb.position(bb.position() + adjust);
             } catch (IllegalArgumentException ex) {
-                throw new IOException("Attempt to position buffer beyond limit [limit:" + bb.limit() + "] [new position:" + (bb.position() + adjust) + "]", ex);
+                throw new PeripheralChannelMessageException("Attempt to position buffer beyond limit [limit:" + bb.limit() + "] [new position:" + (bb.position() + adjust) + "]", ex);
             }
         }
 
-        protected boolean validateBufferCapacity(ByteBuffer dst, int i) {
+        @Override
+        public int read() throws IOException {
+            // if the device width is greater than 1 then we need to do a multibyte read, otherwise we can use the optimized single byte read
+            if (getDeviceWidth() > 1) {
+                ByteBuffer result = ByteBuffer.allocate(getDeviceWidth());
+                read(handle, address, 0, getDeviceWidth(), 1, result.array(), mask);
+                return result.getInt();
+            } else {
+                int value = read(handle, address);
+                if (mask != null) {
+                    return value & mask[0];
+                } else {
+                    return value;
+                }
+            }
+        }
+
+        @Override
+        public int read(final ByteBuffer dst, final int offset, final int size) throws IOException {
+            int len;
+            if (dst.hasArray()) {
+                if (!validateBufferCapacity(dst, getDeviceWidth() * size) && failOnBufferCapacity) {
+                    throw new PeripheralChannelMessageException("Cannot perform read - Buffer has no capacity");
+                }
+                len = read(handle, address, offset, getDeviceWidth(), size, dst.array(), mask);
+                adjustBufferPosition(dst, len);
+            } else {
+                throw new PeripheralChannelMessageException("Cannot operate on non array backed ByteBuffer ");
+            }
+            return len;
+        }
+
+        @Override
+        public int write(final int value) throws IOException {
+            // if the device width is greater than 1 then we need to do a multibyte write, otherwise we can use the optimized single byte write
+            if (getDeviceWidth() > 1) {
+                ByteBuffer bbValue = toByteBuffer(value);
+                return write(handle, address, 0, getDeviceWidth(), 1, bbValue.array(), mask);
+
+            } else {
+                return write(handle, address, (byte) value, mask == null ? (byte) 0xff : mask[0]);
+            }
+        }
+
+        @Override
+        public int write(final ByteBuffer dst, final int offset, final int size) throws IOException {
+            int len;
+            if (dst.hasArray()) {
+                if (!validateBufferCapacity(dst, getDeviceWidth() * size) && failOnBufferCapacity) {
+                    throw new PeripheralChannelMessageException("Cannot perform write - Buffer has no capacity");
+                }
+                len = write(handle, address, offset, getDeviceWidth(), size, dst.array(), mask);
+                adjustBufferPosition(dst, len);
+            } else {
+                throw new PeripheralChannelMessageException("Cannot operate on non array backed ByteBuffer ");
+            }
+            return len;
+        }
+
+        protected boolean validateBufferCapacity(final ByteBuffer dst, final int i) {
             return dst.remaining() >= i;
         }
+
+        protected abstract int read(final int handle, final int address);
+
+        protected abstract int read(final int handle, final int address, final int offset, final int deviceWidth, final int size, final byte[] array, final byte[] mask);
+
+        protected abstract int write(final int handle, final int address, final byte value, final byte mask);
+
+        protected abstract int write(final int handle, final int address, final int offset, final int deviceWidth, final int size, final byte[] array, final byte[] mask);
+
     }
-//
-//    protected class I2CAddressedChannel extends AbstractI2CChannel {
-//
-//        private byte readSubAddress;
-//        private byte writeSubAddress;
-//
-//        public I2CAddressedChannel(byte readSubAddress, byte writeSubAddress) {
-//            this.readSubAddress = readSubAddress;
-//            this.writeSubAddress = writeSubAddress;
-//        }
-//
-//        @Override
-//        public int read() throws IOException {
-//            if (mask == null) {
-//                return I2C.readByte(handle, readSubAddress);
-//            } else {
-//                return I2C.readByte(handle, readSubAddress) & mask[0];
-//            }
-//        }
-//
-//        @Override
-//        public int read(ByteBuffer dst) throws IOException {
-//            return read(dst, dst.position(), dst.remaining());
-//        }
-//
-//        @Override
-//        public int read(ByteBuffer dst, int offset, int size) throws IOException {
-//            return 0;
-//        }
-//
-//        @Override
-//        public int write(int value) throws IOException {
-//            if (mask == null) {
-//                return I2C.writeByte(handle, writeSubAddress, (byte) value);
-//            } else {
-//                return I2C.writeByteMask(handle, writeSubAddress, (byte) value, mask == null ? (byte) 0xff : mask[0]);
-//            }
-//        }
-//
-//        @Override
-//        public int write(ByteBuffer dst) throws IOException {
-//            return write(dst, 0, dst.limit());
-//        }
-//
-//        @Override
-//        public int write(ByteBuffer dst, int offset, int size) throws IOException {
-//            if (mask == null) {
-//                return I2C.writeBytes(handle, writeSubAddress, size, offset, dst.array());
-//            } else {
-//                return I2C.writeBytesMask(handle, writeSubAddress, size, offset, dst.array(), mask == null ? (byte) 0xff : mask[0]);
-//            }
-//        }
-//
-//    }
 
     protected class DirectChannel extends AbstractI2CChannel {
 
         @Override
-        public int read() throws IOException {
-            // if the device width is greater than 1 then we need to do a multibyte read, otherwise we can use the optimized single byte read
-            if (getDeviceWidth() > 1) {
-                ByteBuffer result = ByteBuffer.allocate(getDeviceWidth());
-                RPiI2CNative.read(handle, address, 0, getDeviceWidth(), result.array(), mask == null ? (byte) 0xff : mask[0]);
-                return result.getInt();
-            } else {
-                int value = RPiI2CNative.read(handle, address);
-                if (mask != null) {
-                    return value & mask[0];
-                } else {
-                    return value;
-                }
-            }
+        protected int read(final int handle, final int address) {
+            return RPiI2CNative.read(handle, address);
         }
 
         @Override
-        public int read(ByteBuffer dst) throws IOException {
-            return read(dst, dst.position(), dst.remaining());
+        protected int read(final int handle, final int address, final int offset, final int deviceWidth, final int size, byte[] array, byte[] mask) {
+            return RPiI2CNative.read(handle, address, offset, deviceWidth * size, array, mask == null ? (byte) 0xff : mask[0]);
         }
 
         @Override
-        public int read(ByteBuffer dst, int offset, int size) throws IOException {
-            int len;
-            if (dst.hasArray()) {
-                if (!validateBufferCapacity(dst, getDeviceWidth() * size) && failOnBufferCapacity) {
-                    throw new IOException("Cannot perform read - Buffer has no capacity");
-                }
-                len = RPiI2CNative.read(handle, address, offset, getDeviceWidth() * size, dst.array(), mask == null ? (byte) 0xff : mask[0]);
-                adjustBufferPosition(dst, len);
-            } else {
-                throw new IOException("Cannot operate on non array backed ByteBuffer ");
-            }
-            return len;
+        protected int write(final int handle, final int address, byte value, byte mask) {
+            return RPiI2CNative.write(handle, address, value, mask);
         }
 
         @Override
-        public int write(int value) throws IOException {
-            // if the device width is greater than 1 then we need to do a multibyte write, otherwise we can use the optimized single byte write
-            if (getDeviceWidth() > 1) {
-                ByteBuffer bbValue = toByteBuffer(value);
-                return RPiI2CNative.write(handle, address, 0, getDeviceWidth(), bbValue.array(), mask == null ? (byte) 0xff : mask[0]);
-
-            } else {
-                return RPiI2CNative.write(handle, address, (byte) value, mask == null ? (byte) 0xff : mask[0]);
-            }
+        protected int write(final int handle, final int address, final int offset, final int deviceWidth, final int size, byte[] array, byte[] mask) {
+            return RPiI2CNative.write(handle, address, offset, deviceWidth * size, array, mask == null ? (byte) 0xff : mask[0]);
         }
 
-        @Override
-        public int write(ByteBuffer dst) throws IOException {
-            return write(dst, 0, dst.limit());
-        }
-
-        @Override
-        public int write(ByteBuffer dst, int offset, int size) throws IOException {
-            int len;
-            if (dst.hasArray()) {
-                if (!validateBufferCapacity(dst, getDeviceWidth() * size) && failOnBufferCapacity) {
-                    throw new IOException("Cannot perform write - Buffer has no capacity");
-                }
-                len = RPiI2CNative.write(handle, address, offset, size * getDeviceWidth(), dst.array(), mask == null ? (byte) 0xff : mask[0]);
-                adjustBufferPosition(dst, len);
-            } else {
-                throw new IOException("Cannot operate on non array backed ByteBuffer ");
-            }
-            return len;
-        }
     }
 
     protected class AddressedChannel extends AbstractI2CChannel {
 
-        private byte readSubAddress;
-        private byte writeSubAddress;
+        private Byte readSubAddress;
+        private Byte writeSubAddress;
 
-        public AddressedChannel(byte readSubAddress, byte writeSubAddress) {
+        public AddressedChannel(Byte readSubAddress, Byte writeSubAddress) {
             this.readSubAddress = readSubAddress;
             this.writeSubAddress = writeSubAddress;
         }
 
+
         @Override
-        public int read() throws IOException {
-            // if the device width is greater than 1 then we need to do a multibyte read, otherwise we can use the optimized single byte read
-            if (getDeviceWidth() > 1) {
-                ByteBuffer result = ByteBuffer.allocate(getDeviceWidth());
-                RPiI2CNative.read(handle, address, readSubAddress, 0, getDeviceWidth(), 1, result.array(), mask);
-                return result.getInt();
-            } else {
-                int value = RPiI2CNative.read(handle, address, readSubAddress);
-                if (mask != null) {
-                    return value & mask[0];
-                } else {
-                    return value;
-                }
-            }
+        protected int read(final int handle, final int address) {
+            return RPiI2CNative.read(handle, address, readSubAddress);
         }
 
         @Override
-        public int read(ByteBuffer dst) throws IOException {
-            return read(dst, dst.position(), dst.remaining());
+        protected int read(final int handle, final int address, final int offset, final int deviceWidth, final int size, byte[] array, byte[] mask) {
+            return RPiI2CNative.read(handle, address, readSubAddress, offset, deviceWidth, size, array, mask);
         }
 
         @Override
-        public int read(ByteBuffer dst, int offset, int size) throws IOException {
-            int len;
-            if (dst.hasArray()) {
-                if (!validateBufferCapacity(dst, getDeviceWidth() * size) && failOnBufferCapacity) {
-                    throw new IOException("Cannot perform read - Buffer has no capacity");
-                }
-                len = RPiI2CNative.read(handle, address, readSubAddress, offset, getDeviceWidth(), size, dst.array(), mask);
-                adjustBufferPosition(dst, len);
-            } else {
-                throw new IOException("Cannot operate on non array backed ByteBuffer");
-            }
-            return len;
+        protected int write(final int handle, final int address, byte value, byte mask) {
+            return RPiI2CNative.write(handle, address, writeSubAddress, value, mask);
         }
 
         @Override
-        public int write(int value) throws IOException {
-            // if the device width is greater than 1 then we need to do a multibyte write, otherwise we can use the optimized single byte write
-            if (getDeviceWidth() > 1) {
-                ByteBuffer bbValue = toByteBuffer(value);
-                return RPiI2CNative.write(handle, address, writeSubAddress, 0, getDeviceWidth(), 1, bbValue.array(), mask);
-            } else {
-                return RPiI2CNative.write(handle, address, writeSubAddress, (byte) value, mask == null ? (byte) 0xff : mask[0]);
-            }
+        protected int write(final int handle, final int address, final int offset, final int deviceWidth, final int size, byte[] array, byte[] mask) {
+            return RPiI2CNative.write(handle, address, writeSubAddress, offset, deviceWidth, size, array, mask);
         }
 
-        @Override
-        public int write(ByteBuffer dst) throws IOException {
-            return write(dst, 0, dst.limit());
-        }
-
-        @Override
-        public int write(ByteBuffer dst, int offset, int size) throws IOException {
-            int len;
-            if (dst.hasArray()) {
-                if (!validateBufferCapacity(dst, getDeviceWidth() * size) && failOnBufferCapacity) {
-                    throw new IOException("Cannot perform write - Buffer has no capacity");
-                }
-                len = RPiI2CNative.write(handle, address, writeSubAddress, offset, getDeviceWidth(), size, dst.array(), mask);
-                adjustBufferPosition(dst, len);
-            } else {
-                throw new IOException("Cannot operate on non array backed ByteBuffer");
-            }
-            return len;
-        }
     }
 }

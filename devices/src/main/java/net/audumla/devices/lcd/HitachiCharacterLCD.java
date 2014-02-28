@@ -1,6 +1,6 @@
 package net.audumla.devices.lcd;
 
-import net.audumla.perio.PeripheralChannel;
+import net.audumla.perio.ReadWritePeripheralChannel;
 import net.audumla.perio.PeripheralChannelMessage;
 import net.audumla.perio.impl.DefaultPeripheralChannelMessage;
 import org.apache.log4j.Logger;
@@ -68,13 +68,13 @@ public class HitachiCharacterLCD implements CharacterLCD {
     private byte backlightStatus;
     private byte displayControl;
     private byte writeMode;
-    private PeripheralChannel channel;
+    private ReadWritePeripheralChannel channel;
 
     public static Logger logger = Logger.getLogger(HitachiCharacterLCD.class);
     private int columns = 20;
     private int rows = 4;
 
-    public HitachiCharacterLCD(PeripheralChannel channel,String name) throws IOException {
+    public HitachiCharacterLCD(ReadWritePeripheralChannel channel,String name) throws IOException {
         this.channel = channel;
         this.name = name;
         backlightStatus = LCD_BACKLIGHT;

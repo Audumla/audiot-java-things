@@ -31,7 +31,7 @@ public class MessageTest {
 
     @Test
     public void testReadWriteBuffer() throws Exception {
-        PeripheralChannel channel = new DummyPeripheral().getChannel();
+        ReadWritePeripheralChannel channel = new DummyPeripheral().getReadWriteChannel();
         ByteBuffer bbw = ByteBuffer.allocate(1024);
         for (int i = 0; i < 250; ++i) {
             bbw.put((byte) i);
@@ -50,7 +50,7 @@ public class MessageTest {
     @Test
     public void testMessageReadWrite() throws Exception {
         DefaultPeripheralChannelMessage message = new DefaultPeripheralChannelMessage();
-        PeripheralChannel channel = new DummyPeripheral().getChannel();
+        ReadWritePeripheralChannel channel = new DummyPeripheral().getReadWriteChannel();
         ByteBuffer bbw = ByteBuffer.allocate(1024);
         ByteBuffer bbr1 = ByteBuffer.allocate(100);
         ByteBuffer bbr2 = ByteBuffer.allocate(100);
@@ -78,7 +78,7 @@ public class MessageTest {
     @Test
     public void testSizedMessageReadWrite() throws Exception {
         DefaultPeripheralChannelMessage message = new DefaultPeripheralChannelMessage();
-        PeripheralChannel channel = new DummyPeripheral().getChannel();
+        ReadWritePeripheralChannel channel = new DummyPeripheral().getReadWriteChannel();
         ByteBuffer bbw = ByteBuffer.allocate(1024);
         ByteBuffer bbr = ByteBuffer.allocate(1024);
         for (int i = 0; i < 250; ++i) {

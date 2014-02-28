@@ -16,14 +16,8 @@ package net.audumla.perio;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.channels.ReadableByteChannel;
+public interface SelectableInputPeripheral<P extends SelectableInputPeripheral<? super P, ? super C, D>, C extends PeripheralConfig<? super P>,D> extends Peripheral<P, C> {
 
-public interface WritablePeripheralChannel extends ReadableByteChannel, PeripheralChannel {
-    int write(int value) throws IOException;
+    ReadablePeripheralChannel getReadChannel(final D read);
 
-    int write(ByteBuffer dst) throws IOException;
-
-    int write(ByteBuffer dst, int offset, int size) throws IOException;
 }

@@ -17,13 +17,11 @@ package net.audumla.perio.i2c;
  */
 
 
-import net.audumla.perio.AddressableIOPeripheral;
-import net.audumla.perio.IOPeripheral;
+import net.audumla.perio.InputOutputPeripheral;
+import net.audumla.perio.SelectableIOPeripheral;
 
-public interface I2CDevice extends AddressableIOPeripheral<I2CDevice,I2CDeviceConfig>, IOPeripheral<I2CDevice,I2CDeviceConfig>
+public interface I2CDevice extends SelectableIOPeripheral<I2CDevice,I2CDeviceConfig,Long>, InputOutputPeripheral<I2CDevice,I2CDeviceConfig>
 {
-    int getDeviceWidth();
 
-    void setDeviceWidth(int width);
 }
 

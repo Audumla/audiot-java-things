@@ -25,4 +25,8 @@ public class PeripheralException extends IOException {
     public PeripheralException(String paramString) {
         super(paramString);
     }
+
+    public PeripheralException(String s, Exception ex) {
+        super(s,ex);
+    }
 }
