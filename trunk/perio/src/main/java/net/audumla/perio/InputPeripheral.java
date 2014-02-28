@@ -16,14 +16,7 @@ package net.audumla.perio;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import net.audumla.perio.impl.DefaultPeripheralChannelMessage;
-
-public interface IOPeripheral<P extends IOPeripheral<? super P, ? super C>, C extends PeripheralConfig<? super P>> extends Peripheral<P, C> {
-
-    PeripheralChannel getChannel();
-
-    default PeripheralChannelMessage createMessage() {
-        return new DefaultPeripheralChannelMessage();
-    }
+public interface InputPeripheral<P extends InputPeripheral<? super P, ? super C>, C extends PeripheralConfig<? super P>> extends Peripheral<P, C> {
+    ReadablePeripheralChannel getReadChannel();
 
 }

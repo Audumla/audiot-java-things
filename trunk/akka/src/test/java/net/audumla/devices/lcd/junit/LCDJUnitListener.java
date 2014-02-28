@@ -22,7 +22,7 @@ import akka.actor.Props;
 import akka.pattern.AskTimeoutException;
 import akka.pattern.Patterns;
 import net.audumla.akka.CMTargetCreator;
-import net.audumla.perio.PeripheralChannel;
+import net.audumla.perio.ReadWritePeripheralChannel;
 import net.audumla.perio.PeripheralManager;
 import net.audumla.perio.i2c.I2CDevice;
 import net.audumla.perio.i2c.I2CDeviceConfig;
@@ -56,8 +56,8 @@ public class LCDJUnitListener extends RunListener {
 
             I2CDeviceConfig config = new I2CDeviceConfig(1, HitachiCharacterLCD.DEFAULT_ADDRESS);
             I2CDevice device = new RPiI2CPeripheralProvider().open(config,null, PeripheralManager.SHARED);
-            device.getAddressableChannel(MCP2308DeviceChannel.MCP23008_IODIR,MCP2308DeviceChannel.MCP23008_IODIR).write(0x00);
-            PeripheralChannel rwChannel = device.getAddressableChannel(MCP2308DeviceChannel.MCP23008_GPIO, MCP2308DeviceChannel.MCP23008_GPIO);
+            device.getReadWriteChannel(MCP2308DeviceChannel.MCP23008_IODIR, MCP2308DeviceChannel.MCP23008_IODIR).write(0x00);
+            ReadWritePeripheralChannel rwChannel = device.getReadWriteChannel(MCP2308DeviceChannel.MCP23008_GPIO, MCP2308DeviceChannel.MCP23008_GPIO);
 //            I2CDeviceChannel channel = new I2CDeviceChannel(new RPiI2CDeviceFactory(), new ChannelAddressAttr(1), new DeviceAddressAttr(HitachiCharacterLCD.DEFAULT_ADDRESS));
             Props lcpProps = Props.create(new CMTargetCreator<CharacterLCD>(new HitachiCharacterLCD(rwChannel, "LCD JUnit Logger"))).withDispatcher("junit-dispatcher");
             target = actorSystem.actorOf(lcpProps, "lcd");

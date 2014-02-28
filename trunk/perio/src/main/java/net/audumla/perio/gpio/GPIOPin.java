@@ -19,15 +19,13 @@ package net.audumla.perio.gpio;
 import net.audumla.perio.Peripheral;
 
 public interface GPIOPin extends Peripheral<GPIOPin, GPIOPinConfig> {
-    int INPUT = 0;
-    int OUTPUT = 1;
-    int TRIGGER_BOTH_EDGES = 3;
-    int TRIGGER_BOTH_LEVELS = 6;
-    int TRIGGER_FALLING_EDGE = 1;
-    int TRIGGER_HIGH_LEVEL = 4;
-    int TRIGGER_LOW_LEVEL = 5;
-    int TRIGGER_NONE = 0;
-    int TRIGGER_RISING_EDGE = 2;
+    enum Direction {
+        INPUT, OUTPUT, INPUT_OUTPUT
+    }
+
+    enum Trigger {
+        TRIGGER_BOTH_EDGES, TRIGGER_BOTH_LEVELS, TRIGGER_FALLING_EDGE, TRIGGER_HIGH_LEVEL, TRIGGER_LOW_LEVEL, TRIGGER_NONE, TRIGGER_RISING_EDGE
+    }
 
     int getDirection() throws java.io.IOException;
 

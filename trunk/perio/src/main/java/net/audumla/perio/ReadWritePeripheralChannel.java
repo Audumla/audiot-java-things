@@ -16,8 +16,7 @@ package net.audumla.perio;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-public interface AddressableIOPeripheral<P extends AddressableIOPeripheral<? super P, ? super C>, C extends PeripheralConfig<? super P>> extends Peripheral<P, C> {
+public interface ReadWritePeripheralChannel extends ReadablePeripheralChannel, WritablePeripheralChannel {
 
-    PeripheralChannel getAddressableChannel(byte readSubAddress, byte writeSubAddress);
 
 }

@@ -22,4 +22,14 @@ import org.slf4j.LoggerFactory;
 public class PeripheralChannelMessageException extends PeripheralException {
     private static final Logger logger = LoggerFactory.getLogger(PeripheralChannelMessageException.class);
 
+    public PeripheralChannelMessageException(String s, Exception ex) {
+        super(s,ex);
+    }
+
+    public PeripheralChannelMessageException(String paramString) {
+        super(paramString);
+    }
+
+    public PeripheralChannelMessageException() {
+    }
 }

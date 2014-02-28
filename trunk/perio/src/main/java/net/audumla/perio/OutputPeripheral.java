@@ -1,4 +1,4 @@
-package net.audumla.perio.gpio.rpi;
+package net.audumla.perio;
 
 /*
  * *********************************************************************
@@ -16,11 +16,7 @@ package net.audumla.perio.gpio.rpi;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import net.audumla.perio.gpio.GPIOPin;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-public class RPiGPIOPin {
-    private static final Logger logger = LoggerFactory.getLogger(RPiGPIOPin.class);
+public interface OutputPeripheral<P extends OutputPeripheral<? super P, ? super C>, C extends PeripheralConfig<? super P>> extends Peripheral<P, C> {
+    WritablePeripheralChannel getWriteChannel();
 
 }

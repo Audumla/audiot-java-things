@@ -16,10 +16,18 @@ package net.audumla.perio;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-public interface PeripheralChannel extends ReadablePeripheralChannel, WritablePeripheralChannel {
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+public interface PeripheralChannel {
     void setMask(int mask);
 
     void removeMask();
+
+    int getBitWidth();
+
+    int getMaxValue();
+
+    int getDeviceWidth();
 
 }

@@ -19,11 +19,11 @@ package net.audumla.perio;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DummyPeripheral implements IOPeripheral<DummyPeripheral,DummyPeripheralConfig> {
+public class DummyPeripheral implements InputOutputPeripheral<DummyPeripheral,DummyPeripheralConfig> {
     private static final Logger logger = LoggerFactory.getLogger(DummyPeripheral.class);
 
     @Override
-    public PeripheralChannel getChannel() {
+    public ReadWritePeripheralChannel getReadWriteChannel() {
         return new DummyMessageChannel();
     }
 
