@@ -663,7 +663,7 @@ uint32_t bcm2835_i2c_get_baudrate(uint8_t bus) {
 // Writes an number of bytes to I2C
 uint8_t bcm2835_i2c_write(char * buf, uint32_t len, uint8_t bus, uint32_t *lenTr)
 {
-    static volatile uint32_t* dlen    = bcm2835_bsc[bus].paddr + BCM2835_BSC_DLEN/4;
+    volatile uint32_t const* dlen    = bcm2835_bsc[bus].paddr + BCM2835_BSC_DLEN/4;
     volatile uint32_t* fifo    = bcm2835_bsc[bus].paddr + BCM2835_BSC_FIFO/4;
     volatile uint32_t* status  = bcm2835_bsc[bus].paddr + BCM2835_BSC_S/4;
     volatile uint32_t* control = bcm2835_bsc[bus].paddr + BCM2835_BSC_C/4;
@@ -727,7 +727,7 @@ uint8_t bcm2835_i2c_write(char * buf, uint32_t len, uint8_t bus, uint32_t *lenTr
 // Read an number of bytes from I2C
 uint8_t bcm2835_i2c_read(char* buf, uint32_t len, uint8_t bus, uint32_t *lenTr)
 {
-    static volatile uint32_t const * dlen    = bcm2835_bsc[bus].paddr + BCM2835_BSC_DLEN/4;
+    volatile uint32_t * dlen    = bcm2835_bsc[bus].paddr + BCM2835_BSC_DLEN/4;
     volatile uint32_t* fifo    = bcm2835_bsc[bus].paddr + BCM2835_BSC_FIFO/4;
     volatile uint32_t* status  = bcm2835_bsc[bus].paddr + BCM2835_BSC_S/4;
     volatile uint32_t* control = bcm2835_bsc[bus].paddr + BCM2835_BSC_C/4;
