@@ -96,11 +96,6 @@ public class RPiI2CDevice implements I2CDevice {
             return getDeviceWidth() * 8;
         }
 
-        @Override
-        public int getMaxValue() {
-            return (int) Math.pow(2, getBitWidth());
-        }
-
         protected ByteBuffer toByteBuffer(final int value) {
             ByteBuffer result = ByteBuffer.allocate(getDeviceWidth());
             for (int i = 0; i < getDeviceWidth(); ++i) {
@@ -110,7 +105,7 @@ public class RPiI2CDevice implements I2CDevice {
         }
 
         @Override
-        public void setMask(final int mask) {
+        public void setMask(final long mask) {
             this.mask = toByteBuffer(mask).array();
         }
 
