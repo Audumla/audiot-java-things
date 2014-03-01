@@ -99,7 +99,7 @@ void bcm2835_peri_write(volatile uint32_t* paddr, uint32_t value)
 }
 
 // write to peripheral without the write barrier
-void bcm2835_peri_write_nb(volatile const uint32_t* paddr, const uint32_t value)
+void bcm2835_peri_write_nb(volatile uint32_t* const paddr, const uint32_t value)
 {
 #ifdef DEBUG
     printf("bcm2835_peri_write_nb paddr %08X, value %08X\n", (unsigned) paddr, value);
