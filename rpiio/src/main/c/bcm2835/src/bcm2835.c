@@ -664,9 +664,9 @@ uint32_t bcm2835_i2c_get_baudrate(uint8_t bus) {
 uint8_t bcm2835_i2c_write(char * buf, uint32_t len, uint8_t bus, uint32_t *lenTr)
 {
     volatile uint32_t* const dlen    = bcm2835_bsc[bus].paddr + BCM2835_BSC_DLEN/4;
-    volatile uint32_t* fifo    = bcm2835_bsc[bus].paddr + BCM2835_BSC_FIFO/4;
-    volatile uint32_t* status  = bcm2835_bsc[bus].paddr + BCM2835_BSC_S/4;
-    volatile uint32_t* control = bcm2835_bsc[bus].paddr + BCM2835_BSC_C/4;
+    volatile uint32_t* const fifo    = bcm2835_bsc[bus].paddr + BCM2835_BSC_FIFO/4;
+    volatile uint32_t* const status  = bcm2835_bsc[bus].paddr + BCM2835_BSC_S/4;
+    volatile uint32_t* const control = bcm2835_bsc[bus].paddr + BCM2835_BSC_C/4;
 
     uint32_t remaining = len;
     uint32_t i = 0;
