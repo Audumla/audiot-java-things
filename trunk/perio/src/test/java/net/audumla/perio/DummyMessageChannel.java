@@ -30,7 +30,7 @@ public class DummyMessageChannel implements ReadWritePeripheralChannel {
     protected ByteBuffer tx = ByteBuffer.wrap(bytes);
 
     @Override
-    public void setMask(int mask) {
+    public void setMask(long mask) {
 
     }
 

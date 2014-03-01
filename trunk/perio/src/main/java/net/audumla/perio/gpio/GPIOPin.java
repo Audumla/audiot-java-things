@@ -29,15 +29,11 @@ public interface GPIOPin extends Peripheral<GPIOPin, GPIOPinConfig> {
 
     int getDirection() throws java.io.IOException;
 
-    int getTrigger() throws java.io.IOException;
+    void setDirection(Direction i) throws java.io.IOException;
+
+    void setInputListener(Trigger trigger, PinListener pinListener) throws java.io.IOException;
 
     boolean getValue() throws java.io.IOException;
-
-    void setDirection(int i) throws java.io.IOException;
-
-    void setTrigger(int i) throws java.io.IOException;
-
-    void setInputListener(PinListener pinListener) throws java.io.IOException;
 
     void setValue(boolean b) throws java.io.IOException;
 }

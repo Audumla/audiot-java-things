@@ -16,14 +16,6 @@ package net.audumla.perio.gpio;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import net.audumla.perio.SelectableIOPeripheral;
-
-public interface GPIOPort extends SelectableIOPeripheral<GPIOPort, GPIOPortConfig, GPIOPin[]> {
-
-    void setInputListener(GPIOPin.Trigger trigger, PortListener portListener) throws java.io.IOException;
-
-    void setDirection(GPIOPin.Direction direction, GPIOPin ... pins);
-
-    GPIOPin[] getPins();
+public interface PlatformGPIOPort extends GPIOPort {
 
 }
