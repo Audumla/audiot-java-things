@@ -109,7 +109,7 @@ void bcm2835_peri_write_nb(volatile uint32_t* const paddr, const uint32_t value)
 }
 
 // Set/clear only the bits in value covered by the mask
-void bcm2835_peri_set_bits(volatile uint32_t* paddr, uint32_t value, uint32_t mask)
+void bcm2835_peri_set_bits(volatile uint32_t* const paddr, uint32_t value, uint32_t mask)
 {
     uint32_t v = bcm2835_peri_read(paddr);
     v = (v & ~mask) | (value & mask);
@@ -428,7 +428,7 @@ void bcm2835_spi_begin(void)
     bcm2835_gpio_fsel(RPI_GPIO_P1_23, BCM2835_GPIO_FSEL_ALT0); // CLK
     
     // Set the SPI CS register to the some sensible defaults
-    volatile uint32_t* paddr = bcm2835_spi0 + BCM2835_SPI0_CS/4;
+    volatile uint32_t* const paddr = bcm2835_spi0 + BCM2835_SPI0_CS/4;
     bcm2835_peri_write(paddr, 0); // All 0s
     
     // Clear TX and RX fifos
