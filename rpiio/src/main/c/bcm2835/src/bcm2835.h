@@ -394,6 +394,10 @@ extern uint8_t secondary_i2c_bus;
 /// Struct to hold BSC (I2C) registers and pin definitions for the variations of the raspberry versions
 typedef struct bcm2835_bsc_data {
 	volatile uint32_t *paddr;
+    volatile uint32_t* dlen;
+    volatile uint32_t* fifo;
+    volatile uint32_t* status;
+    volatile uint32_t* control;
 	int wait_us;
 	uint8_t scl;
 	uint8_t sda;
