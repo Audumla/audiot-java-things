@@ -1124,7 +1124,8 @@ int bcm2835_init(void)
     bcm2835_bsc[1].paddr = (volatile uint32_t *)mapmem("bsc1", BCM2835_BLOCK_SIZE, memfd, BCM2835_BSC1_BASE);
     if (bcm2835_bsc[1].paddr == MAP_FAILED) goto exit;
 
-    for (int i = 0; i < 2; ++i ) {
+    int bus;
+    for (bus = 0; bus < 2; ++bus) {
         bcm2835_bsc[bus].dlen    = bcm2835_bsc[bus].paddr + BCM2835_BSC_DLEN/4;
         bcm2835_bsc[bus].fifo    = bcm2835_bsc[bus].paddr + BCM2835_BSC_FIFO/4;
         bcm2835_bsc[bus].status  = bcm2835_bsc[bus].paddr + BCM2835_BSC_S/4;
