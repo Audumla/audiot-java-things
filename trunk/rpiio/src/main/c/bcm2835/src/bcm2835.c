@@ -960,9 +960,8 @@ uint8_t bcm2835_i2c_write_read_rs(char* cmds, uint32_t cmds_len, char* buf, uint
 // Read the System Timer Counter (64-bits)
 uint64_t bcm2835_st_read(void)
 {
-    volatile uint32_t* const  paddr;
+    volatile uint32_t* paddr = bcm2835_st + BCM2835_ST_CHI/4;
     uint64_t st;
-    paddr = bcm2835_st + BCM2835_ST_CHI/4;
     st = bcm2835_peri_read(paddr);
     st <<= 32;
     paddr = bcm2835_st + BCM2835_ST_CLO/4;
