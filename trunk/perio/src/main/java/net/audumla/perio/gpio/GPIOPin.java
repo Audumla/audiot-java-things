@@ -27,13 +27,17 @@ public interface GPIOPin extends Peripheral<GPIOPin, GPIOPinConfig> {
         TRIGGER_BOTH_EDGES, TRIGGER_BOTH_LEVELS, TRIGGER_FALLING_EDGE, TRIGGER_HIGH_LEVEL, TRIGGER_LOW_LEVEL, TRIGGER_NONE, TRIGGER_RISING_EDGE
     }
 
-    int getDirection() throws java.io.IOException;
+    Direction getDirection() throws java.io.IOException;
 
-    void setDirection(Direction i) throws java.io.IOException;
+    void setDirection(Direction d) throws java.io.IOException;
 
     void setInputListener(Trigger trigger, PinListener pinListener) throws java.io.IOException;
 
     boolean getValue() throws java.io.IOException;
 
     void setValue(boolean b) throws java.io.IOException;
+
+    String getName();
+
+    int getPinIndex();
 }

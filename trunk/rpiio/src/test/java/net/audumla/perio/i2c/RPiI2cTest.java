@@ -45,20 +45,20 @@ public class RPiI2cTest {
 
     @Test
     public void testFrequency() throws Exception {
-        int freq1 = RPiI2CNative.getClock(1);
-        int freq12 = RPiI2CNative.setClock(1, 10000);
+        int freq1 = RPiI2CNative.getClock(1, null);
+        int freq12 = RPiI2CNative.setClock(1, 10000, null);
         assert freq12 == freq1;
-        freq12 = RPiI2CNative.setClock(1, 150000);
+        freq12 = RPiI2CNative.setClock(1, 150000, null);
         assert freq12 == 10000;
-        int freq0 = RPiI2CNative.getClock(0);
-        int freq02 = RPiI2CNative.setClock(0, 40000);
+        int freq0 = RPiI2CNative.getClock(0, null);
+        int freq02 = RPiI2CNative.setClock(0, 40000, null);
         assert freq02 == freq0;
-        freq02 = RPiI2CNative.setClock(0, 200000);
+        freq02 = RPiI2CNative.setClock(0, 200000, null);
         assert freq02 == 40000;
 
-        freq1 = RPiI2CNative.getClock(1);
+        freq1 = RPiI2CNative.getClock(1, null);
         Assert.assertEquals(150000, freq1, 1000);
-        freq0 = RPiI2CNative.getClock(0);
+        freq0 = RPiI2CNative.getClock(0, null);
         Assert.assertEquals(200000, freq0, 1000);
     }
 

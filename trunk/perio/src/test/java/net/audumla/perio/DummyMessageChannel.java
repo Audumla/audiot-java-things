@@ -40,6 +40,11 @@ public class DummyMessageChannel implements ReadWritePeripheralChannel {
     }
 
     @Override
+    public int getBitWidth() {
+        return 8;
+    }
+
+    @Override
     public int read() throws IOException {
         return rx.get();
     }

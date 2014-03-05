@@ -16,29 +16,36 @@ package net.audumla.perio;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+public class NativePeripheralException extends PeripheralException {
+    private final String nativeMethod;
+    private final int errorCode;
+    private final String message;
 
-public class DummyPeripheral implements InputOutputPeripheral<DummyPeripheral,DummyPeripheralConfig> {
-    private static final Logger logger = LoggerFactory.getLogger(DummyPeripheral.class);
-
-    @Override
-    public ReadWritePeripheralChannel getReadWriteChannel() {
-        return new DummyMessageChannel();
+    public NativePeripheralException(int errorNo, String message, String nativeMethodName) {
+        super("Error in native code [" + nativeMethodName + "][" + errorNo + ":" + message + "]");
+        this.message = message;
+        this.errorCode = errorNo;
+        this.nativeMethod = nativeMethodName;
     }
 
-    @Override
-    public PeripheralDescriptor<DummyPeripheral, DummyPeripheralConfig> getDescriptor() {
-        return null;
+    /**
+     * @return the raw error message returned by the native method
+     */
+    public String getNativeMessage() {
+        return message;
     }
 
-    @Override
-    public ReadablePeripheralChannel getReadChannel() {
-        return getReadWriteChannel();
+    /**
+     * @return the native method error code
+     */
+    public int getErrorCode() {
+        return errorCode;
     }
 
-    @Override
-    public WritablePeripheralChannel getWriteChannel() {
-        return getReadWriteChannel();
+    /**
+     * @return the name of the native method that caused the error
+     */
+    public String getNativeMethod() {
+        return nativeMethod;
     }
 }

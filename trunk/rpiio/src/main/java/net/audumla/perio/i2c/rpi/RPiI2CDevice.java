@@ -20,6 +20,8 @@ import net.audumla.perio.*;
 import net.audumla.perio.i2c.I2CDevice;
 import net.audumla.perio.i2c.I2CDeviceConfig;
 import net.audumla.perio.i2c.rpi.jni.RPiI2CNative;
+import net.audumla.perio.jni.DefaultErrorHandler;
+import net.audumla.perio.jni.ErrorHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -81,10 +83,12 @@ public class RPiI2CDevice implements I2CDevice {
         return getReadWriteChannel();
     }
 
-    protected abstract class AbstractI2CChannel implements ReadWritePeripheralChannel {
+    protected abstract class AbstractI2CChannel extends DefaultErrorHandler implements ReadWritePeripheralChannel, ErrorHandler {
 
         protected byte[] mask;
         protected boolean failOnBufferCapacity = true;
+        protected NativePeripheralException exception;
+
 
         @Override
         public int getDeviceWidth() {
@@ -96,7 +100,7 @@ public class RPiI2CDevice implements I2CDevice {
             return getDeviceWidth() * 8;
         }
 
-        protected ByteBuffer toByteBuffer(final int value) {
+        protected ByteBuffer toByteBuffer(final long value) {
             ByteBuffer result = ByteBuffer.allocate(getDeviceWidth());
             for (int i = 0; i < getDeviceWidth(); ++i) {
                 result.put(getDeviceWidth() - (i + 1), (byte) (value >> i * 8));
@@ -147,6 +151,7 @@ public class RPiI2CDevice implements I2CDevice {
             if (getDeviceWidth() > 1) {
                 ByteBuffer result = ByteBuffer.allocate(getDeviceWidth());
                 read(handle, address, 0, getDeviceWidth(), 1, result.array(), mask);
+                failOnError();
                 return result.getInt();
             } else {
                 int value = read(handle, address);
@@ -167,6 +172,7 @@ public class RPiI2CDevice implements I2CDevice {
                 }
                 len = read(handle, address, offset, getDeviceWidth(), size, dst.array(), mask);
                 adjustBufferPosition(dst, len);
+                failOnError();
             } else {
                 throw new PeripheralChannelMessageException("Cannot operate on non array backed ByteBuffer ");
             }
@@ -176,13 +182,16 @@ public class RPiI2CDevice implements I2CDevice {
         @Override
         public int write(final int value) throws IOException {
             // if the device width is greater than 1 then we need to do a multibyte write, otherwise we can use the optimized single byte write
+            int len;
             if (getDeviceWidth() > 1) {
                 ByteBuffer bbValue = toByteBuffer(value);
-                return write(handle, address, 0, getDeviceWidth(), 1, bbValue.array(), mask);
+                len = write(handle, address, 0, getDeviceWidth(), 1, bbValue.array(), mask);
 
             } else {
-                return write(handle, address, (byte) value, mask == null ? (byte) 0xff : mask[0]);
+                len = write(handle, address, (byte) value, mask == null ? (byte) 0xff : mask[0]);
             }
+            failOnError();
+            return len;
         }
 
         @Override
@@ -218,32 +227,32 @@ public class RPiI2CDevice implements I2CDevice {
 
         @Override
         protected int read(final int handle, final int address) {
-            return RPiI2CNative.read(handle, address);
+            return RPiI2CNative.read(handle, address, this);
         }
 
         @Override
         protected int read(final int handle, final int address, final int offset, final int deviceWidth, final int size, byte[] array, byte[] mask) {
-            return RPiI2CNative.read(handle, address, offset, deviceWidth * size, array, mask == null ? (byte) 0xff : mask[0]);
+            return RPiI2CNative.read(handle, address, offset, deviceWidth * size, array, mask == null ? (byte) 0xff : mask[0], this);
         }
 
         @Override
-        protected int write(final int handle, final int address, byte value, byte mask) {
-            return RPiI2CNative.write(handle, address, value, mask);
+        protected int write(final int handle, final int address, final byte value, final byte mask) {
+            return RPiI2CNative.write(handle, address, value, mask, this);
         }
 
         @Override
         protected int write(final int handle, final int address, final int offset, final int deviceWidth, final int size, byte[] array, byte[] mask) {
-            return RPiI2CNative.write(handle, address, offset, deviceWidth * size, array, mask == null ? (byte) 0xff : mask[0]);
+            return RPiI2CNative.write(handle, address, offset, deviceWidth * size, array, mask == null ? (byte) 0xff : mask[0], this);
         }
 
     }
 
     protected class AddressedChannel extends AbstractI2CChannel {
 
-        private Byte readSubAddress;
-        private Byte writeSubAddress;
+        private final Byte readSubAddress;
+        private final Byte writeSubAddress;
 
-        public AddressedChannel(Byte readSubAddress, Byte writeSubAddress) {
+        public AddressedChannel(final Byte readSubAddress, final Byte writeSubAddress) {
             this.readSubAddress = readSubAddress;
             this.writeSubAddress = writeSubAddress;
         }
@@ -251,22 +260,22 @@ public class RPiI2CDevice implements I2CDevice {
 
         @Override
         protected int read(final int handle, final int address) {
-            return RPiI2CNative.read(handle, address, readSubAddress);
+            return RPiI2CNative.read(handle, address, readSubAddress, this);
         }
 
         @Override
-        protected int read(final int handle, final int address, final int offset, final int deviceWidth, final int size, byte[] array, byte[] mask) {
-            return RPiI2CNative.read(handle, address, readSubAddress, offset, deviceWidth, size, array, mask);
+        protected int read(final int handle, final int address, final int offset, final int deviceWidth, final int size, final byte[] array, final byte[] mask) {
+            return RPiI2CNative.read(handle, address, readSubAddress, offset, deviceWidth, size, array, mask, this);
         }
 
         @Override
         protected int write(final int handle, final int address, byte value, byte mask) {
-            return RPiI2CNative.write(handle, address, writeSubAddress, value, mask);
+            return RPiI2CNative.write(handle, address, writeSubAddress, value, mask, this);
         }
 
         @Override
-        protected int write(final int handle, final int address, final int offset, final int deviceWidth, final int size, byte[] array, byte[] mask) {
-            return RPiI2CNative.write(handle, address, writeSubAddress, offset, deviceWidth, size, array, mask);
+        protected int write(final int handle, final int address, final int offset, final int deviceWidth, final int size, final byte[] array, final byte[] mask) {
+            return RPiI2CNative.write(handle, address, writeSubAddress, offset, deviceWidth, size, array, mask, this);
         }
 
     }

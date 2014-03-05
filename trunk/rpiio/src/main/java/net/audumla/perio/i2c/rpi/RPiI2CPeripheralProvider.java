@@ -20,6 +20,7 @@ import net.audumla.perio.*;
 import net.audumla.perio.i2c.I2CDevice;
 import net.audumla.perio.i2c.I2CDeviceConfig;
 import net.audumla.perio.i2c.rpi.jni.RPiI2CNative;
+import net.audumla.perio.jni.DefaultErrorHandler;
 import net.audumla.perio.rpi.RPiPlatform;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +29,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RPiI2CPeripheralProvider implements PeripheralProvider<I2CDevice, I2CDeviceConfig> {
+public class RPiI2CPeripheralProvider extends DefaultErrorHandler implements PeripheralProvider<I2CDevice, I2CDeviceConfig> {
     private static final Logger logger = LoggerFactory.getLogger(RPiI2CPeripheralProvider.class);
 
     public static final int I2C_CLOCK_FREQ_MIN = 10000;
@@ -44,7 +45,7 @@ public class RPiI2CPeripheralProvider implements PeripheralProvider<I2CDevice, I
     }
 
     @Override
-    public I2CDevice open(I2CDeviceConfig config, String[] properties, int mode) throws PeripheralNotFoundException, UnavailablePeripheralException, PeripheralConfigInvalidException, UnsupportedAccessModeException, IOException {
+    public I2CDevice open(I2CDeviceConfig config, String[] properties, int mode) throws IOException {
 
         String deviceName = config.getDeviceName() == null ? DEVICE_FILE_PREFIX + (config.getDeviceNumber() == PeripheralConfig.DEFAULT ? defaultI2CBus : config.getDeviceNumber()) : config.getDeviceName();
         int deviceNumber = Integer.parseInt(deviceName.substring(DEVICE_FILE_PREFIX.length()));
@@ -54,10 +55,8 @@ public class RPiI2CPeripheralProvider implements PeripheralProvider<I2CDevice, I
             String id = String.valueOf(deviceNumber) + ":" + String.valueOf(config.getAddress());
             Integer handle = deviceHandleMap.get(id);
             if (handle == null) {
-                handle = RPiI2CNative.open(deviceNumber, config.getAddress());
-                if (handle < 0) {
-                    throw new IOException("Cannot open " + name + " received " + handle);
-                }
+                handle = RPiI2CNative.open(deviceNumber, config.getAddress(),this);
+                failOnError();
                 deviceHandleMap.put(id, handle);
                 logger.debug("Opened " + name);
             } else {
@@ -65,7 +64,8 @@ public class RPiI2CPeripheralProvider implements PeripheralProvider<I2CDevice, I
             }
             int freq = config.getClockFrequency();
             if (config.getClockFrequency() == PeripheralConfig.DEFAULT) {
-                freq = RPiI2CNative.getClock(deviceNumber);
+                freq = RPiI2CNative.getClock(deviceNumber,this);
+                failOnError();
             } else {
                 if (config.getClockFrequency() < I2C_CLOCK_FREQ_MIN) {
                     freq = I2C_CLOCK_FREQ_MIN;
@@ -74,7 +74,8 @@ public class RPiI2CPeripheralProvider implements PeripheralProvider<I2CDevice, I
                         freq = I2C_CLOCK_FREQ_MAX;
                     }
                 }
-                RPiI2CNative.setClock(deviceNumber, freq);
+                RPiI2CNative.setClock(deviceNumber, freq,this);
+                failOnError();
             }
 
             I2CDeviceConfig nc = new I2CDeviceConfig(deviceName, deviceNumber, config.getAddress(), config.getAddressSize(), freq, config.getWidth());
