@@ -19,7 +19,7 @@ package net.audumla.perio;
 import net.audumla.perio.gpio.GPIOPin;
 import net.audumla.perio.gpio.GPIOPort;
 import net.audumla.perio.gpio.GPIOPortConfig;
-import net.audumla.perio.gpio.PortListener;
+import net.audumla.perio.gpio.PinListener;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,23 +32,14 @@ public class GPIOTest {
     @Test
     public void testPort() throws Exception {
         GPIOPort port = new GPIOPort() {
-            @Override
-            public int getDirection() throws IOException {
-                return 0;
-            }
 
             @Override
-            public int getMaxValue() throws IOException {
-                return 0;
-            }
-
-            @Override
-            public void setDirection(int i) throws IOException {
+            public void setInputListener(GPIOPin.Trigger trigger, PinListener listener, GPIOPin... pins) throws IOException {
 
             }
 
             @Override
-            public void setInputListener(PortListener portListener) throws IOException {
+            public void setDirection(GPIOPin.Direction direction, GPIOPin... pins) {
 
             }
 
@@ -87,6 +78,5 @@ public class GPIOTest {
         GPIOPin p3 = null;
 
         ReadWritePeripheralChannel ch1 = port.getReadWriteChannel(new GPIOPin[] {p1,p2,p3});
-
     }
 }

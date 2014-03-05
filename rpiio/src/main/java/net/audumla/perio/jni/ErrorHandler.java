@@ -1,4 +1,4 @@
-package net.audumla.perio.gpio;
+package net.audumla.perio.jni;
 
 /*
  * *********************************************************************
@@ -16,14 +16,22 @@ package net.audumla.perio.gpio;
  *  See the License for the specific language governing permissions and limitations under the License.
  */
 
-import net.audumla.perio.SelectableIOPeripheral;
+import net.audumla.perio.NativePeripheralException;
 
-public interface GPIOPort extends SelectableIOPeripheral<GPIOPort, GPIOPortConfig, GPIOPin[]> {
+public interface ErrorHandler {
+    void handleError(int errorNo, String message, String nativeMethodName);
 
-    void setInputListener(GPIOPin.Trigger trigger, PinListener listener, GPIOPin ... pins) throws java.io.IOException;
+    int getErrorCode();
 
-    void setDirection(GPIOPin.Direction direction, GPIOPin ... pins);
+    String getErrorMessage();
 
-    GPIOPin[] getPins();
+    String getNativeMethod();
 
+    void logError();
+
+    NativePeripheralException getException();
+
+    boolean hasError();
+
+    void failOnError() throws NativePeripheralException;
 }

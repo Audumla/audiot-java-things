@@ -829,7 +829,7 @@ extern "C" {
     /// \param[in] paddr Physical address to read from. See BCM2835_GPIO_BASE etc.
     /// \return the value read from the 32 bit register
     /// \sa Physical Addresses
-    extern uint32_t bcm2835_peri_read(volatile uint32_t* paddr);
+    extern uint32_t bcm2835_peri_read(volatile uint32_t* const paddr);
 
 
     /// Reads 32 bit value from a peripheral address without the read barrier
@@ -838,7 +838,7 @@ extern "C" {
     /// \param[in] paddr Physical address to read from. See BCM2835_GPIO_BASE etc.
     /// \return the value read from the 32 bit register
     /// \sa Physical Addresses
-    extern uint32_t bcm2835_peri_read_nb(volatile uint32_t* paddr);
+    extern uint32_t bcm2835_peri_read_nb(volatile uint32_t* const paddr);
 
 
     /// Writes 32 bit value from a peripheral address
@@ -847,7 +847,7 @@ extern "C" {
     /// \param[in] paddr Physical address to read from. See BCM2835_GPIO_BASE etc.
     /// \param[in] value The 32 bit value to write
     /// \sa Physical Addresses
-    extern void bcm2835_peri_write(volatile uint32_t* paddr, uint32_t value);
+    extern void bcm2835_peri_write(volatile uint32_t* const paddr, uint32_t value);
 
     /// Writes 32 bit value from a peripheral address without the write barrier
     /// You should only use this when your code has previously called bcm2835_peri_write()
@@ -868,7 +868,7 @@ extern "C" {
     /// \param[in] value The 32 bit value to write, masked in by mask.
     /// \param[in] mask Bitmask that defines the bits that will be altered in the register.
     /// \sa Physical Addresses
-    extern void bcm2835_peri_set_bits(volatile uint32_t* paddr, uint32_t value, uint32_t mask);
+    extern void bcm2835_peri_set_bits(volatile uint32_t* const paddr, uint32_t value, uint32_t mask);
     /// @} // end of lowlevel
 
     /// \defgroup gpio GPIO register access
@@ -993,7 +993,8 @@ extern "C" {
     /// Disable Asynchronous Falling Edge Detect Enable for the specified pin.
     /// \param[in] pin GPIO number, or one of RPI_GPIO_P1_* from \ref RPiGPIOPin.
     extern void bcm2835_gpio_clr_afen(uint8_t pin);
-/// Sets the Pull-up/down register for the given pin. This is
+
+    /// Sets the Pull-up/down register for the given pin. This is
     /// used with bcm2835_gpio_pudclk() to set the  Pull-up/down resistor for the given pin.
     /// However, it is usually more convenient to use bcm2835_gpio_set_pud().
     /// \param[in] pud The desired Pull-up/down mode. One of BCM2835_GPIO_PUD_* from bcm2835PUDControl

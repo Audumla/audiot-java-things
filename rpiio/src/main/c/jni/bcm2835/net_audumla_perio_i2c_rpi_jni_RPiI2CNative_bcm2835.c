@@ -19,9 +19,8 @@ JNIEXPORT jint JNICALL Java_net_audumla_perio_i2c_rpi_jni_RPiI2CNative_open(JNIE
     return retVal;
 };
 
-JNIEXPORT jint JNICALL Java_net_audumla_perio_i2c_rpi_jni_RPiI2CNative_close(JNIEnv *env, jclass clazz, jint bus) {
+JNIEXPORT void JNICALL Java_net_audumla_perio_i2c_rpi_jni_RPiI2CNative_close(JNIEnv *env, jclass clazz, jint bus) {
     bcm2835_i2c_end(bus);
-    return 1;
 };
 
 
