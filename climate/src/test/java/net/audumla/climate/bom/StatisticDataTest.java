@@ -40,9 +40,9 @@ public class StatisticDataTest {
         source.setId("086351");
         ClimateObserver station = new BOMStatisticalClimateDataObserver(source);
         ClimateData data = station.getClimateData(now);
-        Assert.assertEquals(2.6, data.getEvaporation(), 0.01);
-        Assert.assertEquals(20.5, data.getMaximumTemperature(), 0.01);
-        Assert.assertEquals(9.7, data.getMinimumTemperature(), 0.01);
+        Assert.assertEquals(2.6, data.getEvaporation(), 0.1);
+        Assert.assertEquals(20.5, data.getMaximumTemperature(), 0.1);
+        Assert.assertEquals(9.7, data.getMinimumTemperature(), 0.2);
     }
 
     @Test

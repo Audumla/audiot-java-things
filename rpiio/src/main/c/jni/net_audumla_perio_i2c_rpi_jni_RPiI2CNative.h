@@ -10,98 +10,98 @@ extern "C" {
 /*
  * Class:     net_audumla_perio_i2c_rpi_jni_RPiI2CNative
  * Method:    open
- * Signature: (II)I
+ * Signature: (IILnet/audumla/perio/jni/ErrorHandler;)I
  */
 JNIEXPORT jint JNICALL Java_net_audumla_perio_i2c_rpi_jni_RPiI2CNative_open
-  (JNIEnv *, jclass, jint, jint);
+  (JNIEnv *, jclass, jint, jint, jobject);
 
 /*
  * Class:     net_audumla_perio_i2c_rpi_jni_RPiI2CNative
  * Method:    close
- * Signature: (I)I
+ * Signature: (ILnet/audumla/perio/jni/ErrorHandler;)V
  */
-JNIEXPORT jint JNICALL Java_net_audumla_perio_i2c_rpi_jni_RPiI2CNative_close
-  (JNIEnv *, jclass, jint);
+JNIEXPORT void JNICALL Java_net_audumla_perio_i2c_rpi_jni_RPiI2CNative_close
+  (JNIEnv *, jclass, jint, jobject);
 
 /*
  * Class:     net_audumla_perio_i2c_rpi_jni_RPiI2CNative
  * Method:    setClock
- * Signature: (II)I
+ * Signature: (IILnet/audumla/perio/jni/ErrorHandler;)I
  */
 JNIEXPORT jint JNICALL Java_net_audumla_perio_i2c_rpi_jni_RPiI2CNative_setClock
-  (JNIEnv *, jclass, jint, jint);
+  (JNIEnv *, jclass, jint, jint, jobject);
 
 /*
  * Class:     net_audumla_perio_i2c_rpi_jni_RPiI2CNative
  * Method:    getClock
- * Signature: (I)I
+ * Signature: (ILnet/audumla/perio/jni/ErrorHandler;)I
  */
 JNIEXPORT jint JNICALL Java_net_audumla_perio_i2c_rpi_jni_RPiI2CNative_getClock
-  (JNIEnv *, jclass, jint);
+  (JNIEnv *, jclass, jint, jobject);
 
 /*
  * Class:     net_audumla_perio_i2c_rpi_jni_RPiI2CNative
  * Method:    write
- * Signature: (IIBBB)I
+ * Signature: (IIBBBLnet/audumla/perio/jni/ErrorHandler;)I
  */
-JNIEXPORT jint JNICALL Java_net_audumla_perio_i2c_rpi_jni_RPiI2CNative_write__IIBBB
-  (JNIEnv *, jclass, jint, jint, jbyte, jbyte, jbyte);
+JNIEXPORT jint JNICALL Java_net_audumla_perio_i2c_rpi_jni_RPiI2CNative_write__IIBBBLnet_audumla_perio_jni_ErrorHandler_2
+  (JNIEnv *, jclass, jint, jint, jbyte, jbyte, jbyte, jobject);
 
 /*
  * Class:     net_audumla_perio_i2c_rpi_jni_RPiI2CNative
  * Method:    read
- * Signature: (IIB)B
+ * Signature: (IIBLnet/audumla/perio/jni/ErrorHandler;)B
  */
-JNIEXPORT jbyte JNICALL Java_net_audumla_perio_i2c_rpi_jni_RPiI2CNative_read__IIB
-  (JNIEnv *, jclass, jint, jint, jbyte);
+JNIEXPORT jbyte JNICALL Java_net_audumla_perio_i2c_rpi_jni_RPiI2CNative_read__IIBLnet_audumla_perio_jni_ErrorHandler_2
+  (JNIEnv *, jclass, jint, jint, jbyte, jobject);
 
 /*
  * Class:     net_audumla_perio_i2c_rpi_jni_RPiI2CNative
  * Method:    write
- * Signature: (IIBB)I
+ * Signature: (IIBBLnet/audumla/perio/jni/ErrorHandler;)I
  */
-JNIEXPORT jint JNICALL Java_net_audumla_perio_i2c_rpi_jni_RPiI2CNative_write__IIBB
-  (JNIEnv *, jclass, jint, jint, jbyte, jbyte);
+JNIEXPORT jint JNICALL Java_net_audumla_perio_i2c_rpi_jni_RPiI2CNative_write__IIBBLnet_audumla_perio_jni_ErrorHandler_2
+  (JNIEnv *, jclass, jint, jint, jbyte, jbyte, jobject);
 
 /*
  * Class:     net_audumla_perio_i2c_rpi_jni_RPiI2CNative
  * Method:    read
- * Signature: (II)B
+ * Signature: (IILnet/audumla/perio/jni/ErrorHandler;)B
  */
-JNIEXPORT jbyte JNICALL Java_net_audumla_perio_i2c_rpi_jni_RPiI2CNative_read__II
-  (JNIEnv *, jclass, jint, jint);
+JNIEXPORT jbyte JNICALL Java_net_audumla_perio_i2c_rpi_jni_RPiI2CNative_read__IILnet_audumla_perio_jni_ErrorHandler_2
+  (JNIEnv *, jclass, jint, jint, jobject);
 
 /*
  * Class:     net_audumla_perio_i2c_rpi_jni_RPiI2CNative
  * Method:    write
- * Signature: (IIII[BB)I
+ * Signature: (IIII[BBLnet/audumla/perio/jni/ErrorHandler;)I
  */
-JNIEXPORT jint JNICALL Java_net_audumla_perio_i2c_rpi_jni_RPiI2CNative_write__IIII_3BB
-  (JNIEnv *, jclass, jint, jint, jint, jint, jbyteArray, jbyte);
+JNIEXPORT jint JNICALL Java_net_audumla_perio_i2c_rpi_jni_RPiI2CNative_write__IIII_3BBLnet_audumla_perio_jni_ErrorHandler_2
+  (JNIEnv *, jclass, jint, jint, jint, jint, jbyteArray, jbyte, jobject);
 
 /*
  * Class:     net_audumla_perio_i2c_rpi_jni_RPiI2CNative
  * Method:    write
- * Signature: (IIBIII[B[B)I
+ * Signature: (IIBIII[B[BLnet/audumla/perio/jni/ErrorHandler;)I
  */
-JNIEXPORT jint JNICALL Java_net_audumla_perio_i2c_rpi_jni_RPiI2CNative_write__IIBIII_3B_3B
-  (JNIEnv *, jclass, jint, jint, jbyte, jint, jint, jint, jbyteArray, jbyteArray);
+JNIEXPORT jint JNICALL Java_net_audumla_perio_i2c_rpi_jni_RPiI2CNative_write__IIBIII_3B_3BLnet_audumla_perio_jni_ErrorHandler_2
+  (JNIEnv *, jclass, jint, jint, jbyte, jint, jint, jint, jbyteArray, jbyteArray, jobject);
 
 /*
  * Class:     net_audumla_perio_i2c_rpi_jni_RPiI2CNative
  * Method:    read
- * Signature: (IIII[BB)I
+ * Signature: (IIII[BBLnet/audumla/perio/jni/ErrorHandler;)I
  */
-JNIEXPORT jint JNICALL Java_net_audumla_perio_i2c_rpi_jni_RPiI2CNative_read__IIII_3BB
-  (JNIEnv *, jclass, jint, jint, jint, jint, jbyteArray, jbyte);
+JNIEXPORT jint JNICALL Java_net_audumla_perio_i2c_rpi_jni_RPiI2CNative_read__IIII_3BBLnet_audumla_perio_jni_ErrorHandler_2
+  (JNIEnv *, jclass, jint, jint, jint, jint, jbyteArray, jbyte, jobject);
 
 /*
  * Class:     net_audumla_perio_i2c_rpi_jni_RPiI2CNative
  * Method:    read
- * Signature: (IIBIII[B[B)I
+ * Signature: (IIBIII[B[BLnet/audumla/perio/jni/ErrorHandler;)I
  */
-JNIEXPORT jint JNICALL Java_net_audumla_perio_i2c_rpi_jni_RPiI2CNative_read__IIBIII_3B_3B
-  (JNIEnv *, jclass, jint, jint, jbyte, jint, jint, jint, jbyteArray, jbyteArray);
+JNIEXPORT jint JNICALL Java_net_audumla_perio_i2c_rpi_jni_RPiI2CNative_read__IIBIII_3B_3BLnet_audumla_perio_jni_ErrorHandler_2
+  (JNIEnv *, jclass, jint, jint, jbyte, jint, jint, jint, jbyteArray, jbyteArray, jobject);
 
 #ifdef __cplusplus
 }

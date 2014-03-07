@@ -9,22 +9,27 @@
 #include <sys/ioctl.h>
 #include "net_audumla_perio_i2c_rpi_jni_RPiI2CNative.h"
 #include "bcm2835.h"
+#include "errorHandler.h"
 
 
-JNIEXPORT jint JNICALL Java_net_audumla_perio_i2c_rpi_jni_RPiI2CNative_open(JNIEnv *env, jclass clazz, jint bus, jint address) {
+JNIEXPORT jint JNICALL JNIEXPORT jint JNICALL Java_net_audumla_perio_i2c_rpi_jni_RPiI2CNative_open(JNIEnv *env, jclass clazz, jint bus, jint address, jobject errorHandler) {
     int retVal;
     if ((retVal = bcm2835_init())) {
         bcm2835_i2c_begin(bus);
-    };
+    }
+    else {
+        handleError(env,errorHandler,errno,strerror(errno),__PRETTY_FUNCTION__ );
+    }
+
     return retVal;
 };
 
-JNIEXPORT void JNICALL Java_net_audumla_perio_i2c_rpi_jni_RPiI2CNative_close(JNIEnv *env, jclass clazz, jint bus) {
+JNIEXPORT void JNICALL Java_net_audumla_perio_i2c_rpi_jni_RPiI2CNative_close(JNIEnv *env, jclass clazz, jint bus, jobject errorHandler) {
     bcm2835_i2c_end(bus);
 };
 
 
-JNIEXPORT jint JNICALL Java_net_audumla_perio_i2c_rpi_jni_RPiI2CNative_write__IIBBB(JNIEnv *env, jclass clazz, jint bus, jint deviceAddress, jbyte localAddress, jbyte value, jbyte mask) {
+JNIEXPORT jint JNICALL Java_net_audumla_perio_i2c_rpi_jni_RPiI2CNative_write__IIBBBLnet_audumla_perio_jni_ErrorHandler_2(JNIEnv *env, jclass clazz, jint bus, jint deviceAddress, jbyte localAddress, jbyte value, jbyte mask, jobject errorHandler) {
     uint32_t lenTr;
     uint8_t reason;
     bcm2835_i2c_setSlaveAddress(deviceAddress,bus);
@@ -41,7 +46,7 @@ JNIEXPORT jint JNICALL Java_net_audumla_perio_i2c_rpi_jni_RPiI2CNative_write__II
     return lenTr;
 };
 
-JNIEXPORT jbyte JNICALL Java_net_audumla_perio_i2c_rpi_jni_RPiI2CNative_read__IIB(JNIEnv *env, jclass clazz, jint bus, jint deviceAddress, jbyte localAddress) {
+JNIEXPORT jbyte JNICALL Java_net_audumla_perio_i2c_rpi_jni_RPiI2CNative_read__IIBLnet_audumla_perio_jni_ErrorHandler_2(JNIEnv *env, jclass clazz, jint bus, jint deviceAddress, jbyte localAddress, jobject errorHandler) {
     uint8_t data;
     uint8_t reason;
     uint32_t lenTr;
@@ -51,7 +56,7 @@ JNIEXPORT jbyte JNICALL Java_net_audumla_perio_i2c_rpi_jni_RPiI2CNative_read__II
     return data;
 };
 
-JNIEXPORT jint JNICALL Java_net_audumla_perio_i2c_rpi_jni_RPiI2CNative_write__IIBB(JNIEnv *env, jclass clazz, jint bus, jint deviceAddress,  jbyte value , jbyte mask) {
+JNIEXPORT jint JNICALL Java_net_audumla_perio_i2c_rpi_jni_RPiI2CNative_write__IIBBLnet_audumla_perio_jni_ErrorHandler_2(JNIEnv *env, jclass clazz, jint bus, jint deviceAddress,  jbyte value , jbyte mask, jobject errorHandler) {
     uint32_t lenTr;
     uint8_t reason;
     bcm2835_i2c_setSlaveAddress(deviceAddress,bus);
@@ -67,7 +72,7 @@ JNIEXPORT jint JNICALL Java_net_audumla_perio_i2c_rpi_jni_RPiI2CNative_write__II
     return lenTr;
 };
 
-JNIEXPORT jbyte JNICALL Java_net_audumla_perio_i2c_rpi_jni_RPiI2CNative_read__II(JNIEnv *env, jclass clazz, jint bus, jint deviceAddress ) {
+JNIEXPORT jbyte JNICALL Java_net_audumla_perio_i2c_rpi_jni_RPiI2CNative_read__IILnet_audumla_perio_jni_ErrorHandler_2(JNIEnv *env, jclass clazz, jint bus, jint deviceAddress , jobject errorHandler) {
     uint32_t lenTr;
     uint8_t data;
     bcm2835_i2c_setSlaveAddress(deviceAddress,bus);
@@ -75,7 +80,7 @@ JNIEXPORT jbyte JNICALL Java_net_audumla_perio_i2c_rpi_jni_RPiI2CNative_read__II
     return data;
 };
 
-JNIEXPORT jint JNICALL Java_net_audumla_perio_i2c_rpi_jni_RPiI2CNative_write__IIII_3BB(JNIEnv *env, jclass clazz, jint bus, jint deviceAddress, jint offset, jint writeCount, jbyteArray values, jbyte mask) {
+JNIEXPORT jint JNICALL Java_net_audumla_perio_i2c_rpi_jni_RPiI2CNative_write__IIII_3BBLnet_audumla_perio_jni_ErrorHandler_2(JNIEnv *env, jclass clazz, jint bus, jint deviceAddress, jint offset, jint writeCount, jbyteArray values, jbyte mask, jobject errorHandler) {
     uint32_t lenTr;
     uint32_t totalLenTr = 0;
     uint8_t reason;
@@ -101,7 +106,7 @@ JNIEXPORT jint JNICALL Java_net_audumla_perio_i2c_rpi_jni_RPiI2CNative_write__II
     return totalLenTr;
 };
 
-JNIEXPORT jint JNICALL Java_net_audumla_perio_i2c_rpi_jni_RPiI2CNative_write__IIBIII_3B_3B(JNIEnv *env, jclass clazz, jint bus, jint deviceAddress, jbyte localAddress, jint offset, jint width, jint writeCount, jbyteArray data, jbyteArray mask) {
+JNIEXPORT jint JNICALL Java_net_audumla_perio_i2c_rpi_jni_RPiI2CNative_write__IIBIII_3B_3BLnet_audumla_perio_jni_ErrorHandler_2(JNIEnv *env, jclass clazz, jint bus, jint deviceAddress, jbyte localAddress, jint offset, jint width, jint writeCount, jbyteArray data, jbyteArray mask, jobject errorHandler) {
     uint32_t lenTr;
     uint32_t totalLenTr = 0;
     uint8_t reason;
@@ -136,7 +141,7 @@ JNIEXPORT jint JNICALL Java_net_audumla_perio_i2c_rpi_jni_RPiI2CNative_write__II
     return totalLenTr;
 }
 
-JNIEXPORT jint JNICALL Java_net_audumla_perio_i2c_rpi_jni_RPiI2CNative_read__IIII_3BB(JNIEnv *env, jclass clazz, jint bus, jint deviceAddress, jint offset, jint readCount, jbyteArray data, jbyte mask) {
+JNIEXPORT jint JNICALL Java_net_audumla_perio_i2c_rpi_jni_RPiI2CNative_read__IIII_3BBLnet_audumla_perio_jni_ErrorHandler_2(JNIEnv *env, jclass clazz, jint bus, jint deviceAddress, jint offset, jint readCount, jbyteArray data, jbyte mask, jobject errorHandler) {
     uint32_t lenTr;
     jbyte *body = (jbyte *)(*env)->GetPrimitiveArrayCritical( env,data, 0);
     bcm2835_i2c_setSlaveAddress(deviceAddress,bus);
@@ -145,7 +150,7 @@ JNIEXPORT jint JNICALL Java_net_audumla_perio_i2c_rpi_jni_RPiI2CNative_read__III
     return lenTr;
 };
 
-JNIEXPORT jint JNICALL Java_net_audumla_perio_i2c_rpi_jni_RPiI2CNative_read__IIBIII_3B_3B(JNIEnv *env, jclass clazz, jint bus, jint deviceAddress, jbyte localAddress, jint offset, jint width, jint readCount, jbyteArray data, jbyteArray mask) {
+JNIEXPORT jint JNICALL Java_net_audumla_perio_i2c_rpi_jni_RPiI2CNative_read__IIBIII_3B_3BLnet_audumla_perio_jni_ErrorHandler_2(JNIEnv *env, jclass clazz, jint bus, jint deviceAddress, jbyte localAddress, jint offset, jint width, jint readCount, jbyteArray data, jbyteArray mask, jobject errorHandler) {
     uint32_t totalLenTr = 0;
     long i;
     uint32_t lenTr;
@@ -172,15 +177,13 @@ JNIEXPORT jint JNICALL Java_net_audumla_perio_i2c_rpi_jni_RPiI2CNative_read__IIB
     return totalLenTr;
 };
 
-JNIEXPORT jint JNICALL Java_net_audumla_perio_i2c_rpi_jni_RPiI2CNative_setClock
-  (JNIEnv *env, jclass clazz, jint bus, jint freq) {
+JNIEXPORT jint JNICALL Java_net_audumla_perio_i2c_rpi_jni_RPiI2CNative_setClock(JNIEnv *env, jclass clazz, jint bus, jint freq, jobject errorHandler) {
   uint32_t of = bcm2835_i2c_get_baudrate(bus);
   bcm2835_i2c_set_baudrate(freq,bus);
   return of;
 }
 
-JNIEXPORT jint JNICALL Java_net_audumla_perio_i2c_rpi_jni_RPiI2CNative_getClock
-  (JNIEnv *env, jclass clazz, jint bus) {
+JNIEXPORT jint JNICALL Java_net_audumla_perio_i2c_rpi_jni_RPiI2CNative_getClock(JNIEnv *env, jclass clazz, jint bus, jobject errorHandler) {
   return bcm2835_i2c_get_baudrate(bus);
 }
 

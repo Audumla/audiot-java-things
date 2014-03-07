@@ -19,7 +19,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>perio</artifactId>
     <version>0.1-SNAPSHOT</version>
-    <name>Audumla Device Access</name>
+    <name>Audumla Peripheral IO</name>
     <description>Management classes for specific devices such as LCDs, Relays and other equipment that requires automation</description>
     <packaging>bundle</packaging>
     <parent>
