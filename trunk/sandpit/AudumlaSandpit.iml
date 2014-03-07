@@ -64,7 +64,6 @@
     <orderEntry type="module" module-name="AudumlaAstronomy" />
     <orderEntry type="module" module-name="AudumlaDevices" />
     <orderEntry type="module" module-name="AudumlaPerio" />
-    <orderEntry type="library" name="Maven: org.apache.commons:commons-math3:3.2" level="project" />
     <orderEntry type="module" module-name="AudumlaFTD2xxj" />
     <orderEntry type="module" module-name="AudumlaDevices" scope="TEST" production-on-test="" />
     <orderEntry type="module" module-name="AudumlaCamelScheduler" />

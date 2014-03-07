@@ -4,7 +4,7 @@
 extern "C" {
 #endif
 
-void handleError(JNIEnv *env, JObject *handler, int errorCode, char *message, char* nativeMethod);
+void handleError(JNIEnv *env, jobject *handler, int errorCode, char *message, char* nativeMethod);
 
 #ifdef __cplusplus
 }

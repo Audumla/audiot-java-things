@@ -16,7 +16,7 @@
     <dependencies>
         <dependency>
             <groupId>net.audumla</groupId>
-            <artifactId>deviceaccess</artifactId>
+            <artifactId>perio</artifactId>
             <version>0.1-SNAPSHOT</version>
         </dependency>
         <dependency>

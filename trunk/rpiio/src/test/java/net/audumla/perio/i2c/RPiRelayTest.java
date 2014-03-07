@@ -19,8 +19,8 @@ package net.audumla.perio.i2c;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class RelayTest {
-    private static final Logger logger = LoggerFactory.getLogger(RelayTest.class);
+public class RPiRelayTest {
+    private static final Logger logger = LoggerFactory.getLogger(RPiRelayTest.class);
 //    static PCF8574GPIOActivatorFactory power5v;
 //    static RPIGPIOActivatorFactory rpi = new RPIGPIOActivatorFactory();
 //

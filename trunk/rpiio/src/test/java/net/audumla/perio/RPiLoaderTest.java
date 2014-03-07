@@ -20,8 +20,8 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class LoaderTest {
-    private static final Logger logger = LoggerFactory.getLogger(LoaderTest.class);
+public class RPiLoaderTest {
+    private static final Logger logger = LoggerFactory.getLogger(RPiLoaderTest.class);
 
     @Test
     public void testLoad() throws Exception {
