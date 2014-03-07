@@ -48,12 +48,15 @@ public class DefaultErrorHandler implements ErrorHandler {
     public void logError() {
         if (hasError()) {
             logger.error(exception.getMessage());
+            exception = null;
         }
     }
 
     @Override
     public NativePeripheralException getException() {
-        return exception;
+        NativePeripheralException ex = exception;
+        exception = null;
+        return ex;
     }
 
     @Override
