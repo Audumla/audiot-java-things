@@ -254,4 +254,5 @@ public interface PeripheralChannelMessage extends ByteChannel {
      * @return true if the channel will halt on errors, otherwise false
      */
     boolean willHaltOnError();
+
 }
