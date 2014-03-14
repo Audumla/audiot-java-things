@@ -17,6 +17,7 @@ package net.audumla.perio.gpio;
  */
 
 import net.audumla.perio.SelectableIOPeripheral;
+import net.audumla.perio.UnsupportedAccessModeException;
 
 /**
  * A GPIOPort represents a collection of GPIOPins grouped within a common platform or source.
@@ -45,10 +46,33 @@ import net.audumla.perio.SelectableIOPeripheral;
  */
 public interface GPIOPort extends SelectableIOPeripheral<GPIOPort, GPIOPortConfig, GPIOPin[]> {
 
+    /**
+     * Allows a callback to be issued when the state of a pin changes based on the trigger type. This will be performed asynchronously
+     * and should execute as an interupt where possible. The underlying implementation will need to support interrupts otherwise polling
+     * will need to be configured according to the devices configuration
+     *
+     * @param trigger the trigger event
+     * @param listener the listener of the trigger event
+     * @param pins the pins to listen on
+     * @throws java.io.IOException if the triggering was unsuccessful due to an underlying device issue
+     */
     void setInputListener(GPIOPin.Trigger trigger, PinListener listener, GPIOPin ... pins) throws java.io.IOException;
 
-    void setDirection(GPIOPin.Direction direction, GPIOPin ... pins);
+    /**
+     * Sets the direction of the pin as allowed by the device
+     *
+     * @param direction the direction to set the pin to
+     * @param pins the pins to be set
+     * @throws net.audumla.perio.UnsupportedAccessModeException thrown if the pin does not support the specified direction
+     */
+    void setDirection(GPIOPin.Direction direction, GPIOPin ... pins) throws UnsupportedAccessModeException;
 
+    /**
+     * Each GPIOPort provides a collection of pins. This method allows access to all of the pins that the device has made
+     * available.
+     *
+     * @return the available pins
+     */
     GPIOPin[] getPins();
 
 }
