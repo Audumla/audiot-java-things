@@ -242,7 +242,7 @@
         </site>
         <snapshotRepository>
             <id>audumla-snapshot-repository</id>
-            <url>http://maven.audumla.net/snapshots</url>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
         </snapshotRepository>
         <repository>
             <id>audumla-release-repository</id>
