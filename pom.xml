@@ -234,12 +234,13 @@
         </pluginManagement>
     </build>
 
-    <!--<distributionManagement>-->
-        <!--<site>-->
-            <!--<id>site.audumla.net</id>-->
-            <!--<name>Audumla.net</name>-->
-            <!--<url>dav:http://www.audumla.net/nexus/content/sites/SiteRepository/</url>-->
-        <!--</site>-->
+
+   <distributionManagement>
+        <site>
+            <id>site.audumla.net</id>
+            <name>Audumla.net</name>
+            <url>dav:http://www.audumla.net/nexus/content/sites/SiteRepository/</url>
+        </site>
         <!--<snapshotRepository>-->
             <!--<id>sonatype-snapshot-repository</id>-->
             <!--<url>https://oss.sonatype.org/content/repositories/snapshots</url>-->
@@ -248,7 +249,7 @@
             <!--<id>audumla-release-repository</id>-->
             <!--<url>http://maven.audumla.net/releases</url>-->
         <!--</repository>-->
-    <!--</distributionManagement>-->
+    </distributionManagement>
     <reporting>
         <plugins>
             <plugin>
